@@ -1,3 +1,4 @@
+// asdfasdf
 function Animation() {
     var mView;
     var mDuration = 0;
@@ -326,7 +327,6 @@ Object.defineProperty(Gravity,"LEFT",{value:8});
 Object.defineProperty(Gravity,"CENTER_HORIZONTAL",{value:16});
 Object.defineProperty(Gravity,"RIGHT",{value:32});
 Object.defineProperty(Gravity,"CENTER",{value:18});
-
 /**
  * Jndroid core functions
  */
