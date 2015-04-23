@@ -871,12 +871,9 @@ function View() {
                             view.performClick();
                         }
                     }
-
-                    log("up");
                     break;
                 case MotionEvent.ACTION_CANCEL:
                     view.removeCallbacks(view.checkLongPress);
-                    log("cancel");
                     break;
             }
         }
@@ -990,16 +987,11 @@ CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
 // 以下为Activity方法
 var mDecorView = null;
 var mRootView = null;
-var mDialogLayout = new DialogLayout();
+
 
 var mHideDiv = null;
 
 var mTopMargin = 0;
-
-var meta = document.createElement("meta");
-meta.name = "viewport";
-meta.content = "width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no";
-document.head.appendChild(meta);
 
 function setContentView(view) {
     //if (window.screen.height > document.body.scrollHeight) {
@@ -1050,7 +1042,7 @@ function getRootView() {
 
 function forceReLayout() {
     if (mDecorView === null || mDecorView === undefined) {
-        console.log("gyy: mDecorView is null");
+        log("gyy: mDecorView is null");
         return;
     }
     mDecorView.measure(window.innerWidth, window.innerHeight);
@@ -1356,6 +1348,9 @@ function DialogLayout() {
     //    canvas.fillRect(0,0, this.getMeasuredWidth(), this.getMeasuredHeight());
     //}
 }
+
+var mDialogLayout = new DialogLayout();
+
 function showDialogWithoutAnim(dialog) {
     mDialogLayout.addView(dialog);
     mDialogLayout.setVisibility(View.VISIBLE);
