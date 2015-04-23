@@ -14,22 +14,25 @@ function LinearLayout() {
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
+		var h;
+		var i;
+		var child;
         if (mOrientation == this.VERTICAL) {
             var childWidth = width - this.getPaddingLeft() - this.getPaddingRight();
             var childHeight = height - this.getPaddingTop() - this.getPaddingBottom();
-            var h = this.getPaddingTop() + this.getPaddingBottom();
-            for (var i = 0; i < this.getChildCount(); i++) {
-                var child = this.getChildAt(i);
+            h = this.getPaddingTop() + this.getPaddingBottom();
+            for (i = 0; i < this.getChildCount(); i++) {
+                child = this.getChildAt(i);
                 child.measure(MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY),
                     MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY));
                 h += child.getMeasuredHeight();
             }
             this.setMeasuredDimension(width, h);
         } else {
-            var h = this.getPaddingTop() + this.getPaddingBottom();
+            h = this.getPaddingTop() + this.getPaddingBottom();
             var w = this.getPaddingLeft() + this.getPaddingRight();
-            for (var i = 0; i < this.getChildCount(); i++) {
-                var child = this.getChildAt(i);
+            for (i = 0; i < this.getChildCount(); i++) {
+                child = this.getChildAt(i);
                 child.measure(widthMS, heightMS);
                 w += child.getMeasuredWidth();
             }
@@ -44,21 +47,23 @@ function LinearLayout() {
         var offsetX = this.getPaddingLeft();
         var offsetY = this.getPaddingTop();
 
+		var i;
+		var child;
         if (mOrientation == this.VERTICAL) {
-            for (var i = 0; i < this.getChildCount(); i++) {
-                var child = this.getChildAt(i);
+            for (i = 0; i < this.getChildCount(); i++) {
+                child = this.getChildAt(i);
                 child.layout(offsetX, offsetY);
                 offsetY += child.getMeasuredHeight();
             }
         } else {
-            for (var i = 0; i < this.getChildCount(); i++) {
-                var child = this.getChildAt(i);
+            for (i = 0; i < this.getChildCount(); i++) {
+                child = this.getChildAt(i);
                 child.layout(offsetX, offsetY);
                 offsetX += child.getMeasuredWidth();
             }
         }
 
-    }
+    };
 }
 
 function FrameLayout() {
@@ -81,7 +86,7 @@ function FrameLayout() {
             var child = this.getChildAt(i);
             child.layout(offsetX, offsetY);
         }
-    }
+    };
 }
 
 function ScrollView() {
@@ -107,7 +112,7 @@ function ScrollView() {
             var child = this.getChildAt(0);
             child.layout(offsetX, offsetY);
         }
-    }
+    };
 }
 
 function Button() {
@@ -172,7 +177,7 @@ function Button() {
         //canvas.closePath();
         //canvas.fillStyle = 'rgba(0,255,0,0.25)';
         //canvas.fill();
-    }
+    };
 }
 
 function ImageView() {
@@ -191,7 +196,7 @@ function ImageView() {
         mImg = document.createElement("img");
         mImg.src = src;
         mImg.style.verticalAlign = "middle";
-        mImg.setAttribute('alt',' ');
+        mImg.setAttribute("alt"," ");
         this.getDiv().appendChild(mImg);
     };
 
@@ -207,7 +212,7 @@ function ImageView() {
         this.getDiv().style.lineHeight = height + "px";
 
         this.setMeasuredDimension(width, height);
-    }
+    };
 }
 
 function TextView() {
@@ -273,7 +278,7 @@ function TextView() {
         measureDiv.innerHTML = mContent.innerHTML;
         mHideDiv.appendChild(measureDiv);
 
-        if (measureDiv.clientHeight != 0) {
+        if (measureDiv.clientHeight !== 0) {
             var measureHeight = measureDiv.clientHeight;
             if (mode == MeasureSpec.UNSPECIFIED) {
                 height = measureHeight;
@@ -316,7 +321,7 @@ function TextView() {
             this.getDiv().style.textAlign = "left";
         }
 
-    }
+    };
 }
 
 function EditText() {
@@ -366,7 +371,7 @@ function EditText() {
 
     this.setSelection = function(start, end) {
         mInput.selectionStart = start;
-        if (end == undefined) {
+        if (end === undefined) {
             mInput.selectionEnd = start;
         } else {
             mInput.selectionEnd = end;
@@ -431,7 +436,7 @@ function EditText() {
     this.onLayout = function(x, y) {
         mInput.style.top = this.getPaddingTop() + "px";
         mInput.style.left = this.getPaddingLeft() + "px";
-    }
+    };
 }
 
 function WebView() {
@@ -455,5 +460,5 @@ function WebView() {
         mFrame.style.width = width + "px";
         mFrame.style.height = height + "px";
         this.setMeasuredDimension(width, height);
-    }
+    };
 }

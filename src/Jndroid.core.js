@@ -10,7 +10,7 @@ Array.prototype.size = function() {
 };
 
 Array.prototype.isEmpty = function() {
-    return (this.length == 0);
+    return (this.length === 0);
 };
 
 Array.prototype.contains = function(val) {
@@ -19,7 +19,9 @@ Array.prototype.contains = function(val) {
 
 Array.prototype.indexOf = function(val) {
     for (var i = 0; i < this.length; i++) {
-        if (this[i] == val) return i;
+        if (this[i] == val) {
+			return i;
+		}
     }
     return -1;
 };
@@ -46,7 +48,7 @@ function Map() {
     this.data = {};
 
     this.put = function (key, value) {
-        if (this.data[key] == null) {
+        if (this.data[key] === null) {
             this.keys.push(key);
         }
         this.data[key] = value;
@@ -79,26 +81,32 @@ function _Utils() {
 
     this.contains = document.documentElement.contains ?
         function(parent, node) {
-            return parent !== node && parent.contains(node)
+            return parent !== node && parent.contains(node);
         } :
         function(parent, node) {
-            while (node && (node = node.parentNode))
-                if (node === parent) return true;
+            while (node && (node = node.parentNode)) {
+                if (node === parent) {
+					return true;
+				}
+			}
             return false;
         };
 
     this.getOffset = function(div){
-        if (!div) return null;
-        if (!this.contains(document.documentElement, div))
+        if (!div) {
+			return null;
+		}
+        if (!this.contains(document.documentElement, div)) {
             return {top: 0, left: 0};
+		}
         var obj = div.getBoundingClientRect();
         return {
             left: obj.left + window.pageXOffset,
             top: obj.top + window.pageYOffset,
             width: Math.round(obj.width),
             height: Math.round(obj.height)
-        }
-    }
+        };
+    };
 }
 
 var MeasureSpec = new _MeasureSpec();
@@ -113,7 +121,7 @@ function _MeasureSpec() {
 
     this.getSize = function(measureSpec) {
         return (measureSpec & ~MeasureSpec.MODE_MASK);
-    }
+    };
 }
 Object.defineProperty(MeasureSpec,"MODE_MASK",{value:(0x3 << 30)});
 Object.defineProperty(MeasureSpec,"UNSPECIFIED",{value:(0x0 << 30)});
@@ -164,7 +172,7 @@ function MotionEvent(rawEv) {
         } else if (rawEv.type == "touchcancel") {
             return MotionEvent.ACTION_CANCEL;
         }
-    }
+    };
 }
 
 Object.defineProperty(MotionEvent,"ACTION_DOWN",{value:0});
@@ -243,7 +251,7 @@ function View() {
     };
 
     this.setPadding = function(left, top, right, bottom) {
-        if (top == undefined && right == undefined && bottom == undefined) {
+        if (top === undefined && right === undefined && bottom === undefined) {
             top = left;
             top = right;
             top = bottom;
@@ -304,7 +312,7 @@ function View() {
         mHeight = height;
         mDiv.style.width = width + "px";
         mDiv.style.height = height + "px";
-        if (mHTMLCanvas != null) {
+        if (mHTMLCanvas !== null) {
             mHTMLCanvas.width = width;
             mHTMLCanvas.height = height;
 
@@ -325,15 +333,15 @@ function View() {
     };
 
     this.invalidate = function() {
-        if (mWillNotDraw == false) {
+        if (mWillNotDraw === false) {
             this.draw();
         }
     };
 
     this.draw = function() {
-        if (mHTMLCanvas != null) {
+        if (mHTMLCanvas !== null) {
             if (mHTMLCanvas.getContext) {
-                var ctx = mHTMLCanvas.getContext('2d');
+                var ctx = mHTMLCanvas.getContext("2d");
                 ctx.width = this.getMeasuredWidth();
                 ctx.height = this.getMeasuredHeight();
                 this.onDraw(ctx);
@@ -351,13 +359,13 @@ function View() {
 
     this.setWillNotDraw = function(willnotdraw) {
         mWillNotDraw = willnotdraw;
-        if (mWillNotDraw == false) {
+        if (mWillNotDraw === false) {
             mHTMLCanvas = document.createElement("canvas");
             mDiv.appendChild(mHTMLCanvas);
             mDiv.style.overflow = "hidden";
             this.requestLayout();
         } else {
-            if (mHTMLCanvas != null) {
+            if (mHTMLCanvas !== null) {
                 mDiv.removeChild(mHTMLCanvas);
             }
         }
@@ -417,10 +425,10 @@ function View() {
     };
 
     this.requestLayout = function() {
-        if (this.getParent() == null) {
+        if (this.getParent() === null) {
             return;
         }
-        if (mWidth != 0 && mHeight != 0) {
+        if (mWidth !== 0 && mHeight !== 0) {
             this.measure(mWidthMS, mHeightMS);
             this.layout(mX, mY);
         } else {
@@ -469,19 +477,19 @@ function View() {
     this.removeCallbacks = function(r) {
         var id = mRunQueue.get(r);
         mRunQueue.remove(r);
-        if (id != undefined) {
+        if (id !== undefined) {
             clearTimeout(id);
         }
     };
 
     this.performClick = function() {
-        if (mClickListener != null) {
+        if (mClickListener !== null) {
             mClickListener.call(this);
         }
     };
 
     this.perfermLongClick = function() {
-        if (mLongClickListener != null) {
+        if (mLongClickListener !== null) {
             mLongClickListener();
         }
         return true;
@@ -520,8 +528,7 @@ function View() {
                     var offset = Utils.getOffset(view.getDiv());
                     var x = ev.getRawX();
                     var y = ev.getRawY();
-                    if (x < offset.left || x > (offset.left + offset.width)
-                        || y < offset.top || y > (offset.top + offset.height)) {
+                    if (x < offset.left || x > (offset.left + offset.width) || y < offset.top || y > (offset.top + offset.height)) {
                         view.removeCallbacks(view.checkLongPress);
                     }
                     break;
@@ -569,7 +576,7 @@ function View() {
 
     this.setBorderBottom = function(thick, color) {
         this.getDiv().style.borderBottom = thick + "px solid " + Utils.toCssColor(color);
-    }
+    };
 }
 Object.defineProperty(View,"VISIBLE",{value:0});
 Object.defineProperty(View,"INVISIBLE",{value:4});
@@ -595,7 +602,7 @@ function ViewGroup() {
     };
 
     this.addView = function(view) {
-        if (view.getParent() != null) {
+        if (view.getParent() !== null) {
             throwException("IllegalStateException: " + view.getTag() + " 只能拥有一个父节点");
             return;
         }
@@ -603,13 +610,13 @@ function ViewGroup() {
         mChildren.add(view);
         this.getDiv().appendChild(view.getDiv());
 
-        if (this.getMeasuredWidth() != 0 && this.getMeasuredHeight() != 0) {
+        if (this.getMeasuredWidth() !== 0 && this.getMeasuredHeight() !== 0) {
             this.requestLayout();
         }
     };
 
     this.removeView = function(view) {
-        if (view != null && mChildren.contains(view)) {
+        if (view !== null && mChildren.contains(view)) {
             view.setParent(null);
             mChildren.remove(view);
             this.getDiv().removeChild(view.getDiv());
@@ -624,16 +631,20 @@ function ViewGroup() {
         }
         mChildren.clear();
         this.getDiv().innerHTML = "";
-        if (this.getParent() != null) {
+        if (this.getParent() !== null) {
             this.getParent().requestLayout();
         }
-    }
+    };
 }
 
 // 以下为Canvas方法
 CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-    if (w < 2 * r) r = w / 2;
-    if (h < 2 * r) r = h / 2;
+    if (w < 2 * r) {
+		r = w / 2;
+	}
+    if (h < 2 * r) {
+		r = h / 2;
+	}
     this.beginPath();
     this.moveTo(x + r, y);
     this.arcTo(x + w, y, x + w, y + h, r);
@@ -701,7 +712,7 @@ function getRootView() {
 }
 
 function forceReLayout() {
-    if (mDecorView == null || mDecorView == undefined) {
+    if (mDecorView === null || mDecorView === undefined) {
         log("gyy: mDecorView is null");
         return;
     }
@@ -717,7 +728,7 @@ var supportsOrientationChange = "onorientationchange" in window,
     orientationEvent = supportsOrientationChange ? "orientationchange" : "resize";
 
 function addOrientationListener(listener) {
-    window.addEventListener('resize', listener);
+    window.addEventListener("resize", listener);
 }
 
 function throwException(msg) {
