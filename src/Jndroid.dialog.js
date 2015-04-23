@@ -23,7 +23,7 @@ function DialogButton() {
     this.onLayout = function(x, y) {
         var offsetX = 0;
         var offsetY = 0;
-        mText.layout(offsetX, offsetY)
+        mText.layout(offsetX, offsetY);
     };
 
     this.touchStart = function(event) {
@@ -177,7 +177,7 @@ function Dialog() {
 
     this.dismiss = function() {
         dismissDialog(this);
-    }
+    };
 }
 
 function WaitingDialog() {
@@ -224,7 +224,7 @@ function WaitingDialog() {
 
     this.show = function() {
         showDialogWithoutAnim(this);
-    }
+    };
 }
 
 function DialogLayout() {
@@ -235,7 +235,7 @@ function DialogLayout() {
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
-        if (this.getChildCount() != 0) {
+        if (this.getChildCount() !== 0) {
             var child = this.getChildAt(0);
             child.measure(widthMS, heightMS);
         }
@@ -243,7 +243,7 @@ function DialogLayout() {
     };
 
     this.onLayout = function(x,y) {
-        if (this.getChildCount() == 0) {
+        if (this.getChildCount() === 0) {
             return;
         }
 

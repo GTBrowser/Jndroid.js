@@ -86,7 +86,7 @@ function Animation() {
 
     this.getInterpolator = function(){
         return mInterpolator;
-    }
+    };
 }
 
 function TranslateAnimation(fromX, toX, fromY, toY) {
@@ -111,7 +111,7 @@ function TranslateAnimation(fromX, toX, fromY, toY) {
     };
 
     this.start = function() {
-        if (this.getStartOffset() == 0) {
+        if (this.getStartOffset() === 0) {
             this.startInner();
         } else {
             setTimeout(function(){
@@ -128,7 +128,7 @@ function TranslateAnimation(fromX, toX, fromY, toY) {
             mSelf.getView().getDiv().style.webkitTransition = mSelf.getTransition();
             mSelf.getView().getDiv().style.webkitTransform = mSelf.getEndState();
         }, 1);
-    }
+    };
 }
 
 function AlphaAnimation(fromAlpha,toAlpha) {
@@ -162,7 +162,7 @@ function AlphaAnimation(fromAlpha,toAlpha) {
         }, this.getStartOffset());
 
         setTimeout(this.getEndListener(), this.getDuration() + this.getStartOffset() + 1);
-    }
+    };
 }
 
 function RotateAnimation(fromDegrees, toDegrees) {
@@ -171,7 +171,7 @@ function RotateAnimation(fromDegrees, toDegrees) {
     var mSelf = this;
 
     this.getTag = function() {
-        return "RotateAnimation"
+        return "RotateAnimation";
     };
 
     this.getStartState = function() {
@@ -196,7 +196,7 @@ function RotateAnimation(fromDegrees, toDegrees) {
         }, this.getStartOffset());
 
         setTimeout(this.getEndListener(), this.getDuration() + this.getStartOffset() + 1);
-    }
+    };
 }
 
 function ScaleAnimation(fromScale, toScale) {
@@ -230,7 +230,7 @@ function ScaleAnimation(fromScale, toScale) {
         }, this.getStartOffset());
 
         setTimeout(this.getEndListener(), this.getDuration() + this.getStartOffset() + 1);
-    }
+    };
 }
 
 //function AnimationSet() {
@@ -311,7 +311,7 @@ function ScaleAnimation(fromScale, toScale) {
 //    }
 //}
 
-function Interpolator(){}
+function Interpolator (){}
 Object.defineProperty(Interpolator,"LINEAR",{value:"linear"});
 Object.defineProperty(Interpolator,"EASE",{value:"ease"});
 Object.defineProperty(Interpolator,"EASE_IN",{value:"ease-in"});
