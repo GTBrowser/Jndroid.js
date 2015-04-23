@@ -259,6 +259,9 @@ function DialogLayout() {
     //    canvas.fillRect(0,0, this.getMeasuredWidth(), this.getMeasuredHeight());
     //}
 }
+
+var mDialogLayout = new DialogLayout();
+
 function showDialogWithoutAnim(dialog) {
     mDialogLayout.addView(dialog);
     mDialogLayout.setVisibility(View.VISIBLE);
