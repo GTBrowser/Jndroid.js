@@ -1,4 +1,3 @@
-Jndroid
-=======
+#Jndroid
 
-Android layout system implemented in JS
+Write HTML App in Android way. 
