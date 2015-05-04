@@ -930,7 +930,7 @@ function ViewGroup() {
     };
 
     this.addView = function(view) {
-        if (view.getParent() !== null) {
+        if (view.getParent()) {
             throwException("IllegalStateException: " + view.getTag() + " 只能拥有一个父节点");
             return;
         }
@@ -1060,7 +1060,7 @@ function addOrientationListener(listener) {
 }
 
 function throwException(msg) {
-    alert(msg);
+    log(msg);
 }
 
 // 为解决touch回调的临时方案
