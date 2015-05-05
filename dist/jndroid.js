@@ -329,9 +329,13 @@ Object.defineProperty(Gravity,"CENTER",{value:18});
 /**
  * Jndroid core functions
  */
-Array.prototype.add = function(val) {
-    this.push(val);
-};
+Array.prototype.add = function(index, val) {
+    if (val == undefined) {
+        this.push(index);
+    } else {
+        this.splice(index, 0, val);
+    }
+}
 
 Array.prototype.size = function() {
     return this.length;
@@ -929,19 +933,23 @@ function ViewGroup() {
         this.setMeasuredDimension(width, height);
     };
 
-    this.addView = function(view) {
-        if (view.getParent()) {
+    this.addView = function(view, index) {
+        if (view.getParent() != null) {
             throwException("IllegalStateException: " + view.getTag() + " 只能拥有一个父节点");
             return;
         }
         view.setParent(this);
-        mChildren.add(view);
+        if (index == undefined) {
+            mChildren.add(view);
+        } else {
+            mChildren.add(index, view);
+        }
         this.getDiv().appendChild(view.getDiv());
 
-        if (this.getMeasuredWidth() !== 0 && this.getMeasuredHeight() !== 0) {
+        if (this.getMeasuredWidth() != 0 && this.getMeasuredHeight() != 0) {
             this.requestLayout();
         }
-    };
+    }
 
     this.removeView = function(view) {
         if (view !== null && mChildren.contains(view)) {
