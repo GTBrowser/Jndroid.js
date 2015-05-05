@@ -1,9 +1,13 @@
 /**
  * Jndroid core functions
  */
-Array.prototype.add = function(val) {
-    this.push(val);
-};
+Array.prototype.add = function(index, val) {
+    if (val == undefined) {
+        this.push(index);
+    } else {
+        this.splice(index, 0, val);
+    }
+}
 
 Array.prototype.size = function() {
     return this.length;
