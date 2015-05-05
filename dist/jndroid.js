@@ -1557,12 +1557,19 @@ function Button() {
 function ImageView() {
     ViewGroup.apply(this, []);
 
+    var mSelf = this;
     var mSrc = null;
     var mImg = null;
+    var mScaleType = ScaleType.CENTER;
+    var mCustom = false;
 
     this.getDiv().style.display = "table-cell";
     this.getDiv().style.textAlign = "center";
     this.getDiv().style.verticalAlign = "middle";
+
+    this.setScaleType = function(st) {
+        mScaleType = st;
+    }
 
     this.setImgSrc = function(src) {
         mSrc = src;
@@ -1570,24 +1577,66 @@ function ImageView() {
         mImg = document.createElement("img");
         mImg.src = src;
         mImg.style.verticalAlign = "middle";
-        mImg.setAttribute("alt"," ");
+        mImg.setAttribute('alt',' ');
         this.getDiv().appendChild(mImg);
-    };
+    }
 
     this.setImgWidth = function(width) {
         mImg.style.width = width + "px";
-    };
+        mCustom = true;
+    }
 
     this.setImgHeight = function(height) {
         mImg.style.height = height + "px";
-    };
+        mCustom = true;
+    }
 
     this.onMeasure = function (width, height) {
         this.getDiv().style.lineHeight = height + "px";
 
         this.setMeasuredDimension(width, height);
-    };
+
+        if (!mCustom && mScaleType != ScaleType.CENTER && mImg != null) {
+            var nw = mImg.naturalWidth;
+            var nh = mImg.naturalHeight;
+            if (nw == 0 || nh == 0) {
+                mImg.onload = this.scale;
+            }
+            mImg.style.width = width + "px";
+        }
+    }
+
+    this.scale = function() {
+        var nw = mImg.naturalWidth;
+        var nh = mImg.naturalHeight;
+        var width = mSelf.getWidth();
+        var height = mSelf.getHeight();
+        if (mScaleType == ScaleType.FIT_XY) {
+            mImg.style.width = width + "px";
+            mImg.style.height = height + "px";
+        } else if (mScaleType == ScaleType.CENTER_INSIDE) {
+            if (nw > width || nh > height) {
+                mSelf.fitCenter(nw, nh, width, height);
+            }
+        } else if (mScaleType == ScaleType.FIT_CENTER) {
+            mSelf.fitCenter(nw, nh, width, height);
+        }
+    }
+
+    this.fitCenter = function(nw, nh, width, height) {
+        if (nw / nh > width / height) {
+            mImg.style.width = width + "px";
+        } else {
+            mImg.style.height = height + "px";
+        }
+    }
 }
+
+function ScaleType(){}
+Object.defineProperty(ScaleType,"FIT_XY",{value:1});
+Object.defineProperty(ScaleType,"FIT_CENTER",{value:3});
+Object.defineProperty(ScaleType,"CENTER",{value:5});
+Object.defineProperty(ScaleType,"CENTER_INSIDE",{value:7});
 
 function TextView() {
     ViewGroup.apply(this, []);
