@@ -2,30 +2,53 @@
  * Created by lency on 4/28/15.
  */
 
-var TitleBarInstance;
-var SideBarInstance;
-
+var titlebar;
+var sidebar;
+var mask;
 
 function MainView() {
     ViewGroup.apply(this, []);
 
-    TitleBarInstance = new TitleBar();
-    this.addView(TitleBar);
+    var self = this;
 
-    SideBarInstance = new Sidebar();
+    titlebar = new TitleBar();
+    this.addView(titlebar);
+
+    mask = new ViewGroup();
+    mask.setBackgroundColor(0x99000000);
+    mask.setOnClickListener(function(){
+        mask.setVisibility(View.GONE);
+        sidebar.hide();
+    });
+    mask.setVisibility(View.GONE);
+    this.addView(mask);
+
+    sidebar = new SideBar();
+    this.addView(sidebar);
+
+
 
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
 
-        TitleBarInstance.measure(widthMS, 64);
+        titlebar.measure(widthMS, 64);
+        sidebar.measure(200, heightMS);
+        mask.measure(widthMS, heightMS);
 
         this.setMeasuredDimension(width, height);
     };
 
     this.onLayout = function(x, y) {
-        TitleBarInstance.layout(0, 0);
-    }
+        titlebar.layout(0, 0);
+        sidebar.layout(-200, 0);
+        mask.layout(0, 0);
+    };
+
+    this.showSideBar = function(){
+        mask.setVisibility(View.VISIBLE);
+        sidebar.show();
+    };
 }
 
 window.onload = function(){
