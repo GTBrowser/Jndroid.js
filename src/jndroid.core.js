@@ -581,6 +581,23 @@ function View() {
     this.setBorderBottom = function(thick, color) {
         this.getDiv().style.borderBottom = thick + "px solid " + Utils.toCssColor(color);
     };
+
+    this.setBoxShadow = function(x, y, blur, spread) {
+
+        var styleString = x + 'px ' + y + 'px';
+
+        if(typeof(blur) != 'undefined')
+        {
+            styleString = styleString + ' ' + blur + 'px';
+        }
+
+        if(typeof(spread) != 'undefined')
+        {
+            styleString = styleString + ' ' + spread + 'px';
+        }
+
+        this.getDiv().style.webkitBoxShadow =  styleString;
+    };
 }
 Object.defineProperty(View,"VISIBLE",{value:0});
 Object.defineProperty(View,"INVISIBLE",{value:4});
