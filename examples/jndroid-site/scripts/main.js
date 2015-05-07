@@ -24,14 +24,12 @@ function MainView() {
     sidebar = new SideBar();
     this.addView(sidebar);
 
-
-
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
 
         titlebar.measure(widthMS, 64);
-        sidebar.measure(200, heightMS);
+        sidebar.measure(240, heightMS);
         mask.measure(widthMS, heightMS);
 
         this.setMeasuredDimension(width, height);
@@ -39,7 +37,7 @@ function MainView() {
 
     this.onLayout = function(x, y) {
         titlebar.layout(0, 0);
-        sidebar.layout(-200, 0);
+        sidebar.layout(-240, 0);
         mask.layout(0, 0);
     };
 

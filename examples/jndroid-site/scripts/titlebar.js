@@ -19,19 +19,18 @@ function TitleBar() {
 
     this.addView(hamburger);
 
-
     var title = new TextView();
     title.setText("Jndroid");
-    title.setTextSize(30);
+    title.setTextSize(25);
     title.setTextColor(0xFFFFFFFF);
 
     this.addView(title);
 
     this.onLayout = function(x, y) {
-        hamburger.layout(10, 20);
-        title.layout(50, 13);
+        hamburger.layout(25, 20);
+        title.layout(70, 17);
     };
 
     this.setBackgroundColor(0xFF009688);
-    this.setBoxShadow(0, 0, 5, 0, 0xFF555555);
+    this.setBoxShadow(0, 2, 5, 0, 0x42000000);
 }
