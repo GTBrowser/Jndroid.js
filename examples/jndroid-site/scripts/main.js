@@ -9,8 +9,6 @@ var mask;
 function MainView() {
     ViewGroup.apply(this, []);
 
-    var self = this;
-
     titlebar = new TitleBar();
     this.addView(titlebar);
 

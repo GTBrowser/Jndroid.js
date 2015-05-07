@@ -33,5 +33,5 @@ function TitleBar() {
     };
 
     this.setBackgroundColor(0xFF009688);
-    this.setBoxShadow(0,0,3);
+    this.setBoxShadow(0, 0, 5, 0, 0xFF555555);
 }

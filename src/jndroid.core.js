@@ -582,7 +582,7 @@ function View() {
         this.getDiv().style.borderBottom = thick + "px solid " + Utils.toCssColor(color);
     };
 
-    this.setBoxShadow = function(x, y, blur, spread) {
+    this.setBoxShadow = function(x, y, blur, spread, color) {
 
         var styleString = x + 'px ' + y + 'px';
 
@@ -594,6 +594,11 @@ function View() {
         if(typeof(spread) != 'undefined')
         {
             styleString = styleString + ' ' + spread + 'px';
+        }
+
+        if(typeof(color) != 'undefined')
+        {
+            styleString = styleString + ' ' + Utils.toCssColor(color);
         }
 
         this.getDiv().style.webkitBoxShadow =  styleString;
