@@ -533,6 +533,13 @@ function MotionEvent(rawEv) {
             return MotionEvent.ACTION_UP;
         } else if (rawEv.type == "touchcancel") {
             return MotionEvent.ACTION_CANCEL;
+        } else if (rawEv.type == "mouseout") {
+            var div = rawEv.target;
+            var offset = Utils.getOffset(div);
+            if (this.getRawX() < offset.left || this.getRawX() > (offset.left + offset.width)
+                || this.getRawY() < offset.top || this.getRawY() > (offset.top + offset.height)) {
+                return MotionEvent.ACTION_CANCEL;
+            }
         }
     };
 }
@@ -763,6 +770,7 @@ function View() {
             } else {
                 this.getDiv().addEventListener("mousedown", this.touch, false);
                 this.getDiv().addEventListener("mouseup", this.touch, false);
+                this.getDiv().addEventListener("mouseout", this.touch, false);
             }
 
             this.getDiv().style.pointerEvents = "auto";
@@ -776,6 +784,7 @@ function View() {
             } else {
                 this.getDiv().removeEventListener("mousedown", this.touch, false);
                 this.getDiv().removeEventListener("mouseup", this.touch, false);
+                this.getDiv().removeEventListener("mouseout", this.touch, false);
             }
 
             this.getDiv().style.pointerEvents = "none";
@@ -874,19 +883,26 @@ function View() {
     this.touch = function(e) {
         e.stopPropagation();
 
+        var canceled = false;
         var view = findTouchObject(this);
         if (mClickable) {
             var ev = new MotionEvent(e);
-            view.onTouchEvent(ev);
+            if (canceled == true && ev.getAction() == MotionEvent.ACTION_CANCEL) {
+
+            } else {
+                view.onTouchEvent(ev);
+            }
 
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    canceled = false;
                     mHasPerformedLongPress = false;
                     mDownX = ev.getRawX();
                     mDownY = ev.getRawY();
                     view.checkForLongClick();
                     break;
                 case MotionEvent.ACTION_MOVE:
+                    canceled = false;
                     var offset = Utils.getOffset(view.getDiv());
                     var x = ev.getRawX();
                     var y = ev.getRawY();
@@ -906,6 +922,7 @@ function View() {
                     }
                     break;
                 case MotionEvent.ACTION_CANCEL:
+                    canceled = true;
                     view.removeCallbacks(view.checkLongPress);
                     break;
             }
