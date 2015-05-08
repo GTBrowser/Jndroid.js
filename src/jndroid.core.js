@@ -221,6 +221,49 @@ Object.defineProperty(MotionEvent,"ACTION_UP",{value:1});
 Object.defineProperty(MotionEvent,"ACTION_MOVE",{value:2});
 Object.defineProperty(MotionEvent,"ACTION_CANCEL",{value:3});
 
+function Drawable() {
+    var mBounds = new Rect(0, 0, 0, 0);
+    var mCallback = null;
+
+    this.draw = function(canvas) {
+    };
+
+    this.getBounds = function() {
+        return mBounds;
+    };
+
+    this.setBounds = function(l, t, r, b) {
+        if (mBounds.left != l || mBounds.top != t || mBounds.right != r || mBounds.bottom != b) {
+            mBounds.set(l, t, r, b);
+        }
+    };
+
+    this.setCallback = function(cb) {
+        mCallback = cb;
+    };
+
+    this.invalidateSelf = function() {
+        if (mCallback != null) {
+            mCallback.invalidateDrawable(this);
+        }
+    };
+
+    this.setState = function(state) {
+        this.onStateChange(state);
+    };
+
+    this.onStateChange = function(state) {
+    };
+
+    this.getIntrinsicWidth = function() {
+        return -1;
+    };
+
+    this.getIntrinsicHeight = function() {
+        return -1;
+    }
+}
+
 function View() {
     var mDiv = document.createElement("div");
     mDiv.style.position = "absolute";
@@ -371,6 +414,14 @@ function View() {
 
     this.onLayout = function(x, y) {
 
+    };
+
+    this.invalidateDrawable = function() {
+        this.postInvalidate();
+    };
+
+    this.postInvalidate = function() {
+        this.postDelayed(this.invalidate, 15);
     };
 
     this.invalidate = function() {
@@ -654,6 +705,8 @@ function View() {
 Object.defineProperty(View,"VISIBLE",{value:0});
 Object.defineProperty(View,"INVISIBLE",{value:4});
 Object.defineProperty(View,"GONE",{value:8});
+Object.defineProperty(View,"VIEW_STATE_ENABLED",{value:(1 << 3)});
+Object.defineProperty(View,"VIEW_STATE_PRESSED",{value:(1 << 4)});
 
 function ViewGroup() {
     View.apply(this, []);
