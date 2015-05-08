@@ -2,7 +2,7 @@
  * Created by lency on 4/28/15.
  */
 
-function TitleBar() {
+function Titlebar() {
     ViewGroup.apply(this, []);
 
     var self = this;
