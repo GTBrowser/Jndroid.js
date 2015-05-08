@@ -441,6 +441,36 @@ function _Utils() {
     };
 }
 
+function Rect(l, t, r, b) {
+    this.left = l;
+    this.top = t;
+    this.right = r;
+    this.bottom = b;
+
+    this.set = function(l, t, r, b) {
+        this.left = l;
+        this.top = t;
+        this.right = r;
+        this.bottom = b;
+    };
+
+    this.width = function() {
+        return (this.right - this.left);
+    };
+
+    this.height = function() {
+        return (this.bottom - this.top);
+    };
+
+    this.centerX = function() {
+        return (this.left + this.right) / 2;
+    };
+
+    this.centerY = function() {
+        return (this.top + this.bottom) / 2;
+    };
+}
+
 var MeasureSpec = new _MeasureSpec();
 function _MeasureSpec() {
     this.makeMeasureSpec = function(size, mode) {
