@@ -609,6 +609,7 @@ function View() {
     var mPaddingTop = 0;
     var mPaddingRight = 0;
     var mPaddingBottom = 0;
+    var mLayoutParams = null;
     var mWillNotDraw = true;
     var mVisibility = true;
     var mClickable = false;
@@ -665,13 +666,21 @@ function View() {
     this.setPadding = function(left, top, right, bottom) {
         if (top === undefined && right === undefined && bottom === undefined) {
             top = left;
-            top = right;
-            top = bottom;
+            right = left;
+            bottom = left;
         }
         mPaddingLeft = left;
         mPaddingTop = top;
         mPaddingRight = right;
         mPaddingBottom = bottom;
+    };
+
+    this.getLayoutParams = function() {
+        return mLayoutParams;
+    };
+
+    this.setLayoutParams = function(lp) {
+        mLayoutParams = lp;
     };
 
     this.getLeft = function() {
@@ -1055,23 +1064,31 @@ function ViewGroup() {
         this.setMeasuredDimension(width, height);
     };
 
-    this.addView = function(view, index) {
+    this.addView = function(view, indexOrParams, params) {
         if (view.getParent() != null) {
-            throwException("IllegalStateException: " + view.getTag() + " 只能拥有一个父节点");
+            console.log("IllegalStateException: " + view.getTag() + " 只能拥有一个父节点");
             return;
         }
         view.setParent(this);
-        if (index == undefined) {
+        if (indexOrParams == undefined) {
             mChildren.add(view);
         } else {
-            mChildren.add(index, view);
+            if (indexOrParams.constructor.name == "Number") {
+                mChildren.add(index, view);
+                if (params != undefined) {
+                    view.setLayoutParams(params);
+                }
+            } else if (indexOrParams.constructor.name == "LayoutParams") {
+                mChildren.add(view);
+                view.setLayoutParams(indexOrParams);
+            }
         }
         this.getDiv().appendChild(view.getDiv());
 
         if (this.getMeasuredWidth() != 0 && this.getMeasuredHeight() != 0) {
             this.requestLayout();
         }
-    }
+    };
 
     this.removeView = function(view) {
         if (view !== null && mChildren.contains(view)) {
