@@ -791,6 +791,9 @@ function View() {
         mWillNotDraw = willnotdraw;
         if (mWillNotDraw === false) {
             mHTMLCanvas = document.createElement("canvas");
+            mHTMLCanvas.style.position = "absolute";
+            mHTMLCanvas.style.left = 0;
+            mHTMLCanvas.style.top = 0;
             mDiv.appendChild(mHTMLCanvas);
             mDiv.style.overflow = "hidden";
             this.requestLayout();
