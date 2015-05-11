@@ -121,13 +121,27 @@ function ImageView() {
         this.getDiv().appendChild(mImg);
     };
 
+    this.setStyleWidth = function(w) {
+        if (w == this.getMeasuredWidth()) {
+            mImg.style.verticalAlign = "";
+        }
+        mImg.style.width = w + "px";
+    };
+
+    this.setStyleHeight = function(h) {
+        if (h == this.getMeasuredHeight()) {
+            mImg.style.verticalAlign = "";
+        }
+        mImg.style.height = h + "px";
+    };
+
     this.setImgWidth = function(width) {
-        mImg.style.width = width + "px";
+        this.setStyleWidth(width);
         mCustom = true;
     };
 
     this.setImgHeight = function(height) {
-        mImg.style.height = height + "px";
+        this.setStyleHeight();
         mCustom = true;
     };
 
@@ -141,7 +155,7 @@ function ImageView() {
             var nh = mImg.naturalHeight;
             if (nw == 0 || nh == 0) {
                 mImg.onload = this.scale;
-                mImg.style.width = width + "px";
+                this.setStyleWidth(width);
             } else {
                 this.scale();
             }
@@ -156,8 +170,8 @@ function ImageView() {
         mImg.style.width = "";
         mImg.style.height = "";
         if (mScaleType == ScaleType.FIT_XY) {
-            mImg.style.width = width + "px";
-            mImg.style.height = height + "px";
+            this.setStyleWidth(width);
+            this.setStyleHeight(height);
         } else if (mScaleType == ScaleType.CENTER_INSIDE) {
             if (nw > width || nh > height) {
                 mSelf.fitCenter(nw, nh, width, height);
@@ -171,17 +185,17 @@ function ImageView() {
 
     this.fitCenter = function(nw, nh, width, height) {
         if (nw / nh > width / height) {
-            mImg.style.width = width + "px";
+            this.setStyleWidth(width);
         } else {
-            mImg.style.height = height + "px";
+            this.setStyleHeight(height);
         }
     };
 
     this.cropCenter = function(nw, nh, width, height) {
         if (nw / nh < width / height) {
-            mImg.style.width = width + "px";
+            this.setStyleWidth(width);
         } else {
-            mImg.style.height = height + "px";
+            this.setStyleHeight(height);
         }
     };
 }
