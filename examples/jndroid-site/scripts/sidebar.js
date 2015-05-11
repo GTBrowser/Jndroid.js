@@ -1,7 +1,7 @@
 /**
  * Created by lency on 5/5/15.
  */
-function SideBar()
+function Sidebar()
 {
     ViewGroup.apply(this, []);
 
@@ -24,14 +24,22 @@ function SideBar()
     var navItemHeader = new NavItemHeader();
     contentView.addView(navItemHeader);
 
+    var placeholder = new ViewGroup();
+    contentView.addView(placeholder);
+
     var intro = new NavItem("Introduction");
     contentView.addView(intro);
 
     var doc = new NavItem("Documentation");
     contentView.addView(doc);
 
+    var app = new NavItem("Applications");
+    contentView.addView(app);
+
     this.onMeasure = function(widthMS, heightMS){
         container.measure(widthMS, heightMS);
+
+        placeholder.measure(widthMS, 20);
 
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
@@ -40,6 +48,7 @@ function SideBar()
 
     this.onLayout = function(x, y){
         container.layout(0,0);
+        placeholder.layout(0,0);
     };
 
     this.show = function(){
@@ -85,6 +94,11 @@ function NavItem(text)
 {
     ViewGroup.apply(this, []);
 
+    var mBgDrawable = new WaveDrawable();
+    mBgDrawable.setCallback(this);
+
+    this.setWillNotDraw(false);
+    this.setClickable(true);
 
     var textView = new TextView();
 
@@ -96,11 +110,29 @@ function NavItem(text)
 
     this.onMeasure = function(widthMS, heightMS){
         var width = MeasureSpec.getSize(widthMS);
-        this.setMeasuredDimension(width, 40);
+        this.setMeasuredDimension(width, 50);
     };
 
     this.onLayout = function(x, y){
-       textView.layout(30, 10);
+       textView.layout(30, 16);
     };
 
+    this.onTouchEvent = function(ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mBgDrawable.setState(View.VIEW_STATE_PRESSED);
+                mBgDrawable.setX(ev.getX());
+                mBgDrawable.setY(ev.getY());
+                break;
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                mBgDrawable.setState(View.VIEW_STATE_ENABLED);
+                break;
+        }
+    }
+
+    this.onDraw = function(canvas) {
+        mBgDrawable.setBounds(0, 0, this.getMeasuredWidth(), this.getMeasuredHeight());
+        mBgDrawable.draw(canvas);
+    }
 }

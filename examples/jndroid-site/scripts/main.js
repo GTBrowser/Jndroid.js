@@ -9,7 +9,7 @@ var mask;
 function MainView() {
     ViewGroup.apply(this, []);
 
-    titlebar = new TitleBar();
+    titlebar = new Titlebar();
     this.addView(titlebar);
 
     mask = new ViewGroup();
@@ -21,7 +21,7 @@ function MainView() {
     mask.setVisibility(View.GONE);
     this.addView(mask);
 
-    sidebar = new SideBar();
+    sidebar = new Sidebar();
     this.addView(sidebar);
 
     this.onMeasure = function(widthMS, heightMS) {

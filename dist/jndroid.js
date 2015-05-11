@@ -1799,6 +1799,10 @@ function TextView() {
         mContent.style.fontSize = textsize + "px";
     };
 
+    this.setShadowLayer = function(radius, dx, dy, color) {
+        mContent.style.textShadow = dx + "px " + dy + "px " + radius + "px " + Utils.toCssColor(color);
+    };
+
     this.setLineHeight = function(lineHeight) {
         //mContent.style.lineHeight = lineHeight + "px";
     };
