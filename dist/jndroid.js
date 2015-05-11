@@ -1078,7 +1078,7 @@ function ViewGroup() {
             mChildren.add(view);
         } else {
             if (indexOrParams.constructor.name == "Number") {
-                mChildren.add(index, view);
+                mChildren.add(indexOrParams, view);
                 if (params != undefined) {
                     view.setLayoutParams(params);
                 }
