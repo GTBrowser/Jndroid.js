@@ -2094,6 +2094,8 @@ function EditText() {
 
     var mTag = "EditText" + (new Date()).getTime();
 
+    var mSelf = this;
+    var mFocusListener = null;
     var mInput;
 
     this.addInput = function() {
@@ -2106,6 +2108,12 @@ function EditText() {
         mInput.style.border = "0";
         mInput.style.outline = "none";
         mInput.style.boxSizing = "border-box";
+        mInput.onfocus = function() {
+            mSelf.onFocusChanged(true);
+        };
+        mInput.onblur = function() {
+            mSelf.onFocusChanged(false);
+        };
 
         this.getDiv().appendChild(mInput);
     };
@@ -2122,8 +2130,24 @@ function EditText() {
         mInput.style.border = "0";
         mInput.style.outline = "none";
         mInput.style.boxSizing = "border-box";
+        mInput.onfocus = function() {
+            mSelf.onFocusChanged(true);
+        };
+        mInput.onblur = function() {
+            mSelf.onFocusChanged(false);
+        };
 
         this.getDiv().appendChild(mInput);
+    };
+
+    this.setOnFocusChangeListener = function(l) {
+        mFocusListener = l;
+    };
+
+    this.onFocusChanged = function(focused) {
+        if (mFocusListener != null) {
+            mFocusListener.call(this, focused);
+        }
     };
 
     this.setSingleLine = function(s) {
