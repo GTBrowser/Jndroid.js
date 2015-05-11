@@ -1887,27 +1887,32 @@ function ImageView() {
 
     this.setScaleType = function(st) {
         mScaleType = st;
-    }
+    };
 
     this.setImgSrc = function(src) {
+        this.setVisibility(View.VISIBLE);
         mSrc = src;
 
-        mImg = document.createElement("img");
+        if (mImg == null) {
+            mImg = document.createElement("img");
+        }
         mImg.src = src;
         mImg.style.verticalAlign = "middle";
-        mImg.setAttribute('alt',' ');
+        mImg.onerror = function() {
+            mSelf.setVisibility(View.INVISIBLE);
+        };
         this.getDiv().appendChild(mImg);
-    }
+    };
 
     this.setImgWidth = function(width) {
         mImg.style.width = width + "px";
         mCustom = true;
-    }
+    };
 
     this.setImgHeight = function(height) {
         mImg.style.height = height + "px";
         mCustom = true;
-    }
+    };
 
     this.onMeasure = function (width, height) {
         this.getDiv().style.lineHeight = height + "px";
@@ -1919,16 +1924,20 @@ function ImageView() {
             var nh = mImg.naturalHeight;
             if (nw == 0 || nh == 0) {
                 mImg.onload = this.scale;
+                mImg.style.width = width + "px";
+            } else {
+                this.scale();
             }
-            mImg.style.width = width + "px";
         }
-    }
+    };
 
     this.scale = function() {
         var nw = mImg.naturalWidth;
         var nh = mImg.naturalHeight;
         var width = mSelf.getWidth();
         var height = mSelf.getHeight();
+        mImg.style.width = "";
+        mImg.style.height = "";
         if (mScaleType == ScaleType.FIT_XY) {
             mImg.style.width = width + "px";
             mImg.style.height = height + "px";
@@ -1938,8 +1947,10 @@ function ImageView() {
             }
         } else if (mScaleType == ScaleType.FIT_CENTER) {
             mSelf.fitCenter(nw, nh, width, height);
+        } else if (mScaleType == ScaleType.CENTER_CROP) {
+            mSelf.cropCenter(nw, nh, width, height);
         }
-    }
+    };
 
     this.fitCenter = function(nw, nh, width, height) {
         if (nw / nh > width / height) {
@@ -1947,13 +1958,22 @@ function ImageView() {
         } else {
             mImg.style.height = height + "px";
         }
-    }
+    };
+
+    this.cropCenter = function(nw, nh, width, height) {
+        if (nw / nh < width / height) {
+            mImg.style.width = width + "px";
+        } else {
+            mImg.style.height = height + "px";
+        }
+    };
 }
 
 function ScaleType(){}
 Object.defineProperty(ScaleType,"FIT_XY",{value:1});
 Object.defineProperty(ScaleType,"FIT_CENTER",{value:3});
 Object.defineProperty(ScaleType,"CENTER",{value:5});
+Object.defineProperty(ScaleType,"CENTER_CROP",{value:6});
 Object.defineProperty(ScaleType,"CENTER_INSIDE",{value:7});
 
 function TextView() {
