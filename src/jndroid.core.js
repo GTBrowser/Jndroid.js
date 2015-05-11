@@ -268,6 +268,7 @@ function View() {
     var mDiv = document.createElement("div");
     mDiv.style.position = "absolute";
     mDiv.style.boxSizing = "border-box";
+    mDiv.style.overflow = "hidden";
     mDiv.addEventListener("touchstart", function(){}, false);
 
     var mParent;
