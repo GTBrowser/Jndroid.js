@@ -1631,6 +1631,9 @@ function LinearLayout() {
             var child = this.getChildAt(i);
             var lp = getLayoutParams(child);
             width -= (lp.leftMargin - lp.rightMargin);
+            if (lp.width > 0) {
+                width -= lp.width;
+            }
         }
         return width;
     };
@@ -1641,6 +1644,9 @@ function LinearLayout() {
             var child = this.getChildAt(i);
             var lp = getLayoutParams(child);
             height -= (lp.topMargin - lp.bottomMargin);
+            if (lp.height > 0) {
+                height -= lp.height;
+            }
         }
         return height;
     };
@@ -1669,7 +1675,7 @@ function LinearLayout() {
             var childHeight = height - pt - pb - clp.topMargin - clp.bottomMargin;
             var cWidthSpec = makeSpec(childWidth, clp.width);
             var cHeightSpec = makeSpec(childHeight, clp.height);
-            if (totalWeight != 0) {
+            if (totalWeight != 0 && !(clp.weight == 0 && clp.height > 0)) {
                 var cHeight = this.getAvailableHeight(height) * clp.weight / totalWeight;
                 cHeightSpec = MeasureSpec.makeMeasureSpec(cHeight, MeasureSpec.EXACTLY);
             }
@@ -1703,7 +1709,7 @@ function LinearLayout() {
             var childHeight = height - pt - pb - clp.topMargin - clp.bottomMargin;
             var cWidthSpec = makeSpec(childWidth, clp.width);
             var cHeightSpec = makeSpec(childHeight, clp.height);
-            if (totalWeight != 0) {
+            if (totalWeight != 0 && !(clp.weight == 0 && clp.width > 0)) {
                 var cWidth = this.getAvailableWidth(width) * clp.weight / totalWeight;
                 cWidthSpec = MeasureSpec.makeMeasureSpec(cWidth, MeasureSpec.EXACTLY);
             }
