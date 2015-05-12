@@ -145,7 +145,9 @@ function ImageView() {
         mCustom = true;
     };
 
-    this.onMeasure = function (width, height) {
+    this.onMeasure = function (widthMS, heightMS) {
+        var width = MeasureSpec.getSize(widthMS);
+        var height = MeasureSpec.getSize(heightMS);
         this.getDiv().style.lineHeight = height + "px";
 
         this.setMeasuredDimension(width, height);
@@ -476,7 +478,9 @@ function WebView() {
         return mFrame;
     };
 
-    this.onMeasure = function(width, height) {
+    this.onMeasure = function(widthMS, heightMS) {
+        var width = MeasureSpec.getSize(widthMS);
+        var height = MeasureSpec.getSize(heightMS);
         mFrame.style.width = width + "px";
         mFrame.style.height = height + "px";
         this.setMeasuredDimension(width, height);
