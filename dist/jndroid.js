@@ -1677,9 +1677,13 @@ function LinearLayout() {
             contentHeight += child.getMeasuredHeight() + clp.topMargin + clp.bottomMargin;
         }
         var lp = getLayoutParams(this);
-        if (lp.height == LayoutParams.WRAP_CONTENT) {
-            height = contentHeight;
+        var mode = MeasureSpec.getMode(heightMS);
+        if (mode != MeasureSpec.EXACTLY) {
+            if (lp.height == LayoutParams.WRAP_CONTENT) {
+                height = contentHeight;
+            }
         }
+
         this.setMeasuredDimension(width, height);
     };
 
@@ -1707,8 +1711,11 @@ function LinearLayout() {
             contentWidth += child.getMeasuredWidth() + clp.leftMargin + clp.rightMargin;
         }
         var lp = getLayoutParams(this);
-        if (lp.width == LayoutParams.WRAP_CONTENT) {
-            width = contentWidth;
+        var mode = MeasureSpec.getMode(widthMS);
+        if (mode != MeasureSpec.EXACTLY) {
+            if (lp.width == LayoutParams.WRAP_CONTENT) {
+                width = contentWidth;
+            }
         }
         this.setMeasuredDimension(width, height);
     };
@@ -1779,7 +1786,6 @@ function FrameLayout() {
         }
     };
 }
-
 
 function ScrollView() {
     ViewGroup.apply(this, []);
