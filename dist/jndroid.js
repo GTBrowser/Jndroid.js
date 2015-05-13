@@ -593,6 +593,8 @@ function Drawable() {
 }
 
 function View() {
+    var mSelf = this;
+    
     var mDiv = document.createElement("div");
     mDiv.style.position = "absolute";
     mDiv.style.boxSizing = "border-box";
@@ -759,22 +761,25 @@ function View() {
     };
 
     this.postInvalidate = function() {
-        this.postDelayed(this.invalidate, 15);
+        requestAnimationFrame(this.invalidate);
     };
 
     this.invalidate = function() {
-        if (mWillNotDraw === false) {
-            this.draw();
+        if (mWillNotDraw == false) {
+            mSelf.draw();
         }
     };
 
     this.draw = function() {
-        if (mHTMLCanvas !== null) {
+        if (mHTMLCanvas != null) {
+            mHTMLCanvas.width = mHTMLCanvas.width;
             if (mHTMLCanvas.getContext) {
-                var ctx = mHTMLCanvas.getContext("2d");
-                ctx.width = this.getMeasuredWidth();
-                ctx.height = this.getMeasuredHeight();
-                this.onDraw(ctx);
+                if (canvas == null) {
+                    canvas = mHTMLCanvas.getContext('2d');
+                    canvas.width = this.getMeasuredWidth();
+                    canvas.height = this.getMeasuredHeight();
+                }
+                this.onDraw(canvas);
             }
         }
     };
