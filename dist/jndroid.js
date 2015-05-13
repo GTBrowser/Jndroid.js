@@ -840,22 +840,28 @@ function View() {
         requestAnimationFrame(this.invalidate);
     };
 
+    this.computeScroll = function() {
+
+    };
+
     this.invalidate = function() {
-        if (mWillNotDraw == false) {
-            mSelf.draw();
-        }
+        mSelf.draw();
     };
 
     this.draw = function() {
-        if (mHTMLCanvas != null) {
-            mHTMLCanvas.width = mHTMLCanvas.width;
-            if (mHTMLCanvas.getContext) {
-                if (canvas == null) {
-                    canvas = mHTMLCanvas.getContext('2d');
-                    canvas.width = this.getMeasuredWidth();
-                    canvas.height = this.getMeasuredHeight();
+        this.computeScroll();
+
+        if (mWillNotDraw == false) {
+            if (mHTMLCanvas != null) {
+                mHTMLCanvas.width = mHTMLCanvas.width;
+                if (mHTMLCanvas.getContext) {
+                    if (canvas == null) {
+                        canvas = mHTMLCanvas.getContext('2d');
+                        canvas.width = this.getMeasuredWidth();
+                        canvas.height = this.getMeasuredHeight();
+                    }
+                    this.onDraw(canvas);
                 }
-                this.onDraw(canvas);
             }
         }
     };
