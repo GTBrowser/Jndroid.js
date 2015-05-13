@@ -165,13 +165,13 @@ Object.defineProperty(MeasureSpec,"AT_MOST",{value:(0x2 << 30)});
 function MotionEvent(rawEv) {
 
     this.getX = function() {
-        var div = rawEv.target;
+        var div = this.realView.getDiv();
         var offset = Utils.getOffset(div);
         return this.getTouches().pageX - offset.left;
     };
 
     this.getY = function() {
-        var div = rawEv.target;
+        var div = this.realView.getDiv();
         var offset = Utils.getOffset(div);
         return this.getTouches().pageY - offset.top;
     };
@@ -199,7 +199,7 @@ function MotionEvent(rawEv) {
     this.getAction = function() {
         if (rawEv.type == "touchstart" || rawEv.type == "mousedown") {
             return MotionEvent.ACTION_DOWN;
-        } else if (rawEv.type == "touchmove") {
+        } else if (rawEv.type == "touchmove" || rawEv.type == "mousemove") {
             return MotionEvent.ACTION_MOVE;
         } else if (rawEv.type == "touchend" || rawEv.type == "mouseup") {
             return MotionEvent.ACTION_UP;
@@ -266,7 +266,7 @@ function Drawable() {
 
 function View() {
     var mSelf = this;
-    
+
     var mDiv = document.createElement("div");
     mDiv.style.position = "absolute";
     mDiv.style.boxSizing = "border-box";
@@ -294,6 +294,8 @@ function View() {
     var mTag = "View";
     var mHTMLCanvas = null;
     var canvas = null;
+    var mInTouch = false;
+    var mTouchCanceled = false;
 
     var mDownX, mDownY;
     var mHasPerformedLongPress = false;
@@ -510,6 +512,7 @@ function View() {
                 this.getDiv().addEventListener("touchcancel", this.touch, false);
             } else {
                 this.getDiv().addEventListener("mousedown", this.touch, false);
+                this.getDiv().addEventListener("mousemove", this.touch, false);
                 this.getDiv().addEventListener("mouseup", this.touch, false);
                 this.getDiv().addEventListener("mouseout", this.touch, false);
             }
@@ -525,6 +528,7 @@ function View() {
             } else {
                 this.getDiv().removeEventListener("mousedown", this.touch, false);
                 this.getDiv().removeEventListener("mouseup", this.touch, false);
+                this.getDiv().removeEventListener("mousemove", this.touch, false);
                 this.getDiv().removeEventListener("mouseout", this.touch, false);
             }
 
@@ -624,34 +628,50 @@ function View() {
     this.touch = function(e) {
         e.stopPropagation();
 
-        var canceled = false;
+        if (e.type == "mousemove" && !mInTouch) {
+            return;
+        }
+
         var view = findTouchObject(this);
         if (mClickable) {
             var ev = new MotionEvent(e);
-            if (canceled == true && ev.getAction() == MotionEvent.ACTION_CANCEL) {
+            ev.realView = view;
 
-            } else {
-                view.onTouchEvent(ev);
+            if (ev.getAction() == MotionEvent.ACTION_CANCEL && mTouchCanceled == true) {
+                return;
             }
+            if (ev.getAction() == MotionEvent.ACTION_CANCEL && !mInTouch) {
+                return;
+            }
+            if (ev.getAction() == MotionEvent.ACTION_UP && !mInTouch) {
+                return;
+            }
+
+            view.onTouchEvent(ev);
+
 
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    canceled = false;
+                    mInTouch = true;
+                    mTouchCanceled = false;
                     mHasPerformedLongPress = false;
                     mDownX = ev.getRawX();
                     mDownY = ev.getRawY();
                     view.checkForLongClick();
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    canceled = false;
+                    mInTouch = true;
+                    mTouchCanceled = false;
                     var offset = Utils.getOffset(view.getDiv());
                     var x = ev.getRawX();
                     var y = ev.getRawY();
-                    if (x < offset.left || x > (offset.left + offset.width) || y < offset.top || y > (offset.top + offset.height)) {
+                    if (x < offset.left || x > (offset.left + offset.width)
+                        || y < offset.top || y > (offset.top + offset.height)) {
                         view.removeCallbacks(view.checkLongPress);
                     }
                     break;
                 case MotionEvent.ACTION_UP:
+                    mInTouch = false;
                     if (!mHasPerformedLongPress) {
                         view.removeCallbacks(view.checkLongPress);
 
@@ -663,7 +683,8 @@ function View() {
                     }
                     break;
                 case MotionEvent.ACTION_CANCEL:
-                    canceled = true;
+                    mInTouch = false;
+                    mTouchCanceled = true;
                     view.removeCallbacks(view.checkLongPress);
                     break;
             }
