@@ -592,6 +592,80 @@ function Drawable() {
     }
 }
 
+function Processor() {
+    var mStartProcess;
+    var mFinalProcess;
+    var mDeltaProcess;
+
+    var mCurrProcess;
+    var mStartTime;
+    var mDuration;
+    var mDurationReciprocal;
+    var mIsFinished = true;
+
+    var mListener;
+
+    this.startProcess = function(startProcess, finalProcess, duration) {
+        mIsFinished = false;
+        mDuration = duration;
+        mStartTime = (new Date()).getTime();
+        mStartProcess = startProcess;
+        mFinalProcess = finalProcess;
+        mDeltaProcess = finalProcess - startProcess;
+        mDurationReciprocal = 1.0 / mDuration;
+        mCurrProcess = startProcess;
+    };
+
+    this.computeProcessOffset = function() {
+        if (mIsFinished) {
+            return false;
+        }
+
+        var  timePassed = (new Date()).getTime() - mStartTime;
+
+        if (timePassed < mDuration - 10) {
+            var x = timePassed * mDurationReciprocal;
+            mCurrProcess = mStartProcess + x * mDeltaProcess;
+        } else {
+            mCurrProcess = mFinalProcess;
+            mIsFinished = true;
+            this.fireProcessEnd();
+        }
+        return true;
+    };
+
+    this.isFinished = function() {
+        return mIsFinished;
+    };
+
+    this.forceFinished = function(finished) {
+        mIsFinished = finished;
+        this.fireProcessEnd();
+    };
+
+    this.getDuration = function() {
+        return mDuration;
+    };
+
+    this.getCurrProcess = function() {
+        return mCurrProcess;
+    };
+
+    this.setCurrProcess = function(process) {
+        mCurrProcess = process;
+    };
+
+    this.setProcessListener = function(listener) {
+        mListener = listener;
+    };
+
+    this.fireProcessEnd = function() {
+        if (mListener != null) {
+            mListener.onProcessEnd();
+        }
+    };
+}
+
 function View() {
     var mSelf = this;
 
