@@ -185,7 +185,7 @@ function MotionEvent(rawEv) {
     };
 
     this.getTouches = function() {
-        if ("ntouchstart" in document.documentElement) {
+        if ("ontouchstart" in document.documentElement) {
             if (rawEv.type == "touchstart" || rawEv.type == "touchmove") {
                 return rawEv.touches[0];
             } else {
