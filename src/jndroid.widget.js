@@ -9,7 +9,7 @@ function ScrollView() {
         if (this.getChildCount() > 0) {
             var child = this.getChildAt(0);
             var contentWidth = width - this.getPaddingLeft() - this.getPaddingRight();
-            child.measure(contentWidth, heightMS);
+            child.measure(contentWidth, height);
         }
         this.setMeasuredDimension(width, height);
     };
