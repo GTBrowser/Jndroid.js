@@ -1736,7 +1736,7 @@ function LinearLayout() {
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
             var lp = getLayoutParams(child);
-            width -= (lp.leftMargin - lp.rightMargin);
+            width -= (lp.leftMargin + lp.rightMargin);
             if (lp.width > 0) {
                 width -= lp.width;
             }
@@ -1749,7 +1749,7 @@ function LinearLayout() {
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
             var lp = getLayoutParams(child);
-            height -= (lp.topMargin - lp.bottomMargin);
+            height -= (lp.topMargin + lp.bottomMargin);
             if (lp.height > 0) {
                 height -= lp.height;
             }
