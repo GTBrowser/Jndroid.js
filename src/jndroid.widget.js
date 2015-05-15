@@ -330,6 +330,12 @@ function EditText() {
     var mSelf = this;
     var mFocusListener = null;
     var mInput;
+    var mIsPassword = false;
+
+    this.setPassword = function(isPassword) {
+        mIsPassword = isPassword;
+        mInput.type = "password";
+    };
 
     this.getInput = function() {
         return mInput;
@@ -339,7 +345,11 @@ function EditText() {
         this.getDiv().innerHTML = "";
 
         mInput = document.createElement("input");
-        mInput.type = "text";
+        if (mIsPassword) {
+            mInput.type = "password";
+        } else {
+            mInput.type = "text";
+        }
         mInput.style.position = "absolute";
         mInput.style.background = "none";
         mInput.style.border = "0";
@@ -360,7 +370,11 @@ function EditText() {
         this.getDiv().innerHTML = "";
 
         mInput = document.createElement("textarea");
-        mInput.type = "text";
+        if (mIsPassword) {
+            mInput.type = "password";
+        } else {
+            mInput.type = "text";
+        }
         mInput.style.boxSizing = "border-box";
         mInput.style.position = "absolute";
         mInput.style.background = "none";
