@@ -111,6 +111,19 @@ function _Utils() {
             height: Math.round(obj.height)
         };
     };
+
+    this.findFontFamily = function(htmlNode) {
+        var fontFamily = "";
+        var node = htmlNode;
+        while (node != document) {
+            fontFamily = node.style.fontFamily;
+            if (fontFamily != "") {
+                return fontFamily;
+            }
+            node = node.parentNode;
+        }
+        return fontFamily;
+    };
 }
 
 function Rect(l, t, r, b) {

@@ -270,6 +270,7 @@ function TextView() {
         var measureDiv = document.createElement("div");
         measureDiv.style.width = mContent.style.width;
         measureDiv.style.height = "100%";
+        measureDiv.style.fontFamily = Utils.findFontFamily(mContent);
         measureDiv.style.lineHeight = mContent.style.lineHeight;
         measureDiv.style.fontSize = mContent.style.fontSize;
         measureDiv.style.whiteSpace = mContent.style.whiteSpace;
@@ -467,6 +468,7 @@ function EditText() {
 
         var contentWidth = width - this.getPaddingLeft() - this.getPaddingRight();
         var contentHeight = height - this.getPaddingTop() - this.getPaddingBottom();
+        mInput.style.fontFamily = Utils.findFontFamily(mInput);
         mInput.style.width = contentWidth + "px";
         mInput.style.height = contentHeight + "px";
 
