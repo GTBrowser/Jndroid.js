@@ -108,6 +108,11 @@ function LinearLayout() {
             width -= (lp.leftMargin + lp.rightMargin);
             if (lp.width > 0) {
                 width -= lp.width;
+            } else if (lp.width == LayoutParams.WRAP_CONTENT) {
+                if (child.getMeasuredWidth() == 0 && child.getMeasuredHeight() == 0) {
+                    child.measure(0, 0);
+                }
+                width -= child.getMeasuredWidth();
             }
         }
         return width;
@@ -121,6 +126,11 @@ function LinearLayout() {
             height -= (lp.topMargin + lp.bottomMargin);
             if (lp.height > 0) {
                 height -= lp.height;
+            } else if (lp.height == LayoutParams.WRAP_CONTENT) {
+                if (child.getMeasuredWidth() == 0 && child.getMeasuredHeight() == 0) {
+                    child.measure(0, 0);
+                }
+                height -= child.getMeasuredHeight();
             }
         }
         return height;
