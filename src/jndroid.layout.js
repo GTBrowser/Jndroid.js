@@ -147,7 +147,6 @@ function LinearLayout() {
     this.measureVertical = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
-        var wMode = MeasureSpec.getMode(heightMS);
         var pl = this.getPaddingLeft();
         var pt = this.getPaddingTop();
         var pr = this.getPaddingRight();
@@ -155,9 +154,6 @@ function LinearLayout() {
         var contentHeight = pt + pb;
         var totalWeight = this.getTotalWeight();
         var lp = getLayoutParams(this);
-        if (wMode != MeasureSpec.EXACTLY && lp.width == LayoutParams.WRAP_CONTENT) {
-            width = pl + pr;
-        }
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
             var clp = getLayoutParams(child);
@@ -171,13 +167,6 @@ function LinearLayout() {
             }
             child.measure(cWidthSpec, cHeightSpec);
             contentHeight += child.getMeasuredHeight() + clp.topMargin + clp.bottomMargin;
-
-            if (wMode != MeasureSpec.EXACTLY && lp.width == LayoutParams.WRAP_CONTENT) {
-                var cw = pl + pr + clp.leftMargin + clp.rightMargin + child.getMeasuredWidth();
-                if (cw > width) {
-                    width = cw;
-                }
-            }
         }
         var hMode = MeasureSpec.getMode(heightMS);
         if (hMode != MeasureSpec.EXACTLY) {
