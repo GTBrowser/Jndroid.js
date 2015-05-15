@@ -2232,6 +2232,10 @@ function EditText() {
     var mFocusListener = null;
     var mInput;
 
+    this.getInput = function() {
+        return mInput;
+    };
+
     this.addInput = function() {
         this.getDiv().innerHTML = "";
 
