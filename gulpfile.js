@@ -23,7 +23,7 @@ gulp.task('scripts', function () {
 gulp.task('clean', require('del').bind(null, ['dist']));
 
 
-gulp.task('build', ['jshint', 'scripts'], function () {
+gulp.task('build', ['scripts'], function () {
 	return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
