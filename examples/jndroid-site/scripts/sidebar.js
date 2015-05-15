@@ -21,34 +21,53 @@ function Sidebar()
     var contentView = new LinearLayout();
     container.addView(contentView);
 
-    var navItemHeader = new NavItemHeader();
-    contentView.addView(navItemHeader);
+    var sidebarHeader = new SidebarHeader();
+    contentView.addView(sidebarHeader);
 
-    var placeholder = new ViewGroup();
-    contentView.addView(placeholder);
+    var sidebarContent = new SidebarContent();
+    contentView.addView(sidebarContent);
+
+    var sidebarFooter = new SidebarFooter();
+    contentView.addView(sidebarFooter);
+
+    contentView.onMeasure = function(widthMS, heightMS){
+        var width = MeasureSpec.getSize(widthMS);
+        var height = MeasureSpec.getSize(heightMS);
+
+        sidebarHeader.measure(widthMS, heightMS);
+        sidebarFooter.measure(widthMS, heightMS);
+
+        var headerHeight = sidebarHeader.getMeasuredHeight();
+        var footerHeight = sidebarFooter.getMeasuredHeight();
+
+        sidebarContent.measure(widthMS, height - headerHeight - footerHeight);
+
+        var contentHeight = sidebarContent.getMeasuredHeight();
+
+        contentView.setMeasuredDimension(width, headerHeight + footerHeight + contentHeight);
+    };
 
     var intro = new NavItem("Introduction");
-    contentView.addView(intro);
+    sidebarContent.addView(intro);
 
     var doc = new NavItem("Documentation");
-    contentView.addView(doc);
+    sidebarContent.addView(doc);
 
     var app = new NavItem("Applications");
-    contentView.addView(app);
+    sidebarContent.addView(app);
 
     this.onMeasure = function(widthMS, heightMS){
-        container.measure(widthMS, heightMS);
-
-        placeholder.measure(widthMS, 20);
 
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
+
+        container.measure(widthMS, heightMS);
+
         this.setMeasuredDimension(width, height);
     };
 
     this.onLayout = function(x, y){
         container.layout(0,0);
-        placeholder.layout(0,0);
     };
 
     this.show = function(){
@@ -62,7 +81,33 @@ function Sidebar()
     };
 }
 
-function NavItemHeader()
+function SidebarContent()
+{
+    LinearLayout.apply(this, []);
+
+    this.onMeasure = function(widthMS, heightMS){
+        var width = MeasureSpec.getSize(widthMS);
+        var height = MeasureSpec.getSize(heightMS);
+
+        var contentTotalHeight = 0;
+        var i, cnt = this.getChildCount();
+
+        for(i=0; i<cnt; i++)
+        {
+            this.getChildAt(i).measure(widthMS, heightMS);
+            contentTotalHeight += this.getChildAt(i).getMeasuredHeight();
+        }
+
+        if(contentTotalHeight > height)
+        {
+            this.setMeasuredDimension(width, contentTotalHeight);
+        }else{
+            this.setMeasuredDimension(width, height);
+        }
+    };
+}
+
+function SidebarHeader()
 {
     ViewGroup.apply(this, []);
 
@@ -129,10 +174,34 @@ function NavItem(text)
                 mBgDrawable.setState(View.VIEW_STATE_ENABLED);
                 break;
         }
-    }
+    };
 
     this.onDraw = function(canvas) {
         mBgDrawable.setBounds(0, 0, this.getMeasuredWidth(), this.getMeasuredHeight());
         mBgDrawable.draw(canvas);
     }
+}
+
+function SidebarFooter()
+{
+    ViewGroup.apply(this, []);
+
+    var copyright = new TextView();
+    copyright.setText("Copyright &copy; 2015<br/>Powered by Jndroid");
+    copyright.setTextSize(15);
+    copyright.setTextColor(0xFF999999);
+
+    this.addView(copyright);
+
+    this.setBorderTop(1, 0xFFDDDDDD);
+
+    this.onMeasure = function(widthMS, heightMS){
+        var width = MeasureSpec.getSize(widthMS);
+
+        this.setMeasuredDimension(width, 70);
+    };
+
+    this.onLayout = function(x, y){
+        copyright.layout(30, 15);
+    };
 }
