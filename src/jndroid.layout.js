@@ -147,12 +147,17 @@ function LinearLayout() {
     this.measureVertical = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
+        var wMode = MeasureSpec.getMode(heightMS);
         var pl = this.getPaddingLeft();
         var pt = this.getPaddingTop();
         var pr = this.getPaddingRight();
         var pb = this.getPaddingBottom();
         var contentHeight = pt + pb;
         var totalWeight = this.getTotalWeight();
+        var lp = getLayoutParams(this);
+        if (wMode != MeasureSpec.EXACTLY && lp.width == LayoutParams.WRAP_CONTENT) {
+            width = pl + pr;
+        }
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
             var clp = getLayoutParams(child);
@@ -166,10 +171,16 @@ function LinearLayout() {
             }
             child.measure(cWidthSpec, cHeightSpec);
             contentHeight += child.getMeasuredHeight() + clp.topMargin + clp.bottomMargin;
+
+            if (wMode != MeasureSpec.EXACTLY && lp.width == LayoutParams.WRAP_CONTENT) {
+                var cw = pl + pr + clp.leftMargin + clp.rightMargin + child.getMeasuredWidth();
+                if (cw > width) {
+                    width = cw;
+                }
+            }
         }
-        var lp = getLayoutParams(this);
-        var mode = MeasureSpec.getMode(heightMS);
-        if (mode != MeasureSpec.EXACTLY) {
+        var hMode = MeasureSpec.getMode(heightMS);
+        if (hMode != MeasureSpec.EXACTLY) {
             if (lp.height == LayoutParams.WRAP_CONTENT) {
                 height = contentHeight;
             }
@@ -181,12 +192,17 @@ function LinearLayout() {
     this.measureHorizontal = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
+        var hMode = MeasureSpec.getMode(heightMS);
         var pl = this.getPaddingLeft();
         var pt = this.getPaddingTop();
         var pr = this.getPaddingRight();
         var pb = this.getPaddingBottom();
         var contentWidth = pl + pr;
         var totalWeight = this.getTotalWeight();
+        var lp = getLayoutParams(this);
+        if (hMode != MeasureSpec.EXACTLY && lp.height == LayoutParams.WRAP_CONTENT) {
+            height = pt + pb;
+        }
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
             var clp = getLayoutParams(child);
@@ -200,14 +216,22 @@ function LinearLayout() {
             }
             child.measure(cWidthSpec, cHeightSpec);
             contentWidth += child.getMeasuredWidth() + clp.leftMargin + clp.rightMargin;
+
+            if (hMode != MeasureSpec.EXACTLY && lp.height == LayoutParams.WRAP_CONTENT) {
+                var ch = pt + pb + clp.topMargin + clp.bottomMargin + child.getMeasuredHeight();
+                if (ch > height) {
+                    height = ch;
+                }
+            }
         }
-        var lp = getLayoutParams(this);
-        var mode = MeasureSpec.getMode(widthMS);
-        if (mode != MeasureSpec.EXACTLY) {
+
+        var wMode = MeasureSpec.getMode(widthMS);
+        if (wMode != MeasureSpec.EXACTLY) {
             if (lp.width == LayoutParams.WRAP_CONTENT) {
                 width = contentWidth;
             }
         }
+
         this.setMeasuredDimension(width, height);
     };
 
