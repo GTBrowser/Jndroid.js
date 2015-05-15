@@ -333,6 +333,14 @@ function EditText() {
     var mInput;
     var mIsPassword = false;
 
+    this.setDisabled = function(disabled) {
+        if (disabled) {
+            mInput.disabled = "disabled";
+        } else {
+            mInput.disabled = "";
+        }
+    };
+
     this.setPassword = function(isPassword) {
         mIsPassword = isPassword;
         mInput.type = "password";
