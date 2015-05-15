@@ -772,6 +772,11 @@ function View() {
     };
 
     this.setCornerSize = function(tlSize, trSize, brSize, blSize) {
+        if (trSize == undefined && brSize == undefined && blSize == undefined) {
+            trSize = tlSize;
+            brSize = tlSize;
+            blSize = tlSize;
+        }
         this.getDiv().style.borderRadius = tlSize + "px " + trSize + "px " + brSize + "px " + blSize + "px";
     };
 
