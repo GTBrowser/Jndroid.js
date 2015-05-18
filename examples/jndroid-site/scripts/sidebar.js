@@ -52,11 +52,26 @@ function Sidebar()
     lp.topMargin = 16;
     sidebarContent.addView(intro, lp);
 
+    intro.setOnClickListener(function(){
+        gallery.snapToScreen(0, 300);
+        mainView.hideSidebar();
+    });
+
     var doc = new NavItem("Documentation");
     sidebarContent.addView(doc);
 
+    doc.setOnClickListener(function(){
+        gallery.snapToScreen(1, 300);
+        mainView.hideSidebar();
+    });
+
     var app = new NavItem("Applications");
     sidebarContent.addView(app);
+
+    app.setOnClickListener(function(){
+        gallery.snapToScreen(2, 300);
+        mainView.hideSidebar();
+    });
 
     this.onMeasure = function(widthMS, heightMS){
 
