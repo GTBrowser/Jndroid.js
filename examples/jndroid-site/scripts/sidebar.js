@@ -48,7 +48,9 @@ function Sidebar()
     };
 
     var intro = new NavItem("Introduction");
-    sidebarContent.addView(intro);
+    var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    lp.topMargin = 16;
+    sidebarContent.addView(intro, lp);
 
     var doc = new NavItem("Documentation");
     sidebarContent.addView(doc);
@@ -90,12 +92,15 @@ function SidebarContent()
         var height = MeasureSpec.getSize(heightMS);
 
         var contentTotalHeight = 0;
-        var i, cnt = this.getChildCount();
+        var i, cnt = this.getChildCount(), child;
 
         for(i=0; i<cnt; i++)
         {
-            this.getChildAt(i).measure(widthMS, heightMS);
-            contentTotalHeight += this.getChildAt(i).getMeasuredHeight();
+            child =this.getChildAt(i);
+            child.measure(widthMS, heightMS);
+
+            var clp = getLayoutParams(child);
+            contentTotalHeight += this.getChildAt(i).getMeasuredHeight() + clp.topMargin + clp.bottomMargin;
         }
 
         if(contentTotalHeight > height)
