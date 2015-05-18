@@ -96,11 +96,9 @@ function ImageView() {
     var mSrc = null;
     var mImg = null;
     var mScaleType = ScaleType.CENTER;
-    var mCustom = false;
-
-    this.getDiv().style.display = "table-cell";
-    this.getDiv().style.textAlign = "center";
-    this.getDiv().style.verticalAlign = "middle";
+    var mCustomWidth = 0;
+    var mCustomHeight = 0;
+    var scaleTimeout = 0;
 
     this.setScaleType = function(st) {
         mScaleType = st;
@@ -115,34 +113,34 @@ function ImageView() {
         }
         mImg.src = src;
         mImg.style.verticalAlign = "middle";
+        mImg.style.position = "absolute";
+        mImg.style.top = 0;
+        mImg.style.left = 0;
         mImg.onerror = function() {
             mSelf.setVisibility(View.INVISIBLE);
         };
         this.getDiv().appendChild(mImg);
+        this.requestLayout();
     };
 
     this.setStyleWidth = function(w) {
-        if (w == this.getMeasuredWidth()) {
-            mImg.style.verticalAlign = "";
-        }
         mImg.style.width = w + "px";
+        mImg.style.left = (this.getMeasuredWidth() - w) / 2 + "px";
     };
 
     this.setStyleHeight = function(h) {
-        if (h == this.getMeasuredHeight()) {
-            mImg.style.verticalAlign = "";
-        }
         mImg.style.height = h + "px";
+        mImg.style.top = (this.getMeasuredHeight() - h) / 2 + "px";
     };
 
     this.setImgWidth = function(width) {
         this.setStyleWidth(width);
-        mCustom = true;
+        mCustomWidth = width;
     };
 
     this.setImgHeight = function(height) {
-        this.setStyleHeight();
-        mCustom = true;
+        this.setStyleHeight(height);
+        mCustomHeight = height;
     };
 
     this.onMeasure = function (widthMS, heightMS) {
@@ -152,28 +150,43 @@ function ImageView() {
 
         this.setMeasuredDimension(width, height);
 
-        if (!mCustom && mScaleType != ScaleType.CENTER && mImg != null) {
+        this.scale();
+    };
+
+    this.scale = function() {
+        if (mImg != null) {
             var nw = mImg.naturalWidth;
             var nh = mImg.naturalHeight;
             if (nw == 0 || nh == 0) {
-                mImg.onload = this.scale;
-                this.setStyleWidth(width);
+                scaleTimeout = setTimeout(this.scale, 200);
+                mImg.onload = mSelf.scaleInner;
+                mSelf.setStyleWidth(mSelf.getMeasuredWidth());
             } else {
-                this.scale();
+                clearTimeout(scaleTimeout);
+                mSelf.scaleInner();
             }
         }
     };
 
-    this.scale = function() {
+    this.scaleInner = function() {
         var nw = mImg.naturalWidth;
         var nh = mImg.naturalHeight;
         var width = mSelf.getWidth();
         var height = mSelf.getHeight();
-        mImg.style.width = "";
-        mImg.style.height = "";
-        if (mScaleType == ScaleType.FIT_XY) {
-            this.setStyleWidth(width);
-            this.setStyleHeight(height);
+        if (mCustomWidth != 0) {
+            var h = mCustomWidth * nh / nw;
+            mSelf.setStyleWidth(mCustomWidth);
+            mSelf.setStyleHeight(h);
+        } else if (mCustomHeight != 0) {
+            var w = mCustomHeight * nw / nh;
+            mSelf.setStyleWidth(w);
+            mSelf.setStyleHeight(mCustomHeight);
+        } else if (mScaleType == ScaleType.CENTER) {
+            mSelf.setStyleWidth(nw);
+            mSelf.setStyleHeight(nh);
+        } else if (mScaleType == ScaleType.FIT_XY) {
+            mSelf.setStyleWidth(width);
+            mSelf.setStyleHeight(height);
         } else if (mScaleType == ScaleType.CENTER_INSIDE) {
             if (nw > width || nh > height) {
                 mSelf.fitCenter(nw, nh, width, height);
@@ -188,7 +201,9 @@ function ImageView() {
     this.fitCenter = function(nw, nh, width, height) {
         if (nw / nh > width / height) {
             this.setStyleWidth(width);
+            this.setStyleHeight(width * nh / nw);
         } else {
+            this.setStyleWidth(height * nw / nh);
             this.setStyleHeight(height);
         }
     };
@@ -196,7 +211,9 @@ function ImageView() {
     this.cropCenter = function(nw, nh, width, height) {
         if (nw / nh < width / height) {
             this.setStyleWidth(width);
+            this.setStyleHeight(width * nh / nw);
         } else {
+            this.setStyleWidth(height * nw / nh);
             this.setStyleHeight(height);
         }
     };
