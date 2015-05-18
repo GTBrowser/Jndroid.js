@@ -653,6 +653,10 @@ function View() {
 
     };
 
+    this.setAlpha = function(a) {
+        mDiv.style.opacity = a;
+    };
+
     this.getVisibility = function() {
         return mVisibility;
     };
