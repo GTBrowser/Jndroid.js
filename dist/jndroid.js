@@ -1125,8 +1125,8 @@ function View() {
         this.getDiv().style.borderRadius = tlSize + "px " + trSize + "px " + brSize + "px " + blSize + "px";
     };
 
-    this.setBorderStyle = function(cssString) {
-        this.getDiv().style.border = cssString;
+    this.setStyle = function(attr, cssString) {
+        this.getDiv().style[attr] = cssString;
     };
 
     this.setBorder = function(thick, color) {
