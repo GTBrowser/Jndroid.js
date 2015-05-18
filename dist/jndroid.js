@@ -439,6 +439,19 @@ function _Utils() {
             height: Math.round(obj.height)
         };
     };
+
+    this.findFontFamily = function(htmlNode) {
+        var fontFamily = "";
+        var node = htmlNode;
+        while (node != document) {
+            fontFamily = node.style.fontFamily;
+            if (fontFamily != "") {
+                return fontFamily;
+            }
+            node = node.parentNode;
+        }
+        return fontFamily;
+    };
 }
 
 function Rect(l, t, r, b) {
@@ -1100,6 +1113,11 @@ function View() {
     };
 
     this.setCornerSize = function(tlSize, trSize, brSize, blSize) {
+        if (trSize == undefined && brSize == undefined && blSize == undefined) {
+            trSize = tlSize;
+            brSize = tlSize;
+            blSize = tlSize;
+        }
         this.getDiv().style.borderRadius = tlSize + "px " + trSize + "px " + brSize + "px " + blSize + "px";
     };
 
@@ -1739,6 +1757,11 @@ function LinearLayout() {
             width -= (lp.leftMargin + lp.rightMargin);
             if (lp.width > 0) {
                 width -= lp.width;
+            } else if (lp.width == LayoutParams.WRAP_CONTENT) {
+                if (child.getMeasuredWidth() == 0 && child.getMeasuredHeight() == 0) {
+                    child.measure(0, 0);
+                }
+                width -= child.getMeasuredWidth();
             }
         }
         return width;
@@ -1752,6 +1775,11 @@ function LinearLayout() {
             height -= (lp.topMargin + lp.bottomMargin);
             if (lp.height > 0) {
                 height -= lp.height;
+            } else if (lp.height == LayoutParams.WRAP_CONTENT) {
+                if (child.getMeasuredWidth() == 0 && child.getMeasuredHeight() == 0) {
+                    child.measure(0, 0);
+                }
+                height -= child.getMeasuredHeight();
             }
         }
         return height;
@@ -1774,6 +1802,7 @@ function LinearLayout() {
         var pb = this.getPaddingBottom();
         var contentHeight = pt + pb;
         var totalWeight = this.getTotalWeight();
+        var lp = getLayoutParams(this);
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
             var clp = getLayoutParams(child);
@@ -1788,9 +1817,8 @@ function LinearLayout() {
             child.measure(cWidthSpec, cHeightSpec);
             contentHeight += child.getMeasuredHeight() + clp.topMargin + clp.bottomMargin;
         }
-        var lp = getLayoutParams(this);
-        var mode = MeasureSpec.getMode(heightMS);
-        if (mode != MeasureSpec.EXACTLY) {
+        var hMode = MeasureSpec.getMode(heightMS);
+        if (hMode != MeasureSpec.EXACTLY) {
             if (lp.height == LayoutParams.WRAP_CONTENT) {
                 height = contentHeight;
             }
@@ -1802,12 +1830,17 @@ function LinearLayout() {
     this.measureHorizontal = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
+        var hMode = MeasureSpec.getMode(heightMS);
         var pl = this.getPaddingLeft();
         var pt = this.getPaddingTop();
         var pr = this.getPaddingRight();
         var pb = this.getPaddingBottom();
         var contentWidth = pl + pr;
         var totalWeight = this.getTotalWeight();
+        var lp = getLayoutParams(this);
+        if (hMode != MeasureSpec.EXACTLY && lp.height == LayoutParams.WRAP_CONTENT) {
+            height = pt + pb;
+        }
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
             var clp = getLayoutParams(child);
@@ -1821,14 +1854,22 @@ function LinearLayout() {
             }
             child.measure(cWidthSpec, cHeightSpec);
             contentWidth += child.getMeasuredWidth() + clp.leftMargin + clp.rightMargin;
+
+            if (hMode != MeasureSpec.EXACTLY && lp.height == LayoutParams.WRAP_CONTENT) {
+                var ch = pt + pb + clp.topMargin + clp.bottomMargin + child.getMeasuredHeight();
+                if (ch > height) {
+                    height = ch;
+                }
+            }
         }
-        var lp = getLayoutParams(this);
-        var mode = MeasureSpec.getMode(widthMS);
-        if (mode != MeasureSpec.EXACTLY) {
+
+        var wMode = MeasureSpec.getMode(widthMS);
+        if (wMode != MeasureSpec.EXACTLY) {
             if (lp.width == LayoutParams.WRAP_CONTENT) {
                 width = contentWidth;
             }
         }
+
         this.setMeasuredDimension(width, height);
     };
 
@@ -2171,6 +2212,7 @@ function TextView() {
         var measureDiv = document.createElement("div");
         measureDiv.style.width = mContent.style.width;
         measureDiv.style.height = "100%";
+        measureDiv.style.fontFamily = Utils.findFontFamily(mContent);
         measureDiv.style.lineHeight = mContent.style.lineHeight;
         measureDiv.style.fontSize = mContent.style.fontSize;
         measureDiv.style.whiteSpace = mContent.style.whiteSpace;
@@ -2231,6 +2273,20 @@ function EditText() {
     var mSelf = this;
     var mFocusListener = null;
     var mInput;
+    var mIsPassword = false;
+
+    this.setDisabled = function(disabled) {
+        if (disabled) {
+            mInput.disabled = "disabled";
+        } else {
+            mInput.disabled = "";
+        }
+    };
+
+    this.setPassword = function(isPassword) {
+        mIsPassword = isPassword;
+        mInput.type = "password";
+    };
 
     this.getInput = function() {
         return mInput;
@@ -2240,7 +2296,11 @@ function EditText() {
         this.getDiv().innerHTML = "";
 
         mInput = document.createElement("input");
-        mInput.type = "text";
+        if (mIsPassword) {
+            mInput.type = "password";
+        } else {
+            mInput.type = "text";
+        }
         mInput.style.position = "absolute";
         mInput.style.background = "none";
         mInput.style.border = "0";
@@ -2261,7 +2321,11 @@ function EditText() {
         this.getDiv().innerHTML = "";
 
         mInput = document.createElement("textarea");
-        mInput.type = "text";
+        if (mIsPassword) {
+            mInput.type = "password";
+        } else {
+            mInput.type = "text";
+        }
         mInput.style.boxSizing = "border-box";
         mInput.style.position = "absolute";
         mInput.style.background = "none";
@@ -2354,6 +2418,7 @@ function EditText() {
 
         var contentWidth = width - this.getPaddingLeft() - this.getPaddingRight();
         var contentHeight = height - this.getPaddingTop() - this.getPaddingBottom();
+        mInput.style.fontFamily = Utils.findFontFamily(mInput);
         mInput.style.width = contentWidth + "px";
         mInput.style.height = contentHeight + "px";
 

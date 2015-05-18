@@ -4,6 +4,7 @@
 
 var titlebar;
 var sidebar;
+var mainView;
 var mask;
 
 function MainView() {
@@ -52,6 +53,6 @@ window.onload = function(){
     var rootview = new FrameLayout();
     setContentView(rootview);
 
-    var mainView = new MainView();
+    mainView = new MainView();
     rootview.addView(mainView);
 };
