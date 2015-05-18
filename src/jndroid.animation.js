@@ -221,12 +221,13 @@ function ScaleAnimation(fromScale, toScale) {
     };
 
     this.start = function() {
+        mSelf.getView().getDiv().style.webkitTransition = "";
         setTimeout(function(){
             mSelf.getView().getDiv().style.webkitTransform = mSelf.getStartState();
             setTimeout(function(){
                 mSelf.getView().getDiv().style.webkitTransition = mSelf.getTransition();
                 mSelf.getView().getDiv().style.webkitTransform = mSelf.getEndState();
-            }, 1);
+            }, 30);
         }, this.getStartOffset());
 
         setTimeout(this.getEndListener(), this.getDuration() + this.getStartOffset() + 1);

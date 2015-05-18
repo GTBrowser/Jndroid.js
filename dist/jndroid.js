@@ -221,12 +221,13 @@ function ScaleAnimation(fromScale, toScale) {
     };
 
     this.start = function() {
+        mSelf.getView().getDiv().style.webkitTransition = "";
         setTimeout(function(){
             mSelf.getView().getDiv().style.webkitTransform = mSelf.getStartState();
             setTimeout(function(){
                 mSelf.getView().getDiv().style.webkitTransition = mSelf.getTransition();
                 mSelf.getView().getDiv().style.webkitTransform = mSelf.getEndState();
-            }, 1);
+            }, 30);
         }, this.getStartOffset());
 
         setTimeout(this.getEndListener(), this.getDuration() + this.getStartOffset() + 1);
@@ -981,6 +982,10 @@ function View() {
 
     };
 
+    this.setAlpha = function(a) {
+        mDiv.style.opacity = a;
+    };
+
     this.getVisibility = function() {
         return mVisibility;
     };
@@ -1121,8 +1126,8 @@ function View() {
         this.getDiv().style.borderRadius = tlSize + "px " + trSize + "px " + brSize + "px " + blSize + "px";
     };
 
-    this.setBorderStyle = function(cssString) {
-        this.getDiv().style.border = cssString;
+    this.setStyle = function(attr, cssString) {
+        this.getDiv().style[attr] = cssString;
     };
 
     this.setBorder = function(thick, color) {
@@ -1753,6 +1758,9 @@ function LinearLayout() {
         var width = totalWidth - this.getPaddingLeft() - this.getPaddingRight();
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() == View.GONE) {
+                continue;
+            }
             var lp = getLayoutParams(child);
             width -= (lp.leftMargin + lp.rightMargin);
             if (lp.width > 0) {
@@ -1771,6 +1779,9 @@ function LinearLayout() {
         var height = totalHeight - this.getPaddingTop() - this.getPaddingBottom();
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() == View.GONE) {
+                continue;
+            }
             var lp = getLayoutParams(child);
             height -= (lp.topMargin + lp.bottomMargin);
             if (lp.height > 0) {
@@ -1805,6 +1816,9 @@ function LinearLayout() {
         var lp = getLayoutParams(this);
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() == View.GONE) {
+                continue;
+            }
             var clp = getLayoutParams(child);
             var childWidth = width - pl - pr - clp.leftMargin - clp.rightMargin;
             var childHeight = height - pt - pb - clp.topMargin - clp.bottomMargin;
@@ -1843,6 +1857,9 @@ function LinearLayout() {
         }
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() == View.GONE) {
+                continue;
+            }
             var clp = getLayoutParams(child);
             var childWidth = width - pl - pr - clp.leftMargin - clp.rightMargin;
             var childHeight = height - pt - pb - clp.topMargin - clp.bottomMargin;
@@ -1886,6 +1903,9 @@ function LinearLayout() {
         var offsetY = this.getPaddingTop();
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() == View.GONE) {
+                continue;
+            }
             var clp = getLayoutParams(child);
             offsetX = calcOffsetXByGravity(this, child);
             offsetY += clp.topMargin;
@@ -1900,12 +1920,15 @@ function LinearLayout() {
         var offsetY = this.getPaddingTop();
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() == View.GONE) {
+                continue;
+            }
             var clp = getLayoutParams(child);
             offsetX += clp.leftMargin;
             offsetY = calcOffsetYByGravity(this, child);
             child.layout(offsetX, offsetY);
             offsetX += child.getMeasuredWidth();
-            offsetX += clp.leftMargin;
+            offsetX += clp.rightMargin;
         }
     };
 }
@@ -2038,11 +2061,9 @@ function ImageView() {
     var mSrc = null;
     var mImg = null;
     var mScaleType = ScaleType.CENTER;
-    var mCustom = false;
-
-    this.getDiv().style.display = "table-cell";
-    this.getDiv().style.textAlign = "center";
-    this.getDiv().style.verticalAlign = "middle";
+    var mCustomWidth = 0;
+    var mCustomHeight = 0;
+    var scaleTimeout = 0;
 
     this.setScaleType = function(st) {
         mScaleType = st;
@@ -2057,34 +2078,34 @@ function ImageView() {
         }
         mImg.src = src;
         mImg.style.verticalAlign = "middle";
+        mImg.style.position = "absolute";
+        mImg.style.top = 0;
+        mImg.style.left = 0;
         mImg.onerror = function() {
             mSelf.setVisibility(View.INVISIBLE);
         };
         this.getDiv().appendChild(mImg);
+        this.requestLayout();
     };
 
     this.setStyleWidth = function(w) {
-        if (w == this.getMeasuredWidth()) {
-            mImg.style.verticalAlign = "";
-        }
         mImg.style.width = w + "px";
+        mImg.style.left = (this.getMeasuredWidth() - w) / 2 + "px";
     };
 
     this.setStyleHeight = function(h) {
-        if (h == this.getMeasuredHeight()) {
-            mImg.style.verticalAlign = "";
-        }
         mImg.style.height = h + "px";
+        mImg.style.top = (this.getMeasuredHeight() - h) / 2 + "px";
     };
 
     this.setImgWidth = function(width) {
         this.setStyleWidth(width);
-        mCustom = true;
+        mCustomWidth = width;
     };
 
     this.setImgHeight = function(height) {
-        this.setStyleHeight();
-        mCustom = true;
+        this.setStyleHeight(height);
+        mCustomHeight = height;
     };
 
     this.onMeasure = function (widthMS, heightMS) {
@@ -2094,28 +2115,43 @@ function ImageView() {
 
         this.setMeasuredDimension(width, height);
 
-        if (!mCustom && mScaleType != ScaleType.CENTER && mImg != null) {
+        this.scale();
+    };
+
+    this.scale = function() {
+        if (mImg != null) {
             var nw = mImg.naturalWidth;
             var nh = mImg.naturalHeight;
             if (nw == 0 || nh == 0) {
-                mImg.onload = this.scale;
-                this.setStyleWidth(width);
+                scaleTimeout = setTimeout(this.scale, 200);
+                mImg.onload = mSelf.scaleInner;
+                mSelf.setStyleWidth(mSelf.getMeasuredWidth());
             } else {
-                this.scale();
+                clearTimeout(scaleTimeout);
+                mSelf.scaleInner();
             }
         }
     };
 
-    this.scale = function() {
+    this.scaleInner = function() {
         var nw = mImg.naturalWidth;
         var nh = mImg.naturalHeight;
         var width = mSelf.getWidth();
         var height = mSelf.getHeight();
-        mImg.style.width = "";
-        mImg.style.height = "";
-        if (mScaleType == ScaleType.FIT_XY) {
-            this.setStyleWidth(width);
-            this.setStyleHeight(height);
+        if (mCustomWidth != 0) {
+            var h = mCustomWidth * nh / nw;
+            mSelf.setStyleWidth(mCustomWidth);
+            mSelf.setStyleHeight(h);
+        } else if (mCustomHeight != 0) {
+            var w = mCustomHeight * nw / nh;
+            mSelf.setStyleWidth(w);
+            mSelf.setStyleHeight(mCustomHeight);
+        } else if (mScaleType == ScaleType.CENTER) {
+            mSelf.setStyleWidth(nw);
+            mSelf.setStyleHeight(nh);
+        } else if (mScaleType == ScaleType.FIT_XY) {
+            mSelf.setStyleWidth(width);
+            mSelf.setStyleHeight(height);
         } else if (mScaleType == ScaleType.CENTER_INSIDE) {
             if (nw > width || nh > height) {
                 mSelf.fitCenter(nw, nh, width, height);
@@ -2130,7 +2166,9 @@ function ImageView() {
     this.fitCenter = function(nw, nh, width, height) {
         if (nw / nh > width / height) {
             this.setStyleWidth(width);
+            this.setStyleHeight(width * nh / nw);
         } else {
+            this.setStyleWidth(height * nw / nh);
             this.setStyleHeight(height);
         }
     };
@@ -2138,7 +2176,9 @@ function ImageView() {
     this.cropCenter = function(nw, nh, width, height) {
         if (nw / nh < width / height) {
             this.setStyleWidth(width);
+            this.setStyleHeight(width * nh / nw);
         } else {
+            this.setStyleWidth(height * nw / nh);
             this.setStyleHeight(height);
         }
     };
@@ -2171,6 +2211,14 @@ function TextView() {
 
         this.requestLayout();
         this.getDiv().scrollTop = "100px";
+    };
+
+    this.setTextIsSelectable = function(selectable) {
+        if (selectable) {
+            mContent.style["-webkit-user-select"] = "text";
+        } else {
+            mContent.style["-webkit-user-select"] = "none";
+        }
     };
 
     this.setTextColor = function(color) {
@@ -2274,6 +2322,30 @@ function EditText() {
     var mFocusListener = null;
     var mInput;
     var mIsPassword = false;
+    var mTextListener = null;
+
+    var initInput = function() {
+        if (mIsPassword) {
+            mInput.type = "password";
+        } else {
+            mInput.type = "text";
+        }
+        mInput.style.boxSizing = "border-box";
+        mInput.style.position = "absolute";
+        mInput.style.background = "none";
+        mInput.style.border = "0";
+        mInput.style.outline = "none";
+        mInput.style.padding = 0;
+        mInput.onfocus = function() {
+            mSelf.onFocusChanged(true);
+        };
+        mInput.onblur = function() {
+            mSelf.onFocusChanged(false);
+        };
+        if (mTextListener != null) {
+            mInput.oninput = mTextListener;
+        }
+    };
 
     this.setDisabled = function(disabled) {
         if (disabled) {
@@ -2294,51 +2366,16 @@ function EditText() {
 
     this.addInput = function() {
         this.getDiv().innerHTML = "";
-
         mInput = document.createElement("input");
-        if (mIsPassword) {
-            mInput.type = "password";
-        } else {
-            mInput.type = "text";
-        }
-        mInput.style.position = "absolute";
-        mInput.style.background = "none";
-        mInput.style.border = "0";
-        mInput.style.outline = "none";
-        mInput.style.boxSizing = "border-box";
-        mInput.onfocus = function() {
-            mSelf.onFocusChanged(true);
-        };
-        mInput.onblur = function() {
-            mSelf.onFocusChanged(false);
-        };
-
+        initInput();
         this.getDiv().appendChild(mInput);
     };
     this.addInput();
 
     this.addTextArea = function() {
         this.getDiv().innerHTML = "";
-
         mInput = document.createElement("textarea");
-        if (mIsPassword) {
-            mInput.type = "password";
-        } else {
-            mInput.type = "text";
-        }
-        mInput.style.boxSizing = "border-box";
-        mInput.style.position = "absolute";
-        mInput.style.background = "none";
-        mInput.style.border = "0";
-        mInput.style.outline = "none";
-        mInput.style.boxSizing = "border-box";
-        mInput.onfocus = function() {
-            mSelf.onFocusChanged(true);
-        };
-        mInput.onblur = function() {
-            mSelf.onFocusChanged(false);
-        };
-
+        initInput();
         this.getDiv().appendChild(mInput);
     };
 
@@ -2362,7 +2399,7 @@ function EditText() {
 
     this.setSelection = function(start, end) {
         mInput.selectionStart = start;
-        if (end === undefined) {
+        if (end == undefined) {
             mInput.selectionEnd = start;
         } else {
             mInput.selectionEnd = end;
@@ -2378,12 +2415,13 @@ function EditText() {
     };
 
     this.setTextChangedListener = function(listener) {
+        mTextListener = listener;
         mInput.oninput = listener;
     };
 
     this.getText = function() {
         return mInput.value;
-    };
+    }
 
     this.setText = function(text) {
         mInput.value = text;
@@ -2428,7 +2466,7 @@ function EditText() {
     this.onLayout = function(x, y) {
         mInput.style.top = this.getPaddingTop() + "px";
         mInput.style.left = this.getPaddingLeft() + "px";
-    };
+    }
 }
 
 function WebView() {

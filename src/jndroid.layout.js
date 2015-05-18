@@ -104,6 +104,9 @@ function LinearLayout() {
         var width = totalWidth - this.getPaddingLeft() - this.getPaddingRight();
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() == View.GONE) {
+                continue;
+            }
             var lp = getLayoutParams(child);
             width -= (lp.leftMargin + lp.rightMargin);
             if (lp.width > 0) {
@@ -122,6 +125,9 @@ function LinearLayout() {
         var height = totalHeight - this.getPaddingTop() - this.getPaddingBottom();
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() == View.GONE) {
+                continue;
+            }
             var lp = getLayoutParams(child);
             height -= (lp.topMargin + lp.bottomMargin);
             if (lp.height > 0) {
@@ -156,6 +162,9 @@ function LinearLayout() {
         var lp = getLayoutParams(this);
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() == View.GONE) {
+                continue;
+            }
             var clp = getLayoutParams(child);
             var childWidth = width - pl - pr - clp.leftMargin - clp.rightMargin;
             var childHeight = height - pt - pb - clp.topMargin - clp.bottomMargin;
@@ -194,6 +203,9 @@ function LinearLayout() {
         }
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() == View.GONE) {
+                continue;
+            }
             var clp = getLayoutParams(child);
             var childWidth = width - pl - pr - clp.leftMargin - clp.rightMargin;
             var childHeight = height - pt - pb - clp.topMargin - clp.bottomMargin;
@@ -237,6 +249,9 @@ function LinearLayout() {
         var offsetY = this.getPaddingTop();
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() == View.GONE) {
+                continue;
+            }
             var clp = getLayoutParams(child);
             offsetX = calcOffsetXByGravity(this, child);
             offsetY += clp.topMargin;
@@ -251,12 +266,15 @@ function LinearLayout() {
         var offsetY = this.getPaddingTop();
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() == View.GONE) {
+                continue;
+            }
             var clp = getLayoutParams(child);
             offsetX += clp.leftMargin;
             offsetY = calcOffsetYByGravity(this, child);
             child.layout(offsetX, offsetY);
             offsetX += child.getMeasuredWidth();
-            offsetX += clp.leftMargin;
+            offsetX += clp.rightMargin;
         }
     };
 }
