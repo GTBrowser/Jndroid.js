@@ -1962,7 +1962,159 @@ function FrameLayout() {
         }
     };
 }
+function GalleryLayout() {
+    ViewGroup.apply(this, []);
 
+    this.setTag("Gallery");
+
+    var mCurScreen = 0;
+    var mCurX;
+    var mProcessor = new Processor();
+    var mDownX = 0;
+    var mListener;
+
+    var content = new GalleryContent();
+    this.addView(content);
+
+    this.setGalleryListener = function(l) {
+        mListener = l;
+    };
+
+    this.getPageCount = function() {
+        return content.getChildCount();
+    };
+
+    this.addPage = function(view) {
+        content.addView(view);
+    };
+
+    this.scrollTo = function(x) {
+        mCurX = x;
+        content.getDiv().style.webkitTransform="translate3d(-" + x + "px,0,0)";
+        if (mListener != null && mListener.onXChanged) {
+            mListener.onXChanged(x);
+        }
+    };
+
+    this.getCurX = function() {
+        return mCurX;
+    };
+
+    this.checkBounds = function(whichScreen) {
+        return (whichScreen < 0 ? 0 : whichScreen > (content.getChildCount() - 1) ? (content.getChildCount() - 1)
+            : whichScreen);
+    };
+
+    this.setToScreen = function(index) {
+        index = this.checkBounds(index);
+        mCurScreen = index;
+        this.scrollTo(index * this.getMeasuredWidth());
+        fireScreenChanged();
+    };
+
+    this.snapToScreen = function(index, duration) {
+        index = this.checkBounds(index);
+        if (index == mCurScreen) {
+            return;
+        }
+        var startX = mCurScreen * this.getMeasuredWidth();
+        var endX = index * this.getMeasuredWidth();
+        if (duration == undefined) {
+            duration = Math.abs(endX - startX);
+        }
+        mProcessor.startProcess(startX, endX, duration);
+        this.invalidate();
+
+        mCurScreen = index;
+        setTimeout(function() {fireScreenChanged();}, duration);
+    };
+
+    this.onTouchEvent = function(ev) {
+        var w = this.getMeasuredWidth();
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mDownX = ev.getX();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                var x = mCurScreen * w - (ev.getX() - mDownX);
+                x = Math.max(0, x);
+                x = Math.min(x, (content.getChildCount() - 1) * w);
+                this.scrollTo(x);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                var isNext = (this.getCurX() % w) > (w / 2);
+                mCurScreen = Math.floor(this.getCurX() / w);
+                if (isNext) {
+                    mCurScreen = mCurScreen + 1;
+                }
+                var endX = mCurScreen * w;
+                var d = Math.abs(this.getCurX() - endX);
+                mProcessor.startProcess(this.getCurX(), endX, d);
+                this.invalidate();
+                setTimeout(function() {fireScreenChanged()}, d);
+                break;
+        }
+    };
+
+    this.onMeasure = function(widthMS, heightMS) {
+        var width = MeasureSpec.getSize(widthMS);
+        var height = MeasureSpec.getSize(heightMS);
+
+        content.measure(width, height);
+
+        this.setMeasuredDimension(width, height);
+
+        this.setToScreen(mCurScreen);
+    };
+
+    this.onLayout = function(x, y) {
+        content.layout(0, 0);
+    };
+
+    this.computeScroll = function() {
+        if (mProcessor.computeProcessOffset()) {
+            var x = mProcessor.getCurrProcess();
+            this.scrollTo(x);
+
+            this.postInvalidate();
+        }
+    };
+
+    function GalleryContent() {
+        ViewGroup.apply(this, []);
+
+        this.onMeasure = function(widthMS, heightMS) {
+            var width = MeasureSpec.getSize(widthMS);
+            var height = MeasureSpec.getSize(heightMS);
+
+            for (var i = 0; i < this.getChildCount(); i++) {
+                var c = this.getChildAt(i);
+                c.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+            }
+
+            this.setMeasuredDimension(width * this.getChildCount(), height);
+        };
+
+        this.onLayout = function(x, y) {
+            var offsetX = 0;
+            var offsetY = 0;
+
+            for (var i = 0; i < this.getChildCount(); i++) {
+                var c = this.getChildAt(i);
+                c.layout(offsetX, offsetY);
+                offsetX += c.getMeasuredWidth();
+            }
+        };
+    }
+
+    function fireScreenChanged() {
+        if (mListener != null && mListener.onGalleryScreenChanged) {
+            mListener.onGalleryScreenChanged(mCurScreen);
+        }
+    }
+}
 function ScrollView() {
     ViewGroup.apply(this, []);
 
