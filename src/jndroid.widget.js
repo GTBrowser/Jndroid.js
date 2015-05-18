@@ -248,6 +248,14 @@ function TextView() {
         this.getDiv().scrollTop = "100px";
     };
 
+    this.setTextIsSelectable = function(selectable) {
+        if (selectable) {
+            mContent.style["-webkit-user-select"] = "text";
+        } else {
+            mContent.style["-webkit-user-select"] = "none";
+        }
+    };
+
     this.setTextColor = function(color) {
         mContent.style.color = Utils.toCssColor(color);
     };
