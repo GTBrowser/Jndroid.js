@@ -2321,6 +2321,30 @@ function EditText() {
     var mFocusListener = null;
     var mInput;
     var mIsPassword = false;
+    var mTextListener = null;
+
+    var initInput = function() {
+        if (mIsPassword) {
+            mInput.type = "password";
+        } else {
+            mInput.type = "text";
+        }
+        mInput.style.boxSizing = "border-box";
+        mInput.style.position = "absolute";
+        mInput.style.background = "none";
+        mInput.style.border = "0";
+        mInput.style.outline = "none";
+        mInput.style.padding = 0;
+        mInput.onfocus = function() {
+            mSelf.onFocusChanged(true);
+        };
+        mInput.onblur = function() {
+            mSelf.onFocusChanged(false);
+        };
+        if (mTextListener != null) {
+            mInput.oninput = mTextListener;
+        }
+    };
 
     this.setDisabled = function(disabled) {
         if (disabled) {
@@ -2341,51 +2365,16 @@ function EditText() {
 
     this.addInput = function() {
         this.getDiv().innerHTML = "";
-
         mInput = document.createElement("input");
-        if (mIsPassword) {
-            mInput.type = "password";
-        } else {
-            mInput.type = "text";
-        }
-        mInput.style.position = "absolute";
-        mInput.style.background = "none";
-        mInput.style.border = "0";
-        mInput.style.outline = "none";
-        mInput.style.boxSizing = "border-box";
-        mInput.onfocus = function() {
-            mSelf.onFocusChanged(true);
-        };
-        mInput.onblur = function() {
-            mSelf.onFocusChanged(false);
-        };
-
+        initInput();
         this.getDiv().appendChild(mInput);
     };
     this.addInput();
 
     this.addTextArea = function() {
         this.getDiv().innerHTML = "";
-
         mInput = document.createElement("textarea");
-        if (mIsPassword) {
-            mInput.type = "password";
-        } else {
-            mInput.type = "text";
-        }
-        mInput.style.boxSizing = "border-box";
-        mInput.style.position = "absolute";
-        mInput.style.background = "none";
-        mInput.style.border = "0";
-        mInput.style.outline = "none";
-        mInput.style.boxSizing = "border-box";
-        mInput.onfocus = function() {
-            mSelf.onFocusChanged(true);
-        };
-        mInput.onblur = function() {
-            mSelf.onFocusChanged(false);
-        };
-
+        initInput();
         this.getDiv().appendChild(mInput);
     };
 
@@ -2409,7 +2398,7 @@ function EditText() {
 
     this.setSelection = function(start, end) {
         mInput.selectionStart = start;
-        if (end === undefined) {
+        if (end == undefined) {
             mInput.selectionEnd = start;
         } else {
             mInput.selectionEnd = end;
@@ -2425,12 +2414,13 @@ function EditText() {
     };
 
     this.setTextChangedListener = function(listener) {
+        mTextListener = listener;
         mInput.oninput = listener;
     };
 
     this.getText = function() {
         return mInput.value;
-    };
+    }
 
     this.setText = function(text) {
         mInput.value = text;
@@ -2475,7 +2465,7 @@ function EditText() {
     this.onLayout = function(x, y) {
         mInput.style.top = this.getPaddingTop() + "px";
         mInput.style.left = this.getPaddingLeft() + "px";
-    };
+    }
 }
 
 function WebView() {
