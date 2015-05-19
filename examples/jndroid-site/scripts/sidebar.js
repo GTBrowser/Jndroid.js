@@ -71,8 +71,6 @@ function Sidebar()
     sidebarContent.addView(app);
 
     app.setOnClickListener(function(){
-        var appPage = new ApplicationsPage();
-        gallery.addPage(appPage);
         gallery.snapToScreen(2, 300);
         mainView.hideSidebar();
         mainView.setTitleText("Applications");

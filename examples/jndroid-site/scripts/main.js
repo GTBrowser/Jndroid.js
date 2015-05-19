@@ -31,8 +31,10 @@ function MainView() {
 
     var introPage = new IntroductionPage();
     var docPage = new DocumentationPage();
+    var appPage = new ApplicationsPage();
     gallery.addPage(introPage);
     gallery.addPage(docPage);
+    gallery.addPage(appPage);
 
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);

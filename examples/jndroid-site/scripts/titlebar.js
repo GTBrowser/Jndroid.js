@@ -21,7 +21,7 @@ function Titlebar() {
 
    this.setTitleText = function (text) {
         title.setText(text);
-    }
+    };
 
     this.onLayout = function(x, y) {
         toggleButton.layout(0, 0);
