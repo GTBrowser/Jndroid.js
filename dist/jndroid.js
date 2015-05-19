@@ -1272,6 +1272,21 @@ var mHideDiv = null;
 
 var mTopMargin = 0;
 
+var meta = document.createElement("meta");
+meta.name = "viewport";
+meta.content = "width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no";
+document.head.appendChild(meta);
+
+meta = document.createElement("meta");
+meta.name = "apple-mobile-web-app-capable";
+meta.content = "yes";
+document.head.appendChild(meta);
+
+meta = document.createElement("meta");
+meta.name = "mobile-web-app-capable";
+meta.content = "yes";
+document.head.appendChild(meta);
+
 function setContentView(view) {
     //if (window.screen.height > document.body.scrollHeight) {
     //    mTopMargin = window.screen.height - document.body.scrollHeight;
