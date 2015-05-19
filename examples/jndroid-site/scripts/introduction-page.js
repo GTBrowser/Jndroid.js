@@ -5,6 +5,6 @@ function IntroductionPage()
 {
     ViewGroup.apply(this, []);
 
-    this.setBackgroundColor(0xFF0000FF);
+    //this.setBackgroundColor(0xFF0000FF);
 
 }

@@ -55,6 +55,7 @@ function Sidebar()
     intro.setOnClickListener(function(){
         gallery.snapToScreen(0, 300);
         mainView.hideSidebar();
+        mainView.setTitleText("Introduction");
     });
 
     var doc = new NavItem("Documentation");
@@ -63,14 +64,18 @@ function Sidebar()
     doc.setOnClickListener(function(){
         gallery.snapToScreen(1, 300);
         mainView.hideSidebar();
+        mainView.setTitleText("Documentation");
     });
 
     var app = new NavItem("Applications");
     sidebarContent.addView(app);
 
     app.setOnClickListener(function(){
+        var appPage = new ApplicationsPage();
+        gallery.addPage(appPage);
         gallery.snapToScreen(2, 300);
         mainView.hideSidebar();
+        mainView.setTitleText("Applications");
     });
 
     this.onMeasure = function(widthMS, heightMS){
