@@ -10,8 +10,10 @@ function ApplicationsPage() {
     this.addView(content, contentLp);
 
     var appsList = [];
-    appsList.push(new AppData("标题1", "描述1", "http://localhost:63342/Jndroid/examples/jndroid-site/index.html"));
-    appsList.push(new AppData("标题2", "描述2", "http://localhost:63342/Jndroid/examples/searchbar/index.html"));
+    appsList.push(new AppData("标题1", "描述1", "http://localhost:63342/Jndroid/" +
+    "examples/jndroid-site/index.html"));
+    appsList.push(new AppData("标题2", "描述2", "http://localhost:63342/Jndroid/" +
+    "examples/searchbar/index.html"));
 
     var appItemLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     appItemLp.setMargins(16,0,16,0);
