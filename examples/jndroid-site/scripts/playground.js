@@ -96,7 +96,7 @@ function CodeEditor(initCode)
     this.onLayout = function(x, y){
         editArea.layout(10, 10);
         var width = editArea.getMeasuredWidth();
-        refreshBtn.layout(width - 50, 10);
+        refreshBtn.layout(width - 55, 15);
     };
 
 
