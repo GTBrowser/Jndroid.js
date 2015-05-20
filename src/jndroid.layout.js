@@ -292,8 +292,10 @@ function FrameLayout() {
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
             var lp = getLayoutParams(child);
-            var cWidthSpec = makeSpec(childWidth, lp.width);
-            var cHeightSpec = makeSpec(childHeight, lp.height);
+            var cw = childWidth - lp.leftMargin - lp.rightMargin;
+            var ch = childHeight - lp.topMargin - lp.bottomMargin;
+            var cWidthSpec = makeSpec(cw, lp.width);
+            var cHeightSpec = makeSpec(ch, lp.height);
             child.measure(cWidthSpec, cHeightSpec);
         }
         this.setMeasuredDimension(width, height);
@@ -308,7 +310,7 @@ function FrameLayout() {
         }
     };
 }
-function GalleryLayout() {
+function Gallery() {
     ViewGroup.apply(this, []);
 
     this.setTag("Gallery");

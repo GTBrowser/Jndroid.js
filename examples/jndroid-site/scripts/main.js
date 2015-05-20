@@ -11,7 +11,7 @@ var gallery;
 function MainView() {
     ViewGroup.apply(this, []);
 
-    gallery = new GalleryLayout();
+    gallery = new Gallery();
     this.addView(gallery);
 
     titlebar = new Titlebar();
