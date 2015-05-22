@@ -14,5 +14,7 @@ function IntroductionPage()
     lp.topMargin = 20;
     contentView.addView(playground, lp);
 
-
+    //var progressbar = new LProgressBar();
+    //progressbar.setStyle(LProgressBar.Large);
+    //contentView.addView(progressbar);
 }

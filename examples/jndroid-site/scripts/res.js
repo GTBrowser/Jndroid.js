@@ -1,0 +1,5 @@
+var PADDING = 16;
+var TITLE_SIZE = 24;
+var TITLE_PADDING_TOP = 24;
+
+var TEXT_COLOR = 0xff212121;

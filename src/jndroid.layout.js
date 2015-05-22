@@ -374,7 +374,7 @@ function Gallery() {
         this.invalidate();
 
         mCurScreen = index;
-        setTimeout(function() {fireScreenChanged();}, duration);
+        setTimeout(function() {forceReLayout();fireScreenChanged();}, duration);
     };
 
     this.onTouchEvent = function(ev) {
@@ -463,3 +463,6 @@ function Gallery() {
         }
     }
 }
+
+
+

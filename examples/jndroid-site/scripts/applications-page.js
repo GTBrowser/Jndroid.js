@@ -4,80 +4,106 @@
 function ApplicationsPage() {
     ScrollView.apply(this, []);
 
+    var mSelf = this;
+
     var content = new LinearLayout();
     content.setOrientation(LinearLayout.VERTICAL);
     var contentLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     this.addView(content, contentLp);
 
     var appsList = [];
-    appsList.push(new AppData("标题1", "描述1", "http://localhost:63342/Jndroid/" +
-    "examples/jndroid-site/index.html"));
-    appsList.push(new AppData("标题2", "描述2", "http://localhost:63342/Jndroid/" +
-    "examples/searchbar/index.html"));
+    appsList.push(new AppData("Jndroid Homepage", "http://localhost:63342/JndroidHome/examples/jndroid-site/index.html", true));
+    appsList.push(new AppData("Magic Search Submit", "http://testbrowser.cn/magicsearchsubmit", true));
+    appsList.push(new AppData("Relationship Calculator", "http://lite.mb.lenovomm.com/rcalc/", false));
+    appsList.push(new AppData("Delivery Search", "http://testbrowser.cn/kuaidi.html", false));
+
+    var appItemTopLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    appItemTopLp.gravity = Gravity.CENTER;
+    appItemTopLp.setMargins(8);
 
     var appItemLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    appItemLp.setMargins(16,0,16,0);
+    appItemLp.gravity = Gravity.CENTER;
+    appItemLp.setMargins(8, 0, 8, 8);
 
     for (var i = 0; i< appsList.length; i++) {
-        var appItem = new AppItem();
-        appItem.setTitle(appsList[i].mTitle);
-        appItem.setScript(appsList[i].mScript);
-        appItem.setWebSrc(appsList[i].mUrl);
-        content.addView(appItem, appItemLp);
+        var appItem = new AppItem(appsList[i]);
+        if (i == 0) {
+            content.addView(appItem, appItemTopLp);
+        } else {
+            content.addView(appItem, appItemLp);
+        }
     }
 
     this.postDelayed(function() {
         this.requestLayout();
     }, 1000);
 
-    function AppData(title, script, url) {
+    function AppData(title, url, isPC) {
         this.mTitle = title;
-        this.mScript = script;
         this.mUrl = url;
+        this.mIsPC = isPC;
     }
 
-    function AppItem () {
+    function AppItem(appData) {
         LinearLayout.apply(this,[]);
 
-        var contentView = new LinearLayout();
-        contentView.setOrientation(LinearLayout.VERTICAL);
-        var contentViewLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        contentViewLp.setMargins(16,16,16,16);
-        this.addView(contentView, contentViewLp);
+        this.setBackgroundColor(0xffffffff);
+        this.setCornerSize(2, 2, 2, 2);
+        this.setBoxShadow(0, 1, 2, 1, 0x66000000);
+        this.setPadding(16);
 
-        var titleView = new TextView();
-        titleView.setTextSize(20);
-        titleView.setTextColor(0xFF009688);
-        var titleViewLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        contentView.addView(titleView, titleViewLp);
+        var MAX_WIDTH = 800;
 
-        var scripView = new TextView();
-        var scripViewLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        scripViewLp.topMargin = 8;
-        contentView.addView(scripView, scripViewLp);
+        var mTitle = new TextView();
+        mTitle.setText(appData.mTitle);
+        mTitle.setTextSize(TITLE_SIZE);
+        mTitle.setTextColor(TEXT_COLOR);
+        mTitle.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        this.addView(mTitle);
 
-        var app = new LinearLayout();
-        app.setOrientation(LinearLayout.HORIZONTAL);
-        var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        lp.topMargin = 16;
-        contentView.addView(app, lp);
+        var mWebView = new WebView();
+        mWebView.setSrc(appData.mUrl);
+        mWebView.setBorder(1, 0x66000000);
+        this.addView(mWebView);
 
-        var webView = new WebView();
-        webView.setBoxShadow(0, 2, 12, 2, 0x66000000);
-        var webViewLp = new LayoutParams(LayoutParams.FILL_PARENT, 300);
-        webViewLp.setMargins(8,8,8,8);
-        contentView.addView(webView, webViewLp);
+        this.onMeasure = function(widthMS, heightMS) {
+            var width = MeasureSpec.getSize(widthMS);
+            var height = MeasureSpec.getSize(heightMS);
+            if (width > MAX_WIDTH) {
+                width = MAX_WIDTH;
+            }
+            mTitle.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), 0);
 
-        this.setTitle = function(title) {
-            titleView.setText(title);
-        }
+            var contentWidth = 0;
+            var contentHeight = 0;
+            if (appData.mIsPC) {
+                contentWidth = width - PADDING * 2;
+                contentHeight = contentWidth / 16 * 9;
+            } else {
+                if (MeasureSpec.getSize(widthMS) > height) {
+                    contentHeight = height * 3 / 4;
+                    contentWidth = contentHeight * 5 / 8;
+                } else {
+                    contentWidth = (width - PADDING * 2) * 3 / 4;
+                    contentHeight = contentWidth * 8 / 5;
+                }
+            }
 
-        this.setScript = function(script) {
-            scripView.setText(script);
-        }
+            mWebView.measure(MeasureSpec.makeMeasureSpec(contentWidth, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(contentHeight, MeasureSpec.EXACTLY));
+            height = TITLE_PADDING_TOP + mTitle.getMeasuredHeight() + PADDING + contentHeight + PADDING;
 
-        this.setWebSrc = function(src) {
-            webView.setSrc(src);
+            this.setMeasuredDimension(width, height);
+        };
+
+        this.onLayout = function(x, y) {
+            var offsetX = PADDING;
+            var offsetY = TITLE_PADDING_TOP;
+            mTitle.layout(offsetX, offsetY);
+
+            offsetX = (this.getMeasuredWidth() - mWebView.getMeasuredWidth()) / 2;
+            offsetY += PADDING + mTitle.getMeasuredHeight();
+            mWebView.layout(offsetX, offsetY);
         }
     }
 }

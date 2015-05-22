@@ -7,6 +7,7 @@ var sidebar;
 var mainView;
 var mask;
 var gallery;
+var appPage;
 
 function MainView() {
     ViewGroup.apply(this, []);
@@ -31,7 +32,7 @@ function MainView() {
 
     var introPage = new IntroductionPage();
     var docPage = new DocumentationPage();
-    var appPage = new ApplicationsPage();
+    appPage = new ApplicationsPage();
     gallery.addPage(introPage);
     gallery.addPage(docPage);
     gallery.addPage(appPage);
@@ -76,5 +77,6 @@ window.onload = function(){
     setContentView(rootview);
 
     mainView = new MainView();
+    mainView.setStyle("fontFamily", "微软雅黑");
     rootview.addView(mainView);
 };
