@@ -346,7 +346,7 @@ function Processor() {
 
     this.fireProcessEnd = function() {
         if (mListener != null) {
-            mListener.onProcessEnd();
+            mListener.call(this);
         }
     };
 }
