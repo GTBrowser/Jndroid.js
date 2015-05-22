@@ -1272,6 +1272,21 @@ var mHideDiv = null;
 
 var mTopMargin = 0;
 
+var meta = document.createElement("meta");
+meta.name = "viewport";
+meta.content = "width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no";
+document.head.appendChild(meta);
+
+meta = document.createElement("meta");
+meta.name = "apple-mobile-web-app-capable";
+meta.content = "yes";
+document.head.appendChild(meta);
+
+meta = document.createElement("meta");
+meta.name = "mobile-web-app-capable";
+meta.content = "yes";
+document.head.appendChild(meta);
+
 function setContentView(view) {
     //if (window.screen.height > document.body.scrollHeight) {
     //    mTopMargin = window.screen.height - document.body.scrollHeight;
@@ -1946,8 +1961,10 @@ function FrameLayout() {
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
             var lp = getLayoutParams(child);
-            var cWidthSpec = makeSpec(childWidth, lp.width);
-            var cHeightSpec = makeSpec(childHeight, lp.height);
+            var cw = childWidth - lp.leftMargin - lp.rightMargin;
+            var ch = childHeight - lp.topMargin - lp.bottomMargin;
+            var cWidthSpec = makeSpec(cw, lp.width);
+            var cHeightSpec = makeSpec(ch, lp.height);
             child.measure(cWidthSpec, cHeightSpec);
         }
         this.setMeasuredDimension(width, height);
@@ -1962,7 +1979,7 @@ function FrameLayout() {
         }
     };
 }
-function GalleryLayout() {
+function Gallery() {
     ViewGroup.apply(this, []);
 
     this.setTag("Gallery");

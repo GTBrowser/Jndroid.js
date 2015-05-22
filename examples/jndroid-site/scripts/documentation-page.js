@@ -5,5 +5,5 @@ function DocumentationPage()
 {
     ViewGroup.apply(this, []);
 
-    this.setBackgroundColor(0xFF00FF00);
+    //this.setBackgroundColor(0xFF00FF00);
 }
