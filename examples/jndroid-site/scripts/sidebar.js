@@ -67,7 +67,7 @@ function Sidebar()
         mMainView.setTitleText("Documentation");
         this.postDelayed(function() {
             if (mDocView == null) {
-                mDocView = new DocumentationPage();
+                mDocView = new DocumentationView();
                 mDocPage.addView(mDocView);
             }
         }, 300);
@@ -82,7 +82,7 @@ function Sidebar()
         mMainView.setTitleText("Applications");
         this.postDelayed(function() {
             if (mAppView == null) {
-                mAppView = new ApplicationsPage();
+                mAppView = new ApplicationsView();
                 mAppPage.addView(mAppView);
             }
         }, 300);

@@ -1,7 +1,7 @@
 /**
  * Created by lency on 5/18/15.
  */
-function IntroductionPage() {
+function IntroductionView() {
     ScrollView.apply(this, []);
 
     this.setBackgroundColor(CARD_BG_COLOR);

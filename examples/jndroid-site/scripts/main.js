@@ -36,16 +36,13 @@ function MainView() {
     this.addView(mSidebar);
 
     mIntroPage = new FrameLayout();
-    mIntroPage.setBackgroundColor(0x33ff0000);
     mDocPage = new FrameLayout();
-    mDocPage.setBackgroundColor(0x3300ff00);
     mAppPage = new FrameLayout();
-    mAppPage.setBackgroundColor(0x330000ff);
     mGallery.addPage(mIntroPage);
     mGallery.addPage(mDocPage);
     mGallery.addPage(mAppPage);
 
-    mIntroView = new IntroductionPage();
+    mIntroView = new IntroductionView();
     mIntroPage.addView(mIntroView);
 
     this.onMeasure = function(widthMS, heightMS) {

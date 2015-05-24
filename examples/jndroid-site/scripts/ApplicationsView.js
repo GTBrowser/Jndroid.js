@@ -1,7 +1,7 @@
 /**
  * Created by lency on 5/18/15.
  */
-function ApplicationsPage() {
+function ApplicationsView() {
     ScrollView.apply(this, []);
 
     this.setBackgroundColor(CARD_BG_COLOR);
@@ -64,7 +64,7 @@ function ApplicationsPage() {
         this.addView(mTitle);
 
         var mWebView = new WebView();
-        mWebView.setSrc(appData.mUrl);
+        mWebView.loadUrl(appData.mUrl);
         mWebView.setBorder(1, 0x66000000);
         this.addView(mWebView);
 
