@@ -360,6 +360,7 @@ function EditText() {
     var mSelf = this;
     var mFocusListener = null;
     var mInput;
+    var mTextSize;
     var mIsPassword = false;
     var mTextListener = null;
 
@@ -437,18 +438,23 @@ function EditText() {
 
     this.getText = function() {
         return mInput.value;
-    }
+    };
 
     this.setText = function(text) {
         mInput.value = text;
     };
 
     this.setTextSize = function(size) {
+        mTextSize = size;
         mInput.style.fontSize = size + "px";
     };
 
     this.setTextColor = function(color) {
         mInput.style.color = Utils.toCssColor(color);
+    };
+
+    this.setHint = function(text) {
+        this.setHintText(text);
     };
 
     this.setHintText = function(text) {
@@ -469,9 +475,13 @@ function EditText() {
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
+        var hMode = MeasureSpec.getMode(height);
 
         var contentWidth = width - this.getPaddingLeft() - this.getPaddingRight();
         var contentHeight = height - this.getPaddingTop() - this.getPaddingBottom();
+        if (hMode != MeasureSpec.EXACTLY) {
+            contentHeight = mTextSize * 1.2 + this.getPaddingTop() + this.getPaddingBottom();
+        }
         mInput.style.fontFamily = Utils.findFontFamily(mInput);
         mInput.style.width = contentWidth + "px";
         mInput.style.height = contentHeight + "px";
