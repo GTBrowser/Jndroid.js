@@ -104,6 +104,10 @@ function ImageView() {
         mScaleType = st;
     };
 
+    this.setImageUri = function(src) {
+        this.setImgSrc(src);
+    };
+
     this.setImgSrc = function(src) {
         this.setVisibility(View.VISIBLE);
         mSrc = src;
