@@ -517,6 +517,18 @@ function WebView() {
     mFrame.style.border = "none";
     this.getDiv().appendChild(mFrame);
 
+    this.loadUrl = function(url) {
+        mFrame.src = url;
+    };
+
+    this.loadData = function(data) {
+        mFrame.srcdoc = data;
+    };
+
+    this.loadDataWithBaseURL = function(data) {
+        mFrame.srcdoc = data;
+    };
+
     this.setSrc = function(src){
         mFrame.src = src;
     };
