@@ -226,6 +226,10 @@ Object.defineProperty(ScaleType,"CENTER",{value:5});
 Object.defineProperty(ScaleType,"CENTER_CROP",{value:6});
 Object.defineProperty(ScaleType,"CENTER_INSIDE",{value:7});
 
+function ImageButton() {
+    ImageView.apply(this, []);
+}
+
 function TextView() {
     ViewGroup.apply(this, []);
 
@@ -359,29 +363,6 @@ function EditText() {
     var mIsPassword = false;
     var mTextListener = null;
 
-    var initInput = function() {
-        if (mIsPassword) {
-            mInput.type = "password";
-        } else {
-            mInput.type = "text";
-        }
-        mInput.style.boxSizing = "border-box";
-        mInput.style.position = "absolute";
-        mInput.style.background = "none";
-        mInput.style.border = "0";
-        mInput.style.outline = "none";
-        mInput.style.padding = 0;
-        mInput.onfocus = function() {
-            mSelf.onFocusChanged(true);
-        };
-        mInput.onblur = function() {
-            mSelf.onFocusChanged(false);
-        };
-        if (mTextListener != null) {
-            mInput.oninput = mTextListener;
-        }
-    };
-
     this.setDisabled = function(disabled) {
         if (disabled) {
             mInput.disabled = "disabled";
@@ -501,6 +482,29 @@ function EditText() {
     this.onLayout = function(x, y) {
         mInput.style.top = this.getPaddingTop() + "px";
         mInput.style.left = this.getPaddingLeft() + "px";
+    };
+
+    function initInput() {
+        if (mIsPassword) {
+            mInput.type = "password";
+        } else {
+            mInput.type = "text";
+        }
+        mInput.style.boxSizing = "border-box";
+        mInput.style.position = "absolute";
+        mInput.style.background = "none";
+        mInput.style.border = "0";
+        mInput.style.outline = "none";
+        mInput.style.padding = 0;
+        mInput.onfocus = function() {
+            mSelf.onFocusChanged(true);
+        };
+        mInput.onblur = function() {
+            mSelf.onFocusChanged(false);
+        };
+        if (mTextListener != null) {
+            mInput.oninput = mTextListener;
+        }
     }
 }
 
@@ -515,6 +519,10 @@ function WebView() {
 
     this.setSrc = function(src){
         mFrame.src = src;
+    };
+
+    this.setSrcDoc = function(srcdoc) {
+        mFrame.srcdoc = srcdoc;
     };
 
     this.getFrame = function() {
