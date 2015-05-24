@@ -4,6 +4,8 @@
 function ApplicationsPage() {
     ScrollView.apply(this, []);
 
+    this.setBackgroundColor(CARD_BG_COLOR);
+
     var mSelf = this;
 
     var content = new LinearLayout();
@@ -49,7 +51,7 @@ function ApplicationsPage() {
 
         this.setBackgroundColor(0xffffffff);
         this.setCornerSize(2, 2, 2, 2);
-        this.setBoxShadow(0, 1, 2, 1, 0x66000000);
+        this.setBoxShadow(0, 1, 2, 0, 0x66000000);
         this.setPadding(16);
 
         var MAX_WIDTH = 800;

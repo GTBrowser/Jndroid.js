@@ -1,9 +1,10 @@
 /**
  * Created by lency on 5/18/15.
  */
-function DocumentationPage()
-{
-    ViewGroup.apply(this, []);
+function DocumentationPage() {
+    FrameLayout.apply(this, []);
 
-    //this.setBackgroundColor(0xFF00FF00);
+    var webView = new WebView();
+    webView.loadUrl("../../src/out/index.html");
+    this.addView(webView);
 }

@@ -2,72 +2,83 @@
  * Created by lency on 4/28/15.
  */
 
-var titlebar;
-var sidebar;
-var mainView;
-var mask;
-var gallery;
-var appPage;
+var mTitlebar;
+var mSidebar;
+var mMainView;
+var mMask;
+var mGallery;
+var mIntroPage;
+var mDocPage;
+var mAppPage;
+var mIntroView = null;
+var mDocView = null;
+var mAppView = null;
 
 function MainView() {
     ViewGroup.apply(this, []);
 
-    gallery = new Gallery();
-    this.addView(gallery);
+    mGallery = new Gallery();
+    this.addView(mGallery);
 
-    titlebar = new Titlebar();
-    this.addView(titlebar);
+    mTitlebar = new Titlebar();
+    this.addView(mTitlebar);
 
-    mask = new ViewGroup();
-    mask.setBackgroundColor(0x99000000);
-    mask.setOnClickListener(function(){
-        mask.setVisibility(View.GONE);
-        sidebar.hide();
+    mMask = new ViewGroup();
+    mMask.setBackgroundColor(0x99000000);
+    mMask.setOnClickListener(function(){
+        mMask.setVisibility(View.GONE);
+        mSidebar.hide();
     });
-    mask.setVisibility(View.GONE);
-    this.addView(mask);
+    mMask.setVisibility(View.GONE);
+    this.addView(mMask);
 
-    sidebar = new Sidebar();
-    this.addView(sidebar);
+    mSidebar = new Sidebar();
+    this.addView(mSidebar);
 
-    var introPage = new IntroductionPage();
-    var docPage = new DocumentationPage();
-    appPage = new ApplicationsPage();
-    gallery.addPage(introPage);
-    gallery.addPage(docPage);
-    gallery.addPage(appPage);
+    mIntroPage = new FrameLayout();
+    mIntroPage.setBackgroundColor(0x33ff0000);
+    mDocPage = new FrameLayout();
+    mDocPage.setBackgroundColor(0x3300ff00);
+    mAppPage = new FrameLayout();
+    mAppPage.setBackgroundColor(0x330000ff);
+    mGallery.addPage(mIntroPage);
+    mGallery.addPage(mDocPage);
+    mGallery.addPage(mAppPage);
+
+    mIntroView = new IntroductionPage();
+    mIntroPage.addView(mIntroView);
 
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
 
-        titlebar.measure(widthMS, 64);
-        sidebar.measure(240, heightMS);
-        mask.measure(widthMS, heightMS);
-        gallery.measure(widthMS, height - 64);
+        mTitlebar.measure(widthMS, 64);
+        mSidebar.measure(240, heightMS);
+        mMask.measure(widthMS, heightMS);
+        mGallery.measure(widthMS, height - 64);
 
         this.setMeasuredDimension(width, height);
     };
 
     this.onLayout = function(x, y) {
-        titlebar.layout(0, 0);
-        sidebar.layout(-240, 0);
-        mask.layout(0, 0);
-        gallery.layout(0, 64);
+        mTitlebar.layout(0, 0);
+        mSidebar.layout(-240, 0);
+        mMask.layout(0, 0);
+        mGallery.layout(0, 64);
     };
 
     this.showSideBar = function(){
-        mask.setVisibility(View.VISIBLE);
-        sidebar.show();
+        mMask.setVisibility(View.VISIBLE);
+        mSidebar.show();
     };
 
     this.hideSidebar = function(){
-        mask.setVisibility(View.GONE);
-        sidebar.hide();
+        mMask.setVisibility(View.GONE);
+        mSidebar.hide();
     };
 
     this.setTitleText = function(text){
-        titlebar.setTitleText(text);
+        mTitlebar.setTitleText(text);
     }
 }
 
@@ -76,7 +87,7 @@ window.onload = function(){
     var rootview = new FrameLayout();
     setContentView(rootview);
 
-    mainView = new MainView();
-    mainView.setStyle("fontFamily", "微软雅黑");
-    rootview.addView(mainView);
+    mMainView = new MainView();
+    mMainView.setStyle("fontFamily", "RobotoDraft, Roboto, sans-serif");
+    rootview.addView(mMainView);
 };

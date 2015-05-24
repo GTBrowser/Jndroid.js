@@ -9,7 +9,7 @@ function Titlebar() {
     this.addView(toggleButton);
 
     toggleButton.setOnClickListener(function(){
-        mainView.showSideBar();
+        mMainView.showSideBar();
     });
 
     var title = new TextView();
@@ -37,7 +37,7 @@ function Titlebar() {
         this.setMeasuredDimension(width, 64);
     };
 
-    this.setBackgroundColor(0xFF009688);
+    this.setBackgroundColor(THEME_COLOR);
     this.setBoxShadow(0, 2, 5, 0, 0x42000000);
 }
 

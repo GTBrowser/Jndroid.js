@@ -53,27 +53,39 @@ function Sidebar()
     sidebarContent.addView(intro, lp);
 
     intro.setOnClickListener(function(){
-        gallery.snapToScreen(0, 300);
-        mainView.hideSidebar();
-        mainView.setTitleText("Introduction");
+        mGallery.snapToScreen(0, 300);
+        mMainView.hideSidebar();
+        mMainView.setTitleText("Introduction");
     });
 
     var doc = new NavItem("Documentation");
     sidebarContent.addView(doc);
 
     doc.setOnClickListener(function(){
-        gallery.snapToScreen(1, 300);
-        mainView.hideSidebar();
-        mainView.setTitleText("Documentation");
+        mGallery.snapToScreen(1, 300);
+        mMainView.hideSidebar();
+        mMainView.setTitleText("Documentation");
+        this.postDelayed(function() {
+            if (mDocView == null) {
+                mDocView = new DocumentationPage();
+                mDocPage.addView(mDocView);
+            }
+        }, 300);
     });
 
     var app = new NavItem("Applications");
     sidebarContent.addView(app);
 
     app.setOnClickListener(function(){
-        gallery.snapToScreen(2, 300);
-        mainView.hideSidebar();
-        mainView.setTitleText("Applications");
+        mGallery.snapToScreen(2, 300);
+        mMainView.hideSidebar();
+        mMainView.setTitleText("Applications");
+        this.postDelayed(function() {
+            if (mAppView == null) {
+                mAppView = new ApplicationsPage();
+                mAppPage.addView(mAppView);
+            }
+        }, 300);
     });
 
     this.onMeasure = function(widthMS, heightMS){

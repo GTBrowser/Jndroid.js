@@ -1,118 +1,235 @@
 /**
  * Created by lency on 5/20/15.
  */
-function Playground(initCode)
-{
+function Playground(title, initCode, isHtml) {
     ViewGroup.apply(this, []);
+
     this.uuid = Math.floor(Math.random() * 100000);
 
-    var playgroundHeightHorizontal = 400;
-    var playgroundHeightVertial = 300;
+    var BUTTON_WIDTH = 48;
+    var BUTTON_HEIGHT = 48;
 
-    var codeEditor = new CodeEditor(initCode);
-    var codePreviewer = new CodePreviewer(this.uuid);
+    var mSelf = this;
+    var mEditHeight = 300;
 
-    this.addView(codeEditor);
-    this.addView(codePreviewer);
+    this.setBackgroundColor(0xffffffff);
+    this.setCornerSize(2, 2, 2, 2);
+    this.setBoxShadow(0, 1, 2, 0, 0x66000000);
+    this.setPadding(16);
 
+    var mTitle = new TextView();
+    mTitle.setTextSize(TITLE_SIZE);
+    mTitle.setTextColor(TEXT_COLOR);
+    mTitle.setText(title);
+    this.addView(mTitle);
 
+    var mEditArea = new CodeMirrorView(isHtml);
+    this.postDelayed(function() {
+        mEditArea.setText(initCode);
+    }, 200);
 
-    this.onMeasure = function(widthMS, heightMS){
+    this.addView(mEditArea);
 
-        var width = MeasureSpec.getSize(widthMS);
+    var mCodePreviewer;
+    if (isHtml) {
+        mCodePreviewer = new HtmlPreviewer();
+    } else {
+        mCodePreviewer = new CodePreviewer(this.uuid);
+    }
+    this.addView(mCodePreviewer);
 
-        if(width > 700)
-        {
-            codeEditor.measure(width / 2, playgroundHeightHorizontal);
-            codePreviewer.measure(width / 2, playgroundHeightHorizontal);
-            this.setMeasuredDimension(width, playgroundHeightHorizontal);
-        }else{
-            codeEditor.measure(width, playgroundHeightVertial);
-            codePreviewer.measure(width, playgroundHeightVertial);
-            this.setMeasuredDimension(width, playgroundHeightVertial * 2);
-        }
-    };
-
-    this.onLayout = function(x, y){
-        codeEditor.layout(0, 0);
-
-        var width = this.getMeasuredWidth();
-        if(width > 700)
-        {
-            codePreviewer.layout(codePreviewer.getMeasuredWidth(), 0);
-        }else{
-            codePreviewer.layout(0, playgroundHeightVertial);
-        }
-    };
-
-    this.update = function(){
-        var code = codeEditor.getCode();
-        codePreviewer.applyCode(code);
-    };
-
-    this.update();
-}
-
-function CodeEditor(initCode)
-{
-    ViewGroup.apply(this, []);
-
-    var self = this;
-
-    var editArea = new EditText();
-    editArea.setSingleLine(false);
-    editArea.setPadding(15, 10, 15, 10);
-    editArea.setTextColor(0xFFFFE57F);
-    editArea.setTextSize(14);
-    editArea.setBackgroundColor(0xff616161);
-    editArea.setText(initCode);
-
-    this.addView(editArea);
-
-    var refreshBtn = new TextView();
-    refreshBtn.setText("Reload");
-    refreshBtn.setTextSize(20);
-    refreshBtn.setTextColor(0xFFFFFFFF);
-    refreshBtn.setBackgroundColor(0xff616161);
-    refreshBtn.setClickable(true);
-    refreshBtn.setOnClickListener(function(){
-        self.getParent().update();
+    var mTryButton = new LImageButton();
+    mTryButton.setBackgroundColor(THEME_COLOR);
+    mTryButton.setCornerSize(24);
+    mTryButton.setImgSrc("images/play_icon.png");
+    mTryButton.setImgWidth(40);
+    mTryButton.setBoxShadow(0, 6, 6, 0, 0x66000000);
+    mTryButton.setOnClickListener(function() {
+        update();
     });
+    this.addView(mTryButton);
 
-    this.addView(refreshBtn);
+    this.setEditHeight = function(h) {
+        mEditHeight = h;
+        this.requestLayout();
+    };
 
     this.onMeasure = function(widthMS, heightMS){
         var width = MeasureSpec.getSize(widthMS);
-        var height = MeasureSpec.getSize(heightMS);
+        var height = mEditHeight;
 
-        var cWidthMS = MeasureSpec.makeMeasureSpec(width - 20, MeasureSpec.EXACTLY);
-        var cHeightMS = MeasureSpec.makeMeasureSpec(height - 20, MeasureSpec.EXACTLY);
+        mTitle.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), 0);
+        mTryButton.measure(MeasureSpec.makeMeasureSpec(BUTTON_WIDTH, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(BUTTON_HEIGHT, MeasureSpec.EXACTLY));
 
-        editArea.measure(cWidthMS, cHeightMS);
-
+        var contentWidth = width - PADDING * 2;
+        if(width > 700) {
+            mEditArea.measure(contentWidth / 2, mEditHeight);
+            mCodePreviewer.measure(contentWidth / 2, mEditHeight);
+            height = mEditHeight + PADDING * 2;
+        } else{
+            mEditArea.measure(contentWidth, mEditHeight);
+            mCodePreviewer.measure(contentWidth, mEditHeight);
+            height = mEditHeight * 2 + PADDING * 2;
+        }
+        height += TITLE_PADDING_TOP + mTitle.getMeasuredHeight();
         this.setMeasuredDimension(width, height);
     };
 
     this.onLayout = function(x, y){
-        editArea.layout(10, 10);
-        var width = editArea.getMeasuredWidth();
-        refreshBtn.layout(width - 55, 15);
+        var offsetX = PADDING;
+        var offsetY = TITLE_PADDING_TOP;
+        mTitle.layout(offsetX, offsetY);
+
+        offsetY += mTitle.getMeasuredHeight() + PADDING;
+        mEditArea.layout(offsetX, offsetY);
+
+        var width = this.getMeasuredWidth();
+        var height = this.getMeasuredHeight();
+
+        if(width > 700) {
+            mCodePreviewer.layout(mCodePreviewer.getMeasuredWidth() + PADDING, offsetY);
+        } else {
+            mCodePreviewer.layout(PADDING, offsetY + mEditArea.getMeasuredHeight());
+        }
+
+        offsetX = (width - mTryButton.getMeasuredWidth()) / 2;
+        offsetY = (height - TITLE_PADDING_TOP - mTitle.getMeasuredHeight() - mTryButton.getMeasuredHeight()) / 2;
+        offsetY += TITLE_PADDING_TOP + mTitle.getMeasuredHeight();
+        mTryButton.layout(offsetX, offsetY);
+
+        resetBorder();
     };
 
+    function resetBorder() {
+        mEditArea.setBorder(1, DIVIDERS_COLOR);
+        mCodePreviewer.setBorderRight(1, DIVIDERS_COLOR);
+        mCodePreviewer.setBorderBottom(1, DIVIDERS_COLOR);
+        if (mSelf.getMeasuredWidth() > 700) {
+            mCodePreviewer.setBorderTop(1, DIVIDERS_COLOR);
+        } else {
+            mCodePreviewer.setBorderLeft(1, DIVIDERS_COLOR);
+        }
+    }
 
-    this.getCode = function(){
-        return editArea.getText();
+    function update(){
+        var code = mEditArea.getText();
+        mCodePreviewer.applyCode(code);
+    }
+    update();
+}
+
+function CodeMirrorView(isHtml) {
+    ViewGroup.apply(this, []);
+
+    var mTimeStamp = (new Date()).getTime();
+    var mTextArea = document.createElement("textarea");
+    mTextArea.type = "text";
+    mTextArea.style.boxSizing = "border-box";
+    mTextArea.style.width = "100%";
+    mTextArea.style.height = "100%";
+    mTextArea.style.background = "none";
+    mTextArea.style.border = "0";
+    mTextArea.outline = "none";
+    mTextArea.id = "code" + mTimeStamp;
+    mTextArea.name = "code" + mTimeStamp;
+
+    var mCMEditor = null;
+
+    this.getDiv().appendChild(mTextArea);
+    this.postDelayed(function(){
+        if (isHtml) {
+            mode = "htmlmixed";
+        } else {
+            mode = "javascript";
+        }
+        var mixedMode = {
+            name: mode
+        };
+        mCMEditor = CodeMirror.fromTextArea(document.getElementById("code" + mTimeStamp), {
+            mode: mixedMode,
+            lineNumbers: false,
+            matchBrackets: true,
+            continueComments: "Enter",
+            lineWrapping:true
+        });
+    }, 100);
+
+    this.getEditor = function() {
+        return mCMEditor;
+    };
+
+    this.getTextArea = function() {
+        return mTextArea;
+    };
+
+    this.setSelection = function(start, end) {
+        mTextArea.selectionStart = start;
+        if (end == undefined) {
+            mTextArea.selectionEnd = start;
+        } else {
+            mTextArea.selectionEnd = end;
+        }
+    };
+
+    this.getSelectionStart = function() {
+        return mTextArea.selectionStart;
+    };
+
+    this.getSelectionEnd = function() {
+        return mTextArea.selectionEnd;
+    };
+
+    this.setTextChangedListener = function(listener) {
+        mTextArea.oninput = listener;
+    };
+
+    this.getText = function() {
+        if (mCMEditor != null) {
+            return mCMEditor.getValue();
+        }
+        return "";
+    };
+
+    this.setText = function(text) {
+        mTextArea.value = text;
+        if (mCMEditor != null) {
+            mCMEditor.setValue(text);
+        }
+    };
+
+    this.onMeasure = function(widthMS, heightMS) {
+        var width = MeasureSpec.getSize(widthMS);
+        var height = MeasureSpec.getSize(heightMS);
+
+        if (mCMEditor != null) {
+            mCMEditor.setSize(width, height);
+        }
+
+        this.setMeasuredDimension(width, height);
+    }
+}
+
+function HtmlPreviewer() {
+    FrameLayout.apply(this, []);
+
+    var mDisplayArea = new WebView();
+    this.addView(mDisplayArea);
+
+    this.setPadding(10);
+
+    this.applyCode = function(code){
+        mDisplayArea.loadData(code);
     };
 }
 
-function CodePreviewer(uuid)
-{
+function CodePreviewer(uuid) {
     FrameLayout.apply(this, []);
 
-    var demoView;
+    var mDemoView;
 
-    var displayArea = new FrameLayout();
-    this.addView(displayArea);
+    var mDisplayArea = new FrameLayout();
+    this.addView(mDisplayArea);
 
     this.setPadding(10);
 
@@ -124,8 +241,8 @@ function CodePreviewer(uuid)
         scriptElem.innerHTML = codeWrapper;
         document.head.appendChild(scriptElem);
 
-        displayArea.removeView(demoView);
-        demoView = eval("new DemoView"+uuid+"()");
-        displayArea.addView(demoView);
+        mDisplayArea.removeView(mDemoView);
+        mDemoView = eval("new DemoView" + uuid + "()");
+        mDisplayArea.addView(mDemoView);
     };
 }
