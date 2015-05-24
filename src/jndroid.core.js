@@ -831,6 +831,7 @@ function View() {
     this.setClickable = function(clickable) {
         mClickable = clickable;
         if (clickable) {
+            this.setStyle("cursor", "pointer");
             addTouchListener(this);
             if ("ontouchstart" in document.documentElement) {
                 this.getDiv().addEventListener("touchstart", this.touch, false);
@@ -846,6 +847,7 @@ function View() {
 
             this.getDiv().style.pointerEvents = "auto";
         } else {
+            this.setStyle("cursor", "auto");
             removeTouchListener(this);
             if ("ontouchstart" in document.documentElement) {
                 this.getDiv().removeEventListener("touchstart", this.touch, false);
