@@ -24,7 +24,7 @@ function Playground(title, initCode, isHtml) {
     this.addView(mTitle);
 
     var mEditArea = new FrameLayout();
-    mEditArea.setPadding(4);
+    mEditArea.setPadding(0);
     this.addView(mEditArea);
 
     var mCodeMirrorView = new CodeMirrorView(isHtml);
@@ -151,7 +151,7 @@ function CodeMirrorView(isHtml) {
         };
         mCMEditor = CodeMirror.fromTextArea(document.getElementById("code" + mTimeStamp), {
             mode: mixedMode,
-            lineNumbers: false,
+            lineNumbers: true,
             matchBrackets: true,
             continueComments: "Enter",
             lineWrapping:true,

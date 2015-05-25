@@ -9,10 +9,64 @@ function IntroductionView() {
     var contentView = new LinearLayout();
     this.addView(contentView);
 
+    var tips = new TextView();
+    tips.setTextSize(TITLE_SIZE);
+    tips.setTextColor(TEXT_COLOR);
+    tips.setText("Tips: this site is still in developing.");
+    tips.setTextColor(0xffdd3226);
+    var tipLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    tipLp.setMargins(PADDING, TITLE_PADDING_TOP, PADDING, 0);
+    contentView.addView(tips, tipLp);
+
+    var intro = new TextView();
+    intro.setTextSize(TITLE_SIZE);
+    intro.setTextColor(THEME_COLOR);
+    intro.setText("Introduction");
+    var introLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    introLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP, PADDING, 0);
+    contentView.addView(intro, introLp);
+
+    var sloganLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    sloganLp.setMargins(PADDING, PADDING, PADDING, 0);
+
+    var slogan = new TextView();
+    slogan.setTextSize(TEXT_SIZE);
+    slogan.setTextColor(TEXT_COLOR);
+    slogan.setText("Jndroid is a JavaScript framework to write WebApp in android way.");
+    contentView.addView(slogan, sloganLp);
+
+    var slogan1 = new TextView();
+    slogan1.setTextSize(TEXT_SIZE);
+    slogan1.setTextColor(TEXT_COLOR);
+    slogan1.setText("Jndroid是一种JavaScript框架，用于使用Android方式写网页应用");
+    contentView.addView(slogan1, sloganLp);
+
+    var slogan2 = new TextView();
+    slogan2.setTextSize(TEXT_SIZE);
+    slogan2.setTextColor(TEXT_COLOR);
+    slogan2.setText("Jndroid est un cadre Android comme le JavaScript pour la construction WebApp dans la façon dont vous avez jamais vu auparavant.");
+    contentView.addView(slogan2, sloganLp);
+
+    var getstart = new TextView();
+    getstart.setTextSize(TITLE_SIZE);
+    getstart.setTextColor(THEME_COLOR);
+    getstart.setText("Getting Started");
+    var getstartLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    getstartLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP, PADDING, PADDING);
+    contentView.addView(getstart, getstartLp);
+
     var playground = new Playground("Hello World", mHelloWorldCode, true);
     playground.setEditHeight(280);
     var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     contentView.addView(playground, lp);
+
+    var apidemos = new TextView();
+    apidemos.setTextSize(TITLE_SIZE);
+    apidemos.setTextColor(THEME_COLOR);
+    apidemos.setText("API Demos");
+    var apidemosLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    apidemosLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP, PADDING, PADDING);
+    contentView.addView(apidemos, apidemosLp);
 
     playground = new Playground("Widgets", mWidgetCode);
     playground.setEditHeight(450);
