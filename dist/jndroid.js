@@ -485,43 +485,143 @@ function Rect(l, t, r, b) {
     };
 }
 
+/**
+ * A MeasureSpec encapsulates the layout requirements passed from parent to child.
+ * Each MeasureSpec represents a requirement for either the width or the height.
+ * A MeasureSpec is comprised of a size and a mode.
+ *
+ * @class MeasureSpec
+ * @static
+ */
 var MeasureSpec = new _MeasureSpec();
 function _MeasureSpec() {
+
+    /**
+     * Creates a measure specification based on the supplied size and mode.
+     *
+     * @method makeMeasureSpec
+     * @param {int} size the size of the measure specification.
+     * @param {int} mode the mode of the measure specification.
+     * @return {int} the measure specification based on size and mode.
+     */
     this.makeMeasureSpec = function(size, mode) {
         return (size & ~MeasureSpec.MODE_MASK) | (mode & MeasureSpec.MODE_MASK);
     };
 
+    /**
+     * Extracts the mode from the supplied measure specification.
+     *
+     * @method getMode
+     * @param {int} measureSpec the measure specification to extract the mode from.
+     * @return {int} MeasureSpec.UNSPECIFIED, MeasureSpec.AT_MOST or MeasureSpec.EXACTLY.
+     */
     this.getMode = function(measureSpec) {
         return (measureSpec & MeasureSpec.MODE_MASK);
     };
 
+    /**
+     * Extracts the size from the supplied measure specification.
+     *
+     * @method getSize
+     * @param {int} measureSpec the measure specification to extract the size from.
+     * @return {int} the size in pixels defined in the supplied measure specification.
+     */
     this.getSize = function(measureSpec) {
         return (measureSpec & ~MeasureSpec.MODE_MASK);
     };
 }
+
 Object.defineProperty(MeasureSpec,"MODE_MASK",{value:(0x3 << 30)});
+
+/**
+ * Measure specification mode: The parent has not imposed any constraint
+ * on the child. It can be whatever size it wants.
+ *
+ * @property UNSPECIFIED
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(MeasureSpec,"UNSPECIFIED",{value:(0x0 << 30)});
+
+/**
+ * Measure specification mode: The parent has determined an exact size
+ * for the child. The child is going to be given those bounds regardless
+ * of how big it wants to be.
+ *
+ * @property EXACTLY
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(MeasureSpec,"EXACTLY",{value:(0x1 << 30)});
+
+/**
+ * Measure specification mode: The child can be as large as it wants up
+ * to the specified size.
+ *
+ * @property AT_MOST
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(MeasureSpec,"AT_MOST",{value:(0x2 << 30)});
 
+/**
+ * Object used to report movement (mouse, pen, finger, trackball) events.
+ * Motion events may hold either absolute or relative movements and
+ * other data, depending on the type of device.
+ *
+ * @class MotionEvent
+ */
 function MotionEvent(rawEv) {
 
+    /**
+     * Returns the X coordinate of this event.
+     *
+     * @method getX
+     * @return {float} X coordinate.
+     */
     this.getX = function() {
         var div = this.realView.getDiv();
         var offset = Utils.getOffset(div);
         return this.getTouches().pageX - offset.left;
     };
 
+    /**
+     * Returns the Y coordinate of this event.
+     *
+     * @method getY
+     * @return {float} Y coordinate.
+     */
     this.getY = function() {
         var div = this.realView.getDiv();
         var offset = Utils.getOffset(div);
         return this.getTouches().pageY - offset.top;
     };
 
+    /**
+     * Returns the original raw X coordinate of this event.  For touch
+     * events on the screen, this is the original location of the event
+     * on the screen, before it had been adjusted for the containing window
+     * and views.
+     *
+     * @method getRawX
+     * @return {float} original raw X coordinate.
+     */
     this.getRawX = function() {
         return this.getTouches().pageX;
     };
 
+    /**
+     * Returns the original raw X coordinate of this event.  For touch
+     * events on the screen, this is the original location of the event
+     * on the screen, before it had been adjusted for the containing window
+     * and views.
+     *
+     * @method getRawY
+     * @return {float} original raw Y coordinate.
+     */
     this.getRawY = function() {
         return this.getTouches().pageY;
     };
@@ -538,6 +638,12 @@ function MotionEvent(rawEv) {
         }
     };
 
+    /**
+     * Return the kind of action being performed.
+     *
+     * @method getAction
+     * @return {int} the action.
+     */
     this.getAction = function() {
         if (rawEv.type == "touchstart" || rawEv.type == "mousedown") {
             return MotionEvent.ACTION_DOWN;
@@ -558,49 +664,161 @@ function MotionEvent(rawEv) {
     };
 }
 
+/**
+ * Constant for : A pressed gesture has started, the
+ * motion contains the initial starting location.
+ *
+ * @property ACTION_DOWN
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(MotionEvent,"ACTION_DOWN",{value:0});
+
+/**
+ * Constant for : A pressed gesture has finished, the
+ * motion contains the final release location as well as any intermediate
+ * points since the last down or move event.
+ *
+ * @property ACTION_UP
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(MotionEvent,"ACTION_UP",{value:1});
+
+/**
+ * Constant for : A change has happened during a
+ * press gesture (between MotionEvent.ACTION_DOWN and MotionEvent.ACTION_UP).
+ * The motion contains the most recent point, as well as any intermediate
+ * points since the last down or move event.
+ *
+ * @property ACTION_MOVE
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(MotionEvent,"ACTION_MOVE",{value:2});
+
+/**
+ * Constant for : The current gesture has been aborted.
+ * You will not receive any more points in it.  You should treat this as
+ * an up event, but not perform any action that you normally would.
+ *
+ * @property ACTION_CANCEL
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(MotionEvent,"ACTION_CANCEL",{value:3});
 
+/**
+ * A Drawable is a general abstraction for "something that can be drawn."  Most
+ * often you will deal with Drawable as the type of resource retrieved for
+ * drawing things to the screen; the Drawable class provides a generic API for
+ * dealing with an underlying visual resource that may take a variety of forms.
+ *
+ * @class Drawable
+ */
 function Drawable() {
     var mBounds = new Rect(0, 0, 0, 0);
     var mCallback = null;
 
+    /**
+     * Draw in its bounds (set via setBounds) respecting optional effects such
+     * as alpha (set via setAlpha) and color filter (set via setColorFilter).
+     *
+     * @method draw
+     * @param {canvas} canvas The canvas to draw into.
+     */
     this.draw = function(canvas) {
     };
 
+    /**
+     * Return the drawable's bounds Rect.
+     *
+     * @method getBounds
+     * @return {Rect} The bounds of the drawable.
+     */
     this.getBounds = function() {
         return mBounds;
     };
 
+    /**
+     * Specify a bounding rectangle for the Drawable. This is where the drawable
+     * will draw when its draw() method is called.
+     *
+     * @method setBounds
+     */
     this.setBounds = function(l, t, r, b) {
         if (mBounds.left != l || mBounds.top != t || mBounds.right != r || mBounds.bottom != b) {
             mBounds.set(l, t, r, b);
         }
     };
 
+    /**
+     * Bind a object to this Drawable.  Required for clients
+     * that want to support animated drawables.
+     *
+     * @method setCallback
+     * @param {Callback} cb The client's Callback implementation.
+     */
     this.setCallback = function(cb) {
         mCallback = cb;
     };
 
+    /**
+     * Use the current implementation to have this Drawable
+     * redrawn. Does nothing if there is no Callback attached to the
+     * Drawable.
+     *
+     * @method invalidateSelf
+     */
     this.invalidateSelf = function() {
         if (mCallback != null) {
             mCallback.invalidateDrawable(this);
         }
     };
 
+    /**
+     * Specify a set of states for the drawable. These are use-case specific,
+     * so see the relevant documentation.
+     *
+     * @method setState
+     * @param {int[]} state The new set of states to be displayed.
+     */
     this.setState = function(state) {
         this.onStateChange(state);
     };
 
+    /**
+     * Override this in your subclass to change appearance if you recognize the
+     * specified state.
+     *
+     * @method onStateChange
+     * @param {int[]} state The new set of states to be displayed.
+     * @return {boolean} Returns true if the state change has caused the appearance of
+     * the Drawable to change (that is, it needs to be drawn), else false
+     * if it looks the same and there is no need to redraw it since its
+     * last state.
+     */
     this.onStateChange = function(state) {
     };
 
+    /**
+     * Return the intrinsic width of the underlying drawable object.
+     * @method getIntrinsicWidth
+     * @return {int} Returns -1 if it has no intrinsic width, such as with a solid color.
+     */
     this.getIntrinsicWidth = function() {
         return -1;
     };
 
+    /**
+     * Return the intrinsic height of the underlying drawable object.
+     * @method getIntrinsicHeight
+     * @return {int} Returns -1 if it has no intrinsic height, such as with a solid color.
+     */
     this.getIntrinsicHeight = function() {
         return -1;
     }
@@ -1999,6 +2217,12 @@ function dismissDialog() {
     mDialogLayout.setVisibility(View.GONE);
 }
 
+/**
+ * LayoutParams are used by views to tell their parents how they want to be
+ * laid out.
+ *
+ * @class LayoutParams
+ */
 function LayoutParams(widthOrParams, height) {
     if (widthOrParams.constructor.name == "LayoutParams") {
         this.width = widthOrParams.width;
@@ -2014,6 +2238,15 @@ function LayoutParams(widthOrParams, height) {
     this.gravity = -1;
     this.weight = 0;
 
+    /**
+     * Sets the margins, in pixels.
+     *
+     * @method setMargins
+     * @param {int} l the left margin size
+     * @param {int} t the top margin size
+     * @param {int} r the right margin size
+     * @param {int} b the bottom margin size
+     */
     this.setMargins = function(l, t, r, b) {
         if (t == undefined && r == undefined && b == undefined) {
             t = l;
@@ -2026,8 +2259,41 @@ function LayoutParams(widthOrParams, height) {
         this.bottomMargin = b;
     };
 }
+
+/**
+ * Special value for the height or width requested by a View.
+ * FILL_PARENT means that the view wants to be as big as its parent,
+ * minus the parent's padding, if any.
+ *
+ * @property FILL_PARENT
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(LayoutParams,"FILL_PARENT",{value:-1});
+
+/**
+ * Special value for the height or width requested by a View.
+ * MATCH_PARENT means that the view wants to be as big as its parent,
+ * minus the parent's padding, if any.
+ *
+ * @property MATCH_PARENT
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(LayoutParams,"MATCH_PARENT",{value:-1});
+
+/**
+ * Special value for the height or width requested by a View.
+ * WRAP_CONTENT means that the view wants to be just large enough to fit
+ * its own internal content, taking its own padding into account.
+ *
+ * @property WRAP_CONTENT
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(LayoutParams,"WRAP_CONTENT",{value:-2});
 
 function getDefaultLayoutParams() {
@@ -2086,11 +2352,24 @@ function calcOffsetYByGravity(parent, child) {
     return offsetY;
 }
 
+/**
+ * A Layout that arranges its children in a single column or a single row. The direction of
+ * the row can be set by calling setOrientation().
+ *
+ * @class LinearLayout
+ * @extends ViewGroup
+ */
 function LinearLayout() {
     ViewGroup.apply(this, []);
 
     var mOrientation = LinearLayout.VERTICAL;
 
+    /**
+     * Should the layout be a column or a row.
+     * @method setOrientation
+     * @param {int} o Pass HORIZONTAL or VERTICAL. Default
+     * value is VERTICAL.
+     */
     this.setOrientation = function(o) {
         mOrientation = o;
         this.requestLayout();
@@ -2284,9 +2563,36 @@ function LinearLayout() {
         }
     };
 }
+
+/**
+ * for horizontal linear layouts.
+ *
+ * @property HORIZONTAL
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(LinearLayout,"HORIZONTAL",{value:0});
+
+/**
+ * for vertical linear layouts.
+ *
+ * @property VERTICAL
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(LinearLayout,"VERTICAL",{value:1});
 
+/**
+ * FrameLayout is designed to block out an area on the screen to display
+ * a single item. Generally, FrameLayout should be used to hold a single child view, because it can
+ * be difficult to organize child views in a way that's scalable to different screen sizes without
+ * the children overlapping each other.
+ *
+ * @class FrameLayout
+ * @extends ViewGroup
+ */
 function FrameLayout() {
     ViewGroup.apply(this, []);
 
@@ -2316,6 +2622,13 @@ function FrameLayout() {
         }
     };
 }
+
+/**
+ * A view that shows items in a center-locked, horizontally scrolling list.
+ *
+ * @class Gallery
+ * @extends ViewGroup
+ */
 function Gallery() {
     ViewGroup.apply(this, []);
 
@@ -3349,6 +3662,13 @@ function WaveDrawable() {
 }
 
 
+/**
+ * Layout container for a view hierarchy that can be scrolled by the user,
+ * allowing it to be larger than the physical display.
+ *
+ * @class ScrollView
+ * @extends ViewGroup
+ */
 function ScrollView() {
     ViewGroup.apply(this, []);
 
@@ -3375,6 +3695,13 @@ function ScrollView() {
     };
 }
 
+/**
+ * Represents a push-button widget. Push-buttons can be
+ * pressed, or clicked, by the user to perform an action.
+ *
+ * @class Button
+ * @extends ViewGroup
+ */
 function Button() {
     ViewGroup.apply(this, []);
 
@@ -3440,6 +3767,16 @@ function Button() {
     };
 }
 
+/**
+ * Displays an arbitrary image, such as an icon.  The ImageView class
+ * can load images from various sources (such as resources or content
+ * providers), takes care of computing its measurement from the image so that
+ * it can be used in any layout manager, and provides various display options
+ * such as scaling and tinting.
+ *
+ * @class ImageView
+ * @extends ViewGroup
+ */
 function ImageView() {
     ViewGroup.apply(this, []);
 
@@ -3459,6 +3796,12 @@ function ImageView() {
         this.setImgSrc(src);
     };
 
+    /**
+     * Sets the content of this ImageView.
+     *
+     * @method setImgSrc
+     * @param src
+     */
     this.setImgSrc = function(src) {
         this.setVisibility(View.VISIBLE);
         mSrc = src;
@@ -3920,6 +4263,16 @@ function WebView() {
 YUI.add("yuidoc-meta", function(Y) {
    Y.YUIDoc = { meta: {
     "classes": [
+        "Button",
+        "Drawable",
+        "FrameLayout",
+        "Gallery",
+        "ImageView",
+        "LayoutParams",
+        "LinearLayout",
+        "MeasureSpec",
+        "MotionEvent",
+        "ScrollView",
         "View"
     ],
     "modules": [],
@@ -4330,376 +4683,265 @@ Y.APISearch = Y.Base.create('apiSearch', Y.Base, [Y.AutoCompleteBase], {
     'escape'
 ]});
 
+/*global YUI, prettyPrint, $*/
+
 YUI().use(
     'yuidoc-meta',
     'api-list', 'history-hash', 'node-screen', 'node-style', 'pjax',
-function (Y) {
+    function(Y) {
 
-var win          = Y.config.win,
-    localStorage = win.localStorage,
+        var win = Y.config.win,
+            localStorage = win.localStorage,
 
-    bdNode = Y.one('#bd'),
+            bdNode = Y.one('#bd'),
 
-    pjax,
-    defaultRoute,
+            pjax,
+            defaultRoute,
 
-    classTabView,
-    selectedTab;
+            classTabView,
+            selectedTab;
 
-// Kill pjax functionality unless serving over HTTP.
-if (!Y.getLocation().protocol.match(/^https?\:/)) {
-    Y.Router.html5 = false;
-}
-
-// Create the default route with middleware which enables syntax highlighting
-// on the loaded content.
-defaultRoute = Y.Pjax.defaultRoute.concat(function (req, res, next) {
-    prettyPrint();
-    bdNode.removeClass('loading');
-
-    next();
-});
-
-pjax = new Y.Pjax({
-    container      : '#docs-main',
-    contentSelector: '#docs-main > .content',
-    linkSelector   : '#bd a',
-    titleSelector  : '#xhr-title',
-
-    navigateOnHash: true,
-    root          : '/',
-    routes        : [
-        // -- / ----------------------------------------------------------------
-        {
-            path     : '/(index.html)?',
-            callbacks: defaultRoute
-        },
-
-        // -- /classes/* -------------------------------------------------------
-        {
-            path     : '/classes/:class.html*',
-            callbacks: [defaultRoute, 'handleClasses']
-        },
-
-        // -- /files/* ---------------------------------------------------------
-        {
-            path     : '/files/*file',
-            callbacks: [defaultRoute, 'handleFiles']
-        },
-
-        // -- /modules/* -------------------------------------------------------
-        {
-            path     : '/modules/:module.html*',
-            callbacks: defaultRoute
+        // Kill pjax functionality unless serving over HTTP.
+        if (!Y.getLocation().protocol.match(/^https?\:/)) {
+            Y.Router.html5 = false;
         }
-    ]
-});
 
-// -- Utility Functions --------------------------------------------------------
+        // Create the default route with middleware which enables syntax highlighting
+        // on the loaded content.
+        defaultRoute = Y.Pjax.defaultRoute.concat(function(req, res, next) {
+            prettyPrint();
+            bdNode.removeClass('loading');
 
-pjax.checkVisibility = function (tab) {
-    tab || (tab = selectedTab);
+            next();
+        });
 
-    if (!tab) { return; }
+        pjax = new Y.Pjax({
+            container: '#docs-main',
+            contentSelector: '#docs-main > .content',
+            linkSelector: '#bd a',
+            titleSelector: '#xhr-title',
 
-    var panelNode = tab.get('panelNode'),
-        visibleItems;
+            navigateOnHash: true,
+            root: '/',
+            routes: [
+                // -- / ----------------------------------------------------------------
+                {
+                    path: '/(index.html)?',
+                    callbacks: defaultRoute
+                },
 
-    // If no items are visible in the tab panel due to the current visibility
-    // settings, display a message to that effect.
-    visibleItems = panelNode.all('.item,.index-item').some(function (itemNode) {
-        if (itemNode.getComputedStyle('display') !== 'none') {
-            return true;
-        }
-    });
+                // -- /classes/* -------------------------------------------------------
+                {
+                    path: '/classes/:class.html*',
+                    callbacks: [defaultRoute, 'handleClasses']
+                },
 
-    panelNode.all('.no-visible-items').remove();
+                // -- /files/* ---------------------------------------------------------
+                {
+                    path: '/files/*file',
+                    callbacks: [defaultRoute, 'handleFiles']
+                },
 
-    if (!visibleItems) {
-        if (Y.one('#index .index-item')) {
-            panelNode.append(
-                '<div class="no-visible-items">' +
-                    '<p>' +
-                    'Some items are not shown due to the current visibility ' +
-                    'settings. Use the checkboxes at the upper right of this ' +
-                    'page to change the visibility settings.' +
-                    '</p>' +
-                '</div>'
-            );
-        } else {
-            panelNode.append(
-                '<div class="no-visible-items">' +
-                    '<p>' +
-                    'This class doesn\'t provide any methods, properties, ' +
-                    'attributes, or events.' +
-                    '</p>' +
-                '</div>'
-            );
-        }
-    }
+                // -- /modules/* -------------------------------------------------------
+                {
+                    path: '/modules/:module.html*',
+                    callbacks: defaultRoute
+                }
+            ]
+        });
 
-    // Hide index sections without any visible items.
-    Y.all('.index-section').each(function (section) {
-        var items        = 0,
-            visibleItems = 0;
+        // -- Utility Functions --------------------------------------------------------
 
-        section.all('.index-item').each(function (itemNode) {
-            items += 1;
+        pjax.checkMemberItemVisibility = function(container) {
 
-            if (itemNode.getComputedStyle('display') !== 'none') {
-                visibleItems += 1;
+            var visibleItems;
+
+            var items$ = $(container).children(".item");
+            visibleItems = items$.filter(":visible");
+
+            if (visibleItems.length) {
+                $(container).removeClass("no-visible-items");
+            } else {
+                $(container).addClass("no-visible-items");
+            }
+
+        };
+
+        pjax.checkVisibility = function() {
+
+            pjax.checkMemberItemVisibility($(".properties-detail"));
+            pjax.checkMemberItemVisibility($(".methods-detail"));
+            pjax.checkMemberItemVisibility($(".events-detail"));
+
+        };
+
+        pjax.initLineNumbers = function() {
+            var hash = win.location.hash.substring(1),
+                container = pjax.get('container'),
+                hasLines, node;
+
+            // Add ids for each line number in the file source view.
+            container.all('.linenums>li').each(function(lineNode, index) {
+                lineNode.set('id', 'l' + (index + 1));
+                lineNode.addClass('file-line');
+                hasLines = true;
+            });
+
+            // Scroll to the desired line.
+            if (hasLines && /^l\d+$/.test(hash)) {
+                if ((node = container.getById(hash))) {
+                    win.scroll(0, node.getY());
+                }
+            }
+        };
+
+        pjax.initRoot = function() {
+            var terminators = /^(?:classes|files|modules)$/,
+                parts = pjax._getPathRoot().split('/'),
+                root = [],
+                i, len, part;
+
+            for (i = 0, len = parts.length; i < len; i += 1) {
+                part = parts[i];
+
+                if (part.match(terminators)) {
+                    // Makes sure the path will end with a "/".
+                    root.push('');
+                    break;
+                }
+
+                root.push(part);
+            }
+
+            pjax.set('root', root.join('/'));
+        };
+
+        pjax.initIndexJumpLink = function() {
+            $('body').offscreenTrigger('index-offscreen', '.index', -100);
+        };
+
+        // pjax.updateVisibility = function() {
+        //     var container = pjax.get('container');
+
+        //     container.toggleClass('hide-inherited', !Y.one('#api-show-inherited').get('checked'));
+
+        //     container.toggleClass('show-deprecated',
+        //         Y.one('#api-show-deprecated').get('checked'));
+
+        //     container.toggleClass('show-protected',
+        //         Y.one('#api-show-protected').get('checked'));
+
+        //     container.toggleClass('show-private',
+        //         Y.one('#api-show-private').get('checked'));
+
+        //     pjax.checkVisibility();
+        // };
+
+        // -- Route Handlers -----------------------------------------------------------
+
+        pjax.handleClasses = function(req, res, next) {
+            var status = res.ioResponse.status;
+
+            // Handles success and local filesystem XHRs.
+            if (!status || (status >= 200 && status < 300)) {
+
+            }
+
+            pjax.initClassPage();
+
+            next();
+        };
+
+        pjax.initClassPage = function() {
+
+            pjax.initIndexJumpLink();
+            // pjax.updateVisibility();
+            // Y.one('#api-options').delegate('click', pjax.onOptionClick, 'input');
+
+        };
+
+        pjax.handleFiles = function(req, res, next) {
+            var status = res.ioResponse.status;
+
+            // Handles success and local filesystem XHRs.
+            if (!status || (status >= 200 && status < 300)) {
+                pjax.initLineNumbers();
+            }
+
+            next();
+        };
+
+        // -- Event Handlers -----------------------------------------------------------
+
+        pjax.onNavigate = function(e) {
+            var hash = e.hash,
+                originTarget = e.originEvent && e.originEvent.target,
+                tab;
+
+            if (hash) {
+                tab = originTarget && originTarget.ancestor('.yui3-tab', true);
+
+                if (hash === win.location.hash) {
+                    pjax.updateTabState('hashchange');
+                } else if (!tab) {
+                    win.location.hash = hash;
+                }
+
+                e.preventDefault();
+                return;
+            }
+
+            // Only scroll to the top of the page when the URL doesn't have a hash.
+            this.set('scrollToTop', !e.url.match(/#.+$/));
+
+            bdNode.addClass('loading');
+        };
+
+        pjax.onOptionClick = function(e) {
+            // pjax.updateVisibility();
+        };
+
+        pjax.onTabSelectionChange = function(e) {
+            var tab = e.newVal,
+                tabId = tab.get('contentBox').getAttribute('href').substring(1);
+
+            selectedTab = tab;
+
+            // If switching from a previous tab (i.e., this is not the default tab),
+            // replace the history entry with a hash URL that will cause this tab to
+            // be selected if the user navigates away and then returns using the back
+            // or forward buttons.
+            if (e.prevVal && localStorage) {
+                localStorage.setItem('tab_' + pjax.getPath(), tabId);
+            }
+
+            pjax.checkVisibility(tab);
+        };
+
+        // -- Init ---------------------------------------------------------------------
+
+        pjax.on('navigate', pjax.onNavigate);
+
+        pjax.initRoot();
+        pjax.upgrade();
+        pjax.initLineNumbers();
+
+        Y.APIList.rootPath = pjax.get('root');
+
+        Y.on('hashchange', function(e) {
+            pjax.updateTabState('hashchange');
+        }, win);
+
+        Y.on('domready', function() {
+
+            $('.main-header').offscreenTrigger('compact', 'body', 20);
+
+            if ($('.index').length) {
+                pjax.initClassPage();
             }
         });
 
-        section.toggleClass('hidden', !visibleItems);
-        section.toggleClass('no-columns', visibleItems < 4);
     });
-};
-
-pjax.initClassTabView = function () {
-    if (!Y.all('#classdocs .api-class-tab').size()) {
-        return;
-    }
-
-    if (classTabView) {
-        classTabView.destroy();
-        selectedTab = null;
-    }
-
-    classTabView = new Y.TabView({
-        srcNode: '#classdocs',
-
-        on: {
-            selectionChange: pjax.onTabSelectionChange
-        }
-    });
-
-    pjax.updateTabState();
-    classTabView.render();
-};
-
-pjax.initLineNumbers = function () {
-    var hash      = win.location.hash.substring(1),
-        container = pjax.get('container'),
-        hasLines, node;
-
-    // Add ids for each line number in the file source view.
-    container.all('.linenums>li').each(function (lineNode, index) {
-        lineNode.set('id', 'l' + (index + 1));
-        lineNode.addClass('file-line');
-        hasLines = true;
-    });
-
-    // Scroll to the desired line.
-    if (hasLines && /^l\d+$/.test(hash)) {
-        if ((node = container.getById(hash))) {
-            win.scroll(0, node.getY());
-        }
-    }
-};
-
-pjax.initRoot = function () {
-    var terminators = /^(?:classes|files|modules)$/,
-        parts       = pjax._getPathRoot().split('/'),
-        root        = [],
-        i, len, part;
-
-    for (i = 0, len = parts.length; i < len; i += 1) {
-        part = parts[i];
-
-        if (part.match(terminators)) {
-            // Makes sure the path will end with a "/".
-            root.push('');
-            break;
-        }
-
-        root.push(part);
-    }
-
-    pjax.set('root', root.join('/'));
-};
-
-pjax.updateTabState = function (src) {
-    var hash = win.location.hash.substring(1),
-        defaultTab, node, tab, tabPanel;
-
-    function scrollToNode() {
-        if (node.hasClass('protected')) {
-            Y.one('#api-show-protected').set('checked', true);
-            pjax.updateVisibility();
-        }
-
-        if (node.hasClass('private')) {
-            Y.one('#api-show-private').set('checked', true);
-            pjax.updateVisibility();
-        }
-
-        setTimeout(function () {
-            // For some reason, unless we re-get the node instance here,
-            // getY() always returns 0.
-            var node = Y.one('#classdocs').getById(hash);
-            win.scrollTo(0, node.getY() - 70);
-        }, 1);
-    }
-
-    if (!classTabView) {
-        return;
-    }
-
-    if (src === 'hashchange' && !hash) {
-        defaultTab = 'index';
-    } else {
-        if (localStorage) {
-            defaultTab = localStorage.getItem('tab_' + pjax.getPath()) ||
-                'index';
-        } else {
-            defaultTab = 'index';
-        }
-    }
-
-    if (hash && (node = Y.one('#classdocs').getById(hash))) {
-        if ((tabPanel = node.ancestor('.api-class-tabpanel', true))) {
-            if ((tab = Y.one('#classdocs .api-class-tab.' + tabPanel.get('id')))) {
-                if (classTabView.get('rendered')) {
-                    Y.Widget.getByNode(tab).set('selected', 1);
-                } else {
-                    tab.addClass('yui3-tab-selected');
-                }
-            }
-        }
-
-        // Scroll to the desired element if this is a hash URL.
-        if (node) {
-            if (classTabView.get('rendered')) {
-                scrollToNode();
-            } else {
-                classTabView.once('renderedChange', scrollToNode);
-            }
-        }
-    } else {
-        tab = Y.one('#classdocs .api-class-tab.' + defaultTab);
-
-        // When the `defaultTab` node isn't found, `localStorage` is stale.
-        if (!tab && defaultTab !== 'index') {
-            tab = Y.one('#classdocs .api-class-tab.index');
-        }
-
-        if (classTabView.get('rendered')) {
-            Y.Widget.getByNode(tab).set('selected', 1);
-        } else {
-            tab.addClass('yui3-tab-selected');
-        }
-    }
-};
-
-pjax.updateVisibility = function () {
-    var container = pjax.get('container');
-
-    container.toggleClass('hide-inherited',
-            !Y.one('#api-show-inherited').get('checked'));
-
-    container.toggleClass('show-deprecated',
-            Y.one('#api-show-deprecated').get('checked'));
-
-    container.toggleClass('show-protected',
-            Y.one('#api-show-protected').get('checked'));
-
-    container.toggleClass('show-private',
-            Y.one('#api-show-private').get('checked'));
-
-    pjax.checkVisibility();
-};
-
-// -- Route Handlers -----------------------------------------------------------
-
-pjax.handleClasses = function (req, res, next) {
-    var status = res.ioResponse.status;
-
-    // Handles success and local filesystem XHRs.
-    if (res.ioResponse.readyState === 4 && (!status || (status >= 200 && status < 300))) {
-        pjax.initClassTabView();
-    }
-
-    next();
-};
-
-pjax.handleFiles = function (req, res, next) {
-    var status = res.ioResponse.status;
-
-    // Handles success and local filesystem XHRs.
-    if (res.ioResponse.readyState === 4 && (!status || (status >= 200 && status < 300))) {
-        pjax.initLineNumbers();
-    }
-
-    next();
-};
-
-// -- Event Handlers -----------------------------------------------------------
-
-pjax.onNavigate = function (e) {
-    var hash         = e.hash,
-        originTarget = e.originEvent && e.originEvent.target,
-        tab;
-
-    if (hash) {
-        tab = originTarget && originTarget.ancestor('.yui3-tab', true);
-
-        if (hash === win.location.hash) {
-            pjax.updateTabState('hashchange');
-        } else if (!tab) {
-            win.location.hash = hash;
-        }
-
-        e.preventDefault();
-        return;
-    }
-
-    // Only scroll to the top of the page when the URL doesn't have a hash.
-    this.set('scrollToTop', !e.url.match(/#.+$/));
-
-    bdNode.addClass('loading');
-};
-
-pjax.onOptionClick = function (e) {
-    pjax.updateVisibility();
-};
-
-pjax.onTabSelectionChange = function (e) {
-    var tab   = e.newVal,
-        tabId = tab.get('contentBox').getAttribute('href').substring(1);
-
-    selectedTab = tab;
-
-    // If switching from a previous tab (i.e., this is not the default tab),
-    // replace the history entry with a hash URL that will cause this tab to
-    // be selected if the user navigates away and then returns using the back
-    // or forward buttons.
-    if (e.prevVal && localStorage) {
-        localStorage.setItem('tab_' + pjax.getPath(), tabId);
-    }
-
-    pjax.checkVisibility(tab);
-};
-
-// -- Init ---------------------------------------------------------------------
-
-pjax.on('navigate', pjax.onNavigate);
-
-pjax.initRoot();
-pjax.upgrade();
-pjax.initClassTabView();
-pjax.initLineNumbers();
-pjax.updateVisibility();
-
-Y.APIList.rootPath = pjax.get('root');
-
-Y.one('#api-options').delegate('click', pjax.onOptionClick, 'input');
-
-Y.on('hashchange', function (e) {
-    pjax.updateTabState('hashchange');
-}, win);
-
-});
 
 YUI().use('node', function(Y) {
     var code = Y.all('.prettyprint.linenums');
