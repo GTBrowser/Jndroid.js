@@ -364,7 +364,7 @@ function EditText() {
     var mSelf = this;
     var mFocusListener = null;
     var mInput;
-    var mTextSize;
+    var mTextSize = 12;
     var mIsPassword = false;
     var mTextListener = null;
 
@@ -484,7 +484,8 @@ function EditText() {
         var contentWidth = width - this.getPaddingLeft() - this.getPaddingRight();
         var contentHeight = height - this.getPaddingTop() - this.getPaddingBottom();
         if (hMode != MeasureSpec.EXACTLY) {
-            contentHeight = mTextSize * 1.2 + this.getPaddingTop() + this.getPaddingBottom();
+            contentHeight = mTextSize * 1.5;
+            height = contentHeight + this.getPaddingTop() + this.getPaddingBottom();
         }
         mInput.style.fontFamily = Utils.findFontFamily(mInput);
         mInput.style.width = contentWidth + "px";
@@ -510,6 +511,7 @@ function EditText() {
         mInput.style.border = "0";
         mInput.style.outline = "none";
         mInput.style.padding = 0;
+        mInput.style.fontSize = mTextSize;
         mInput.onfocus = function() {
             mSelf.onFocusChanged(true);
         };

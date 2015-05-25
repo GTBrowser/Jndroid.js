@@ -23,12 +23,16 @@ function Playground(title, initCode, isHtml) {
     mTitle.setText(title);
     this.addView(mTitle);
 
-    var mEditArea = new CodeMirrorView(isHtml);
-    this.postDelayed(function() {
-        mEditArea.setText(initCode);
-    }, 200);
-
+    var mEditArea = new FrameLayout();
+    mEditArea.setPadding(4);
     this.addView(mEditArea);
+
+    var mCodeMirrorView = new CodeMirrorView(isHtml);
+    this.postDelayed(function() {
+        mCodeMirrorView.setText(initCode);
+        update();
+    }, 100);
+    mEditArea.addView(mCodeMirrorView);
 
     var mCodePreviewer;
     if (isHtml) {
@@ -113,10 +117,9 @@ function Playground(title, initCode, isHtml) {
     }
 
     function update(){
-        var code = mEditArea.getText();
+        var code = mCodeMirrorView.getText();
         mCodePreviewer.applyCode(code);
     }
-    update();
 }
 
 function CodeMirrorView(isHtml) {
@@ -151,9 +154,10 @@ function CodeMirrorView(isHtml) {
             lineNumbers: false,
             matchBrackets: true,
             continueComments: "Enter",
-            lineWrapping:true
+            lineWrapping:true,
+            tabSize:2
         });
-    }, 100);
+    }, 50);
 
     this.getEditor = function() {
         return mCMEditor;

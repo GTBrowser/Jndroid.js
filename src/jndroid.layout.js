@@ -1,6 +1,11 @@
-function LayoutParams(width, height) {
-    this.width = width;
-    this.height = height;
+function LayoutParams(widthOrParams, height) {
+    if (widthOrParams.constructor.name == "LayoutParams") {
+        this.width = widthOrParams.width;
+        this.height = widthOrParams.height;
+    } else {
+        this.width = widthOrParams;
+        this.height = height;
+    }
     this.leftMargin = 0;
     this.topMargin = 0;
     this.rightMargin = 0;
