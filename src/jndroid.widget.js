@@ -1,3 +1,10 @@
+/**
+ * Layout container for a view hierarchy that can be scrolled by the user,
+ * allowing it to be larger than the physical display.
+ *
+ * @class ScrollView
+ * @extends ViewGroup
+ */
 function ScrollView() {
     ViewGroup.apply(this, []);
 
@@ -24,6 +31,13 @@ function ScrollView() {
     };
 }
 
+/**
+ * Represents a push-button widget. Push-buttons can be
+ * pressed, or clicked, by the user to perform an action.
+ *
+ * @class Button
+ * @extends ViewGroup
+ */
 function Button() {
     ViewGroup.apply(this, []);
 
@@ -89,6 +103,16 @@ function Button() {
     };
 }
 
+/**
+ * Displays an arbitrary image, such as an icon.  The ImageView class
+ * can load images from various sources (such as resources or content
+ * providers), takes care of computing its measurement from the image so that
+ * it can be used in any layout manager, and provides various display options
+ * such as scaling and tinting.
+ *
+ * @class ImageView
+ * @extends ViewGroup
+ */
 function ImageView() {
     ViewGroup.apply(this, []);
 
@@ -108,6 +132,12 @@ function ImageView() {
         this.setImgSrc(src);
     };
 
+    /**
+     * Sets the content of this ImageView.
+     *
+     * @method setImgSrc
+     * @param src
+     */
     this.setImgSrc = function(src) {
         this.setVisibility(View.VISIBLE);
         mSrc = src;

@@ -1,3 +1,9 @@
+/**
+ * LayoutParams are used by views to tell their parents how they want to be
+ * laid out.
+ *
+ * @class LayoutParams
+ */
 function LayoutParams(widthOrParams, height) {
     if (widthOrParams.constructor.name == "LayoutParams") {
         this.width = widthOrParams.width;
@@ -13,6 +19,15 @@ function LayoutParams(widthOrParams, height) {
     this.gravity = -1;
     this.weight = 0;
 
+    /**
+     * Sets the margins, in pixels.
+     *
+     * @method setMargins
+     * @param {int} l the left margin size
+     * @param {int} t the top margin size
+     * @param {int} r the right margin size
+     * @param {int} b the bottom margin size
+     */
     this.setMargins = function(l, t, r, b) {
         if (t == undefined && r == undefined && b == undefined) {
             t = l;
@@ -25,8 +40,41 @@ function LayoutParams(widthOrParams, height) {
         this.bottomMargin = b;
     };
 }
+
+/**
+ * Special value for the height or width requested by a View.
+ * FILL_PARENT means that the view wants to be as big as its parent,
+ * minus the parent's padding, if any.
+ *
+ * @property FILL_PARENT
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(LayoutParams,"FILL_PARENT",{value:-1});
+
+/**
+ * Special value for the height or width requested by a View.
+ * MATCH_PARENT means that the view wants to be as big as its parent,
+ * minus the parent's padding, if any.
+ *
+ * @property MATCH_PARENT
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(LayoutParams,"MATCH_PARENT",{value:-1});
+
+/**
+ * Special value for the height or width requested by a View.
+ * WRAP_CONTENT means that the view wants to be just large enough to fit
+ * its own internal content, taking its own padding into account.
+ *
+ * @property WRAP_CONTENT
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(LayoutParams,"WRAP_CONTENT",{value:-2});
 
 function getDefaultLayoutParams() {
@@ -85,11 +133,24 @@ function calcOffsetYByGravity(parent, child) {
     return offsetY;
 }
 
+/**
+ * A Layout that arranges its children in a single column or a single row. The direction of
+ * the row can be set by calling setOrientation().
+ *
+ * @class LinearLayout
+ * @extends ViewGroup
+ */
 function LinearLayout() {
     ViewGroup.apply(this, []);
 
     var mOrientation = LinearLayout.VERTICAL;
 
+    /**
+     * Should the layout be a column or a row.
+     * @method setOrientation
+     * @param {int} o Pass HORIZONTAL or VERTICAL. Default
+     * value is VERTICAL.
+     */
     this.setOrientation = function(o) {
         mOrientation = o;
         this.requestLayout();
@@ -283,9 +344,36 @@ function LinearLayout() {
         }
     };
 }
+
+/**
+ * for horizontal linear layouts.
+ *
+ * @property HORIZONTAL
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(LinearLayout,"HORIZONTAL",{value:0});
+
+/**
+ * for vertical linear layouts.
+ *
+ * @property VERTICAL
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(LinearLayout,"VERTICAL",{value:1});
 
+/**
+ * FrameLayout is designed to block out an area on the screen to display
+ * a single item. Generally, FrameLayout should be used to hold a single child view, because it can
+ * be difficult to organize child views in a way that's scalable to different screen sizes without
+ * the children overlapping each other.
+ *
+ * @class FrameLayout
+ * @extends ViewGroup
+ */
 function FrameLayout() {
     ViewGroup.apply(this, []);
 
@@ -315,6 +403,13 @@ function FrameLayout() {
         }
     };
 }
+
+/**
+ * A view that shows items in a center-locked, horizontally scrolling list.
+ *
+ * @class Gallery
+ * @extends ViewGroup
+ */
 function Gallery() {
     ViewGroup.apply(this, []);
 

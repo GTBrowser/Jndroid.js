@@ -156,43 +156,143 @@ function Rect(l, t, r, b) {
     };
 }
 
+/**
+ * A MeasureSpec encapsulates the layout requirements passed from parent to child.
+ * Each MeasureSpec represents a requirement for either the width or the height.
+ * A MeasureSpec is comprised of a size and a mode.
+ *
+ * @class MeasureSpec
+ * @static
+ */
 var MeasureSpec = new _MeasureSpec();
 function _MeasureSpec() {
+
+    /**
+     * Creates a measure specification based on the supplied size and mode.
+     *
+     * @method makeMeasureSpec
+     * @param {int} size the size of the measure specification.
+     * @param {int} mode the mode of the measure specification.
+     * @return {int} the measure specification based on size and mode.
+     */
     this.makeMeasureSpec = function(size, mode) {
         return (size & ~MeasureSpec.MODE_MASK) | (mode & MeasureSpec.MODE_MASK);
     };
 
+    /**
+     * Extracts the mode from the supplied measure specification.
+     *
+     * @method getMode
+     * @param {int} measureSpec the measure specification to extract the mode from.
+     * @return {int} MeasureSpec.UNSPECIFIED, MeasureSpec.AT_MOST or MeasureSpec.EXACTLY.
+     */
     this.getMode = function(measureSpec) {
         return (measureSpec & MeasureSpec.MODE_MASK);
     };
 
+    /**
+     * Extracts the size from the supplied measure specification.
+     *
+     * @method getSize
+     * @param {int} measureSpec the measure specification to extract the size from.
+     * @return {int} the size in pixels defined in the supplied measure specification.
+     */
     this.getSize = function(measureSpec) {
         return (measureSpec & ~MeasureSpec.MODE_MASK);
     };
 }
+
 Object.defineProperty(MeasureSpec,"MODE_MASK",{value:(0x3 << 30)});
+
+/**
+ * Measure specification mode: The parent has not imposed any constraint
+ * on the child. It can be whatever size it wants.
+ *
+ * @property UNSPECIFIED
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(MeasureSpec,"UNSPECIFIED",{value:(0x0 << 30)});
+
+/**
+ * Measure specification mode: The parent has determined an exact size
+ * for the child. The child is going to be given those bounds regardless
+ * of how big it wants to be.
+ *
+ * @property EXACTLY
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(MeasureSpec,"EXACTLY",{value:(0x1 << 30)});
+
+/**
+ * Measure specification mode: The child can be as large as it wants up
+ * to the specified size.
+ *
+ * @property AT_MOST
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(MeasureSpec,"AT_MOST",{value:(0x2 << 30)});
 
+/**
+ * Object used to report movement (mouse, pen, finger, trackball) events.
+ * Motion events may hold either absolute or relative movements and
+ * other data, depending on the type of device.
+ *
+ * @class MotionEvent
+ */
 function MotionEvent(rawEv) {
 
+    /**
+     * Returns the X coordinate of this event.
+     *
+     * @method getX
+     * @return {float} X coordinate.
+     */
     this.getX = function() {
         var div = this.realView.getDiv();
         var offset = Utils.getOffset(div);
         return this.getTouches().pageX - offset.left;
     };
 
+    /**
+     * Returns the Y coordinate of this event.
+     *
+     * @method getY
+     * @return {float} Y coordinate.
+     */
     this.getY = function() {
         var div = this.realView.getDiv();
         var offset = Utils.getOffset(div);
         return this.getTouches().pageY - offset.top;
     };
 
+    /**
+     * Returns the original raw X coordinate of this event.  For touch
+     * events on the screen, this is the original location of the event
+     * on the screen, before it had been adjusted for the containing window
+     * and views.
+     *
+     * @method getRawX
+     * @return {float} original raw X coordinate.
+     */
     this.getRawX = function() {
         return this.getTouches().pageX;
     };
 
+    /**
+     * Returns the original raw X coordinate of this event.  For touch
+     * events on the screen, this is the original location of the event
+     * on the screen, before it had been adjusted for the containing window
+     * and views.
+     *
+     * @method getRawY
+     * @return {float} original raw Y coordinate.
+     */
     this.getRawY = function() {
         return this.getTouches().pageY;
     };
@@ -209,6 +309,12 @@ function MotionEvent(rawEv) {
         }
     };
 
+    /**
+     * Return the kind of action being performed.
+     *
+     * @method getAction
+     * @return {int} the action.
+     */
     this.getAction = function() {
         if (rawEv.type == "touchstart" || rawEv.type == "mousedown") {
             return MotionEvent.ACTION_DOWN;
@@ -229,49 +335,161 @@ function MotionEvent(rawEv) {
     };
 }
 
+/**
+ * Constant for : A pressed gesture has started, the
+ * motion contains the initial starting location.
+ *
+ * @property ACTION_DOWN
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(MotionEvent,"ACTION_DOWN",{value:0});
+
+/**
+ * Constant for : A pressed gesture has finished, the
+ * motion contains the final release location as well as any intermediate
+ * points since the last down or move event.
+ *
+ * @property ACTION_UP
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(MotionEvent,"ACTION_UP",{value:1});
+
+/**
+ * Constant for : A change has happened during a
+ * press gesture (between MotionEvent.ACTION_DOWN and MotionEvent.ACTION_UP).
+ * The motion contains the most recent point, as well as any intermediate
+ * points since the last down or move event.
+ *
+ * @property ACTION_MOVE
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(MotionEvent,"ACTION_MOVE",{value:2});
+
+/**
+ * Constant for : The current gesture has been aborted.
+ * You will not receive any more points in it.  You should treat this as
+ * an up event, but not perform any action that you normally would.
+ *
+ * @property ACTION_CANCEL
+ * @type int
+ * @static
+ * @final
+ */
 Object.defineProperty(MotionEvent,"ACTION_CANCEL",{value:3});
 
+/**
+ * A Drawable is a general abstraction for "something that can be drawn."  Most
+ * often you will deal with Drawable as the type of resource retrieved for
+ * drawing things to the screen; the Drawable class provides a generic API for
+ * dealing with an underlying visual resource that may take a variety of forms.
+ *
+ * @class Drawable
+ */
 function Drawable() {
     var mBounds = new Rect(0, 0, 0, 0);
     var mCallback = null;
 
+    /**
+     * Draw in its bounds (set via setBounds) respecting optional effects such
+     * as alpha (set via setAlpha) and color filter (set via setColorFilter).
+     *
+     * @method draw
+     * @param {canvas} canvas The canvas to draw into.
+     */
     this.draw = function(canvas) {
     };
 
+    /**
+     * Return the drawable's bounds Rect.
+     *
+     * @method getBounds
+     * @return {Rect} The bounds of the drawable.
+     */
     this.getBounds = function() {
         return mBounds;
     };
 
+    /**
+     * Specify a bounding rectangle for the Drawable. This is where the drawable
+     * will draw when its draw() method is called.
+     *
+     * @method setBounds
+     */
     this.setBounds = function(l, t, r, b) {
         if (mBounds.left != l || mBounds.top != t || mBounds.right != r || mBounds.bottom != b) {
             mBounds.set(l, t, r, b);
         }
     };
 
+    /**
+     * Bind a object to this Drawable.  Required for clients
+     * that want to support animated drawables.
+     *
+     * @method setCallback
+     * @param {Callback} cb The client's Callback implementation.
+     */
     this.setCallback = function(cb) {
         mCallback = cb;
     };
 
+    /**
+     * Use the current implementation to have this Drawable
+     * redrawn. Does nothing if there is no Callback attached to the
+     * Drawable.
+     *
+     * @method invalidateSelf
+     */
     this.invalidateSelf = function() {
         if (mCallback != null) {
             mCallback.invalidateDrawable(this);
         }
     };
 
+    /**
+     * Specify a set of states for the drawable. These are use-case specific,
+     * so see the relevant documentation.
+     *
+     * @method setState
+     * @param {int[]} state The new set of states to be displayed.
+     */
     this.setState = function(state) {
         this.onStateChange(state);
     };
 
+    /**
+     * Override this in your subclass to change appearance if you recognize the
+     * specified state.
+     *
+     * @method onStateChange
+     * @param {int[]} state The new set of states to be displayed.
+     * @return {boolean} Returns true if the state change has caused the appearance of
+     * the Drawable to change (that is, it needs to be drawn), else false
+     * if it looks the same and there is no need to redraw it since its
+     * last state.
+     */
     this.onStateChange = function(state) {
     };
 
+    /**
+     * Return the intrinsic width of the underlying drawable object.
+     * @method getIntrinsicWidth
+     * @return {int} Returns -1 if it has no intrinsic width, such as with a solid color.
+     */
     this.getIntrinsicWidth = function() {
         return -1;
     };
 
+    /**
+     * Return the intrinsic height of the underlying drawable object.
+     * @method getIntrinsicHeight
+     * @return {int} Returns -1 if it has no intrinsic height, such as with a solid color.
+     */
     this.getIntrinsicHeight = function() {
         return -1;
     }
