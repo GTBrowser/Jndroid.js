@@ -4,6 +4,7 @@
 
 var mTitlebar;
 var mSidebar;
+var mTab;
 var mMainView;
 var mMask;
 var mGallery;
@@ -22,6 +23,9 @@ function MainView() {
 
     mTitlebar = new Titlebar();
     this.addView(mTitlebar);
+
+    mTab = new Tab();
+    this.addView(mTab);
 
     mMask = new ViewGroup();
     mMask.setBackgroundColor(0x99000000);
@@ -51,6 +55,7 @@ function MainView() {
 
         mTitlebar.measure(widthMS, 64);
         mSidebar.measure(240, heightMS);
+        mTab.measure(widthMS,48);
         mMask.measure(widthMS, heightMS);
         mGallery.measure(widthMS, height - 64);
 
@@ -58,10 +63,14 @@ function MainView() {
     };
 
     this.onLayout = function(x, y) {
+        var offSetY = 0;
         mTitlebar.layout(0, 0);
+        offSetY += mTitlebar.getMeasuredHeight();
+        mTab.layout(0,offSetY);
         mSidebar.layout(-240, 0);
         mMask.layout(0, 0);
-        mGallery.layout(0, 64);
+        offSetY += mTab.getMeasuredHeight();
+        mGallery.layout(0, offSetY);
     };
 
     this.showSideBar = function(){
