@@ -1,56 +1,54 @@
 /**
  * Created by lency on 5/26/15.
  */
-function Comment(avatar, name, text)
-{
-    ViewGroup.apply(this, []);
+function Comment(avatar, name, text) {
+    LinearLayout.apply(this, []);
 
+    var ICON_AREA_WIDTH = 72;
+    var ICON_SIZE = 40;
     var mEditHeight = 150;
-    var mTitleHeight = 40;
+
+    this.setOrientation(LinearLayout.HORIZONTAL);
+
 
     this.setEditHeight = function(h) {
         mEditHeight = h;
         this.requestLayout();
     };
 
+    var iconArea = new FrameLayout();
+    var iconAreaLp = new LayoutParams(ICON_AREA_WIDTH, ICON_AREA_WIDTH);
+    this.addView(iconArea, iconAreaLp);
+
     var mAvatar = new ImageView();
     mAvatar.setImgSrc(avatar);
-    mAvatar.setImgWidth(mTitleHeight);
-    mAvatar.setImgHeight(mTitleHeight);
-    mAvatar.setCornerSize(mTitleHeight / 2, mTitleHeight / 2, mTitleHeight / 2, mTitleHeight / 2);
-    this.addView(mAvatar);
+    mAvatar.setImgWidth(ICON_SIZE);
+    mAvatar.setImgHeight(ICON_SIZE);
+    mAvatar.setCornerSize(ICON_SIZE / 2);
+    var avatarLp = new LayoutParams(ICON_SIZE, ICON_SIZE);
+    avatarLp.gravity = Gravity.CENTER;
+    iconArea.addView(mAvatar, avatarLp);
+
+    var contentArea = new LinearLayout();
+    var contentLp = new LayoutParams(0, LayoutParams.WRAP_CONTENT);
+    contentLp.weight = 1;
+    this.addView(contentArea, contentLp);
 
     var mName = new TextView();
-    mName.setText("---- by " + name);
-    this.addView(mName);
+    mName.setText(name);
+    mName.setTextSize(TEXT_SIZE);
+    var namelp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    namelp.topMargin = PADDING;
+    contentArea.addView(mName, namelp);
 
     var mComment = new TextView();
     mComment.setText(text);
-    mComment.setBorderBottom(1, DIVIDERS_COLOR);
-    this.addView(mComment);
+    mComment.setTextSize(SUB_TEXT_SIZE);
+    mComment.setTextColor(SUB_TEXT_COLOR);
+    mComment.setLineHeight(TEXT_SIZE + TEXT_SIZE);
+    var commentlp = new LayoutParams(namelp);
+    commentlp.topMargin = 8;
+    commentlp.bottomMargin = PADDING;
+    contentArea.addView(mComment, commentlp);
 
-    this.onMeasure = function(widthMS, heightMS){
-        var width = MeasureSpec.getSize(widthMS);
-        var height = mEditHeight;
-
-        mComment.measure(MeasureSpec.makeMeasureSpec(width - 2 * PADDING, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(mEditHeight - mTitleHeight - 2 * PADDING, MeasureSpec.EXACTLY));
-
-        mName.measure(MeasureSpec.makeMeasureSpec(width - 2 * PADDING, MeasureSpec.WRAP_CONTENT),
-            MeasureSpec.makeMeasureSpec(mTitleHeight, MeasureSpec.EXACTLY));
-
-        mAvatar.measure(MeasureSpec.makeMeasureSpec(mTitleHeight, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(mTitleHeight, MeasureSpec.EXACTLY));
-
-        this.setMeasuredDimension(width, height);
-    };
-
-    this.onLayout = function(x, y){
-        mComment.layout(PADDING, PADDING);
-
-        var width = mComment.getMeasuredWidth();
-
-        mName.layout(width - mTitleHeight - 120, mEditHeight - mTitleHeight);
-        mAvatar.layout(width - mTitleHeight, mEditHeight - mTitleHeight - PADDING / 2);
-    };
 }

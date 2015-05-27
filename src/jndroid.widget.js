@@ -1,7 +1,7 @@
 function ScrollView() {
     ViewGroup.apply(this, []);
 
-    this.getDiv().style.overflow = "auto";
+    this.setStyle("overflow", "auto");
 
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
@@ -10,6 +10,32 @@ function ScrollView() {
             var child = this.getChildAt(0);
             var contentWidth = width - this.getPaddingLeft() - this.getPaddingRight();
             child.measure(contentWidth, height);
+        }
+        this.setMeasuredDimension(width, height);
+    };
+
+    this.onLayout = function(x, y) {
+        var offsetX = this.getPaddingLeft();
+        var offsetY = this.getPaddingTop();
+        if (this.getChildCount() > 0) {
+            var child = this.getChildAt(0);
+            child.layout(offsetX, offsetY);
+        }
+    };
+}
+
+function HorizontalScrollView() {
+    ViewGroup.apply(this, []);
+
+    this.setStyle("overflow", "auto");
+
+    this.onMeasure = function(widthMS, heightMS) {
+        var width = MeasureSpec.getSize(widthMS);
+        var height = MeasureSpec.getSize(heightMS);
+        if (this.getChildCount() > 0) {
+            var child = this.getChildAt(0);
+            var contentHeight = height - this.getPaddingTop() - this.getPaddingBottom();
+            child.measure(width, contentHeight);
         }
         this.setMeasuredDimension(width, height);
     };
@@ -213,7 +239,7 @@ function TextView() {
     };
 
     this.setLineHeight = function(lineHeight) {
-        //mContent.style.lineHeight = lineHeight + "px";
+        mContent.style.lineHeight = lineHeight + "px";
     };
 
     this.setSingleLine = function(singleLine) {

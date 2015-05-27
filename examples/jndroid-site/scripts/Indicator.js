@@ -55,9 +55,6 @@ function Indicator() {
         } else {
             this.onDrawSpot(canvas);
         }
-
-        console.log(mStyle);
-
     };
 
     this.onDrawLine = function(canvas) {
@@ -87,7 +84,6 @@ function Indicator() {
 
     this.onXChanged = function(p) {
         mProcess = p;
-        console.log(mProcess);
         this.postInvalidate();
     };
 

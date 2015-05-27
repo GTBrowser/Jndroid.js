@@ -3,36 +3,38 @@ function Tab () {
     this.setBackgroundColor(THEME_COLOR);
     this.setBoxShadow(0, 5, 5, 0, 0x42000000);
 
+    var mScrollView = new HorizontalScrollView();
+    this.addView(mScrollView);
     var mTabContent = new TabContent();
-    this.addView(mTabContent);
+    mScrollView.addView(mTabContent);
 
     var mIndicator = new Indicator();
     mIndicator.setStyle(Indicator.Line);
-    mIndicator.setIndicatorCount(3);
+    mIndicator.setIndicatorCount(4);
     mIndicator.setIndicatorColor(0xfff3ffa3);
-    mIndicator.INDICATOR_SIZE = 200;
+    mIndicator.INDICATOR_SIZE = 240;
     mIndicator.GAP = 0;
     this.addView(mIndicator);
 
     mTabContent.setTabListener(this);
 
     this.onTabButtonSelect = function(index) {
-        mIndicator.onXChanged(index/2);
+        mIndicator.onXChanged(index / 3);
     };
 
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
 
-        mTabContent.measure(widthMS, heightMS);
-        mIndicator.measure(widthMS,2);
+        mScrollView.measure(widthMS, heightMS);
+        mIndicator.measure(widthMS, 2);
 
         this.setMeasuredDimension(width, height);
     };
 
     this.onLayout = function(x, y) {
         var offSetY = 0;
-        mTabContent.layout(0, 0);
+        mScrollView.layout(0, 0);
         mIndicator.layout(16,this.getMeasuredHeight() - mIndicator.getMeasuredHeight());
     };
 
@@ -40,12 +42,11 @@ function Tab () {
 
 function TabContent() {
     LinearLayout.apply(this, []);
-    this.setWillNotDraw(false);
 
     var mSelf = this;
     var mListener;
     var mItems = [];
-    var buttonWidth = 200;
+    var buttonWidth = 240;
     var mSelectIndex = 0;
 
     var mContent = new LinearLayout();
@@ -63,6 +64,7 @@ function TabContent() {
         button.setDimBg(false);
         button.setWaveColor(0x33ffffff);
         button.setBoxShadow(0, 0, 0, 0, 0);
+        button.setTextSize(24);
         return button;
     };
 
@@ -70,8 +72,6 @@ function TabContent() {
     mIntroductionButton.setOnClickListener(function() {
         mSelf.setSelectIndex(0);
         mGallery.snapToScreen(0, 300);
-        mMainView.hideSidebar();
-        mMainView.setTitleText("Introduction");
     });
     mItems.push(mIntroductionButton);
     mContent.addView(mIntroductionButton, mButtonLp);
@@ -80,8 +80,6 @@ function TabContent() {
     mDocumentationButton.setOnClickListener(function() {
         mSelf.setSelectIndex(1);
         mGallery.snapToScreen(1, 300);
-        mMainView.hideSidebar();
-        mMainView.setTitleText("Documentation");
         this.postDelayed(function() {
             if (mDocView == null) {
                 mDocView = new DocumentationView();
@@ -96,8 +94,6 @@ function TabContent() {
     mApplicationsButton.setOnClickListener(function() {
         mGallery.snapToScreen(2, 300);
         mSelf.setSelectIndex(2);
-        mMainView.hideSidebar();
-        mMainView.setTitleText("Applications");
         this.postDelayed(function() {
             if (mAppView == null) {
                 mAppView = new ApplicationsView();
@@ -107,6 +103,20 @@ function TabContent() {
     });
     mItems.push(mApplicationsButton);
     mContent.addView(mApplicationsButton, mButtonLp);
+
+    var mQAButton = createButton("Q&A");
+    mQAButton.setOnClickListener(function() {
+        mGallery.snapToScreen(3, 300);
+        mSelf.setSelectIndex(3);
+        this.postDelayed(function() {
+            if (mQAView == null) {
+                mQAView = new QAView();
+                mQAPage.addView(mQAView);
+            }
+        }, 300);
+    });
+    mItems.push(mQAButton);
+    mContent.addView(mQAButton, mButtonLp);
 
 
     this.setTabListener = function(listener) {
@@ -118,10 +128,7 @@ function TabContent() {
         if (mListener != null) {
             mListener.onTabButtonSelect(index);
         }
-    };
-
-    this.onDraw = function(canvas) {
-        for (var i = 0;i< mItems.length;i++) {
+        for (var i = 0; i < mItems.length;i++) {
             if (i == mSelectIndex) {
                 mItems[i].setTextColor(0xffffffff);
             } else {
@@ -129,4 +136,6 @@ function TabContent() {
             }
         }
     };
+
+    this.setSelectIndex(0);
 }
