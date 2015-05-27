@@ -53,7 +53,7 @@ function CommentView() {
     comment1.setBorderBottom(1, DIVIDERS_COLOR);
     this.addView(comment1);
 
-    comment1 = new Comment('images/yanglingfeng.png', '杨凌枫，一个见钱眼开的手艺人', 'Jndroid > AngularJS > Ember.js > Backbone.js');
+    comment1 = new Comment('images/yanglingfeng.png', 'Hulk Yang，一个见钱眼开的手艺人', 'Jndroid > (AngularJS | Backbone.js | Ember.js)');
     comment1.setBorderBottom(1, DIVIDERS_COLOR);
     this.addView(comment1);
 
