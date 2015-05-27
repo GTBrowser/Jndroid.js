@@ -1,7 +1,6 @@
-{
-  "name":"Jndroid",
+{ "name":"Jndroid",
   "description": "Jndroid is a JavaScript framework to write WebApp in Android way.",
   "Version": "0.0.1",
   "main":"./dist/jndroid.min.js",
-  "ignore":["*.md",".gitignore","examples","docs"]
+  "ignore":["*.md",".gitignore","examples","docs","screenshots"]
 }
