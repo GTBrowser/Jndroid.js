@@ -920,6 +920,7 @@ function View() {
     var mHeight = 0;
     var mWidthMS = 0;
     var mHeightMS = 0;
+    var mBackground = 0;
     var mPaddingLeft = 0;
     var mPaddingTop = 0;
     var mPaddingRight = 0;
@@ -1332,6 +1333,10 @@ function View() {
         }
     };
 
+    this.getBackground = function() {
+        return mBackground;
+    };
+
 	/**
 	* Sets the background color for this view.
 	*
@@ -1339,6 +1344,7 @@ function View() {
 	* @params {int} color The color of the background.
 	*/
     this.setBackgroundColor = function(color) {
+        mBackground = color;
         mDiv.style.background = Utils.toCssColor(color);
     };
 
@@ -3671,13 +3677,6 @@ function WaveDrawable() {
 }
 
 
-/**
- * Layout container for a view hierarchy that can be scrolled by the user,
- * allowing it to be larger than the physical display.
- *
- * @class ScrollView
- * @extends ViewGroup
- */
 function ScrollView() {
     ViewGroup.apply(this, []);
 
@@ -3704,88 +3703,6 @@ function ScrollView() {
     };
 }
 
-/**
- * Represents a push-button widget. Push-buttons can be
- * pressed, or clicked, by the user to perform an action.
- *
- * @class Button
- * @extends ViewGroup
- */
-function Button() {
-    ViewGroup.apply(this, []);
-
-    this.setWillNotDraw(false);
-    this.setBackgroundColor("#cccccc");
-
-    this.getDiv().style.textAlign = "center";
-
-    //var mInterval = null;
-    //var mPressRadius = 5;
-    //
-    //this.onInterval = function(obj) {
-    //    mPressRadius += 10;
-    //    obj.invalidate();
-    //}
-
-    addTouchListener(this);
-
-    this.registerTouchEvent = function() {
-        this.getDiv().addEventListener("touchstart", this.touchStart, false);
-        this.getDiv().addEventListener("touchend", this.touchEnd, false);
-        this.getDiv().addEventListener("touchcancel", this.touchCancel, false);
-    };
-
-    this.registerTouchEvent();
-
-    this.touchStart = function(event) {
-        this.style.background = "#999999";
-        //var button = findTouchObject(this);
-        //mInterval = setInterval(button.onInterval, 100, button);
-    };
-
-    this.touchEnd = function(event) {
-        this.style.background = "#cccccc";
-    };
-
-    this.touchCancel = function(event) {
-        this.style.background = "#cccccc";
-    };
-
-    this.setText = function(text) {
-        var div = document.createElement("div");
-        div.style.width = "100%";
-        div.style.lineHeight = "36px";
-        div.style.position = "absolute";
-        div.style.textAlign = "center";
-        div.style.left = 0;
-        div.style.top = 0;
-        div.innerHTML = text;
-        this.getDiv().appendChild(div);
-    };
-
-    this.onMeasure = function(width, height) {
-        this.setMeasuredDimension(120, 36);
-    };
-
-    this.onDraw = function(canvas) {
-        //canvas.beginPath();
-        //canvas.arc(20, 15, mPressRadius, 0, Math.PI * 2, true);
-        //canvas.closePath();
-        //canvas.fillStyle = 'rgba(0,255,0,0.25)';
-        //canvas.fill();
-    };
-}
-
-/**
- * Displays an arbitrary image, such as an icon.  The ImageView class
- * can load images from various sources (such as resources or content
- * providers), takes care of computing its measurement from the image so that
- * it can be used in any layout manager, and provides various display options
- * such as scaling and tinting.
- *
- * @class ImageView
- * @extends ViewGroup
- */
 function ImageView() {
     ViewGroup.apply(this, []);
 
@@ -3805,12 +3722,6 @@ function ImageView() {
         this.setImgSrc(src);
     };
 
-    /**
-     * Sets the content of this ImageView.
-     *
-     * @method setImgSrc
-     * @param src
-     */
     this.setImgSrc = function(src) {
         this.setVisibility(View.VISIBLE);
         mSrc = src;
@@ -4056,6 +3967,33 @@ function TextView() {
             this.getDiv().style.textAlign = "left";
         }
 
+    };
+}
+
+function Button() {
+    TextView.apply(this, []);
+
+    var mPressBg = 0x1a000000;
+    var mNormalBg = 0;
+
+    this.setGravity(Gravity.CENTER);
+    this.setBorder(1, 0x1a000000);
+
+    this.setPressBg = function(c) {
+        mPressBg = c;
+    };
+
+    this.onTouchEvent = function(e) {
+        switch (e.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mNormalBg = this.setBackgroundColor();
+                this.setBackgroundColor(mPressBg);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                this.setBackgroundColor(mNormalBg);
+                break;
+        }
     };
 }
 
