@@ -14,7 +14,7 @@ bower install Jndroid --save
 
 Include the script on your page.
 
-```
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,7 +24,6 @@ Include the script on your page.
 <script>
 	var mTextView = new TextView();
 	mTextView.setText("hello world");
-
 	setContentView(mTextView);
 </script>
 </body>
