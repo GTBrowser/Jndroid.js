@@ -444,7 +444,7 @@ function _Utils() {
     this.findFontFamily = function(htmlNode) {
         var fontFamily = "";
         var node = htmlNode;
-        while (node != document) {
+        while (node !== null && node != document) {
             fontFamily = node.style.fontFamily;
             if (fontFamily != "") {
                 return fontFamily;
