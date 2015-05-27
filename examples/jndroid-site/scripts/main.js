@@ -11,9 +11,11 @@ var mGallery;
 var mIntroPage;
 var mDocPage;
 var mAppPage;
+var mQAPage;
 var mIntroView = null;
 var mDocView = null;
 var mAppView = null;
+var mQAView = null;
 
 function MainView() {
     ViewGroup.apply(this, []);
@@ -42,9 +44,11 @@ function MainView() {
     mIntroPage = new FrameLayout();
     mDocPage = new FrameLayout();
     mAppPage = new FrameLayout();
+    mQAPage = new FrameLayout();
     mGallery.addPage(mIntroPage);
     mGallery.addPage(mDocPage);
     mGallery.addPage(mAppPage);
+    mGallery.addPage(mQAPage);
 
     mIntroView = new IntroductionView();
     mIntroPage.addView(mIntroView);

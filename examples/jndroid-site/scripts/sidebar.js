@@ -88,6 +88,21 @@ function Sidebar()
         }, 300);
     });
 
+    var qa = new NavItem("Q & A");
+    sidebarContent.addView(qa);
+
+    qa.setOnClickListener(function(){
+        mGallery.snapToScreen(3, 300);
+        mMainView.hideSidebar();
+        mMainView.setTitleText("Q & A");
+        this.postDelayed(function() {
+            if (mQAView == null) {
+                mQAView = new QAView();
+                mQAPage.addView(mQAView);
+            }
+        }, 300);
+    });
+
     this.onMeasure = function(widthMS, heightMS){
 
         var width = MeasureSpec.getSize(widthMS);
