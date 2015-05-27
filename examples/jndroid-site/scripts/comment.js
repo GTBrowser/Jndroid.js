@@ -8,10 +8,6 @@ function Comment(avatar, name, text)
     var mEditHeight = 150;
     var mTitleHeight = 40;
 
-    this.setBackgroundColor(0xffffffff);
-    this.setCornerSize(2, 2, 2, 2);
-    this.setBoxShadow(0, 1, 2, 0, 0x66000000);
-
     this.setEditHeight = function(h) {
         mEditHeight = h;
         this.requestLayout();
