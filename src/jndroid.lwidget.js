@@ -168,6 +168,10 @@ function LButton() {
         mBgDrawable.setDimBg(dimBg);
     };
 
+    this.setWaveColor = function(color) {
+        mBgDrawable.setWaveColor(color);
+    };
+
     this.onTouchEvent = function(ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -808,6 +812,7 @@ function WaveDrawable() {
     var mY = 0;
     var mDimBg = true;
     var maxRadius = 9999;
+    var mWaveColor = 0x25191919;
 
     this.onStateChange = function(state) {
         if (mCurrentState != View.VIEW_STATE_PRESSED && state == View.VIEW_STATE_PRESSED) {
@@ -827,6 +832,10 @@ function WaveDrawable() {
 
     this.setDimBg = function(isDimBg) {
         mDimBg = isDimBg;
+    };
+
+    this.setWaveColor = function(color) {
+        mWaveColor = color;
     };
 
     this.setMaxRadius = function(r) {
@@ -864,7 +873,7 @@ function WaveDrawable() {
         canvas.beginPath();
         canvas.arc(offsetX, offsetY, radius, 0, Math.PI * 2, true);
         canvas.closePath();
-        canvas.fillStyle = Utils.toCssColor(0x25191919);
+        canvas.fillStyle = Utils.toCssColor(mWaveColor);
         canvas.fill();
     };
 
