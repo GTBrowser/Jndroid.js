@@ -373,6 +373,7 @@ function View() {
     var mHeight = 0;
     var mWidthMS = 0;
     var mHeightMS = 0;
+    var mBackground = 0;
     var mPaddingLeft = 0;
     var mPaddingTop = 0;
     var mPaddingRight = 0;
@@ -785,6 +786,10 @@ function View() {
         }
     };
 
+    this.getBackground = function() {
+        return mBackground;
+    };
+
 	/**
 	* Sets the background color for this view.
 	*
@@ -792,6 +797,7 @@ function View() {
 	* @params {int} color The color of the background.
 	*/
     this.setBackgroundColor = function(color) {
+        mBackground = color;
         mDiv.style.background = Utils.toCssColor(color);
     };
 

@@ -11,6 +11,7 @@ function Playground(title, initCode, isHtml) {
 
     var mSelf = this;
     var mEditHeight = 300;
+    var mAppendCode = "";
 
     this.setBackgroundColor(0xffffffff);
     this.setCornerSize(2, 2, 2, 2);
@@ -28,6 +29,9 @@ function Playground(title, initCode, isHtml) {
     this.addView(mEditArea);
 
     var mCodeMirrorView = new CodeMirrorView(isHtml);
+    mCodeMirrorView.setOnFocusChangeListener(function() {
+        resetBorder();
+    });
     this.postDelayed(function() {
         mCodeMirrorView.setText(initCode);
         update();
@@ -56,6 +60,10 @@ function Playground(title, initCode, isHtml) {
     this.setEditHeight = function(h) {
         mEditHeight = h;
         this.requestLayout();
+    };
+
+    this.setAppendCode = function(code) {
+        mAppendCode = code;
     };
 
     this.onMeasure = function(widthMS, heightMS){
@@ -106,7 +114,11 @@ function Playground(title, initCode, isHtml) {
     };
 
     function resetBorder() {
-        mEditArea.setBorder(1, DIVIDERS_COLOR);
+        if (mCodeMirrorView.isFocused()) {
+            mEditArea.setBorder(1, 0xff1499f7);
+        } else {
+            mEditArea.setBorder(1, DIVIDERS_COLOR);
+        }
         mCodePreviewer.setBorderRight(1, DIVIDERS_COLOR);
         mCodePreviewer.setBorderBottom(1, DIVIDERS_COLOR);
         if (mSelf.getMeasuredWidth() > 700) {
@@ -117,13 +129,16 @@ function Playground(title, initCode, isHtml) {
     }
 
     function update(){
-        var code = mCodeMirrorView.getText();
+        var code = mCodeMirrorView.getText() + " " + mAppendCode;
         mCodePreviewer.applyCode(code);
     }
 }
 
 function CodeMirrorView(isHtml) {
     ViewGroup.apply(this, []);
+
+    var mFocused = false;
+    var mFocusListener = null;
 
     var mTimeStamp = (new Date()).getTime();
     var mTextArea = document.createElement("textarea");
@@ -157,7 +172,27 @@ function CodeMirrorView(isHtml) {
             lineWrapping:true,
             tabSize:2
         });
+        mCMEditor.on("focus", function() {
+            mFocused = true;
+            if (mFocusListener != null) {
+                mFocusListener.call(this, true);
+            }
+        });
+        mCMEditor.on("blur", function() {
+            mFocused = false;
+            if (mFocusListener != null) {
+                mFocusListener.call(this, false);
+            }
+        });
     }, 50);
+
+    this.isFocused = function() {
+        return mFocused;
+    };
+
+    this.setOnFocusChangeListener = function(l) {
+        mFocusListener = l;
+    };
 
     this.getEditor = function() {
         return mCMEditor;

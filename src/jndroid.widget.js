@@ -24,71 +24,6 @@ function ScrollView() {
     };
 }
 
-function Button() {
-    ViewGroup.apply(this, []);
-
-    this.setWillNotDraw(false);
-    this.setBackgroundColor("#cccccc");
-
-    this.getDiv().style.textAlign = "center";
-
-    //var mInterval = null;
-    //var mPressRadius = 5;
-    //
-    //this.onInterval = function(obj) {
-    //    mPressRadius += 10;
-    //    obj.invalidate();
-    //}
-
-    addTouchListener(this);
-
-    this.registerTouchEvent = function() {
-        this.getDiv().addEventListener("touchstart", this.touchStart, false);
-        this.getDiv().addEventListener("touchend", this.touchEnd, false);
-        this.getDiv().addEventListener("touchcancel", this.touchCancel, false);
-    };
-
-    this.registerTouchEvent();
-
-    this.touchStart = function(event) {
-        this.style.background = "#999999";
-        //var button = findTouchObject(this);
-        //mInterval = setInterval(button.onInterval, 100, button);
-    };
-
-    this.touchEnd = function(event) {
-        this.style.background = "#cccccc";
-    };
-
-    this.touchCancel = function(event) {
-        this.style.background = "#cccccc";
-    };
-
-    this.setText = function(text) {
-        var div = document.createElement("div");
-        div.style.width = "100%";
-        div.style.lineHeight = "36px";
-        div.style.position = "absolute";
-        div.style.textAlign = "center";
-        div.style.left = 0;
-        div.style.top = 0;
-        div.innerHTML = text;
-        this.getDiv().appendChild(div);
-    };
-
-    this.onMeasure = function(width, height) {
-        this.setMeasuredDimension(120, 36);
-    };
-
-    this.onDraw = function(canvas) {
-        //canvas.beginPath();
-        //canvas.arc(20, 15, mPressRadius, 0, Math.PI * 2, true);
-        //canvas.closePath();
-        //canvas.fillStyle = 'rgba(0,255,0,0.25)';
-        //canvas.fill();
-    };
-}
-
 function ImageView() {
     ViewGroup.apply(this, []);
 
@@ -353,6 +288,33 @@ function TextView() {
             this.getDiv().style.textAlign = "left";
         }
 
+    };
+}
+
+function Button() {
+    TextView.apply(this, []);
+
+    var mPressBg = 0x1a000000;
+    var mNormalBg = 0;
+
+    this.setGravity(Gravity.CENTER);
+    this.setBorder(1, 0x1a000000);
+
+    this.setPressBg = function(c) {
+        mPressBg = c;
+    };
+
+    this.onTouchEvent = function(e) {
+        switch (e.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mNormalBg = this.setBackgroundColor();
+                this.setBackgroundColor(mPressBg);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                this.setBackgroundColor(mNormalBg);
+                break;
+        }
     };
 }
 

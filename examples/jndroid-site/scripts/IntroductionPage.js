@@ -32,20 +32,38 @@ function IntroductionView() {
     var slogan = new TextView();
     slogan.setTextSize(TEXT_SIZE);
     slogan.setTextColor(TEXT_COLOR);
-    slogan.setText("Jndroid is a JavaScript framework to write WebApp in android way.");
+    slogan.setText("Jndroid is a JavaScript framework to write WebApp in Android way.");
     contentView.addView(slogan, sloganLp);
-
-    var slogan1 = new TextView();
-    slogan1.setTextSize(TEXT_SIZE);
-    slogan1.setTextColor(TEXT_COLOR);
-    slogan1.setText("Jndroid是一种JavaScript框架，用于使用Android方式写网页应用");
-    contentView.addView(slogan1, sloganLp);
 
     var slogan2 = new TextView();
     slogan2.setTextSize(TEXT_SIZE);
     slogan2.setTextColor(TEXT_COLOR);
-    slogan2.setText("Jndroid est un cadre Android comme le JavaScript pour la construction WebApp dans la façon dont vous avez jamais vu auparavant.");
+    slogan2.setText("Jndroid est un framework JavaScript pour écrire de manière WebApp Android .");
     contentView.addView(slogan2, sloganLp);
+
+    var sloganG = new TextView();
+    sloganG.setTextSize(TEXT_SIZE);
+    sloganG.setTextColor(TEXT_COLOR);
+    sloganG.setText("Jndroid ist ein JavaScript-Framework an WebApp in Android Weg zu schreiben.");
+    contentView.addView(sloganG, sloganLp);
+
+    var sloganR = new TextView();
+    sloganR.setTextSize(TEXT_SIZE);
+    sloganR.setTextColor(TEXT_COLOR);
+    sloganR.setText("Jndroid этооснова JavaScript , чтобы написать веб-приложение в Android образом ");
+    contentView.addView(sloganR, sloganLp);
+
+    var sloganJ = new TextView();
+    sloganJ.setTextSize(TEXT_SIZE);
+    sloganJ.setTextColor(TEXT_COLOR);
+    sloganJ.setText("Jndroidは、Androidの方法でのWebAppを書くためのJavaScriptフレームワークです。");
+    contentView.addView(sloganJ, sloganLp);
+
+    var sloganC = new TextView();
+    sloganC.setTextSize(TEXT_SIZE);
+    sloganC.setTextColor(TEXT_COLOR);
+    sloganC.setText("Jndroid是一個JavaScript框架，使用Android的方式編寫Web應用程序。");
+    contentView.addView(sloganC, sloganLp);
 
     var getstart = new TextView();
     getstart.setTextSize(TITLE_SIZE);
@@ -58,6 +76,7 @@ function IntroductionView() {
     var playground = new Playground("Hello World", mHelloWorldCode, true);
     playground.setEditHeight(280);
     var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    lp.setMargins(16);
     contentView.addView(playground, lp);
 
     var apidemos = new TextView();
@@ -70,22 +89,23 @@ function IntroductionView() {
 
     playground = new Playground("Widgets", mWidgetCode);
     playground.setEditHeight(450);
-    lp.setMargins(8);
     contentView.addView(playground, lp);
 
     playground = new Playground("onMeasure & onLayout", mMeausreCode);
     playground.setEditHeight(400);
-    lp.setMargins(8);
     contentView.addView(playground, lp);
 
     playground = new Playground("onDraw", mDrawCode);
     playground.setEditHeight(300);
-    lp.setMargins(8);
     contentView.addView(playground, lp);
 
     playground = new Playground("onTouchEvent", mTouchCode);
     playground.setEditHeight(480);
-    lp.setMargins(8);
+    contentView.addView(playground, lp);
+
+    playground = new Playground("Animation", mAnimationCode);
+    playground.setAppendCode(mAnimatonAppendCode);
+    playground.setEditHeight(500);
     contentView.addView(playground, lp);
 }
 
@@ -106,7 +126,7 @@ var mHelloWorldCode = "<!DOCTYPE html>\n" +
 var mWidgetCode = "" +
     "var mLinearLayout = new LinearLayout();\n" +
     "this.addView(mLinearLayout);\n\n" +
-    "var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);\n" +
+    "var lp = new LayoutParams(LayoutParams.FILL_PARENT, 48);\n" +
     "lp.setMargins(8);\n\n" +
     "var mButton = new Button();\n" +
     "mButton.setText(\"button\");\n" +
@@ -198,3 +218,63 @@ var mTouchCode = "" +
     "\t\t}\n" +
     "\t}" +
     "}";
+
+var mAnimationCode = "" +
+    "var target = new View();\n" +
+    "target.setBackgroundColor(0xff009688);\n" +
+    "var targetlp = new LayoutParams(100, 50);\n" +
+    "targetlp.gravity = Gravity.CENTER;\n" +
+    "this.addView(target, targetlp);\n\n" +
+    "" +
+    "var duration = 500;\n\n" +
+    "" +
+    "function translate() {\n" +
+    "\tvar anim = new TranslateAnimation(0, 100, 0, 50);\n" +
+    "\tanim.setDuration(duration);\n" +
+    "\ttarget.startAnimation(anim);\n" +
+    "}\n\n" +
+    "" +
+    "function alpha() {\n" +
+    "\tvar anim = new AlphaAnimation(1, 0.5);\n" +
+    "\tanim.setDuration(duration);\n" +
+    "\ttarget.startAnimation(anim);\n" +
+    "}\n\n" +
+    "" +
+    "function rotate() {\n" +
+    "\tvar anim = new RotateAnimation(0, 90);\n" +
+    "\tanim.setDuration(duration);\n" +
+    "\ttarget.startAnimation(anim);\n" +
+    "}\n\n" +
+    "" +
+    "function scale() {\n" +
+    "\tvar anim = new ScaleAnimation(1, 2);\n" +
+    "\tanim.setDuration(duration);\n" +
+    "\ttarget.startAnimation(anim);\n" +
+    "}\n\n" +
+    "";
+
+var mAnimatonAppendCode = "" +
+    "var controlBar = new LinearLayout();\n" +
+    "controlBar.setOrientation(LinearLayout.Horizontal);\n" +
+    "var barlp = new LayoutParams(LayoutParams.FILL_PARENT, 56);\n" +
+    "this.addView(controlBar, barlp);\n" +
+    "var btnlp = new LayoutParams(0, 48);\n" +
+    "btnlp.setMargins(4);\n" +
+    "btnlp.weight = 1;\n" +
+    "var translateBtn = new Button();\n" +
+    "translateBtn.setText(\"translate\");\n" +
+    "translateBtn.setOnClickListener(function() {translate();});" +
+    "controlBar.addView(translateBtn, btnlp);\n" +
+    "var alphaBtn = new Button();\n" +
+    "alphaBtn.setText(\"alpha\");\n" +
+    "alphaBtn.setOnClickListener(function() {alpha();});" +
+    "controlBar.addView(alphaBtn, btnlp);\n" +
+    "var rotateBtn = new Button();\n" +
+    "rotateBtn.setOnClickListener(function() {rotate();});" +
+    "rotateBtn.setText(\"rotate\");\n" +
+    "controlBar.addView(rotateBtn, btnlp);\n" +
+    "var scaleBtn = new Button();" +
+    "scaleBtn.setText(\"scale\");\n" +
+    "scaleBtn.setOnClickListener(function() {scale();});" +
+    "controlBar.addView(scaleBtn, btnlp);" +
+    "";
