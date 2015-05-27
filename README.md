@@ -40,7 +40,7 @@ Include the script on your page.
 
 ![rcalc](https://raw.githubusercontent.com/GTBrowser/Jndroid.js/master/screenshots/relationship.png)
 
-##License    
+## License    
 
 [![License](https://img.shields.io/github/license/GTBrowser/Jndroid.js.svg)](https://github.com/GTBrowser/Jndroid.js)
 
