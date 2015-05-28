@@ -1841,13 +1841,16 @@ meta.name = "mobile-web-app-capable";
 meta.content = "yes";
 document.head.appendChild(meta);
 
+/* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
+var c = document.createElement('script');
+c.type = 'text/javascript';
+c.async = true;
+c.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'www.clicki.cn/boot/52027';
+var h = document.getElementsByTagName('script')[0];
+h.parentNode.insertBefore(c, h);
+/* statistics code end */
+
 function setContentView(view) {
-    //if (window.screen.height > document.body.scrollHeight) {
-    //    mTopMargin = window.screen.height - document.body.scrollHeight;
-
-
-    //}
-
     addOrientationListener(function() {
         onOrientationChanged();
     });
