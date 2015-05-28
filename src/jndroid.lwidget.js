@@ -796,7 +796,7 @@ function LSelectionButton() {
             b.setBackgroundColor(0x00000000);
             b.setCornerSize(0);
             return b;
-        }
+        };
     }
 }
 

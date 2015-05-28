@@ -327,8 +327,7 @@ function MotionEvent(rawEv) {
         } else if (rawEv.type == "mouseout") {
             var div = rawEv.target;
             var offset = Utils.getOffset(div);
-            if (this.getRawX() < offset.left || this.getRawX() > (offset.left + offset.width)
-                || this.getRawY() < offset.top || this.getRawY() > (offset.top + offset.height)) {
+            if (this.getRawX() < offset.left || this.getRawX() > (offset.left + offset.width) || this.getRawY() < offset.top || this.getRawY() > (offset.top + offset.height)) {
                 return MotionEvent.ACTION_CANCEL;
             }
         }
