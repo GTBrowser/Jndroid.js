@@ -65,6 +65,8 @@ function IntroductionView() {
     sloganC.setText("Jndroid是一個JavaScript框架，使用Android的方式編寫Web應用程序。");
     contentView.addView(sloganC, sloganLp);
 
+    loadGithubView();
+
     var getstart = new TextView();
     getstart.setTextSize(TITLE_SIZE);
     getstart.setTextColor(THEME_COLOR);
@@ -107,6 +109,58 @@ function IntroductionView() {
     playground.setAppendCode(mAnimatonAppendCode);
     playground.setEditHeight(500);
     contentView.addView(playground, lp);
+
+    function loadGithubView() {
+        var github = new TextView();
+        github.setTextSize(TITLE_SIZE);
+        github.setTextColor(THEME_COLOR);
+        github.setText("Github");
+        var githubLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        githubLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP, PADDING, PADDING);
+        contentView.addView(github, githubLp);
+
+        var githubLayoutlp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
+        var starLayout = new LinearLayout();
+        starLayout.setOnClickListener(function() {
+            window.open("https://github.com/GTBrowser/Jndroid.js");
+        });
+        starLayout.setOrientation(LinearLayout.HORIZONTAL);
+        contentView.addView(starLayout, githubLayoutlp);
+
+        var imgLp = new LayoutParams(96, LayoutParams.FILL_PARENT);
+        var urlLp = new LayoutParams(0, LayoutParams.FILL_PARENT);
+        urlLp.weight = 1;
+        var starImg = new ImageView();
+        starImg.setImgSrc("https://img.shields.io/github/stars/GTBrowser/Jndroid.js.svg");
+        starImg.setImgHeight(24);
+        starLayout.addView(starImg, imgLp);
+        var starLink = new TextView();
+        starLink.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        starLink.setText("https://github.com/GTBrowser/Jndroid.js");
+        starLink.setTextSize(SUB_TEXT_SIZE);
+        starLink.setTextColor(SUB_TEXT_COLOR);
+        starLayout.addView(starLink, urlLp);
+
+        var githubLayoutlp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
+        var forkLayout = new LinearLayout();
+        forkLayout.setOnClickListener(function() {
+            window.open("https://github.com/GTBrowser/Jndroid.js/fork");
+        });
+        forkLayout.setOrientation(LinearLayout.HORIZONTAL);
+        contentView.addView(forkLayout, githubLayoutlp);
+
+        var forkImg = new ImageView();
+        forkImg.setImgSrc("https://img.shields.io/github/forks/GTBrowser/Jndroid.js.svg");
+        forkImg.setImgHeight(24);
+        forkLayout.addView(forkImg, imgLp);
+        var forkLink = new TextView();
+        forkLink.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        forkLink.setText("https://github.com/GTBrowser/Jndroid.js/fork");
+        forkLink.setTextSize(SUB_TEXT_SIZE);
+        forkLink.setTextColor(SUB_TEXT_COLOR);
+        forkLayout.addView(forkLink, urlLp);
+
+    }
 }
 
 var mHelloWorldCode = "<!DOCTYPE html>\n" +
