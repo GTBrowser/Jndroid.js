@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>MotionEvent</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="../assets/vendor/yui-min.js"></script>
+  </head>
+  <body>
+
+    <div id="doc">
+      <header class="main-header">
+        <div class="content">
+          <div class="project-title">
+            <h1 class="project-name">Jndroid</h1>
+
+
+          </div>
+          <ul class="jump-links">
+            <li><a href="#index" class="index-jump-link">index</a></li>
+            <li><a href="#top" class="top-jump-link">top</a></li>
+          </ul>
+        </div>
+      </header>
+      <div id="bd" class="main-body">
+
+        <div id="docs-sidebar" class="sidebar apidocs">
+          <div id="api-list">
+          <div id="api-tabview" class="tabview">
+            <!-- <ul class="tabs"> -->
+            <!--     <li><a href="#api-classes">Classes</a></li> -->
+            <!--     <li><a href="#api-modules">Modules</a></li> -->
+            <!-- </ul> -->
+          
+            <div id="api-tabview-filter">
+              <input type="search" id="api-filter" placeholder="Type to filter APIs">
+            </div>
+          
+            <div id="api-tabview-panel">
+              <ul id="api-classes" class="apis classes">
+                <li><a class="type" href="../classes/Drawable.html">Drawable</a></li>
+                <li><a class="type" href="../classes/FrameLayout.html">FrameLayout</a></li>
+                <li><a class="type" href="../classes/Gallery.html">Gallery</a></li>
+                <li><a class="type" href="../classes/LayoutParams.html">LayoutParams</a></li>
+                <li><a class="type" href="../classes/LinearLayout.html">LinearLayout</a></li>
+                <li><a class="type" href="../classes/MeasureSpec.html">MeasureSpec</a></li>
+                <li><a class="type" href="../classes/MotionEvent.html">MotionEvent</a></li>
+                <li><a class="type" href="../classes/View.html">View</a></li>
+              </ul>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div id="docs-main" class="apidocs">
+          <div class="content container">
+            <h1>MotionEvent Class</h1>
+            <div class="box meta">
+            
+            
+                    <div class="foundat">
+                        Defined in: <a href="../files/jndroid.core.js.html#l241"><code>jndroid.core.js:241</code></a>
+                    </div>
+            
+                <!--  -->
+            
+            </div>
+            
+            <!--  -->
+            
+            <div class="box intro">
+                <p>Object used to report movement (mouse, pen, finger, trackball) events.
+            Motion events may hold either absolute or relative movements and
+            other data, depending on the type of device.</p>
+            
+            </div>
+            
+            <!-- Class member index -->
+            
+            <a name="index" class="anchor-link"></a>
+            <div class="index">
+            <h2>Index</h2>
+            
+                <!-- <div id="api-options"> -->
+                <!--     Show: -->
+                <!--     <label for="api-show-inherited"> -->
+                <!--         <input type="checkbox" id="api-show-inherited"> -->
+                <!--         Inherited -->
+                <!--     </label> -->
+            
+                <!--     <label for="api-show-protected"> -->
+                <!--         <input type="checkbox" id="api-show-protected"> -->
+                <!--         Protected -->
+                <!--     </label> -->
+            
+                <!--     <label for="api-show-private"> -->
+                <!--         <input type="checkbox" id="api-show-private"> -->
+                <!--         Private -->
+                <!--     </label> -->
+                <!--     <label for="api-show-deprecated"> -->
+                <!--         <input type="checkbox" id="api-show-deprecated"> -->
+                <!--         Deprecated -->
+                <!--     </label> -->
+            
+                <!-- </div> -->
+            
+            
+                <div class="index-section properties">
+                    <h3>Properties</h3>
+            
+                    <ul class="index-list properties">
+                            <li class="index-item property">
+                                <a href="#property_ACTION_CANCEL">ACTION_CANCEL</a>
+            
+                                    <span class="flag static">static</span>
+                            </li>
+                            <li class="index-item property">
+                                <a href="#property_ACTION_DOWN">ACTION_DOWN</a>
+            
+                                    <span class="flag static">static</span>
+                            </li>
+                            <li class="index-item property">
+                                <a href="#property_ACTION_MOVE">ACTION_MOVE</a>
+            
+                                    <span class="flag static">static</span>
+                            </li>
+                            <li class="index-item property">
+                                <a href="#property_ACTION_UP">ACTION_UP</a>
+            
+                                    <span class="flag static">static</span>
+                            </li>
+                    </ul>
+                </div>
+            
+            
+            
+                <div class="index-section methods">
+                    <h3>Methods</h3>
+            
+                    <table class="index-list methods">
+                          <tr>
+                            <th colspan="12">Methods index</th>
+                          </tr>
+                        <!--  -->
+                        
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            Int
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_getAction">getAction()</a></nobr>
+                           <div class="desc">
+                             <p>Return the kind of action being performed.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_getAction">getAction</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            Float
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_getRawX">getRawX()</a></nobr>
+                           <div class="desc">
+                             <p>Returns the original raw X coordinate of this event.  For touch
+            events on the screen, this is the original location of the event
+            on the screen, before it had been adjusted for the containing window
+            and views.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_getRawX">getRawX</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            Float
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_getRawY">getRawY()</a></nobr>
+                           <div class="desc">
+                             <p>Returns the original raw X coordinate of this event.  For touch
+            events on the screen, this is the original location of the event
+            on the screen, before it had been adjusted for the containing window
+            and views.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_getRawY">getRawY</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            Float
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_getX">getX()</a></nobr>
+                           <div class="desc">
+                             <p>Returns the X coordinate of this event.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_getX">getX</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            Float
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_getY">getY()</a></nobr>
+                           <div class="desc">
+                             <p>Returns the Y coordinate of this event.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_getY">getY</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                    </table>
+                </div>
+            
+            <!--  -->
+            <!-- </div> -->
+            
+            
+            <div class="class-detail">
+            
+                <div class="properties-detail">
+                    <h2>Properties</h2>
+            
+                        <a name="property_ACTION_CANCEL" class="anchor-link"></a>
+                        <div class="property item">
+                            <h3 class="name"><code>ACTION_CANCEL</code>
+                            <span class="type">Int</span>
+                        
+                        
+                        
+                                <span class="flag final">final</span>
+                        
+                                <span class="flag static">static</span>
+                        
+                            </h3>
+                        
+                            <div class="meta">
+                                        <p>
+                                        Defined in
+                                <a href="../files/jndroid.core.js.html#l374"><code>jndroid.core.js:374</code></a>
+                                </p>
+                        
+                        
+                            </div>
+                        
+                            <div class="extended-detail">
+                                <div class="description">
+                                    <p>Constant for : The current gesture has been aborted.
+                        You will not receive any more points in it.  You should treat this as
+                        an up event, but not perform any action that you normally would.</p>
+                        
+                                </div>
+                        
+                        
+                        
+                            </div>
+                        </div>
+                        <a name="property_ACTION_DOWN" class="anchor-link"></a>
+                        <div class="property item">
+                            <h3 class="name"><code>ACTION_DOWN</code>
+                            <span class="type">Int</span>
+                        
+                        
+                        
+                                <span class="flag final">final</span>
+                        
+                                <span class="flag static">static</span>
+                        
+                            </h3>
+                        
+                            <div class="meta">
+                                        <p>
+                                        Defined in
+                                <a href="../files/jndroid.core.js.html#l338"><code>jndroid.core.js:338</code></a>
+                                </p>
+                        
+                        
+                            </div>
+                        
+                            <div class="extended-detail">
+                                <div class="description">
+                                    <p>Constant for : A pressed gesture has started, the
+                        motion contains the initial starting location.</p>
+                        
+                                </div>
+                        
+                        
+                        
+                            </div>
+                        </div>
+                        <a name="property_ACTION_MOVE" class="anchor-link"></a>
+                        <div class="property item">
+                            <h3 class="name"><code>ACTION_MOVE</code>
+                            <span class="type">Int</span>
+                        
+                        
+                        
+                                <span class="flag final">final</span>
+                        
+                                <span class="flag static">static</span>
+                        
+                            </h3>
+                        
+                            <div class="meta">
+                                        <p>
+                                        Defined in
+                                <a href="../files/jndroid.core.js.html#l361"><code>jndroid.core.js:361</code></a>
+                                </p>
+                        
+                        
+                            </div>
+                        
+                            <div class="extended-detail">
+                                <div class="description">
+                                    <p>Constant for : A change has happened during a
+                        press gesture (between MotionEvent.ACTION_DOWN and MotionEvent.ACTION_UP).
+                        The motion contains the most recent point, as well as any intermediate
+                        points since the last down or move event.</p>
+                        
+                                </div>
+                        
+                        
+                        
+                            </div>
+                        </div>
+                        <a name="property_ACTION_UP" class="anchor-link"></a>
+                        <div class="property item">
+                            <h3 class="name"><code>ACTION_UP</code>
+                            <span class="type">Int</span>
+                        
+                        
+                        
+                                <span class="flag final">final</span>
+                        
+                                <span class="flag static">static</span>
+                        
+                            </h3>
+                        
+                            <div class="meta">
+                                        <p>
+                                        Defined in
+                                <a href="../files/jndroid.core.js.html#l349"><code>jndroid.core.js:349</code></a>
+                                </p>
+                        
+                        
+                            </div>
+                        
+                            <div class="extended-detail">
+                                <div class="description">
+                                    <p>Constant for : A pressed gesture has finished, the
+                        motion contains the final release location as well as any intermediate
+                        points since the last down or move event.</p>
+                        
+                                </div>
+                        
+                        
+                        
+                            </div>
+                        </div>
+            
+                    <div class="no-visible-items-message">
+                        <p>There are no properties that match your current filter settings. You can change your filter settings in the index section on this page. <a href="#index" class="index-jump-link">index</a></p>
+                    </div>
+            
+                </div>
+            
+            
+            
+                <div class="methods-detail">
+                    <h2>Methods</h2>
+            
+                        <a name="method_getAction" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>getAction</code>
+                        
+                                <span class="paren">()</span>
+                        
+                                <span class="returns-inline">
+                                    <span class="type">Int</span>
+                                </span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.core.js.html#l312"><code>jndroid.core.js:312</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Return the kind of action being performed.</p>
+                        
+                                </div>
+                        
+                        
+                                    <div class="returns">
+                                        <h4>Returns:</h4>
+                        
+                                        <div class="returns-description">
+                                                    <span class="type">Int</span>:
+                                                <p>the action.</p>
+                        
+                                        </div>
+                                    </div>
+                        
+                            </div>
+                        </div>
+                        <a name="method_getRawX" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>getRawX</code>
+                        
+                                <span class="paren">()</span>
+                        
+                                <span class="returns-inline">
+                                    <span class="type">Float</span>
+                                </span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.core.js.html#l274"><code>jndroid.core.js:274</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Returns the original raw X coordinate of this event.  For touch
+                        events on the screen, this is the original location of the event
+                        on the screen, before it had been adjusted for the containing window
+                        and views.</p>
+                        
+                                </div>
+                        
+                        
+                                    <div class="returns">
+                                        <h4>Returns:</h4>
+                        
+                                        <div class="returns-description">
+                                                    <span class="type">Float</span>:
+                                                <p>original raw X coordinate.</p>
+                        
+                                        </div>
+                                    </div>
+                        
+                            </div>
+                        </div>
+                        <a name="method_getRawY" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>getRawY</code>
+                        
+                                <span class="paren">()</span>
+                        
+                                <span class="returns-inline">
+                                    <span class="type">Float</span>
+                                </span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.core.js.html#l287"><code>jndroid.core.js:287</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Returns the original raw X coordinate of this event.  For touch
+                        events on the screen, this is the original location of the event
+                        on the screen, before it had been adjusted for the containing window
+                        and views.</p>
+                        
+                                </div>
+                        
+                        
+                                    <div class="returns">
+                                        <h4>Returns:</h4>
+                        
+                                        <div class="returns-description">
+                                                    <span class="type">Float</span>:
+                                                <p>original raw Y coordinate.</p>
+                        
+                                        </div>
+                                    </div>
+                        
+                            </div>
+                        </div>
+                        <a name="method_getX" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>getX</code>
+                        
+                                <span class="paren">()</span>
+                        
+                                <span class="returns-inline">
+                                    <span class="type">Float</span>
+                                </span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.core.js.html#l250"><code>jndroid.core.js:250</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Returns the X coordinate of this event.</p>
+                        
+                                </div>
+                        
+                        
+                                    <div class="returns">
+                                        <h4>Returns:</h4>
+                        
+                                        <div class="returns-description">
+                                                    <span class="type">Float</span>:
+                                                <p>X coordinate.</p>
+                        
+                                        </div>
+                                    </div>
+                        
+                            </div>
+                        </div>
+                        <a name="method_getY" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>getY</code>
+                        
+                                <span class="paren">()</span>
+                        
+                                <span class="returns-inline">
+                                    <span class="type">Float</span>
+                                </span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.core.js.html#l262"><code>jndroid.core.js:262</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Returns the Y coordinate of this event.</p>
+                        
+                                </div>
+                        
+                        
+                                    <div class="returns">
+                                        <h4>Returns:</h4>
+                        
+                                        <div class="returns-description">
+                                                    <span class="type">Float</span>:
+                                                <p>Y coordinate.</p>
+                        
+                                        </div>
+                                    </div>
+                        
+                            </div>
+                        </div>
+            
+                    <div class="no-visible-items-message">
+                        <p>There are no methods that match your current filter settings. You can change your filter settings in the index section on this page. <a href="#index" class="index-jump-link">index</a></p>
+                    </div>
+            
+                </div>
+            
+            
+            </div>
+            
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <script src="../assets/vendor/prettify/prettify-min.js"></script>
+    <script>prettyPrint();</script>
+    <script src="../assets/vendor/jquery.min.js"></script>
+    <script src="../assets/js/jquery-offscreen-trigger.js"></script>
+    <script src="../assets/js/yui-prettify.js"></script>
+    <script src="../assets/../api.js"></script>
+    <script src="../assets/js/api-filter.js"></script>
+    <script src="../assets/js/api-list.js"></script>
+    <script src="../assets/js/api-search.js"></script>
+    <script src="../assets/js/apidocs.js"></script>
+  </body>
+</html>
