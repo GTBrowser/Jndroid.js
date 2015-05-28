@@ -5,6 +5,6 @@ function DocumentationView() {
     FrameLayout.apply(this, []);
 
     var webView = new WebView();
-    webView.loadUrl("../../src/out/index.html");
+    webView.loadUrl("http://jndroid.com/documentation");
     this.addView(webView);
 }

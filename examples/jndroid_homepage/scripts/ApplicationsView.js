@@ -22,7 +22,7 @@ function ApplicationsView() {
     //content.addView(intro, introlp);
 
     var appsList = [];
-    appsList.push(new AppData("Jndroid Homepage", "http://localhost:63342/JndroidHome/examples/jndroid-site/index.html", true));
+    appsList.push(new AppData("Jndroid Homepage", "http://jndroid.com", true));
     appsList.push(new AppData("Relationship Calculator", "http://lite.mb.lenovomm.com/rcalc/", false));
     appsList.push(new AppData("Delivery Search", "http://testbrowser.cn/kuaidi.html", false));
 
