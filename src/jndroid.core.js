@@ -7,7 +7,7 @@ Array.prototype.add = function(index, val) {
     } else {
         this.splice(index, 0, val);
     }
-}
+};
 
 Array.prototype.size = function() {
     return this.length;
@@ -492,7 +492,7 @@ function Drawable() {
      */
     this.getIntrinsicHeight = function() {
         return -1;
-    }
+    };
 }
 
 function Processor() {
@@ -956,7 +956,7 @@ function View() {
                 mHTMLCanvas.width = mHTMLCanvas.width;
                 if (mHTMLCanvas.getContext) {
                     if (canvas == null) {
-                        canvas = mHTMLCanvas.getContext('2d');
+                        canvas = mHTMLCanvas.getContext("2d");
                         canvas.width = this.getMeasuredWidth();
                         canvas.height = this.getMeasuredHeight();
                     }
@@ -1310,8 +1310,7 @@ function View() {
                     var offset = Utils.getOffset(view.getDiv());
                     var x = ev.getRawX();
                     var y = ev.getRawY();
-                    if (x < offset.left || x > (offset.left + offset.width)
-                        || y < offset.top || y > (offset.top + offset.height)) {
+                    if (x < offset.left || x > (offset.left + offset.width) || y < offset.top || y > (offset.top + offset.height)) {
                         view.removeCallbacks(view.checkLongPress);
                     }
                     break;
@@ -1379,21 +1378,21 @@ function View() {
 	//TODO
     this.setBoxShadow = function(x, y, blur, spread, color) {
 
-        var styleString = x + 'px ' + y + 'px';
+        var styleString = x + "px " + y + "px";
 
-        if(typeof(blur) != 'undefined')
+        if(typeof(blur) != "undefined")
         {
-            styleString = styleString + ' ' + blur + 'px';
+            styleString = styleString + " " + blur + "px";
         }
 
-        if(typeof(spread) != 'undefined')
+        if(typeof(spread) != "undefined")
         {
-            styleString = styleString + ' ' + spread + 'px';
+            styleString = styleString + " " + spread + "px";
         }
 
-        if(typeof(color) != 'undefined')
+        if(typeof(color) != "undefined")
         {
-            styleString = styleString + ' ' + Utils.toCssColor(color);
+            styleString = styleString + " " + Utils.toCssColor(color);
         }
 
         this.getDiv().style.webkitBoxShadow =  styleString;
