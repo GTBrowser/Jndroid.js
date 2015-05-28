@@ -1,783 +1,726 @@
-/*
-Font sizes for all selectors other than the body are given in percentages,
-with 100% equal to 13px. To calculate a font size percentage, multiply the
-desired size in pixels by 7.6923076923.
-
-Here's a quick lookup table:
-
-10px - 76.923%
-11px - 84.615%
-12px - 92.308%
-13px - 100%
-14px - 107.692%
-15px - 115.385%
-16px - 123.077%
-17px - 130.769%
-18px - 138.462%
-19px - 146.154%
-20px - 153.846%
-*/
-
 html {
-    background: #fff;
-    color: #333;
-    overflow-y: scroll;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
 }
 
 body {
-    /*font: 13px/1.4 'Lucida Grande', 'Lucida Sans Unicode', 'DejaVu Sans', 'Bitstream Vera Sans', 'Helvetica', 'Arial', sans-serif;*/
-    font: 13px/1.4 'Helvetica', 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
+  font-family: Helvetica, sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #222;
+  margin: 0;
+  padding: 0 10px;
+  margin-top: 65px;
+  text-align: center;
+  background-color: #F9F9F9;
+  font-weight: 400;
 }
 
-/* -- Links ----------------------------------------------------------------- */
+pre,
+code {
+  font-family: Consolas, Menlo, "Courier New", monospace;
+}
+
 a {
-    color: #356de4;
-    text-decoration: none;
+  color: #4183c4;
+  text-decoration: none;
+  outline: none;
 }
 
-.hidden {
-    display: none;
+a:hover {
+  text-decoration: underline;
 }
 
-a:hover { text-decoration: underline; }
-
-/* "Jump to Table of Contents" link is shown to assistive tools, but hidden from
-   sight until it's focused. */
-.jump {
-    position: absolute;
-    padding: 3px 6px;
-    left: -99999px;
-    top: 0;
+input {
+  min-height: 34px;
+  padding: 7px 8px;
+  outline: none;
+  color: #333;
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-position: right center;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  vertical-align: middle;
 }
 
-.jump:focus { left: 40%; }
-
+input[type="search"] {
+  width: 100%;
+  min-height: 26px;
+  padding: 3px 10px;
+  font-size: 11px;
+  border-radius: 12px;
+}
 /* -- Paragraphs ------------------------------------------------------------ */
-p { margin: 1.3em 0; }
-dd p, td p { margin-bottom: 0; }
-dd p:first-child, td p:first-child { margin-top: 0; }
 
+p {
+  margin: 1.3em 0;
+}
+
+dd p,
+td p {
+  margin-bottom: 0;
+}
+
+dd p:first-child,
+td p:first-child {
+  margin-top: 0;
+}
 /* -- Headings -------------------------------------------------------------- */
-h1, h2, h3, h4, h5, h6 {
-    color: #D98527;/*was #f80*/
-    font-family: 'Trebuchet MS', sans-serif;
-    font-weight: bold;
-    line-height: 1.1;
-    margin: 1.1em 0 0.5em;
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #000000;
+  /*was #f80*/
+  
+  font-family: Helvectica, sans-serif;
+  margin: 1em 0 15px;
+  padding: 0;
+  font-weight: bold;
+  line-height: 1.2;
+  cursor: text;
+  position: relative;
 }
 
 h1 {
-    font-size: 184.6%;
-    color: #30418C;
-    margin: 0.75em 0 0.5em;
+  font-size: 2.5em;
+  border-bottom: 1px solid #ddd;
 }
 
 h2 {
-    font-size: 153.846%;
-    color: #E48A2B;
+  font-size: 2em;
+  border-bottom: 1px solid #eee;
 }
 
-h3 { font-size: 138.462%; }
+h3 {
+  font-size: 1.5em;
+}
 
 h4 {
-    border-bottom: 1px solid #DBDFEA;
-    color: #E48A2B;
-    font-size: 115.385%;
-    font-weight: normal;
-    padding-bottom: 2px;
+  font-size: 1.2em;
 }
 
-h5, h6 { font-size: 107.692%; }
-
-/* -- Code and examples ----------------------------------------------------- */
-code, kbd, pre, samp {
-    font-family: Menlo, Monaco, 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', Courier, monospace;
-    font-size: 92.308%;
-    line-height: 1.35;
+h5,
+h6 {
+  font-size: 1em;
 }
-
-p code, p kbd, p samp, li code {
-    background: #FCFBFA;
-    border: 1px solid #EFEEED;
-    padding: 0 3px;
-}
-
-a code, a kbd, a samp,
-pre code, pre kbd, pre samp,
-table code, table kbd, table samp,
-.intro code, .intro kbd, .intro samp,
-.toc code, .toc kbd, .toc samp {
-    background: none;
-    border: none;
-    padding: 0;
-}
-
-pre.code, pre.terminal, pre.cmd {
-    overflow-x: auto;
-    *overflow-x: scroll;
-    padding: 0.3em 0.6em;
-}
-
-pre.code {
-    background: #FCFBFA;
-    border: 1px solid #EFEEED;
-    border-left-width: 5px;
-}
-
-pre.terminal, pre.cmd {
-    background: #F0EFFC;
-    border: 1px solid #D0CBFB;
-    border-left: 5px solid #D0CBFB;
-}
-
-/* Don't reduce the font size of <code>/<kbd>/<samp> elements inside <pre>
-   blocks. */
-pre code, pre kbd, pre samp { font-size: 100%; }
-
-/* Used to denote text that shouldn't be selectable, such as line numbers or
-   shell prompts. Guess which browser this doesn't work in. */
-.noselect {
-    -moz-user-select: -moz-none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    -o-user-select: none;
-    user-select: none;
-}
-
-/* -- Lists ----------------------------------------------------------------- */
-dd { margin: 0.2em 0 0.7em 1em; }
-dl { margin: 1em 0; }
-dt { font-weight: bold; }
-
-/* -- Tables ---------------------------------------------------------------- */
-caption, th { text-align: left; }
+/* === Tables === */
 
 table {
-    border-collapse: collapse;
-    width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  background-color: #f7f7f7;
+  width: 100%;
+  font-size: 1em;
+  margin .5em 1em 1em 0;
+  table-layout:fixed ;
 }
 
-td, th {
-    border: 1px solid #fff;
-    padding: 5px 12px;
-    vertical-align: top;
+table,
+th,
+td {
+  border: 1px solid #ccc;
 }
 
-td { background: #E6E9F5; }
-td dl { margin: 0; }
-td dl dl { margin: 1em 0; }
-td pre:first-child { margin-top: 0; }
+td {
+  padding: .75em;
+}
 
 th {
-    background: #D2D7E6;/*#97A0BF*/
-    border-bottom: none;
-    border-top: none;
-    color: #000;/*#FFF1D5*/
-    font-family: 'Trebuchet MS', sans-serif;
-    font-weight: bold;
-    line-height: 1.3;
-    white-space: nowrap;
+  background-color: #999;
+  color: #fff;
+  border: solid 1px #DDD;
+  font-weight: normal;
+  padding: 4px 12px;
+  vertical-align: top;
+  text-align: left;
 }
 
-
-/* -- Layout and Content ---------------------------------------------------- */
-#doc {
-    margin: auto;
-    min-width: 1024px;
+td.methods-return {
+  text-align: right;
 }
 
-.content { padding: 0 20px 0 25px; }
-
-.sidebar {
-    padding: 0 15px 0 10px;
-}
-#bd {
-    padding: 7px 0 130px;
-    position: relative;
-    width: 99%;
-}
-
-/* -- Table of Contents ----------------------------------------------------- */
-
-/* The #toc id refers to the single global table of contents, while the .toc
-   class refers to generic TOC lists that could be used throughout the page. */
-
-.toc code, .toc kbd, .toc samp { font-size: 100%; }
-.toc li { font-weight: bold; }
-.toc li li { font-weight: normal; }
-
-/* -- Intro and Example Boxes ----------------------------------------------- */
-/*
-.intro, .example { margin-bottom: 2em; }
-.example {
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
-    -moz-box-shadow: 0 0 5px #bfbfbf;
-    -webkit-box-shadow: 0 0 5px #bfbfbf;
-    box-shadow: 0 0 5px #bfbfbf;
-    padding: 1em;
-}
-.intro {
-    background: none repeat scroll 0 0 #F0F1F8; border: 1px solid #D4D8EB; padding: 0 1em;
-}
-*/
-
-/* -- Other Styles ---------------------------------------------------------- */
-
-/* These are probably YUI-specific, and should be moved out of Selleck's default
-   theme. */
-
-.button {
-    border: 1px solid #dadada;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    color: #444;
-    display: inline-block;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 92.308%;
-    font-weight: bold;
-    padding: 4px 13px 3px;
-    -moz-text-shadow: 1px 1px 0 #fff;
-    -webkit-text-shadow: 1px 1px 0 #fff;
-    text-shadow: 1px 1px 0 #fff;
-    white-space: nowrap;
-
-    background: #EFEFEF; /* old browsers */
-    background: -moz-linear-gradient(top, #f5f5f5 0%, #efefef 50%, #e5e5e5 51%, #dfdfdf 100%); /* firefox */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f5f5f5), color-stop(50%,#efefef), color-stop(51%,#e5e5e5), color-stop(100%,#dfdfdf)); /* webkit */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f5', endColorstr='#dfdfdf',GradientType=0 ); /* ie */
+.main-header {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  text-align: center;
+  background-color:#f9f9f9;
+  text-shadow: 0 -1px 0 rbga(0, 0, 0, 1);
+  border-bottom: 1px solid #F80;
+  color: #222;
 }
 
-.button:hover {
-    border-color: #466899;
-    color: #fff;
-    text-decoration: none;
-    -moz-text-shadow: 1px 1px 0 #222;
-    -webkit-text-shadow: 1px 1px 0 #222;
-    text-shadow: 1px 1px 0 #222;
-
-    background: #6396D8; /* old browsers */
-    background: -moz-linear-gradient(top, #6396D8 0%, #5A83BC 50%, #547AB7 51%, #466899 100%); /* firefox */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#6396D8), color-stop(50%,#5A83BC), color-stop(51%,#547AB7), color-stop(100%,#466899)); /* webkit */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6396D8', endColorstr='#466899',GradientType=0 ); /* ie */
+.main-header.compact {
+  box-shadow: 0 0px 7px 1px rgba(0, 0, 0, .6);
 }
 
-.newwindow { text-align: center; }
-
-.header .version em {
-    display: block;
-    text-align: right;
+.main-header .content {
+  position: relative;
+  top: .4em;
+  left: 0;
+  max-width: 1200px;
+  padding: 0;
+  margin: 0 auto;
+  height: 60px;
+  transition: height 0.2s;
 }
 
-
-#classdocs .item {
-    border-bottom: 1px solid #466899;
-    margin: 1em 0;
-    padding: 1.5em;
+.main-header.compact .content {
+  height: 44px;
+  transition: height 0.5s;
 }
 
-#classdocs .item .params p,
-    #classdocs .item .returns p,{
-    display: inline;
+.main-header h1.project-name {
+  display: inline;
+  padding: 0;
+  font-size: 24px;
+  color: #222;
+  border: none;
+  padding-right: 8px;
 }
 
-#classdocs .item em code, #classdocs .item em.comment {
-    color: green;
+.main-header img.logo {
+  max-height: 64px;
+  max-width: 64px;
+  vertical-align: top;
+  position: absolute;
+  top: 0px;
+  left: 8px;
+  transition: top 0.4s ease 0.5s;
 }
 
-#classdocs .item em.comment a {
-    color: green;
-    text-decoration: underline;
+.main-header.compact img.logo {
+  top: -100px;
+  transition: top 0.25s cubic-bezier(0.6, -0.28, 0.735, 0.045);
 }
 
-#classdocs .foundat {
-    font-size: 11px;
-    font-style: normal;
+.main-header .project-title {
+  position: relative;
+  top: 8px;
+  padding-left: 84px;
+  transition: padding 0.5s, top 0.5s;
+  transition-delay: 0.2s, 0s;
+  float: left;
 }
 
-.attrs .emits {
-    margin-left: 2em;
-    padding: .5em;
-    border-left: 1px dashed #ccc;
+.main-header.compact .project-title {
+  top: 2px;
+  padding-left: 10px;
+  transition-delay: 0.25s, 0s;
 }
 
-abbr {
-    border-bottom: 1px dashed #ccc;
-    font-size: 80%;
-    cursor: help;
+.main-header .description {
+  display: none;
 }
 
-.prettyprint li.L0, 
-.prettyprint li.L1, 
-.prettyprint li.L2, 
-.prettyprint li.L3, 
-.prettyprint li.L5, 
-.prettyprint li.L6, 
-.prettyprint li.L7, 
-.prettyprint li.L8 {
-    list-style: decimal;
+.jump-links {
+  position: absolute;
+  right: 0;
+  bottom: 0px;
+  list-style: none;
+  margin: 0;
+  margin-right: 10px;
+  padding: 0;
+  text-align: right;
+  color: #15a9fe;
+  text-shadow: none;
+  transition: bottom 0.2s;
 }
 
-ul li p {
-    margin-top: 0;
+.compact .jump-links {
+  bottom: 1em;
 }
 
-.method .name {
-    font-size: 110%;
+.jump-links a {
+  color: #15a9fe;
 }
 
-.apidocs .methods .extends .method,
-.apidocs .properties .extends .property,
-.apidocs .attrs .extends .attr,
-.apidocs .events .extends .event {
-    font-weight: bold;
+.jump-links li {
+  display: inline;
+  margin: 0 10px;
 }
 
-.apidocs .methods .extends .inherited,
-.apidocs .properties .extends .inherited,
-.apidocs .attrs .extends .inherited,
-.apidocs .events .extends .inherited {
-    font-weight: normal;
+.anchor-link {
+  display: block;
+  position: relative;
+  height: 0;
+  top: -50px;
 }
 
-#hd {
-    background: whiteSmoke;
-    background: -moz-linear-gradient(top,#DCDBD9 0,#F6F5F3 100%);
-    background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#DCDBD9),color-stop(100%,#F6F5F3));
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dcdbd9',endColorstr='#F6F5F3',GradientType=0);
-    border-bottom: 1px solid #DFDFDF;
-    padding: 0 15px 1px 20px;
-    margin-bottom: 15px;
+.top-jump-link {
+  opacity: 0;
+  transition: opacity 0.5s ease 0;
+  pointer-events: none;
 }
 
-#hd img {
-    margin-right: 10px;
-    vertical-align: middle;
+.compact .top-jump-link {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.5s ease 0.5s;
 }
 
-
-/* -- API Docs CSS ---------------------------------------------------------- */
-
-/*
-This file is organized so that more generic styles are nearer the top, and more
-specific styles are nearer the bottom of the file. This allows us to take full
-advantage of the cascade to avoid redundant style rules. Please respect this
-convention when making changes.
-*/
-
-/* -- Generic TabView styles ------------------------------------------------ */
-
-/*
-These styles apply to all API doc tabviews. To change styles only for a
-specific tabview, see the other sections below.
-*/
-
-.yui3-js-enabled .apidocs .tabview {
-    visibility: hidden; /* Hide until the TabView finishes rendering. */
-    _visibility: visible;
+.jump-links .index-jump-link {
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
 }
 
-.apidocs .tabview.yui3-tabview-content { visibility: visible; }
-.apidocs .tabview .yui3-tabview-panel { background: #fff; }
-
-/* -- Generic Content Styles ------------------------------------------------ */
-
-/* Headings */
-h2, h3, h4, h5, h6 {
-    border: none;
-    color: #30418C;
-    font-weight: bold;
-    text-decoration: none;
+.index-offscreen .jump-links .index-jump-link {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-.link-docs {
-    float: right;
-    font-size: 15px;
-    margin: 4px 4px 6px;
-    padding: 6px 30px 5px;
+.top-jump-link,
+.index-jump-link {
+  font-style: normal;
 }
 
-.apidocs { zoom: 1; }
-
-/* Generic box styles. */
-.apidocs .box {
-    border: 1px solid;
-    border-radius: 3px;
-    margin: 1em 0;
-    padding: 0 1em;
+.top-jump-link:before,
+.index-jump-link:before {
+  content: "\2191";
+  margin: 0 .2em;
+  font-style: normal;
 }
 
-/* A flag is a compact, capsule-like indicator of some kind. It's used to
-   indicate private and protected items, item return types, etc. in an
-   attractive and unobtrusive way. */
-.apidocs .flag {
-    background: #bababa;
-    border-radius: 3px;
-    color: #fff;
-    font-size: 11px;
-    margin: 0 0.5em;
-    padding: 2px 4px 1px;
+.main-body {
+  max-width: 1200px;
+  text-align: left;
+  margin: 0 auto;
 }
 
-/* Class/module metadata such as "Uses", "Extends", "Defined in", etc. */
-.apidocs .meta {
-    background: #f9f9f9;
-    border-color: #efefef;
-    color: #555;
-    font-size: 11px;
-    padding: 3px 6px;
+.main-body .content {
+  padding: 28px 18px;
 }
 
-.apidocs .meta p { margin: 0; }
-
-/* Deprecation warning. */
-.apidocs .box.deprecated,
-.apidocs .flag.deprecated {
-    background: #fdac9f;
-    border: 1px solid #fd7775;
+.main-body .content>h1 {
+  margin-top: 0;
 }
 
-.apidocs .box.deprecated p { margin: 0.5em 0; }
-.apidocs .flag.deprecated { color: #333; }
-
-/* Module/Class intro description. */
-.apidocs .intro {
-    background: #f0f1f8;
-    border-color: #d4d8eb;
+#docs-sidebar {
+  width: 220px;
+  margin: 0 8px;
+  padding-top: 36px;
+  float: left;
 }
 
-/* Loading spinners. */
-#bd.loading .apidocs,
-#api-list.loading .yui3-tabview-panel {
-    background: #fff url(../img/spinner.gif) no-repeat center 70px;
-    min-height: 150px;
+#docs-main {
+  margin-left: 240px;
+  margin-right: 10px;
 }
-
-#bd.loading .apidocs .content,
-#api-list.loading .yui3-tabview-panel .apis {
-    display: none;
-}
-
-.apidocs .no-visible-items { color: #666; }
-
-/* Generic inline list. */
-.apidocs ul.inline {
-    display: inline;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.apidocs ul.inline li { display: inline; }
-
 /* Comma-separated list. */
-.apidocs ul.commas li:after { content: ','; }
-.apidocs ul.commas li:last-child:after { content: ''; }
 
-/* Keyboard shortcuts. */
-kbd .cmd { font-family: Monaco, Helvetica; }
-
-/* -- Generic Access Level styles ------------------------------------------- */
-.apidocs .item.protected,
-.apidocs .item.private,
-.apidocs .index-item.protected,
-.apidocs .index-item.deprecated,
-.apidocs .index-item.private {
-    display: none;
+.apidocs ul.commas li:after {
+  content: ',';
+  margin-right: 0.5em;
 }
 
-.show-deprecated .item.deprecated,
-.show-deprecated .index-item.deprecated,
-.show-protected .item.protected,
-.show-protected .index-item.protected,
-.show-private .item.private,
-.show-private .index-item.private {
-    display: block;
+.apidocs ul.commas li:last-child:after {
+  content: '';
+  margin-right: 0;
+}
+/* Filters */
+
+.protected,
+.private,
+.deprecated {
+  display: none;
 }
 
-.hide-inherited .item.inherited,
-.hide-inherited .index-item.inherited {
-    display: none;
+.show-protected .protected,
+.show-private .private,
+.show-deprecated .deprecated {
+  display: block;
 }
 
-/* -- Generic Item Index styles --------------------------------------------- */
-.apidocs .index { margin: 1.5em 0 3em; }
+.hide-inherited .inherited {
+  display: none;
+}
+/*=== Types ==*/
 
-.apidocs .index h3 {
-    border-bottom: 1px solid #efefef;
-    color: #333;
-    font-size: 13px;
-    margin: 2em 0 0.6em;
-    padding-bottom: 2px;
+.item .type {
+  border: 1px solid #d9d9d9;
+  border-radius: 3px;
+  background-color: #eaeaea;
+  font-weight: bold;
+  padding: 2px 6px;
+  font-size: 80%;
 }
 
-.apidocs .index .no-visible-items { margin-top: 2em; }
-
-.apidocs .index-list {
-    border-color: #efefef;
-    font-size: 12px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    -moz-column-count: 4;
-    -moz-column-gap: 10px;
-    -moz-column-width: 170px;
-    -ms-column-count: 4;
-    -ms-column-gap: 10px;
-    -ms-column-width: 170px;
-    -o-column-count: 4;
-    -o-column-gap: 10px;
-    -o-column-width: 170px;
-    -webkit-column-count: 4;
-    -webkit-column-gap: 10px;
-    -webkit-column-width: 170px;
-    column-count: 4;
-    column-gap: 10px;
-    column-width: 170px;
+.no-visible-items-message {
+  display: none;
 }
 
-.apidocs .no-columns .index-list {
-    -moz-column-count: 1;
-    -ms-column-count: 1;
-    -o-column-count: 1;
-    -webkit-column-count: 1;
-    column-count: 1;
+.no-visible-items .no-visible-items-message {
+  display: block;
+  color: #999;
+  font-style: italic;
 }
 
-.apidocs .index-item { white-space: nowrap; }
+.meta .type {
+  border: none;
+  background-color: transparent;
+  font-size: 1em;
+  padding: inherit;
+}
+/* === Properties === */
 
-.apidocs .index-item .flag {
-    background: none;
-    border: none;
-    color: #afafaf;
-    display: inline;
-    margin: 0 0 0 0.2em;
-    padding: 0;
+.property.item,
+.events.item {
+  margin: 3em 0;
 }
 
-/* -- Generic API item styles ----------------------------------------------- */
-.apidocs .args {
-    display: inline;
-    margin: 0 0.5em;
+.property.item h3,
+.events.item h3 {
+  font-size: 1.1em;
+  margin-bottom: 0;
 }
 
-.apidocs .flag.chainable { background: #46ca3b; }
-.apidocs .flag.protected { background: #9b86fc; }
-.apidocs .flag.private { background: #fd6b1b; }
-.apidocs .flag.async { background: #356de4; }
-.apidocs .flag.required { background: #e60923; }
-
-.apidocs .item {
-    border-bottom: 1px solid #efefef;
-    margin: 1.5em 0 2em;
-    padding-bottom: 2em;
+.property.item h3 .type,
+.events.item h3 .type {
+  background-color: #e0e0e0;
+  border-color: #d0d0d0;
+  color: #666;
+  margin-left: .5em;
+  text-shadow: 0 1px 0 #fff;
 }
 
-.apidocs .item h4,
-.apidocs .item h5,
-.apidocs .item h6 {
-    color: #333;
-    font-family: inherit;
-    font-size: 100%;
+.property.item h3 .flag,
+.events.item h3 .flag {
+  font-style: italic;
+  font-size: .9em;
+  font-weight: normal;
+  padding: 0 1em;
+  color: #a0a0a0;
 }
 
-.apidocs .item .description p,
-.apidocs .item pre.code {
-    margin: 1em 0 0;
+.property.item .meta,
+.events.item .meta {
+  color: #b0b0b0;
+  font-size: 13px;
 }
 
-.apidocs .item .meta {
-    background: none;
-    border: none;
-    padding: 0;
+.property.item .meta p,
+.events.item .meta p {
+  margin: 0;
 }
 
-.apidocs .item .name {
-    display: inline;
-    font-size: 14px;
+.property.item .meta a .events.item .meta a {
+  color: #b0b0b0;
+  text-decoration: underline;
 }
 
-.apidocs .item .type,
-.apidocs .item .type a,
-.apidocs .returns-inline {
-    color: #555;
+.property .extended-detail,
+.events .extended-detail {}
+/*=== Methods ===*/
+
+.method.item {
+  padding: 0;
+  margin: 0 0 1em;
+}
+.index-param:after {
+  content: ',';
+  margin-right: 0.5em;
+}
+.index-param:last-child:after {
+  content: '';
+  margin-right: 0;
 }
 
-.apidocs .item .type,
-.apidocs .returns-inline {
-    font-size: 11px;
-    margin: 0 0 0 0;
+.method.item h3 {
+  font-size: 1.15em;
+  /* border: 1px solid #cacaca; */
+  text-shadow: 0 1px 0 #fff;
+  margin: 1.5em 0 0.6em;
+  padding: 3px 95px 3px 3px;
+  background-color:#E2E2E2;
 }
 
-.apidocs .item .type a { border-bottom: 1px dotted #afafaf; }
-.apidocs .item .type a:hover { border: none; }
-
-/* -- Item Parameter List --------------------------------------------------- */
-.apidocs .params-list {
-    list-style: square;
-    margin: 1em 0 0 2em;
-    padding: 0;
+.method.item h3 .type {
+  background-color: #e0e0e0;
+  border-color: #d0d0d0;
 }
 
-.apidocs .param { margin-bottom: 1em; }
-
-.apidocs .param .type,
-.apidocs .param .type a {
-    color: #666;
+.method.item h3 .flag {
+  font-style: italic;
+  font-size: 0.8em;
+  font-weight: normal;
+  padding: 0 1em;
+  color: #a0a0a0;
 }
 
-.apidocs .param .type {
-    margin: 0 0 0 0.5em;
-    *margin-left: 0.5em;
+.item code,
+.item code,
+.default-value {
+  font-family: Consolas, Menlo, "Courier New", monospace;
 }
 
-.apidocs .param-name { font-weight: bold; }
-
-/* -- Item "Emits" block ---------------------------------------------------- */
-.apidocs .item .emits {
-    background: #f9f9f9;
-    border-color: #eaeaea;
+.default-value {
+  margin-left: .4em;
 }
 
-/* -- Item "Returns" block -------------------------------------------------- */
-.apidocs .item .returns .type,
-.apidocs .item .returns .type a {
-    font-size: 100%;
-    margin: 0;
+.args {
+  display: inline;
 }
 
-/* -- Class Constructor block ----------------------------------------------- */
-.apidocs .constructor .item {
-    border: none;
-    padding-bottom: 0;
+.args ul {
+  display: inline;
+  list-style: none;
+  padding: 0;
 }
 
-/* -- File Source View ------------------------------------------------------ */
-.apidocs .file pre.code,
-#doc .apidocs .file pre.prettyprint {
-    background: inherit;
-    border: none;
-    overflow: visible;
-    padding: 0;
+.args li {
+  display: inline;
+  padding: 0;
 }
 
-.apidocs .L0,
-.apidocs .L1,
-.apidocs .L2,
-.apidocs .L3,
-.apidocs .L4,
-.apidocs .L5,
-.apidocs .L6,
-.apidocs .L7,
-.apidocs .L8,
-.apidocs .L9 {
-    background: inherit;
+.method .meta {
+  background-color: #f8f8f8;
+  margin: 0;
+  padding: 5px 10px;
+  color: #999;
+  border: 1px solid #cacaca;
+  border-top: none;
+  font-size: 13px;
 }
 
-/* -- Submodule List -------------------------------------------------------- */
-.apidocs .module-submodule-description {
-    font-size: 12px;
-    margin: 0.3em 0 1em;
+.method .meta p {
+  margin: 0;
 }
 
-.apidocs .module-submodule-description p:first-child { margin-top: 0; }
+.params-list {
+  list-style-type: none;
+  padding: 0;
+}
 
-/* -- Sidebar TabView ------------------------------------------------------- */
-#api-tabview { margin-top: 0.6em; }
+.params-list,
+.returns-description {
+  margin: 0 0 0 .7em;
+}
 
-#api-tabview-filter,
-#api-tabview-panel {
-    border: 1px solid #dfdfdf;
+.params-list .param-name {
+  font-weight: bold
+}
+
+.params-list .param .flag {
+  font-size: .85em;
+}
+
+.params-list .param-description {
+  margin: 0;
+}
+
+.params-list .param-description p,
+.returns-description p {
+  margin: .5em 0 1.5em 1.5em;
+}
+
+.param .type {
+  margin-left: .5em;
+}
+
+.method .extended-detail {
+  /* border: 1px solid #cacaca; */
+  /* border-top: 1px transparent; */
+  padding:0;
+  magin:.25em 0 .75em 0;
+}
+
+.returns-inline {
+  padding-left: 2ex;
+}
+
+.returns-inline:before {
+  content: "returns";
+  font-weight: normal;
+  font-size: .8em;
+  padding-right: 0.5ex;
+  color: #a0a0a0;
+}
+/*---- Flags ----*/
+
+.flag.optional {
+  color: #777;
+  font-style: italic;
+}
+
+.flag.deprecated {
+  display: inline;
+}
+
+.index-item .flag.constructor {
+  opacity: .5;
+  padding-left: 4px;
+}
+/* Side Nav */
+
+ul.apis {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: #fff;
+  line-height: 1.5;
+  font-size: 13px;
+}
+
+ul.apis li {
+  position: relative;
+  display: block;
+  padding: 6px 8px;
+  font-size: 14px;
+  border-top: 1px solid #e5e5e5;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.apis .type {
+  font-weight: bold;
 }
 
 #api-tabview-filter {
-    border-bottom: none;
-    border-top: none;
-    padding: 0.6em 10px 0 10px;
+  background-color: red;
+  padding: 10px;
+  background-color: #fafafa;
+  border: 1px solid #e5e5e5;
+  border-bottom: none;
+  border-top: none;
 }
 
-#api-tabview-panel { border-top: none; }
-#api-filter { width: 97%; }
+#api-tabview-panel {
+  background-color: #fff;
+  border: solid #d5d5d5;
+  border-width: 0 1px 1px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  margin: 0;
+}
+/* Index list */
 
-/* -- Content TabView ------------------------------------------------------- */
-#classdocs .yui3-tabview-panel { border: none; }
-
-/* -- Source File Contents -------------------------------------------------- */
-.prettyprint li.L0,
-.prettyprint li.L1,
-.prettyprint li.L2,
-.prettyprint li.L3,
-.prettyprint li.L5,
-.prettyprint li.L6,
-.prettyprint li.L7,
-.prettyprint li.L8 {
-    list-style: decimal;
+.index {
+  /*border: 1px solid #e5e5e5;*/
+  
+  padding: 10px 20px;
+  margin: 30px 0;
+  background-color: #f6f6f6;
 }
 
-/* -- API options ----------------------------------------------------------- */
-#api-options {
-    font-size: 11px;
-    margin-top: 2.2em;
-    position: absolute;
-    right: 1.5em;
+.index h2 {
+  display: none;
 }
 
-/*#api-options label { margin-right: 0.6em; }*/
-
-/* -- API list -------------------------------------------------------------- */
-#api-list {
-    margin-top: 1.5em;
-    *zoom: 1;
+#api-options label {
+  margin: 0 0 0 25px;
 }
 
-.apis {
-    font-size: 12px;
-    line-height: 1.4;
-    list-style: none;
-    margin: 0;
-    padding: 0.5em 0 0.5em 0.4em;
+ul.index-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  -moz-column-count: 4;
+  -ms-column-count: 4;
+  -o-column-count: 4;
+  -webkit-column-count: 4;
+  column-count: 4;
 }
 
-.apis a {
-    border: 1px solid transparent;
-    display: block;
-    margin: 0 0 0 -4px;
-    padding: 1px 4px 0;
-    text-decoration: none;
-    _border: none;
-    _display: inline;
+@media (max-width: 1030px) {
+  ul.index-list {
+    -moz-column-count: 3;
+    -ms-column-count: 3;
+    -o-column-count: 3;
+    -webkit-column-count: 3;
+    column-count: 3;
+  }
 }
 
-.apis a:hover,
-.apis a:focus {
-    background: #E8EDFC;
-    background: -moz-linear-gradient(top, #e8edfc 0%, #becef7 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#E8EDFC), color-stop(100%,#BECEF7));
-    border-color: #AAC0FA;
-    border-radius: 3px;
-    color: #333;
-    outline: none;
+@media (max-width: 890px) {
+  ul.index-list {
+    -moz-column-count: 2;
+    -ms-column-count: 2;
+    -o-column-count: 2;
+    -webkit-column-count: 2;
+    column-count: 2;
+  }
 }
 
-.api-list-item a:hover,
-.api-list-item a:focus {
-    font-weight: bold;
-    text-shadow: 1px 1px 1px #fff;
+.index-item a {
+  font-weight: normal;
 }
 
-.apis .message { color: #888; }
-.apis .result a { padding: 3px 5px 2px; }
+.index-item.inherited a {}
 
-.apis .result .type {
-    right: 4px;
-    top: 7px;
+.index-item.private a,
+.index-item.protected a {
+  font-style: italic;
 }
 
-.api-list-item .yui3-highlight {
-    font-weight: bold;
+.index-item.deprecated {
+  text-decoration: line-through;
 }
+
+.index-item.deprecated a {
+  opacity: .7;
+}
+/*---- YUI component style overrides ----*/
+
+.tabs {
+  background-image: linear-gradient(#fafafa, #eaeaea);
+  border: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e0e0e0;
+  border-radius: 4px 4px 0 0;
+}
+
+.yui3-skin-sam .yui3-tabview-panel {
+  background: #fcfcfc;
+}
+
+.yui3-skin-sam .yui3-tabview-panel {
+  border: none;
+}
+
+.yui3-u-1-4 {
+  width: 200px;
+}
+
+.yui3-tab-selected a {
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+  position: relative;
+}
+
+.yui3-tab-selected a:before,
+.yui3-tab-selected a:after {
+  border: 8px solid transparent;
+  border-style: outset outset solid outset;
+  /* fixes FF bug */
+  
+  border-bottom-color: #ccc;
+  bottom: 0;
+  content: "";
+  height: 0;
+  left: 50%;
+  margin-left: -8px;
+  overflow: hidden;
+  position: absolute;
+  width: 0;
+}
+
+.yui3-tab-selected a:after {
+  background: transparent;
+  border-bottom-color: #fafafa;
+  bottom: -1px;
+}
+
 
