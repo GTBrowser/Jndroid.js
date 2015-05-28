@@ -9,6 +9,8 @@ function IntroductionView() {
     var contentView = new LinearLayout();
     this.addView(contentView);
 
+    loadMasterpiece();
+
     var tips = new TextView();
     tips.setTextSize(TITLE_SIZE);
     tips.setTextColor(TEXT_COLOR);
@@ -109,6 +111,15 @@ function IntroductionView() {
     playground.setAppendCode(mAnimatonAppendCode);
     playground.setEditHeight(500);
     contentView.addView(playground, lp);
+
+    function loadMasterpiece() {
+        var imageView = new ImageView();
+        imageView.setImageUri("images/masterpiece.jpg");
+        imageView.setScaleType(ScaleType.CENTER_CROP);
+        imageView.setBoxShadow(0, 0, 3, 3, 0x33000000);
+        var imgLp = new LayoutParams(LayoutParams.FILL_PARENT, 128);
+        contentView.addView(imageView, imgLp);
+    }
 
     function loadGithubView() {
         var github = new TextView();
