@@ -45,3 +45,4 @@ Include the script on your page.
 [![License](https://img.shields.io/github/license/GTBrowser/Jndroid.js.svg)](https://github.com/GTBrowser/Jndroid.js)
 
 
+

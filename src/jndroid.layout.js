@@ -79,7 +79,7 @@ Object.defineProperty(LayoutParams,"WRAP_CONTENT",{value:-2});
 
 function getDefaultLayoutParams() {
     return new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-};
+}
 
 function getLayoutParams(view) {
     var lp = view.getLayoutParams();
@@ -87,7 +87,7 @@ function getLayoutParams(view) {
         lp = getDefaultLayoutParams();
     }
     return lp;
-};
+}
 
 function makeSpec(childDimen, lpDimen) {
     var spec;
@@ -115,7 +115,7 @@ function calcOffsetXByGravity(parent, child) {
         }
     }
     return offsetX;
-};
+}
 
 function calcOffsetYByGravity(parent, child) {
     var lp = getLayoutParams(child);
@@ -500,7 +500,7 @@ function Gallery() {
                 var d = Math.abs(this.getCurX() - endX);
                 mProcessor.startProcess(this.getCurX(), endX, d);
                 this.invalidate();
-                setTimeout(function() {fireScreenChanged()}, d);
+                setTimeout(function() {fireScreenChanged();}, d);
                 break;
         }
     };

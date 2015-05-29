@@ -7,7 +7,7 @@ Array.prototype.add = function(index, val) {
     } else {
         this.splice(index, 0, val);
     }
-}
+};
 
 Array.prototype.size = function() {
     return this.length;
@@ -327,8 +327,7 @@ function MotionEvent(rawEv) {
         } else if (rawEv.type == "mouseout") {
             var div = rawEv.target;
             var offset = Utils.getOffset(div);
-            if (this.getRawX() < offset.left || this.getRawX() > (offset.left + offset.width)
-                || this.getRawY() < offset.top || this.getRawY() > (offset.top + offset.height)) {
+            if (this.getRawX() < offset.left || this.getRawX() > (offset.left + offset.width) || this.getRawY() < offset.top || this.getRawY() > (offset.top + offset.height)) {
                 return MotionEvent.ACTION_CANCEL;
             }
         }
@@ -492,7 +491,7 @@ function Drawable() {
      */
     this.getIntrinsicHeight = function() {
         return -1;
-    }
+    };
 }
 
 function Processor() {
@@ -956,7 +955,7 @@ function View() {
                 mHTMLCanvas.width = mHTMLCanvas.width;
                 if (mHTMLCanvas.getContext) {
                     if (canvas == null) {
-                        canvas = mHTMLCanvas.getContext('2d');
+                        canvas = mHTMLCanvas.getContext("2d");
                         canvas.width = this.getMeasuredWidth();
                         canvas.height = this.getMeasuredHeight();
                     }
@@ -1310,8 +1309,7 @@ function View() {
                     var offset = Utils.getOffset(view.getDiv());
                     var x = ev.getRawX();
                     var y = ev.getRawY();
-                    if (x < offset.left || x > (offset.left + offset.width)
-                        || y < offset.top || y > (offset.top + offset.height)) {
+                    if (x < offset.left || x > (offset.left + offset.width) || y < offset.top || y > (offset.top + offset.height)) {
                         view.removeCallbacks(view.checkLongPress);
                     }
                     break;
@@ -1379,21 +1377,21 @@ function View() {
 	//TODO
     this.setBoxShadow = function(x, y, blur, spread, color) {
 
-        var styleString = x + 'px ' + y + 'px';
+        var styleString = x + "px " + y + "px";
 
-        if(typeof(blur) != 'undefined')
+        if(typeof(blur) != "undefined")
         {
-            styleString = styleString + ' ' + blur + 'px';
+            styleString = styleString + " " + blur + "px";
         }
 
-        if(typeof(spread) != 'undefined')
+        if(typeof(spread) != "undefined")
         {
-            styleString = styleString + ' ' + spread + 'px';
+            styleString = styleString + " " + spread + "px";
         }
 
-        if(typeof(color) != 'undefined')
+        if(typeof(color) != "undefined")
         {
-            styleString = styleString + ' ' + Utils.toCssColor(color);
+            styleString = styleString + " " + Utils.toCssColor(color);
         }
 
         this.getDiv().style.webkitBoxShadow =  styleString;
@@ -1514,13 +1512,16 @@ meta.name = "mobile-web-app-capable";
 meta.content = "yes";
 document.head.appendChild(meta);
 
+/* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
+var c = document.createElement('script');
+c.type = 'text/javascript';
+c.async = true;
+c.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'www.clicki.cn/boot/52027';
+var h = document.getElementsByTagName('script')[0];
+h.parentNode.insertBefore(c, h);
+/* statistics code end */
+
 function setContentView(view) {
-    //if (window.screen.height > document.body.scrollHeight) {
-    //    mTopMargin = window.screen.height - document.body.scrollHeight;
-
-
-    //}
-
     addOrientationListener(function() {
         onOrientationChanged();
     });
@@ -1553,7 +1554,7 @@ function setContentView(view) {
     forceReLayout();
 
     var css = document.createElement("style");
-    css.innerHTML = "*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px;} input{outline:none}";
+    css.innerHTML = "*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px; height: 0px} input{outline:none}";
     document.head.appendChild(css);
 }
 

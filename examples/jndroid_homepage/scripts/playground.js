@@ -52,6 +52,7 @@ function Playground(title, initCode, isHtml) {
     mTryButton.setImgSrc("images/play_icon.png");
     mTryButton.setImgWidth(40);
     mTryButton.setBoxShadow(0, 6, 6, 0, 0x66000000);
+    mTryButton.setStyle("z-index", 10);
     mTryButton.setOnClickListener(function() {
         update();
     });

@@ -9,6 +9,8 @@ function IntroductionView() {
     var contentView = new LinearLayout();
     this.addView(contentView);
 
+    loadMasterpiece();
+
     var tips = new TextView();
     tips.setTextSize(TITLE_SIZE);
     tips.setTextColor(TEXT_COLOR);
@@ -65,6 +67,8 @@ function IntroductionView() {
     sloganC.setText("Jndroid是一個JavaScript框架，使用Android的方式編寫Web應用程序。");
     contentView.addView(sloganC, sloganLp);
 
+    loadGithubView();
+
     var getstart = new TextView();
     getstart.setTextSize(TITLE_SIZE);
     getstart.setTextColor(THEME_COLOR);
@@ -77,6 +81,18 @@ function IntroductionView() {
     playground.setEditHeight(280);
     var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     lp.setMargins(16);
+    contentView.addView(playground, lp);
+
+    var androidL = new TextView();
+    androidL.setTextSize(TITLE_SIZE);
+    androidL.setTextColor(THEME_COLOR);
+    androidL.setText("Material Design");
+    var androidLLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    androidLLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP, PADDING, PADDING);
+    contentView.addView(androidL, androidLLp);
+
+    playground = new Playground("Widgets", mMaterialDesignCode);
+    playground.setEditHeight(450);
     contentView.addView(playground, lp);
 
     var apidemos = new TextView();
@@ -107,6 +123,67 @@ function IntroductionView() {
     playground.setAppendCode(mAnimatonAppendCode);
     playground.setEditHeight(500);
     contentView.addView(playground, lp);
+
+    function loadMasterpiece() {
+        var imageView = new ImageView();
+        imageView.setImageUri("images/masterpiece.jpg");
+        imageView.setScaleType(ScaleType.CENTER_CROP);
+        imageView.setBoxShadow(0, 3, 3, 0, 0x42000000);
+        var imgLp = new LayoutParams(LayoutParams.FILL_PARENT, 144);
+        contentView.addView(imageView, imgLp);
+    }
+
+    function loadGithubView() {
+        var github = new TextView();
+        github.setTextSize(TITLE_SIZE);
+        github.setTextColor(THEME_COLOR);
+        github.setText("Github");
+        var githubLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        githubLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP, PADDING, PADDING);
+        contentView.addView(github, githubLp);
+
+        var githubLayoutlp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
+        var starLayout = new LinearLayout();
+        starLayout.setOnClickListener(function() {
+            window.open("https://github.com/GTBrowser/Jndroid.js");
+        });
+        starLayout.setOrientation(LinearLayout.HORIZONTAL);
+        contentView.addView(starLayout, githubLayoutlp);
+
+        var imgLp = new LayoutParams(96, LayoutParams.FILL_PARENT);
+        var urlLp = new LayoutParams(0, LayoutParams.FILL_PARENT);
+        urlLp.weight = 1;
+        var starImg = new ImageView();
+        starImg.setImgSrc("https://img.shields.io/github/stars/GTBrowser/Jndroid.js.svg");
+        starImg.setImgHeight(24);
+        starLayout.addView(starImg, imgLp);
+        var starLink = new TextView();
+        starLink.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        starLink.setText("https://github.com/GTBrowser/Jndroid.js");
+        starLink.setTextSize(SUB_TEXT_SIZE);
+        starLink.setTextColor(SUB_TEXT_COLOR);
+        starLayout.addView(starLink, urlLp);
+
+        var githubLayoutlp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
+        var forkLayout = new LinearLayout();
+        forkLayout.setOnClickListener(function() {
+            window.open("https://github.com/GTBrowser/Jndroid.js/fork");
+        });
+        forkLayout.setOrientation(LinearLayout.HORIZONTAL);
+        contentView.addView(forkLayout, githubLayoutlp);
+
+        var forkImg = new ImageView();
+        forkImg.setImgSrc("https://img.shields.io/github/forks/GTBrowser/Jndroid.js.svg");
+        forkImg.setImgHeight(24);
+        forkLayout.addView(forkImg, imgLp);
+        var forkLink = new TextView();
+        forkLink.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        forkLink.setText("https://github.com/GTBrowser/Jndroid.js/fork");
+        forkLink.setTextSize(SUB_TEXT_SIZE);
+        forkLink.setTextColor(SUB_TEXT_COLOR);
+        forkLayout.addView(forkLink, urlLp);
+
+    }
 }
 
 var mHelloWorldCode = "<!DOCTYPE html>\n" +
@@ -123,9 +200,33 @@ var mHelloWorldCode = "<!DOCTYPE html>\n" +
     "</body>\n" +
     "</html>";
 
+var mMaterialDesignCode = "" +
+    "var mLayout = new LinearLayout();\n" +
+    "this.addView(mLayout);\n\n" +
+    "var lp = new LayoutParams(LayoutParams.FILL_PARENT, 48);\n" +
+    "lp.gravity = Gravity.CENTER;\n" +
+    "lp.setMargins(8);\n\n" +
+    "var mButton = new LButton();\n" +
+    "mButton.setBackgroundColor(0xff009688);\n" +
+    "mButton.setTextColor(0xffffffff);\n" +
+    "mButton.setText(\"button\");\n" +
+    "mButton.setOnClickListener(function() {\n" +
+    "\twindow.alert(\"Material Design\");\n" +
+    "});\n" +
+    "mLayout.addView(mButton, lp);\n\n" +
+    "var mEditText = new LEditText();\n" +
+    "mEditText.setHint(\"input text here\");\n" +
+    "mLayout.addView(mEditText, lp);\n\n" +
+    "var progress = new LProgressBar();\n" +
+    "mLayout.addView(progress, lp);\n\n" +
+    "var circle = new LProgressBar();\n" +
+    "circle.setStyle(LProgressBar.Large);\n" +
+    "mLayout.addView(circle, lp);\n\n";
+
+
 var mWidgetCode = "" +
-    "var mLinearLayout = new LinearLayout();\n" +
-    "this.addView(mLinearLayout);\n\n" +
+    "var mLayout = new LinearLayout();\n" +
+    "this.addView(mLayout);\n\n" +
     "var lp = new LayoutParams(LayoutParams.FILL_PARENT, 48);\n" +
     "lp.setMargins(8);\n\n" +
     "var mButton = new Button();\n" +
@@ -133,18 +234,18 @@ var mWidgetCode = "" +
     "mButton.setOnClickListener(function() {\n" +
     "\twindow.alert(\"button click\");\n" +
     "});\n" +
-    "mLinearLayout.addView(mButton, lp);\n\n" +
+    "mLayout.addView(mButton, lp);\n\n" +
     "var mTextView = new TextView();\n" +
     "mTextView.setText(\"textview\");\n" +
-    "mLinearLayout.addView(mTextView, lp);\n\n" +
+    "mLayout.addView(mTextView, lp);\n\n" +
     "var mEditText = new EditText();\n" +
     "mEditText.setHintText(\"edittext\");\n" +
-    "mLinearLayout.addView(mEditText, lp);\n\n" +
+    "mLayout.addView(mEditText, lp);\n\n" +
     "var mImageView = new ImageView();\n" +
     "mImageView.setImageUri(\"images/ic_launcher.png\")\n" +
     "mImageView.setScaleType(ScaleType.FIT_CENTER);\n" +
     "var imgLp = new LayoutParams(LayoutParams.FILL_PARENT, 108);\n" +
-    "mLinearLayout.addView(mImageView, imgLp);"
+    "mLayout.addView(mImageView, imgLp);";
 
 var mMeausreCode = "" +
     "var mView = new MyView();\n" +

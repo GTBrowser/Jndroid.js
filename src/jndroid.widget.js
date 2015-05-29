@@ -51,6 +51,11 @@ function HorizontalScrollView() {
 
     this.setStyle("overflow", "auto");
 
+        this.scrollTo = function(x) {
+        this.getDiv().scrollLeft = x;
+        console.log("this.getDiv().scrollLeft:" + this.getDiv().scrollLeft);
+    };
+
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
@@ -661,7 +666,7 @@ function EditText() {
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
-        var hMode = MeasureSpec.getMode(height);
+        var hMode = MeasureSpec.getMode(heightMS);
 
         var contentWidth = width - this.getPaddingLeft() - this.getPaddingRight();
         var contentHeight = height - this.getPaddingTop() - this.getPaddingBottom();
