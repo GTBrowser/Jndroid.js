@@ -24,6 +24,22 @@
             },
             "fors": {},
             "namespaces": {}
+        },
+        "jndroid.widget.js": {
+            "name": "jndroid.widget.js",
+            "modules": {},
+            "classes": {
+                "ScrollView": 1,
+                "HorizontalScrollView": 1,
+                "ImageView": 1,
+                "ImageButton": 1,
+                "TextView": 1,
+                "Button": 1,
+                "EditText": 1,
+                "WebView": 1
+            },
+            "fors": {},
+            "namespaces": {}
         }
     },
     "modules": {},
@@ -128,6 +144,101 @@
             "line": 407,
             "description": "A view that shows items in a center-locked, horizontally scrolling list.",
             "extends": "ViewGroup"
+        },
+        "ScrollView": {
+            "name": "ScrollView",
+            "shortname": "ScrollView",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 1,
+            "description": "Layout container for a view hierarchy that can be scrolled by the user,\nallowing it to be larger than the physical display.  A child that is often used\nis a LinearLayout in a vertical orientation, presenting a vertical\narray of top-level items that the user can scroll through.\n\nScrollView only supports vertical scrolling. For horizontal scrolling,\nuse HorizontalScrollView."
+        },
+        "HorizontalScrollView": {
+            "name": "HorizontalScrollView",
+            "shortname": "HorizontalScrollView",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 38,
+            "description": "Layout container for a view hierarchy that can be scrolled by the user,\nallowing it to be larger than the physical display.  A child that is often used\nis a LinearLayout in a horizontal orientation, presenting a horizontal\narray of top-level items that the user can scroll through.\n\nHorizontalScrollView only supports horizontal scrolling. For vertical scrolling,\nuse ScrollView."
+        },
+        "ImageView": {
+            "name": "ImageView",
+            "shortname": "ImageView",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 75,
+            "description": "Displays an arbitrary icon.The ImageView class provides scaling display options."
+        },
+        "ImageButton": {
+            "name": "ImageButton",
+            "shortname": "ImageButton",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 233,
+            "description": "Displays a button with an image (instead of text) that can be pressed\nor clicked by the user."
+        },
+        "TextView": {
+            "name": "TextView",
+            "shortname": "TextView",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 243,
+            "description": "Displays text to the user and not allows editing."
+        },
+        "Button": {
+            "name": "Button",
+            "shortname": "Button",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 430,
+            "description": "Represents a push-button widget.Push-buttons can be\npressed, or clicked, by the user to perform an action."
+        },
+        "EditText": {
+            "name": "EditText",
+            "shortname": "EditText",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 463,
+            "description": "EditText is a thin veneer over TextView that configures itself\nto be editable."
+        },
+        "WebView": {
+            "name": "WebView",
+            "shortname": "WebView",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 709
         }
     },
     "classitems": [
@@ -1187,6 +1298,351 @@
             "static": 1,
             "final": 1,
             "class": "LinearLayout"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 91,
+            "description": "Set the scale type of image.",
+            "itemtype": "method",
+            "name": "setScaleType",
+            "params": [
+                {
+                    "name": "ScaleType.CENTER,ScaleType.FIT_XY,ScaleType.CENTER_INSIDE,ScaleType.FIT_CENTER",
+                    "description": "or ScaleType.CENTER_CROP.",
+                    "type": "Int"
+                }
+            ],
+            "class": "ImageView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 101,
+            "description": "Sets the content of this ImageView to the specified Uri.",
+            "itemtype": "method",
+            "name": "setImageUri",
+            "params": [
+                {
+                    "name": "The",
+                    "description": "Uri of an image",
+                    "type": "String"
+                }
+            ],
+            "class": "ImageView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 259,
+            "description": "Return the text that TextView is displaying.",
+            "itemtype": "method",
+            "name": "getText",
+            "return": {
+                "description": "The text in the TextView.",
+                "type": "String"
+            },
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 269,
+            "description": "Sets the string value of the TextView.",
+            "itemtype": "method",
+            "name": "setText",
+            "params": [
+                {
+                    "name": "text",
+                    "description": "Sets the string value.",
+                    "type": "String"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 282,
+            "description": "Sets whether the content of this view is selectable by the user.",
+            "itemtype": "method",
+            "name": "setTextIsSelectable",
+            "params": [
+                {
+                    "name": "selectable",
+                    "description": "Whether the content of this TextView should be selectable.",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 296,
+            "description": "Sets the text color.",
+            "itemtype": "method",
+            "name": "setTextColor",
+            "params": [
+                {
+                    "name": "color",
+                    "description": "The text color.",
+                    "type": "Int"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 306,
+            "description": "Set the default text size to the given value.",
+            "itemtype": "method",
+            "name": "setTextSize",
+            "params": [
+                {
+                    "name": "textsize",
+                    "description": "The default text size.",
+                    "type": "Int"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 317,
+            "description": "Gives the text a shadow of the specified blur radius and color, the specified\ndistance from its drawn position.",
+            "itemtype": "method",
+            "name": "setShadowLayer",
+            "params": [
+                {
+                    "name": "radius",
+                    "description": "If radius is 0, then the shadow layer is removed.",
+                    "type": "Int"
+                },
+                {
+                    "name": "dx",
+                    "description": "Specified offset of X.",
+                    "type": "Int"
+                },
+                {
+                    "name": "dy",
+                    "description": "Specified offset of Y.",
+                    "type": "Int"
+                },
+                {
+                    "name": "color",
+                    "description": "Specified color.",
+                    "type": "Int"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 331,
+            "description": "Set the line height.",
+            "itemtype": "method",
+            "name": "setLineHeight",
+            "params": [
+                {
+                    "name": "lineHeight",
+                    "description": "the line height.",
+                    "type": "Int"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 341,
+            "description": "Sets whether the line is single.",
+            "itemtype": "method",
+            "name": "setSingleLine",
+            "params": [
+                {
+                    "name": "singleLine",
+                    "description": "Whether the line is single.",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 408,
+            "description": "Sets the horizontal alignment of the text and the\nvertical gravity that will be used when there is extra space\nin the TextView beyond what is required for the text itself.",
+            "itemtype": "method",
+            "name": "setGravity",
+            "params": [
+                {
+                    "name": "gravity",
+                    "description": "",
+                    "type": "Int"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 489,
+            "description": "Sets whether the text of this EditText is password.",
+            "itemtype": "method",
+            "name": "setPassword",
+            "params": [
+                {
+                    "name": "isPassword",
+                    "description": "",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 537,
+            "description": "Set the selection anchor to start and the selection edge to end.",
+            "itemtype": "method",
+            "name": "setSelection",
+            "params": [
+                {
+                    "name": "start",
+                    "description": "Selection anchor to start.",
+                    "type": "Int"
+                },
+                {
+                    "name": "end",
+                    "description": "Selection anchor to end.",
+                    "type": "Int"
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 553,
+            "description": "Return the offset of the selection anchor or cursor.",
+            "itemtype": "method",
+            "name": "getSelectionStart",
+            "return": {
+                "description": "The offset.",
+                "type": "Int"
+            },
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 563,
+            "description": "Return the offset of the selection edge or cursor.",
+            "itemtype": "method",
+            "name": "getSelectionEnd",
+            "return": {
+                "description": "The offset.",
+                "type": "Int"
+            },
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 573,
+            "description": "set a listener to whose methods are called whenever this EditText's text changes.",
+            "itemtype": "method",
+            "name": "setTextChangedListener",
+            "params": [
+                {
+                    "name": "listener.",
+                    "description": ""
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 584,
+            "description": "Return the text that EditText is displaying.",
+            "itemtype": "method",
+            "name": "getText",
+            "return": {
+                "description": "The text in the EditText.",
+                "type": "String"
+            },
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 594,
+            "description": "Sets the string value of the EditText.",
+            "itemtype": "method",
+            "name": "setText",
+            "params": [
+                {
+                    "name": "text",
+                    "description": "Sets the string value.",
+                    "type": "String"
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 604,
+            "description": "Sets the text size of the EditText.",
+            "itemtype": "method",
+            "name": "setTextSize",
+            "params": [
+                {
+                    "name": "size",
+                    "description": "Sets the text size.",
+                    "type": "Int"
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 615,
+            "description": "Sets the text color of the EditText.",
+            "itemtype": "method",
+            "name": "setTextColor",
+            "params": [
+                {
+                    "name": "color",
+                    "description": "Sets the text color.",
+                    "type": "Int"
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 625,
+            "description": "Sets the text to be displayed when the text of the EditText is empty.",
+            "itemtype": "method",
+            "name": "setHint",
+            "params": [
+                {
+                    "name": "text",
+                    "description": "Sets the hint text.",
+                    "type": "String"
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 639,
+            "description": "Sets the color of the hint text for this EditText.",
+            "itemtype": "method",
+            "name": "setHintColor",
+            "params": [
+                {
+                    "name": "color",
+                    "description": "Sets the hint text's color.",
+                    "type": "Int"
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 652,
+            "description": "To get this EditText to take focus.",
+            "itemtype": "method",
+            "name": "requestFocus",
+            "class": "EditText"
         }
     ],
     "warnings": [
