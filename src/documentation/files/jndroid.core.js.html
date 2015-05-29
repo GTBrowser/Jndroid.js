@@ -78,7 +78,7 @@
                 } else {
                     this.splice(index, 0, val);
                 }
-            }
+            };
             
             Array.prototype.size = function() {
                 return this.length;
@@ -398,8 +398,7 @@
                     } else if (rawEv.type == &quot;mouseout&quot;) {
                         var div = rawEv.target;
                         var offset = Utils.getOffset(div);
-                        if (this.getRawX() &lt; offset.left || this.getRawX() &gt; (offset.left + offset.width)
-                            || this.getRawY() &lt; offset.top || this.getRawY() &gt; (offset.top + offset.height)) {
+                        if (this.getRawX() &lt; offset.left || this.getRawX() &gt; (offset.left + offset.width) || this.getRawY() &lt; offset.top || this.getRawY() &gt; (offset.top + offset.height)) {
                             return MotionEvent.ACTION_CANCEL;
                         }
                     }
@@ -563,7 +562,7 @@
                  */
                 this.getIntrinsicHeight = function() {
                     return -1;
-                }
+                };
             }
             
             function Processor() {
@@ -1027,7 +1026,7 @@
                             mHTMLCanvas.width = mHTMLCanvas.width;
                             if (mHTMLCanvas.getContext) {
                                 if (canvas == null) {
-                                    canvas = mHTMLCanvas.getContext(&#x27;2d&#x27;);
+                                    canvas = mHTMLCanvas.getContext(&quot;2d&quot;);
                                     canvas.width = this.getMeasuredWidth();
                                     canvas.height = this.getMeasuredHeight();
                                 }
@@ -1381,8 +1380,7 @@
                                 var offset = Utils.getOffset(view.getDiv());
                                 var x = ev.getRawX();
                                 var y = ev.getRawY();
-                                if (x &lt; offset.left || x &gt; (offset.left + offset.width)
-                                    || y &lt; offset.top || y &gt; (offset.top + offset.height)) {
+                                if (x &lt; offset.left || x &gt; (offset.left + offset.width) || y &lt; offset.top || y &gt; (offset.top + offset.height)) {
                                     view.removeCallbacks(view.checkLongPress);
                                 }
                                 break;
@@ -1450,21 +1448,21 @@
             	//TODO
                 this.setBoxShadow = function(x, y, blur, spread, color) {
             
-                    var styleString = x + &#x27;px &#x27; + y + &#x27;px&#x27;;
+                    var styleString = x + &quot;px &quot; + y + &quot;px&quot;;
             
-                    if(typeof(blur) != &#x27;undefined&#x27;)
+                    if(typeof(blur) != &quot;undefined&quot;)
                     {
-                        styleString = styleString + &#x27; &#x27; + blur + &#x27;px&#x27;;
+                        styleString = styleString + &quot; &quot; + blur + &quot;px&quot;;
                     }
             
-                    if(typeof(spread) != &#x27;undefined&#x27;)
+                    if(typeof(spread) != &quot;undefined&quot;)
                     {
-                        styleString = styleString + &#x27; &#x27; + spread + &#x27;px&#x27;;
+                        styleString = styleString + &quot; &quot; + spread + &quot;px&quot;;
                     }
             
-                    if(typeof(color) != &#x27;undefined&#x27;)
+                    if(typeof(color) != &quot;undefined&quot;)
                     {
-                        styleString = styleString + &#x27; &#x27; + Utils.toCssColor(color);
+                        styleString = styleString + &quot; &quot; + Utils.toCssColor(color);
                     }
             
                     this.getDiv().style.webkitBoxShadow =  styleString;
@@ -1585,13 +1583,16 @@
             meta.content = &quot;yes&quot;;
             document.head.appendChild(meta);
             
+            /* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
+            var c = document.createElement(&#x27;script&#x27;);
+            c.type = &#x27;text/javascript&#x27;;
+            c.async = true;
+            c.src = (&#x27;https:&#x27; == document.location.protocol ? &#x27;https://&#x27; : &#x27;http://&#x27;) + &#x27;www.clicki.cn/boot/52027&#x27;;
+            var h = document.getElementsByTagName(&#x27;script&#x27;)[0];
+            h.parentNode.insertBefore(c, h);
+            /* statistics code end */
+            
             function setContentView(view) {
-                //if (window.screen.height &gt; document.body.scrollHeight) {
-                //    mTopMargin = window.screen.height - document.body.scrollHeight;
-            
-            
-                //}
-            
                 addOrientationListener(function() {
                     onOrientationChanged();
                 });
@@ -1624,7 +1625,7 @@
                 forceReLayout();
             
                 var css = document.createElement(&quot;style&quot;);
-                css.innerHTML = &quot;*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px;} input{outline:none}&quot;;
+                css.innerHTML = &quot;*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px; height: 0px} input{outline:none}&quot;;
                 document.head.appendChild(css);
             }
             
