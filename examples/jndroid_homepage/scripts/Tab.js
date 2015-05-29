@@ -1,33 +1,22 @@
 function Tab () {
     ViewGroup.apply(this, []);
     this.setBackgroundColor(THEME_COLOR);
-    this.setBoxShadow(0, 5, 5, 0, 0x42000000);
+    this.setBoxShadow(0, 6, 6, 0, 0x42000000);
 
     var mScrollView = new HorizontalScrollView();
+    mScrollView.setPadding(0);
+    //this.postDelayed(function() {
+    //    mScrollView.scrollTo(100);
+    //}, 1000);
     this.addView(mScrollView);
     var mTabContent = new TabContent();
     mScrollView.addView(mTabContent);
-
-    var mIndicator = new Indicator();
-    mIndicator.setStyle(Indicator.Line);
-    mIndicator.setIndicatorCount(4);
-    mIndicator.setIndicatorColor(0xfff3ffa3);
-    mIndicator.INDICATOR_SIZE = 240;
-    mIndicator.GAP = 0;
-    this.addView(mIndicator);
-
-    mTabContent.setTabListener(this);
-
-    this.onTabButtonSelect = function(index) {
-        mIndicator.onXChanged(index / 3);
-    };
 
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
 
         mScrollView.measure(widthMS, heightMS);
-        mIndicator.measure(widthMS, 2);
 
         this.setMeasuredDimension(width, height);
     };
@@ -35,27 +24,17 @@ function Tab () {
     this.onLayout = function(x, y) {
         var offSetY = 0;
         mScrollView.layout(0, 0);
-        mIndicator.layout(16,this.getMeasuredHeight() - mIndicator.getMeasuredHeight());
     };
 
 }
 
 function TabContent() {
-    LinearLayout.apply(this, []);
+    ViewGroup.apply(this, []);
 
     var mSelf = this;
-    var mListener;
     var mItems = [];
     var buttonWidth = 240;
     var mSelectIndex = 0;
-
-    var mContent = new LinearLayout();
-    mContent.setOrientation(LinearLayout.HORIZONTAL);
-    var mContentLp = new LayoutParams( LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-    mContentLp.leftMargin = 16;
-    this.addView(mContent, mContentLp);
-
-    var mButtonLp = new LayoutParams(buttonWidth, LayoutParams.FILL_PARENT);
 
     var createButton = function (text) {
         var button = new LButton();
@@ -74,7 +53,7 @@ function TabContent() {
         mGallery.snapToScreen(0, 300);
     });
     mItems.push(mIntroductionButton);
-    mContent.addView(mIntroductionButton, mButtonLp);
+    this.addView(mIntroductionButton);
 
     var mDocumentationButton = createButton("Documentation");
     mDocumentationButton.setOnClickListener(function() {
@@ -88,7 +67,7 @@ function TabContent() {
         }, 300);
     });
     mItems.push(mDocumentationButton);
-    mContent.addView(mDocumentationButton, mButtonLp);
+    this.addView(mDocumentationButton);
 
     var mApplicationsButton = createButton("Applications");
     mApplicationsButton.setOnClickListener(function() {
@@ -102,7 +81,7 @@ function TabContent() {
         }, 300);
     });
     mItems.push(mApplicationsButton);
-    mContent.addView(mApplicationsButton, mButtonLp);
+    this.addView(mApplicationsButton);
 
     var mQAButton = createButton("Q&A");
     mQAButton.setOnClickListener(function() {
@@ -116,18 +95,19 @@ function TabContent() {
         }, 300);
     });
     mItems.push(mQAButton);
-    mContent.addView(mQAButton, mButtonLp);
+    this.addView(mQAButton);
 
-
-    this.setTabListener = function(listener) {
-        mListener = listener;
-    };
+    var mIndicator = new Indicator();
+    mIndicator.setStyle(Indicator.Line);
+    mIndicator.setIndicatorCount(4);
+    mIndicator.setIndicatorColor(0xfff3ffa3);
+    mIndicator.INDICATOR_SIZE = buttonWidth;
+    mIndicator.GAP = 0;
+    this.addView(mIndicator);
 
     this.setSelectIndex = function(index) {
         mSelectIndex = index;
-        if (mListener != null) {
-            mListener.onTabButtonSelect(index);
-        }
+        mIndicator.onXChanged(index / 3);
         for (var i = 0; i < mItems.length;i++) {
             if (i == mSelectIndex) {
                 mItems[i].setTextColor(0xffffffff);
@@ -138,4 +118,26 @@ function TabContent() {
     };
 
     this.setSelectIndex(0);
+
+    this.onMeasure = function(widthMS, heightMS) {
+        var height = MeasureSpec.getSize(heightMS);
+        for (var i = 0; i < mItems.length; i++) {
+            mItems[i].measure(buttonWidth, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+        }
+        var width = mItems[0].getMeasuredWidth() * mItems.length;
+        mIndicator.measure(width, 2);
+        this.setMeasuredDimension(width + PADDING * 2, height);
+    };
+
+    this.onLayout = function(x, y) {
+        var offsetX = PADDING;
+        var offsetY = 0;
+        for (var i = 0; i < mItems.length; i++) {
+            mItems[i].layout(offsetX, offsetY);
+            offsetX += mItems[i].getMeasuredWidth();
+        }
+        offsetX = PADDING;
+        offsetY = this.getMeasuredHeight() - mIndicator.getMeasuredHeight();
+        mIndicator.layout(offsetX, offsetY);
+    };
 }

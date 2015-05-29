@@ -1554,7 +1554,7 @@ function setContentView(view) {
     forceReLayout();
 
     var css = document.createElement("style");
-    css.innerHTML = "*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px;} input{outline:none}";
+    css.innerHTML = "*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px; height: 0px} input{outline:none}";
     document.head.appendChild(css);
 }
 

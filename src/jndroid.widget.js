@@ -29,6 +29,11 @@ function HorizontalScrollView() {
 
     this.setStyle("overflow", "auto");
 
+    this.scrollTo = function(x) {
+        this.getDiv().scrollLeft = x;
+        console.log("this.getDiv().scrollLeft:" + this.getDiv().scrollLeft);
+    };
+
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);

@@ -116,8 +116,8 @@ function IntroductionView() {
         var imageView = new ImageView();
         imageView.setImageUri("images/masterpiece.jpg");
         imageView.setScaleType(ScaleType.CENTER_CROP);
-        imageView.setBoxShadow(0, 0, 3, 3, 0x33000000);
-        var imgLp = new LayoutParams(LayoutParams.FILL_PARENT, 128);
+        imageView.setBoxShadow(0, 3, 3, 0, 0x42000000);
+        var imgLp = new LayoutParams(LayoutParams.FILL_PARENT, 144);
         contentView.addView(imageView, imgLp);
     }
 
