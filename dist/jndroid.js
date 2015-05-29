@@ -3173,6 +3173,7 @@ function LEditText() {
     var focusListener = null;
     var textChangeListener = null;
     var highlightColor = 0xFF2196F2;
+    var textColor = 0xff212121;
     var maxCount = 0;
 
     this.setTag("LEditText");
@@ -3267,6 +3268,10 @@ function LEditText() {
     this.setTextSize = function(ts) {
         textsize = ts;
         edittext.setTextSize(ts);
+    };
+
+    this.setHint = function(t) {
+        this.setHintText(t);
     };
 
     this.setHintText = function(t) {
@@ -3376,10 +3381,12 @@ function LEditText() {
         var height = 0;
         if (isSingleLine) {
             height = this.PADDING * 2 + this.GAP * 2 + this.ERROR_SIZE + this.LABEL_SIZE + 2 + textsize + 2;
-            LeUI.measureExactly(edittext, contentWidth, height);
+            edittext.measure(MeasureSpec.makeMeasureSpec(contentWidth, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
         } else {
             height = this.PADDING * 2 + this.GAP * 2 + this.ERROR_SIZE + this.LABEL_SIZE + 2 + this.TEXT_AREA_HEIGHT + 2;
-            LeUI.measureExactly(edittext, contentWidth, this.TEXT_AREA_HEIGHT);
+            edittext.measure(MeasureSpec.makeMeasureSpec(contentWidth, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(this.TEXT_AREA_HEIGHT, MeasureSpec.EXACTLY));
         }
 
         line.measure(contentWidth, 2);
@@ -3709,7 +3716,7 @@ function HorizontalScrollView() {
 
     this.setStyle("overflow", "auto");
 
-    this.scrollTo = function(x) {
+        this.scrollTo = function(x) {
         this.getDiv().scrollLeft = x;
         console.log("this.getDiv().scrollLeft:" + this.getDiv().scrollLeft);
     };
@@ -4152,7 +4159,7 @@ function EditText() {
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
-        var hMode = MeasureSpec.getMode(height);
+        var hMode = MeasureSpec.getMode(heightMS);
 
         var contentWidth = width - this.getPaddingLeft() - this.getPaddingRight();
         var contentHeight = height - this.getPaddingTop() - this.getPaddingBottom();
