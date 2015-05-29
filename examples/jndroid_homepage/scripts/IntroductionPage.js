@@ -83,6 +83,18 @@ function IntroductionView() {
     lp.setMargins(16);
     contentView.addView(playground, lp);
 
+    var androidL = new TextView();
+    androidL.setTextSize(TITLE_SIZE);
+    androidL.setTextColor(THEME_COLOR);
+    androidL.setText("Material Design");
+    var androidLLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    androidLLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP, PADDING, PADDING);
+    contentView.addView(androidL, androidLLp);
+
+    playground = new Playground("Widgets", mMaterialDesignCode);
+    playground.setEditHeight(450);
+    contentView.addView(playground, lp);
+
     var apidemos = new TextView();
     apidemos.setTextSize(TITLE_SIZE);
     apidemos.setTextColor(THEME_COLOR);
@@ -188,9 +200,33 @@ var mHelloWorldCode = "<!DOCTYPE html>\n" +
     "</body>\n" +
     "</html>";
 
+var mMaterialDesignCode = "" +
+    "var mLayout = new LinearLayout();\n" +
+    "this.addView(mLayout);\n\n" +
+    "var lp = new LayoutParams(LayoutParams.FILL_PARENT, 48);\n" +
+    "lp.gravity = Gravity.CENTER;\n" +
+    "lp.setMargins(8);\n\n" +
+    "var mButton = new LButton();\n" +
+    "mButton.setBackgroundColor(0xff009688);\n" +
+    "mButton.setTextColor(0xffffffff);\n" +
+    "mButton.setText(\"button\");\n" +
+    "mButton.setOnClickListener(function() {\n" +
+    "\twindow.alert(\"Material Design\");\n" +
+    "});\n" +
+    "mLayout.addView(mButton, lp);\n\n" +
+    "var mEditText = new LEditText();\n" +
+    "mEditText.setHint(\"input text here\");\n" +
+    "mLayout.addView(mEditText, lp);\n\n" +
+    "var progress = new LProgressBar();\n" +
+    "mLayout.addView(progress, lp);\n\n" +
+    "var circle = new LProgressBar();\n" +
+    "circle.setStyle(LProgressBar.Large);\n" +
+    "mLayout.addView(circle, lp);\n\n";
+
+
 var mWidgetCode = "" +
-    "var mLinearLayout = new LinearLayout();\n" +
-    "this.addView(mLinearLayout);\n\n" +
+    "var mLayout = new LinearLayout();\n" +
+    "this.addView(mLayout);\n\n" +
     "var lp = new LayoutParams(LayoutParams.FILL_PARENT, 48);\n" +
     "lp.setMargins(8);\n\n" +
     "var mButton = new Button();\n" +
@@ -198,18 +234,18 @@ var mWidgetCode = "" +
     "mButton.setOnClickListener(function() {\n" +
     "\twindow.alert(\"button click\");\n" +
     "});\n" +
-    "mLinearLayout.addView(mButton, lp);\n\n" +
+    "mLayout.addView(mButton, lp);\n\n" +
     "var mTextView = new TextView();\n" +
     "mTextView.setText(\"textview\");\n" +
-    "mLinearLayout.addView(mTextView, lp);\n\n" +
+    "mLayout.addView(mTextView, lp);\n\n" +
     "var mEditText = new EditText();\n" +
     "mEditText.setHintText(\"edittext\");\n" +
-    "mLinearLayout.addView(mEditText, lp);\n\n" +
+    "mLayout.addView(mEditText, lp);\n\n" +
     "var mImageView = new ImageView();\n" +
     "mImageView.setImageUri(\"images/ic_launcher.png\")\n" +
     "mImageView.setScaleType(ScaleType.FIT_CENTER);\n" +
     "var imgLp = new LayoutParams(LayoutParams.FILL_PARENT, 108);\n" +
-    "mLinearLayout.addView(mImageView, imgLp);"
+    "mLayout.addView(mImageView, imgLp);";
 
 var mMeausreCode = "" +
     "var mView = new MyView();\n" +
