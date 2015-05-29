@@ -1883,7 +1883,7 @@ function setContentView(view) {
     forceReLayout();
 
     var css = document.createElement("style");
-    css.innerHTML = "*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px;} input{outline:none}";
+    css.innerHTML = "*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px; height: 0px} input{outline:none}";
     document.head.appendChild(css);
 }
 
@@ -3708,6 +3708,11 @@ function HorizontalScrollView() {
     ViewGroup.apply(this, []);
 
     this.setStyle("overflow", "auto");
+
+    this.scrollTo = function(x) {
+        this.getDiv().scrollLeft = x;
+        console.log("this.getDiv().scrollLeft:" + this.getDiv().scrollLeft);
+    };
 
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
