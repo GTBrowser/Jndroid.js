@@ -5,14 +5,14 @@ var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 
 gulp.task('jshint', function () {
-	return gulp.src('src/**/*.js')
+	return gulp.src('src/*.js')
 	    .pipe($.jshint())
 	    .pipe($.jshint.reporter('jshint-stylish'))
 	    .pipe($.jshint.reporter('fail'));
 });
 
 gulp.task('scripts', function () {
-	return gulp.src('src/**/*.js')
+	return gulp.src('src/*.js')
 		.pipe($.concat('jndroid.js'))
 		.pipe(gulp.dest('dist'))
 		.pipe($.rename('jndroid.min.js'))
