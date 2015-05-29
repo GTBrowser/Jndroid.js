@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>MeasureSpec</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="../assets/vendor/yui-min.js"></script>
+  </head>
+  <body>
+
+    <div id="doc">
+      <header class="main-header">
+        <div class="content">
+          <div class="project-title">
+            <h1 class="project-name">Jndroid</h1>
+
+
+          </div>
+          <ul class="jump-links">
+            <li><a href="#index" class="index-jump-link">index</a></li>
+            <li><a href="#top" class="top-jump-link">top</a></li>
+          </ul>
+        </div>
+      </header>
+      <div id="bd" class="main-body">
+
+        <div id="docs-sidebar" class="sidebar apidocs">
+          <div id="api-list">
+          <div id="api-tabview" class="tabview">
+            <!-- <ul class="tabs"> -->
+            <!--     <li><a href="#api-classes">Classes</a></li> -->
+            <!--     <li><a href="#api-modules">Modules</a></li> -->
+            <!-- </ul> -->
+          
+            <div id="api-tabview-filter">
+              <input type="search" id="api-filter" placeholder="Type to filter APIs">
+            </div>
+          
+            <div id="api-tabview-panel">
+              <ul id="api-classes" class="apis classes">
+                <li><a class="type" href="../classes/Button.html">Button</a></li>
+                <li><a class="type" href="../classes/Drawable.html">Drawable</a></li>
+                <li><a class="type" href="../classes/EditText.html">EditText</a></li>
+                <li><a class="type" href="../classes/FrameLayout.html">FrameLayout</a></li>
+                <li><a class="type" href="../classes/Gallery.html">Gallery</a></li>
+                <li><a class="type" href="../classes/HorizontalScrollView.html">HorizontalScrollView</a></li>
+                <li><a class="type" href="../classes/ImageButton.html">ImageButton</a></li>
+                <li><a class="type" href="../classes/ImageView.html">ImageView</a></li>
+                <li><a class="type" href="../classes/LayoutParams.html">LayoutParams</a></li>
+                <li><a class="type" href="../classes/LinearLayout.html">LinearLayout</a></li>
+                <li><a class="type" href="../classes/MeasureSpec.html">MeasureSpec</a></li>
+                <li><a class="type" href="../classes/MotionEvent.html">MotionEvent</a></li>
+                <li><a class="type" href="../classes/ScrollView.html">ScrollView</a></li>
+                <li><a class="type" href="../classes/TextView.html">TextView</a></li>
+                <li><a class="type" href="../classes/View.html">View</a></li>
+                <li><a class="type" href="../classes/WebView.html">WebView</a></li>
+              </ul>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div id="docs-main" class="apidocs">
+          <div class="content container">
+            <h1>MeasureSpec Class</h1>
+            <div class="box meta">
+            
+            
+                    <div class="foundat">
+                        Defined in: <a href="../files/jndroid.core.js.html#l159"><code>jndroid.core.js:159</code></a>
+                    </div>
+            
+                <!--  -->
+            
+            </div>
+            
+            <!--  -->
+            
+            <div class="box intro">
+                <p>A MeasureSpec encapsulates the layout requirements passed from parent to child.
+            Each MeasureSpec represents a requirement for either the width or the height.
+            A MeasureSpec is comprised of a size and a mode.</p>
+            
+            </div>
+            
+            <!-- Class member index -->
+            
+            <a name="index" class="anchor-link"></a>
+            <div class="index">
+            <h2>Index</h2>
+            
+                <!-- <div id="api-options"> -->
+                <!--     Show: -->
+                <!--     <label for="api-show-inherited"> -->
+                <!--         <input type="checkbox" id="api-show-inherited"> -->
+                <!--         Inherited -->
+                <!--     </label> -->
+            
+                <!--     <label for="api-show-protected"> -->
+                <!--         <input type="checkbox" id="api-show-protected"> -->
+                <!--         Protected -->
+                <!--     </label> -->
+            
+                <!--     <label for="api-show-private"> -->
+                <!--         <input type="checkbox" id="api-show-private"> -->
+                <!--         Private -->
+                <!--     </label> -->
+                <!--     <label for="api-show-deprecated"> -->
+                <!--         <input type="checkbox" id="api-show-deprecated"> -->
+                <!--         Deprecated -->
+                <!--     </label> -->
+            
+                <!-- </div> -->
+            
+            
+                <div class="index-section properties">
+                    <h3>Properties</h3>
+            
+                    <ul class="index-list properties">
+                            <li class="index-item property">
+                                <a href="#property_AT_MOST">AT_MOST</a>
+            
+                                    <span class="flag static">static</span>
+                            </li>
+                            <li class="index-item property">
+                                <a href="#property_EXACTLY">EXACTLY</a>
+            
+                                    <span class="flag static">static</span>
+                            </li>
+                            <li class="index-item property">
+                                <a href="#property_UNSPECIFIED">UNSPECIFIED</a>
+            
+                                    <span class="flag static">static</span>
+                            </li>
+                    </ul>
+                </div>
+            
+            
+            
+                <div class="index-section methods">
+                    <h3>Methods</h3>
+            
+                    <table class="index-list methods">
+                          <tr>
+                            <th colspan="12">Methods index</th>
+                          </tr>
+                        <!--  -->
+                        
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            Int
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_getMode">getMode(<span class="index-param">measureSpec</span>)</a></nobr>
+                           <div class="desc">
+                             <p>Extracts the mode from the supplied measure specification.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_getMode">getMode</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            Int
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_getSize">getSize(<span class="index-param">measureSpec</span>)</a></nobr>
+                           <div class="desc">
+                             <p>Extracts the size from the supplied measure specification.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_getSize">getSize</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            Int
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_makeMeasureSpec">makeMeasureSpec(<span class="index-param">size</span><span class="index-param">mode</span>)</a></nobr>
+                           <div class="desc">
+                             <p>Creates a measure specification based on the supplied size and mode.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_makeMeasureSpec">makeMeasureSpec</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                    </table>
+                </div>
+            
+            <!--  -->
+            <!-- </div> -->
+            
+            
+            <div class="class-detail">
+            
+                <div class="properties-detail">
+                    <h2>Properties</h2>
+            
+                        <a name="property_AT_MOST" class="anchor-link"></a>
+                        <div class="property item">
+                            <h3 class="name"><code>AT_MOST</code>
+                            <span class="type">Int</span>
+                        
+                        
+                        
+                                <span class="flag final">final</span>
+                        
+                                <span class="flag static">static</span>
+                        
+                            </h3>
+                        
+                            <div class="meta">
+                                        <p>
+                                        Defined in
+                                <a href="../files/jndroid.core.js.html#l230"><code>jndroid.core.js:230</code></a>
+                                </p>
+                        
+                        
+                            </div>
+                        
+                            <div class="extended-detail">
+                                <div class="description">
+                                    <p>Measure specification mode: The child can be as large as it wants up
+                        to the specified size.</p>
+                        
+                                </div>
+                        
+                        
+                        
+                            </div>
+                        </div>
+                        <a name="property_EXACTLY" class="anchor-link"></a>
+                        <div class="property item">
+                            <h3 class="name"><code>EXACTLY</code>
+                            <span class="type">Int</span>
+                        
+                        
+                        
+                                <span class="flag final">final</span>
+                        
+                                <span class="flag static">static</span>
+                        
+                            </h3>
+                        
+                            <div class="meta">
+                                        <p>
+                                        Defined in
+                                <a href="../files/jndroid.core.js.html#l218"><code>jndroid.core.js:218</code></a>
+                                </p>
+                        
+                        
+                            </div>
+                        
+                            <div class="extended-detail">
+                                <div class="description">
+                                    <p>Measure specification mode: The parent has determined an exact size
+                        for the child. The child is going to be given those bounds regardless
+                        of how big it wants to be.</p>
+                        
+                                </div>
+                        
+                        
+                        
+                            </div>
+                        </div>
+                        <a name="property_UNSPECIFIED" class="anchor-link"></a>
+                        <div class="property item">
+                            <h3 class="name"><code>UNSPECIFIED</code>
+                            <span class="type">Int</span>
+                        
+                        
+                        
+                                <span class="flag final">final</span>
+                        
+                                <span class="flag static">static</span>
+                        
+                            </h3>
+                        
+                            <div class="meta">
+                                        <p>
+                                        Defined in
+                                <a href="../files/jndroid.core.js.html#l207"><code>jndroid.core.js:207</code></a>
+                                </p>
+                        
+                        
+                            </div>
+                        
+                            <div class="extended-detail">
+                                <div class="description">
+                                    <p>Measure specification mode: The parent has not imposed any constraint
+                        on the child. It can be whatever size it wants.</p>
+                        
+                                </div>
+                        
+                        
+                        
+                            </div>
+                        </div>
+            
+                    <div class="no-visible-items-message">
+                        <p>There are no properties that match your current filter settings. You can change your filter settings in the index section on this page. <a href="#index" class="index-jump-link">index</a></p>
+                    </div>
+            
+                </div>
+            
+            
+            
+                <div class="methods-detail">
+                    <h2>Methods</h2>
+            
+                        <a name="method_getMode" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>getMode</code>
+                        
+                                <div class="args">
+                                    <span class="paren">(</span><ul class="args-list inline commas">
+                                        <li class="arg">
+                                                <code>measureSpec</code>
+                                        </li>
+                                    </ul><span class="paren">)</span>
+                                </div>
+                        
+                                <span class="returns-inline">
+                                    <span class="type">Int</span>
+                                </span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.core.js.html#l182"><code>jndroid.core.js:182</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Extracts the mode from the supplied measure specification.</p>
+                        
+                                </div>
+                        
+                                    <div class="params">
+                                        <h4>Parameters:</h4>
+                        
+                                        <ul class="params-list">
+                                            <li class="param">
+                                                    <code class="param-name">measureSpec</code>
+                                                    <span class="type">Int</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>the measure specification to extract the mode from.</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                        </ul>
+                                    </div>
+                        
+                                    <div class="returns">
+                                        <h4>Returns:</h4>
+                        
+                                        <div class="returns-description">
+                                                    <span class="type">Int</span>:
+                                                <p>MeasureSpec.UNSPECIFIED, MeasureSpec.AT_MOST or MeasureSpec.EXACTLY.</p>
+                        
+                                        </div>
+                                    </div>
+                        
+                            </div>
+                        </div>
+                        <a name="method_getSize" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>getSize</code>
+                        
+                                <div class="args">
+                                    <span class="paren">(</span><ul class="args-list inline commas">
+                                        <li class="arg">
+                                                <code>measureSpec</code>
+                                        </li>
+                                    </ul><span class="paren">)</span>
+                                </div>
+                        
+                                <span class="returns-inline">
+                                    <span class="type">Int</span>
+                                </span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.core.js.html#l193"><code>jndroid.core.js:193</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Extracts the size from the supplied measure specification.</p>
+                        
+                                </div>
+                        
+                                    <div class="params">
+                                        <h4>Parameters:</h4>
+                        
+                                        <ul class="params-list">
+                                            <li class="param">
+                                                    <code class="param-name">measureSpec</code>
+                                                    <span class="type">Int</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>the measure specification to extract the size from.</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                        </ul>
+                                    </div>
+                        
+                                    <div class="returns">
+                                        <h4>Returns:</h4>
+                        
+                                        <div class="returns-description">
+                                                    <span class="type">Int</span>:
+                                                <p>the size in pixels defined in the supplied measure specification.</p>
+                        
+                                        </div>
+                                    </div>
+                        
+                            </div>
+                        </div>
+                        <a name="method_makeMeasureSpec" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>makeMeasureSpec</code>
+                        
+                                <div class="args">
+                                    <span class="paren">(</span><ul class="args-list inline commas">
+                                        <li class="arg">
+                                                <code>size</code>
+                                        </li>
+                                        <li class="arg">
+                                                <code>mode</code>
+                                        </li>
+                                    </ul><span class="paren">)</span>
+                                </div>
+                        
+                                <span class="returns-inline">
+                                    <span class="type">Int</span>
+                                </span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.core.js.html#l170"><code>jndroid.core.js:170</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Creates a measure specification based on the supplied size and mode.</p>
+                        
+                                </div>
+                        
+                                    <div class="params">
+                                        <h4>Parameters:</h4>
+                        
+                                        <ul class="params-list">
+                                            <li class="param">
+                                                    <code class="param-name">size</code>
+                                                    <span class="type">Int</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>the size of the measure specification.</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                            <li class="param">
+                                                    <code class="param-name">mode</code>
+                                                    <span class="type">Int</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>the mode of the measure specification.</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                        </ul>
+                                    </div>
+                        
+                                    <div class="returns">
+                                        <h4>Returns:</h4>
+                        
+                                        <div class="returns-description">
+                                                    <span class="type">Int</span>:
+                                                <p>the measure specification based on size and mode.</p>
+                        
+                                        </div>
+                                    </div>
+                        
+                            </div>
+                        </div>
+            
+                    <div class="no-visible-items-message">
+                        <p>There are no methods that match your current filter settings. You can change your filter settings in the index section on this page. <a href="#index" class="index-jump-link">index</a></p>
+                    </div>
+            
+                </div>
+            
+            
+            </div>
+            
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <script src="../assets/vendor/prettify/prettify-min.js"></script>
+    <script>prettyPrint();</script>
+    <script src="../assets/vendor/jquery.min.js"></script>
+    <script src="../assets/js/jquery-offscreen-trigger.js"></script>
+    <script src="../assets/js/yui-prettify.js"></script>
+    <script src="../assets/../api.js"></script>
+    <script src="../assets/js/api-filter.js"></script>
+    <script src="../assets/js/api-list.js"></script>
+    <script src="../assets/js/api-search.js"></script>
+    <script src="../assets/js/apidocs.js"></script>
+  </body>
+</html>

@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>TextView</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="../assets/vendor/yui-min.js"></script>
+  </head>
+  <body>
+
+    <div id="doc">
+      <header class="main-header">
+        <div class="content">
+          <div class="project-title">
+            <h1 class="project-name">Jndroid</h1>
+
+
+          </div>
+          <ul class="jump-links">
+            <li><a href="#index" class="index-jump-link">index</a></li>
+            <li><a href="#top" class="top-jump-link">top</a></li>
+          </ul>
+        </div>
+      </header>
+      <div id="bd" class="main-body">
+
+        <div id="docs-sidebar" class="sidebar apidocs">
+          <div id="api-list">
+          <div id="api-tabview" class="tabview">
+            <!-- <ul class="tabs"> -->
+            <!--     <li><a href="#api-classes">Classes</a></li> -->
+            <!--     <li><a href="#api-modules">Modules</a></li> -->
+            <!-- </ul> -->
+          
+            <div id="api-tabview-filter">
+              <input type="search" id="api-filter" placeholder="Type to filter APIs">
+            </div>
+          
+            <div id="api-tabview-panel">
+              <ul id="api-classes" class="apis classes">
+                <li><a class="type" href="../classes/Button.html">Button</a></li>
+                <li><a class="type" href="../classes/Drawable.html">Drawable</a></li>
+                <li><a class="type" href="../classes/EditText.html">EditText</a></li>
+                <li><a class="type" href="../classes/FrameLayout.html">FrameLayout</a></li>
+                <li><a class="type" href="../classes/Gallery.html">Gallery</a></li>
+                <li><a class="type" href="../classes/HorizontalScrollView.html">HorizontalScrollView</a></li>
+                <li><a class="type" href="../classes/ImageButton.html">ImageButton</a></li>
+                <li><a class="type" href="../classes/ImageView.html">ImageView</a></li>
+                <li><a class="type" href="../classes/LayoutParams.html">LayoutParams</a></li>
+                <li><a class="type" href="../classes/LinearLayout.html">LinearLayout</a></li>
+                <li><a class="type" href="../classes/MeasureSpec.html">MeasureSpec</a></li>
+                <li><a class="type" href="../classes/MotionEvent.html">MotionEvent</a></li>
+                <li><a class="type" href="../classes/ScrollView.html">ScrollView</a></li>
+                <li><a class="type" href="../classes/TextView.html">TextView</a></li>
+                <li><a class="type" href="../classes/View.html">View</a></li>
+                <li><a class="type" href="../classes/WebView.html">WebView</a></li>
+              </ul>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div id="docs-main" class="apidocs">
+          <div class="content container">
+            <h1>TextView Class</h1>
+            <div class="box meta">
+            
+            
+                    <div class="foundat">
+                        Defined in: <a href="../files/jndroid.widget.js.html#l248"><code>jndroid.widget.js:248</code></a>
+                    </div>
+            
+                <!--  -->
+            
+            </div>
+            
+            <!--  -->
+            
+            <div class="box intro">
+                <p>Displays text to the user and not allows editing.</p>
+            
+            </div>
+            
+            <!-- Class member index -->
+            
+            <a name="index" class="anchor-link"></a>
+            <div class="index">
+            <h2>Index</h2>
+            
+                <!-- <div id="api-options"> -->
+                <!--     Show: -->
+                <!--     <label for="api-show-inherited"> -->
+                <!--         <input type="checkbox" id="api-show-inherited"> -->
+                <!--         Inherited -->
+                <!--     </label> -->
+            
+                <!--     <label for="api-show-protected"> -->
+                <!--         <input type="checkbox" id="api-show-protected"> -->
+                <!--         Protected -->
+                <!--     </label> -->
+            
+                <!--     <label for="api-show-private"> -->
+                <!--         <input type="checkbox" id="api-show-private"> -->
+                <!--         Private -->
+                <!--     </label> -->
+                <!--     <label for="api-show-deprecated"> -->
+                <!--         <input type="checkbox" id="api-show-deprecated"> -->
+                <!--         Deprecated -->
+                <!--     </label> -->
+            
+                <!-- </div> -->
+            
+            
+            
+            
+            
+                <div class="index-section methods">
+                    <h3>Methods</h3>
+            
+                    <table class="index-list methods">
+                          <tr>
+                            <th colspan="12">Methods index</th>
+                          </tr>
+                        <!--  -->
+                        
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            String
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_getText">getText()</a></nobr>
+                           <div class="desc">
+                             <p>Return the text that TextView is displaying.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_getText">getText</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            void
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_setGravity">setGravity(<span class="index-param">gravity</span>)</a></nobr>
+                           <div class="desc">
+                             <p>Sets the horizontal alignment of the text and the
+            vertical gravity that will be used when there is extra space
+            in the TextView beyond what is required for the text itself.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_setGravity">setGravity</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            void
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_setLineHeight">setLineHeight(<span class="index-param">lineHeight</span>)</a></nobr>
+                           <div class="desc">
+                             <p>Set the line height.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_setLineHeight">setLineHeight</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            void
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_setShadowLayer">setShadowLayer(<span class="index-param">radius</span><span class="index-param">dx</span><span class="index-param">dy</span><span class="index-param">color</span>)</a></nobr>
+                           <div class="desc">
+                             <p>Gives the text a shadow of the specified blur radius and color, the specified
+            distance from its drawn position.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_setShadowLayer">setShadowLayer</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            void
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_setSingleLine">setSingleLine(<span class="index-param">singleLine</span>)</a></nobr>
+                           <div class="desc">
+                             <p>Sets whether the line is single.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_setSingleLine">setSingleLine</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            void
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_setText">setText(<span class="index-param">text</span>)</a></nobr>
+                           <div class="desc">
+                             <p>Sets the string value of the TextView.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_setText">setText</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            void
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_setTextColor">setTextColor(<span class="index-param">color</span>)</a></nobr>
+                           <div class="desc">
+                             <p>Sets the text color.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_setTextColor">setTextColor</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            void
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_setTextIsSelectable">setTextIsSelectable(<span class="index-param">selectable</span>)</a></nobr>
+                           <div class="desc">
+                             <p>Sets whether the content of this view is selectable by the user.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_setTextIsSelectable">setTextIsSelectable</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            void
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_setTextSize">setTextSize(<span class="index-param">textsize</span>)</a></nobr>
+                           <div class="desc">
+                             <p>Set the default text size to the given value.</p>
+            
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_setTextSize">setTextSize</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                    </table>
+                </div>
+            
+            <!--  -->
+            <!-- </div> -->
+            
+            
+            <div class="class-detail">
+            
+            
+            
+            
+                <div class="methods-detail">
+                    <h2>Methods</h2>
+            
+                        <a name="method_getText" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>getText</code>
+                        
+                                <span class="paren">()</span>
+                        
+                                <span class="returns-inline">
+                                    <span class="type">String</span>
+                                </span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.widget.js.html#l264"><code>jndroid.widget.js:264</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Return the text that TextView is displaying.</p>
+                        
+                                </div>
+                        
+                        
+                                    <div class="returns">
+                                        <h4>Returns:</h4>
+                        
+                                        <div class="returns-description">
+                                                    <span class="type">String</span>:
+                                                <p>The text in the TextView.</p>
+                        
+                                        </div>
+                                    </div>
+                        
+                            </div>
+                        </div>
+                        <a name="method_setGravity" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>setGravity</code>
+                        
+                                <div class="args">
+                                    <span class="paren">(</span><ul class="args-list inline commas">
+                                        <li class="arg">
+                                                <code>gravity</code>
+                                        </li>
+                                    </ul><span class="paren">)</span>
+                                </div>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.widget.js.html#l413"><code>jndroid.widget.js:413</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Sets the horizontal alignment of the text and the
+                        vertical gravity that will be used when there is extra space
+                        in the TextView beyond what is required for the text itself.</p>
+                        
+                                </div>
+                        
+                                    <div class="params">
+                                        <h4>Parameters:</h4>
+                        
+                                        <ul class="params-list">
+                                            <li class="param">
+                                                    <code class="param-name">gravity</code>
+                                                    <span class="type">Int</span>
+                        
+                        
+                                                <div class="param-description">
+                                                     
+                                                </div>
+                        
+                                            </li>
+                                        </ul>
+                                    </div>
+                        
+                        
+                            </div>
+                        </div>
+                        <a name="method_setLineHeight" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>setLineHeight</code>
+                        
+                                <div class="args">
+                                    <span class="paren">(</span><ul class="args-list inline commas">
+                                        <li class="arg">
+                                                <code>lineHeight</code>
+                                        </li>
+                                    </ul><span class="paren">)</span>
+                                </div>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.widget.js.html#l336"><code>jndroid.widget.js:336</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Set the line height.</p>
+                        
+                                </div>
+                        
+                                    <div class="params">
+                                        <h4>Parameters:</h4>
+                        
+                                        <ul class="params-list">
+                                            <li class="param">
+                                                    <code class="param-name">lineHeight</code>
+                                                    <span class="type">Int</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>the line height.</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                        </ul>
+                                    </div>
+                        
+                        
+                            </div>
+                        </div>
+                        <a name="method_setShadowLayer" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>setShadowLayer</code>
+                        
+                                <div class="args">
+                                    <span class="paren">(</span><ul class="args-list inline commas">
+                                        <li class="arg">
+                                                <code>radius</code>
+                                        </li>
+                                        <li class="arg">
+                                                <code>dx</code>
+                                        </li>
+                                        <li class="arg">
+                                                <code>dy</code>
+                                        </li>
+                                        <li class="arg">
+                                                <code>color</code>
+                                        </li>
+                                    </ul><span class="paren">)</span>
+                                </div>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.widget.js.html#l322"><code>jndroid.widget.js:322</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Gives the text a shadow of the specified blur radius and color, the specified
+                        distance from its drawn position.</p>
+                        
+                                </div>
+                        
+                                    <div class="params">
+                                        <h4>Parameters:</h4>
+                        
+                                        <ul class="params-list">
+                                            <li class="param">
+                                                    <code class="param-name">radius</code>
+                                                    <span class="type">Int</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>If radius is 0, then the shadow layer is removed.</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                            <li class="param">
+                                                    <code class="param-name">dx</code>
+                                                    <span class="type">Int</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>Specified offset of X.</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                            <li class="param">
+                                                    <code class="param-name">dy</code>
+                                                    <span class="type">Int</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>Specified offset of Y.</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                            <li class="param">
+                                                    <code class="param-name">color</code>
+                                                    <span class="type">Int</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>Specified color.</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                        </ul>
+                                    </div>
+                        
+                        
+                            </div>
+                        </div>
+                        <a name="method_setSingleLine" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>setSingleLine</code>
+                        
+                                <div class="args">
+                                    <span class="paren">(</span><ul class="args-list inline commas">
+                                        <li class="arg">
+                                                <code>singleLine</code>
+                                        </li>
+                                    </ul><span class="paren">)</span>
+                                </div>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.widget.js.html#l346"><code>jndroid.widget.js:346</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Sets whether the line is single.</p>
+                        
+                                </div>
+                        
+                                    <div class="params">
+                                        <h4>Parameters:</h4>
+                        
+                                        <ul class="params-list">
+                                            <li class="param">
+                                                    <code class="param-name">singleLine</code>
+                                                    <span class="type">Boolean</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>Whether the line is single.</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                        </ul>
+                                    </div>
+                        
+                        
+                            </div>
+                        </div>
+                        <a name="method_setText" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>setText</code>
+                        
+                                <div class="args">
+                                    <span class="paren">(</span><ul class="args-list inline commas">
+                                        <li class="arg">
+                                                <code>text</code>
+                                        </li>
+                                    </ul><span class="paren">)</span>
+                                </div>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.widget.js.html#l274"><code>jndroid.widget.js:274</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Sets the string value of the TextView.</p>
+                        
+                                </div>
+                        
+                                    <div class="params">
+                                        <h4>Parameters:</h4>
+                        
+                                        <ul class="params-list">
+                                            <li class="param">
+                                                    <code class="param-name">text</code>
+                                                    <span class="type">String</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>Sets the string value.</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                        </ul>
+                                    </div>
+                        
+                        
+                            </div>
+                        </div>
+                        <a name="method_setTextColor" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>setTextColor</code>
+                        
+                                <div class="args">
+                                    <span class="paren">(</span><ul class="args-list inline commas">
+                                        <li class="arg">
+                                                <code>color</code>
+                                        </li>
+                                    </ul><span class="paren">)</span>
+                                </div>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.widget.js.html#l301"><code>jndroid.widget.js:301</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Sets the text color.</p>
+                        
+                                </div>
+                        
+                                    <div class="params">
+                                        <h4>Parameters:</h4>
+                        
+                                        <ul class="params-list">
+                                            <li class="param">
+                                                    <code class="param-name">color</code>
+                                                    <span class="type">Int</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>The text color.</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                        </ul>
+                                    </div>
+                        
+                        
+                            </div>
+                        </div>
+                        <a name="method_setTextIsSelectable" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>setTextIsSelectable</code>
+                        
+                                <div class="args">
+                                    <span class="paren">(</span><ul class="args-list inline commas">
+                                        <li class="arg">
+                                                <code>selectable</code>
+                                        </li>
+                                    </ul><span class="paren">)</span>
+                                </div>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.widget.js.html#l287"><code>jndroid.widget.js:287</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Sets whether the content of this view is selectable by the user.</p>
+                        
+                                </div>
+                        
+                                    <div class="params">
+                                        <h4>Parameters:</h4>
+                        
+                                        <ul class="params-list">
+                                            <li class="param">
+                                                    <code class="param-name">selectable</code>
+                                                    <span class="type">Boolean</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>Whether the content of this TextView should be selectable.</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                        </ul>
+                                    </div>
+                        
+                        
+                            </div>
+                        </div>
+                        <a name="method_setTextSize" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>setTextSize</code>
+                        
+                                <div class="args">
+                                    <span class="paren">(</span><ul class="args-list inline commas">
+                                        <li class="arg">
+                                                <code>textsize</code>
+                                        </li>
+                                    </ul><span class="paren">)</span>
+                                </div>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.widget.js.html#l311"><code>jndroid.widget.js:311</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Set the default text size to the given value.</p>
+                        
+                                </div>
+                        
+                                    <div class="params">
+                                        <h4>Parameters:</h4>
+                        
+                                        <ul class="params-list">
+                                            <li class="param">
+                                                    <code class="param-name">textsize</code>
+                                                    <span class="type">Int</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>The default text size.</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                        </ul>
+                                    </div>
+                        
+                        
+                            </div>
+                        </div>
+            
+                    <div class="no-visible-items-message">
+                        <p>There are no methods that match your current filter settings. You can change your filter settings in the index section on this page. <a href="#index" class="index-jump-link">index</a></p>
+                    </div>
+            
+                </div>
+            
+            
+            </div>
+            
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <script src="../assets/vendor/prettify/prettify-min.js"></script>
+    <script>prettyPrint();</script>
+    <script src="../assets/vendor/jquery.min.js"></script>
+    <script src="../assets/js/jquery-offscreen-trigger.js"></script>
+    <script src="../assets/js/yui-prettify.js"></script>
+    <script src="../assets/../api.js"></script>
+    <script src="../assets/js/api-filter.js"></script>
+    <script src="../assets/js/api-list.js"></script>
+    <script src="../assets/js/api-search.js"></script>
+    <script src="../assets/js/apidocs.js"></script>
+  </body>
+</html>

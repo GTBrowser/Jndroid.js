@@ -1,0 +1,1782 @@
+{
+    "project": {},
+    "files": {
+        "jndroid.core.js": {
+            "name": "jndroid.core.js",
+            "modules": {},
+            "classes": {
+                "MeasureSpec": 1,
+                "MotionEvent": 1,
+                "Drawable": 1,
+                "View": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "jndroid.layout.js": {
+            "name": "jndroid.layout.js",
+            "modules": {},
+            "classes": {
+                "LayoutParams": 1,
+                "LinearLayout": 1,
+                "FrameLayout": 1,
+                "Gallery": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "jndroid.widget.js": {
+            "name": "jndroid.widget.js",
+            "modules": {},
+            "classes": {
+                "ScrollView": 1,
+                "HorizontalScrollView": 1,
+                "ImageView": 1,
+                "ImageButton": 1,
+                "TextView": 1,
+                "Button": 1,
+                "EditText": 1,
+                "WebView": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {
+        "MeasureSpec": {
+            "name": "MeasureSpec",
+            "shortname": "MeasureSpec",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.core.js",
+            "line": 159,
+            "description": "A MeasureSpec encapsulates the layout requirements passed from parent to child.\nEach MeasureSpec represents a requirement for either the width or the height.\nA MeasureSpec is comprised of a size and a mode.",
+            "static": 1
+        },
+        "MotionEvent": {
+            "name": "MotionEvent",
+            "shortname": "MotionEvent",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.core.js",
+            "line": 241,
+            "description": "Object used to report movement (mouse, pen, finger, trackball) events.\nMotion events may hold either absolute or relative movements and\nother data, depending on the type of device."
+        },
+        "Drawable": {
+            "name": "Drawable",
+            "shortname": "Drawable",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.core.js",
+            "line": 385,
+            "description": "A Drawable is a general abstraction for \"something that can be drawn.\"  Most\noften you will deal with Drawable as the type of resource retrieved for\ndrawing things to the screen; the Drawable class provides a generic API for\ndealing with an underlying visual resource that may take a variety of forms."
+        },
+        "View": {
+            "name": "View",
+            "shortname": "View",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.core.js",
+            "line": 571,
+            "description": "This class represents the basic building block for user interface components. A View occupies a rectangular area on the screen and is responsible for drawing and event handling. View is the base class for widgets, which are used to create interactive UI components (buttons, text fields, etc.). The ViewGroup subclass is the base class for layouts, which are invisible containers that hold other Views (or other ViewGroups) and define their layout properties.",
+            "is_constructor": 1
+        },
+        "LayoutParams": {
+            "name": "LayoutParams",
+            "shortname": "LayoutParams",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.layout.js",
+            "line": 1,
+            "description": "LayoutParams are used by views to tell their parents how they want to be\nlaid out."
+        },
+        "LinearLayout": {
+            "name": "LinearLayout",
+            "shortname": "LinearLayout",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.layout.js",
+            "line": 136,
+            "description": "A Layout that arranges its children in a single column or a single row. The direction of\nthe row can be set by calling setOrientation().",
+            "extends": "ViewGroup"
+        },
+        "FrameLayout": {
+            "name": "FrameLayout",
+            "shortname": "FrameLayout",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.layout.js",
+            "line": 368,
+            "description": "FrameLayout is designed to block out an area on the screen to display\na single item. Generally, FrameLayout should be used to hold a single child view, because it can\nbe difficult to organize child views in a way that's scalable to different screen sizes without\nthe children overlapping each other.",
+            "extends": "ViewGroup"
+        },
+        "Gallery": {
+            "name": "Gallery",
+            "shortname": "Gallery",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.layout.js",
+            "line": 407,
+            "description": "A view that shows items in a center-locked, horizontally scrolling list.",
+            "extends": "ViewGroup"
+        },
+        "ScrollView": {
+            "name": "ScrollView",
+            "shortname": "ScrollView",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 1,
+            "description": "Layout container for a view hierarchy that can be scrolled by the user,\nallowing it to be larger than the physical display.  A child that is often used\nis a LinearLayout in a vertical orientation, presenting a vertical\narray of top-level items that the user can scroll through.\n\nScrollView only supports vertical scrolling. For horizontal scrolling,\nuse HorizontalScrollView."
+        },
+        "HorizontalScrollView": {
+            "name": "HorizontalScrollView",
+            "shortname": "HorizontalScrollView",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 38,
+            "description": "Layout container for a view hierarchy that can be scrolled by the user,\nallowing it to be larger than the physical display.  A child that is often used\nis a LinearLayout in a horizontal orientation, presenting a horizontal\narray of top-level items that the user can scroll through.\n\nHorizontalScrollView only supports horizontal scrolling. For vertical scrolling,\nuse ScrollView."
+        },
+        "ImageView": {
+            "name": "ImageView",
+            "shortname": "ImageView",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 80,
+            "description": "Displays an arbitrary icon.The ImageView class provides scaling display options."
+        },
+        "ImageButton": {
+            "name": "ImageButton",
+            "shortname": "ImageButton",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 238,
+            "description": "Displays a button with an image (instead of text) that can be pressed\nor clicked by the user."
+        },
+        "TextView": {
+            "name": "TextView",
+            "shortname": "TextView",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 248,
+            "description": "Displays text to the user and not allows editing."
+        },
+        "Button": {
+            "name": "Button",
+            "shortname": "Button",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 435,
+            "description": "Represents a push-button widget.Push-buttons can be\npressed, or clicked, by the user to perform an action."
+        },
+        "EditText": {
+            "name": "EditText",
+            "shortname": "EditText",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 468,
+            "description": "EditText is a thin veneer over TextView that configures itself\nto be editable."
+        },
+        "WebView": {
+            "name": "WebView",
+            "shortname": "WebView",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 714
+        }
+    },
+    "classitems": [
+        {
+            "file": "jndroid.core.js",
+            "line": 1,
+            "description": "Jndroid core functions",
+            "class": "MeasureSpec"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 170,
+            "description": "Creates a measure specification based on the supplied size and mode.",
+            "itemtype": "method",
+            "name": "makeMeasureSpec",
+            "params": [
+                {
+                    "name": "size",
+                    "description": "the size of the measure specification.",
+                    "type": "Int"
+                },
+                {
+                    "name": "mode",
+                    "description": "the mode of the measure specification.",
+                    "type": "Int"
+                }
+            ],
+            "return": {
+                "description": "the measure specification based on size and mode.",
+                "type": "Int"
+            },
+            "class": "MeasureSpec"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 182,
+            "description": "Extracts the mode from the supplied measure specification.",
+            "itemtype": "method",
+            "name": "getMode",
+            "params": [
+                {
+                    "name": "measureSpec",
+                    "description": "the measure specification to extract the mode from.",
+                    "type": "Int"
+                }
+            ],
+            "return": {
+                "description": "MeasureSpec.UNSPECIFIED, MeasureSpec.AT_MOST or MeasureSpec.EXACTLY.",
+                "type": "Int"
+            },
+            "class": "MeasureSpec"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 193,
+            "description": "Extracts the size from the supplied measure specification.",
+            "itemtype": "method",
+            "name": "getSize",
+            "params": [
+                {
+                    "name": "measureSpec",
+                    "description": "the measure specification to extract the size from.",
+                    "type": "Int"
+                }
+            ],
+            "return": {
+                "description": "the size in pixels defined in the supplied measure specification.",
+                "type": "Int"
+            },
+            "class": "MeasureSpec"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 207,
+            "description": "Measure specification mode: The parent has not imposed any constraint\non the child. It can be whatever size it wants.",
+            "itemtype": "property",
+            "name": "UNSPECIFIED",
+            "type": "int",
+            "static": 1,
+            "final": 1,
+            "class": "MeasureSpec"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 218,
+            "description": "Measure specification mode: The parent has determined an exact size\nfor the child. The child is going to be given those bounds regardless\nof how big it wants to be.",
+            "itemtype": "property",
+            "name": "EXACTLY",
+            "type": "int",
+            "static": 1,
+            "final": 1,
+            "class": "MeasureSpec"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 230,
+            "description": "Measure specification mode: The child can be as large as it wants up\nto the specified size.",
+            "itemtype": "property",
+            "name": "AT_MOST",
+            "type": "int",
+            "static": 1,
+            "final": 1,
+            "class": "MeasureSpec"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 250,
+            "description": "Returns the X coordinate of this event.",
+            "itemtype": "method",
+            "name": "getX",
+            "return": {
+                "description": "X coordinate.",
+                "type": "Float"
+            },
+            "class": "MotionEvent"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 262,
+            "description": "Returns the Y coordinate of this event.",
+            "itemtype": "method",
+            "name": "getY",
+            "return": {
+                "description": "Y coordinate.",
+                "type": "Float"
+            },
+            "class": "MotionEvent"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 274,
+            "description": "Returns the original raw X coordinate of this event.  For touch\nevents on the screen, this is the original location of the event\non the screen, before it had been adjusted for the containing window\nand views.",
+            "itemtype": "method",
+            "name": "getRawX",
+            "return": {
+                "description": "original raw X coordinate.",
+                "type": "Float"
+            },
+            "class": "MotionEvent"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 287,
+            "description": "Returns the original raw X coordinate of this event.  For touch\nevents on the screen, this is the original location of the event\non the screen, before it had been adjusted for the containing window\nand views.",
+            "itemtype": "method",
+            "name": "getRawY",
+            "return": {
+                "description": "original raw Y coordinate.",
+                "type": "Float"
+            },
+            "class": "MotionEvent"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 312,
+            "description": "Return the kind of action being performed.",
+            "itemtype": "method",
+            "name": "getAction",
+            "return": {
+                "description": "the action.",
+                "type": "Int"
+            },
+            "class": "MotionEvent"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 337,
+            "description": "Constant for : A pressed gesture has started, the\nmotion contains the initial starting location.",
+            "itemtype": "property",
+            "name": "ACTION_DOWN",
+            "type": "int",
+            "static": 1,
+            "final": 1,
+            "class": "MotionEvent"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 348,
+            "description": "Constant for : A pressed gesture has finished, the\nmotion contains the final release location as well as any intermediate\npoints since the last down or move event.",
+            "itemtype": "property",
+            "name": "ACTION_UP",
+            "type": "int",
+            "static": 1,
+            "final": 1,
+            "class": "MotionEvent"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 360,
+            "description": "Constant for : A change has happened during a\npress gesture (between MotionEvent.ACTION_DOWN and MotionEvent.ACTION_UP).\nThe motion contains the most recent point, as well as any intermediate\npoints since the last down or move event.",
+            "itemtype": "property",
+            "name": "ACTION_MOVE",
+            "type": "int",
+            "static": 1,
+            "final": 1,
+            "class": "MotionEvent"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 373,
+            "description": "Constant for : The current gesture has been aborted.\nYou will not receive any more points in it.  You should treat this as\nan up event, but not perform any action that you normally would.",
+            "itemtype": "property",
+            "name": "ACTION_CANCEL",
+            "type": "int",
+            "static": 1,
+            "final": 1,
+            "class": "MotionEvent"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 397,
+            "description": "Draw in its bounds (set via setBounds) respecting optional effects such\nas alpha (set via setAlpha) and color filter (set via setColorFilter).",
+            "itemtype": "method",
+            "name": "draw",
+            "params": [
+                {
+                    "name": "canvas",
+                    "description": "The canvas to draw into.",
+                    "type": "Canvas"
+                }
+            ],
+            "class": "Drawable"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 407,
+            "description": "Return the drawable's bounds Rect.",
+            "itemtype": "method",
+            "name": "getBounds",
+            "return": {
+                "description": "The bounds of the drawable.",
+                "type": "Rect"
+            },
+            "class": "Drawable"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 417,
+            "description": "Specify a bounding rectangle for the Drawable. This is where the drawable\nwill draw when its draw() method is called.",
+            "itemtype": "method",
+            "name": "setBounds",
+            "class": "Drawable"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 429,
+            "description": "Bind a object to this Drawable.  Required for clients\nthat want to support animated drawables.",
+            "itemtype": "method",
+            "name": "setCallback",
+            "params": [
+                {
+                    "name": "cb",
+                    "description": "The client's Callback implementation.",
+                    "type": "Callback"
+                }
+            ],
+            "class": "Drawable"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 440,
+            "description": "Use the current implementation to have this Drawable\nredrawn. Does nothing if there is no Callback attached to the\nDrawable.",
+            "itemtype": "method",
+            "name": "invalidateSelf",
+            "class": "Drawable"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 453,
+            "description": "Specify a set of states for the drawable. These are use-case specific,\nso see the relevant documentation.",
+            "itemtype": "method",
+            "name": "setState",
+            "params": [
+                {
+                    "name": "state",
+                    "description": "The new set of states to be displayed.",
+                    "type": "Int[]"
+                }
+            ],
+            "class": "Drawable"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 464,
+            "description": "Override this in your subclass to change appearance if you recognize the\nspecified state.",
+            "itemtype": "method",
+            "name": "onStateChange",
+            "params": [
+                {
+                    "name": "state",
+                    "description": "The new set of states to be displayed.",
+                    "type": "Int[]"
+                }
+            ],
+            "return": {
+                "description": "Returns true if the state change has caused the appearance of\nthe Drawable to change (that is, it needs to be drawn), else false\nif it looks the same and there is no need to redraw it since its\nlast state.",
+                "type": "Boolean"
+            },
+            "class": "Drawable"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 478,
+            "description": "Return the intrinsic width of the underlying drawable object.",
+            "itemtype": "method",
+            "name": "getIntrinsicWidth",
+            "return": {
+                "description": "Returns -1 if it has no intrinsic width, such as with a solid color.",
+                "type": "Int"
+            },
+            "class": "Drawable"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 487,
+            "description": "Return the intrinsic height of the underlying drawable object.",
+            "itemtype": "method",
+            "name": "getIntrinsicHeight",
+            "return": {
+                "description": "Returns -1 if it has no intrinsic height, such as with a solid color.",
+                "type": "Int"
+            },
+            "class": "Drawable"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 617,
+            "description": "Returns this view's tag.",
+            "itemtype": "method",
+            "name": "getTag",
+            "return": {
+                "description": "Returns the object stored in this view as a tag, or null if not set.",
+                "type": "Object"
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 627,
+            "description": "Sets the tag associated with this view.",
+            "itemtype": "method",
+            "name": "setTag",
+            "params": [
+                {
+                    "name": "tag",
+                    "description": "An Object to tag the view with",
+                    "type": "Object"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 638,
+            "description": "Gets the parent of this view. Note that the parent is a ViewParent and not necessarily a View.",
+            "itemtype": "method",
+            "name": "getParent",
+            "return": {
+                "description": "Returns the parent of this view."
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 648,
+            "description": "Sets the parent.",
+            "itemtype": "method",
+            "name": "setParent",
+            "params": [
+                {
+                    "name": "parent",
+                    "description": "The parent.",
+                    "type": "View"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 663,
+            "description": "Returns the left padding of this view. If there are inset and enabled scrollbars, this value may include the space required to display the scrollbars as well.",
+            "itemtype": "method",
+            "name": "getPaddingLeft",
+            "return": {
+                "description": "Returns the left padding in pixels.",
+                "type": "Int"
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 673,
+            "description": "Returns the top padding of this view.",
+            "itemtype": "method",
+            "name": "getPaddingTop",
+            "return": {
+                "description": "Returns the top padding in pixels.",
+                "type": "Int"
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 683,
+            "description": "Returns the right padding of this view. If there are inset and enabled scrollbars, this value may include the space required to display the scrollbars as well.",
+            "itemtype": "method",
+            "name": "getPaddingRight",
+            "return": {
+                "description": "Returns the right padding in pixels.",
+                "type": "Int"
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 693,
+            "description": "Returns the bottom padding of this view. If there are inset and enabled scrollbars, this value may include the space required to display the scrollbars as well.",
+            "itemtype": "method",
+            "name": "getPaddingBottom",
+            "return": {
+                "description": "Returns the bottom padding in pixels.",
+                "type": "Int"
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 703,
+            "description": "Sets the padding. The view may add on the space required to display the scrollbars, depending on the style and visibility of the scrollbars. So the values returned from getPaddingLeft(), getPaddingTop(), getPaddingRight() and getPaddingBottom() may be different from the values set in this call.",
+            "itemtype": "method",
+            "name": "setPadding",
+            "params": [
+                {
+                    "name": "left",
+                    "description": "The left padding in pixels",
+                    "type": "Int"
+                },
+                {
+                    "name": "top",
+                    "description": "The top padding in pixels",
+                    "type": "Int"
+                },
+                {
+                    "name": "right",
+                    "description": "The right padding in pixels",
+                    "type": "Int"
+                },
+                {
+                    "name": "bottom",
+                    "description": "The bottom padding in pixels",
+                    "type": "Int"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 724,
+            "description": "Get the LayoutParams associated with this view. All views should have layout parameters. These supply parameters to the parent of this view specifying how it should be arranged. There are many subclasses of ViewGroup.LayoutParams, and these correspond to the different subclasses of ViewGroup that are responsible for arranging their children. This method may return null if this View is not attached to a parent ViewGroup or setLayoutParams(ViewGroup.LayoutParams) was not invoked successfully. When a View is attached to a parent ViewGroup, this method must not return null.",
+            "itemtype": "method",
+            "name": "getLayoutParams",
+            "return": {
+                "description": "Returns the LayoutParams associated with this view, or null if no parameters have been set yet.",
+                "type": "ViewGroup.LayoutParams"
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 734,
+            "description": "Set the layout parameters associated with this view. These supply parameters to the parent of this view specifying how it should be arranged. There are many subclasses of ViewGroup.LayoutParams, and these correspond to the different subclasses of ViewGroup that are responsible for arranging their children.",
+            "itemtype": "method",
+            "name": "setLayoutParams",
+            "params": [
+                {
+                    "name": "lp",
+                    "description": "The layout parameters for this view, cannot be null.",
+                    "type": "ViewGroup.LayoutParams"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 744,
+            "description": "Left position of this view relative to its parent.",
+            "itemtype": "method",
+            "name": "getLeft",
+            "return": {
+                "description": "Returns the left edge of this view, in pixels.",
+                "type": "Int"
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 754,
+            "description": "Top position of this view relative to its parent.",
+            "itemtype": "method",
+            "name": "getTop",
+            "return": {
+                "description": "Returns the top of this view, in pixels.",
+                "type": "Int"
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 764,
+            "description": "Return the width of the your view.",
+            "itemtype": "method",
+            "name": "getWidth",
+            "return": {
+                "description": "Returns the width of your view, in pixels.",
+                "type": "Int"
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 774,
+            "description": "Return the height of your view.",
+            "itemtype": "method",
+            "name": "getHeight",
+            "return": {
+                "description": "Returns the height of your view, in pixels.",
+                "type": "Int"
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 784,
+            "description": "Returns the raw measured width of this view.",
+            "itemtype": "method",
+            "name": "getMeasuredWidth",
+            "return": {
+                "description": "Returns the raw measured width of this view.",
+                "type": "Int"
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 794,
+            "description": "Returns the raw measured height of this view.",
+            "itemtype": "method",
+            "name": "getMeasuredHeight",
+            "return": {
+                "description": "Returns the raw measured height of this view.",
+                "type": "Int"
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 804,
+            "description": "The visual x position of this view, in pixels.",
+            "itemtype": "method",
+            "name": "getX",
+            "return": {
+                "description": "Returns the visual x position of this view, in pixels.",
+                "type": "Int"
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 814,
+            "description": "The visual y position of this view, in pixels.",
+            "itemtype": "method",
+            "name": "getY",
+            "return": {
+                "description": "Returns the visual y position of this view, in pixels.",
+                "type": "Int"
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 824,
+            "description": "This is called to find out how big a view should be. The parent supplies constraint information in the width and height parameters.\n\n\tThe actual measurement work of a view is performed in onMeasure(int, int), called by this method. Therefore, only onMeasure(int, int) can and must be overridden by subclasses.",
+            "itemtype": "method",
+            "name": "measure",
+            "params": [
+                {
+                    "name": "widthMS",
+                    "description": "Horizontal space requirements as imposed by the parent.",
+                    "type": "Int"
+                },
+                {
+                    "name": "heightMS",
+                    "description": "Vertical space requirements as imposed by the parent.",
+                    "type": "Int"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 839,
+            "description": "Measure the view and its content to determine the measured width and the measured height. This method is invoked by measure(int, int) and should be overriden by subclasses to provide accurate and efficient measurement of their contents.\n\n\tCONTRACT: When overriding this method, you must call setMeasuredDimension(int, int) to store the measured width and height of this view.",
+            "itemtype": "method",
+            "name": "onMeasure",
+            "params": [
+                {
+                    "name": "widthMS",
+                    "description": "horizontal space requirements as imposed by the parent. The requirements are encoded with View.MeasureSpec.",
+                    "type": "Int"
+                },
+                {
+                    "name": "vertical",
+                    "description": "space requirements as imposed by the parent. The requirements are encoded with View.MeasureSpec.",
+                    "type": "Int"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 852,
+            "description": "This method must be called by onMeasure(int, int) to store the measured width and measured height.",
+            "itemtype": "method",
+            "name": "setMeasuredDimension",
+            "params": [
+                {
+                    "name": "width",
+                    "description": "The measured width of this view.",
+                    "type": "Int"
+                },
+                {
+                    "name": "height",
+                    "description": "The measured height of this view.",
+                    "type": "Int"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 874,
+            "description": "Assign a size and position to a view and all of its descendants\n\n\tThis is the second phase of the layout mechanism. (The first is measuring). In this phase, each parent calls layout on all of its children to position them. This is typically done using the child measurements that were stored in the measure pass().\n\n\tDerived classes should not override this method. Derived classes with children should override onLayout. In that method, they should call layout on each of their children.",
+            "itemtype": "method",
+            "name": "layout",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "Left position, relative to parent.",
+                    "type": "Int"
+                },
+                {
+                    "name": "y",
+                    "description": "Top position, relative to parent.",
+                    "type": "Int"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 894,
+            "description": "Called from layout when this view should assign a size and position to each of its children. Derived classes with children should override this method and call layout on each of their children.",
+            "itemtype": "method",
+            "name": "onLayout",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "Left position, relative to parent.",
+                    "type": "Int"
+                },
+                {
+                    "name": "y",
+                    "description": "Top position, relative to parent.",
+                    "type": "Int"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 905,
+            "description": "Invalidates the specified Drawable.",
+            "itemtype": "method",
+            "name": "invalidateDrawable",
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 914,
+            "description": "Cause an invalidate to happen on a subsequent cycle through the event loop. Use this to invalidate the View from a non-UI thread.\n\n\tThis method can be invoked from outside of the UI thread only when this View is attached to a window.",
+            "itemtype": "method",
+            "name": "postInvalidate",
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 925,
+            "description": "Called by a parent to request that a child update its values for mScrollX and mScrollY if necessary. This will typically be done if the child is animating a scroll using a Scroller object.",
+            "itemtype": "method",
+            "name": "computeScroll",
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 934,
+            "description": "Invalidate the whole view. If the view is visible, will be called at some point in the future.\n\n\tThis must be called from a UI thread. To call from a non-UI thread, call postInvalidate().\n\nmethod invalidate",
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 945,
+            "description": "Manually render this view (and all of its children). The view must have already done a full layout before this function is called. When implementing a view, implement onDraw(android.graphics.Canvas) instead of overriding this method. If you do need to override this method, call the superclass version.",
+            "itemtype": "method",
+            "name": "draw",
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 983,
+            "description": "If this view doesn't do any drawing on its own, set this flag to allow further optimizations. By default, this flag is not set on View, but could be set on some View subclasses such as ViewGroup. Typically, if you override onDraw(Canvas) you should clear this flag.",
+            "itemtype": "method",
+            "name": "setWillNotDraw",
+            "params": [
+                {
+                    "name": "willnotdraw",
+                    "description": "Whether or not this View draw on its own.",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1010,
+            "description": "Sets the background color for this view.",
+            "itemtype": "method",
+            "name": "setBackgroundColor",
+            "params": [
+                {
+                    "name": "color",
+                    "description": "The color of the background.",
+                    "type": "Int"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1021,
+            "description": "Register a callback to be invoked when this view is clicked. If this view is not clickable, it becomes clickable.",
+            "itemtype": "method",
+            "name": "setOnClickListener",
+            "params": [
+                {
+                    "name": "l",
+                    "description": "The callback that will run.",
+                    "type": "View.OnClickListener"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1034,
+            "description": "Register a callback to be invoked when this view is clicked and held. If this view is not long clickable, it becomes long clickable.",
+            "itemtype": "method",
+            "name": "setOnLongClickListener",
+            "params": [
+                {
+                    "name": "l",
+                    "description": "The callback that will run.",
+                    "type": "View.OnLongClickListener"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1048,
+            "description": "Enables or disables click events for this view. When a view is clickable it will change its state to \"pressed\" on every click. Subclasses should set the view clickable to visually react to user's clicks.",
+            "itemtype": "method",
+            "name": "setClickable",
+            "params": [
+                {
+                    "name": "clickable",
+                    "description": "True to make the view clickable, false otherwise.",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1091,
+            "description": "Enables or disables long click events for this view. When a view is long clickable it reacts to the user holding down the button for a longer duration than a tap. This event can either launch the listener or a context menu.",
+            "itemtype": "method",
+            "name": "setLongClickable",
+            "params": [
+                {
+                    "name": "longClickable",
+                    "description": "True to make the view long clickable, false otherwise.",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1101,
+            "description": "Call this when something has changed which has invalidated the layout of this view. This will schedule a layout pass of the view tree. This should not be called while the view hierarchy is currently in a layout pass. If layout is happening, the request may be honored at the end of the current layout pass (and then layout will run again) or after the current frame is drawn and the next layout occurs.\n\n\tSubclasses which override this method should call the superclass method to handle possible request-during-layout errors correctly.",
+            "itemtype": "method",
+            "name": "requestLayout",
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1120,
+            "description": "Call this to try to give focus to a specific view or to one of its descendants. A view will not actually take focus if it is not focusable, or if it is focusable and it is not focusable in touch mode while the device is in touch mode.",
+            "itemtype": "method",
+            "name": "requestFocus",
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1129,
+            "description": "Implement this method to handle touch screen motion events.\n\n\tIf this method is used to detect click actions, it is recommended that the actions be performed by implementing and calling performClick(). This will ensure consistent system behavior, including:\n\n\tobeying click sound preferences\n\tdispatching OnClickListener calls\n\thandling ACTION_CLICK when accessibility features are enabled",
+            "itemtype": "method",
+            "name": "onTouchEvent",
+            "params": [
+                {
+                    "name": "ev",
+                    "description": "The motion event.",
+                    "type": "MotionEvent"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1145,
+            "description": "Sets the opacity of the view. This is a value from 0 to 1, where 0 means the view is completely transparent and 1 means the view is completely opaque.\n\n\tNote that setting alpha to a translucent value (0 < alpha < 1) can have significant performance implications, especially for large views. It is best to use the alpha property sparingly and transiently, as in the case of fading animations.",
+            "itemtype": "method",
+            "name": "setAlpha",
+            "params": [
+                {
+                    "name": "a",
+                    "description": "The opacity of the view.",
+                    "type": "Float"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1157,
+            "description": "Returns the visibility status for this view.",
+            "itemtype": "method",
+            "name": "getVisibility",
+            "return": {
+                "description": "Return one of VISIBLE, INVISIBLE, or GONE.",
+                "type": "Int"
+            },
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1167,
+            "description": "Set the enabled state of this view.",
+            "itemtype": "method",
+            "name": "setVisibility",
+            "params": [
+                {
+                    "name": "visibility",
+                    "description": "",
+                    "type": "Int"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1182,
+            "description": "Sets the next animation to play for this view. If you want the animation to play immediately, use startAnimation(Animation) instead. This method provides allows fine-grained control over the start time and invalidation, but you must make sure that 1) the animation has a start time set, and 2) the view's parent (which controls animations on its children) will be invalidated when the animation is supposed to start.",
+            "itemtype": "method",
+            "name": "setAnimation",
+            "params": [
+                {
+                    "name": "animation",
+                    "description": "The next animation, or null.",
+                    "type": "Animation"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1192,
+            "description": "Start the specified animation now.",
+            "itemtype": "method",
+            "name": "startAnimation",
+            "params": [
+                {
+                    "name": "animation",
+                    "description": "The animation to start now.",
+                    "type": "Animation"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1203,
+            "description": "Causes the Runnable to be added to the message queue, to be run after the specified amount of time elapses. The runnable will be run on the user interface thread.",
+            "itemtype": "method",
+            "name": "postDelayed",
+            "params": [
+                {
+                    "name": "r",
+                    "description": "The Runnable that will be executed.",
+                    "type": "Runnable"
+                },
+                {
+                    "name": "delay",
+                    "description": "The delay (in milliseconds) until the Runnable will be executed.",
+                    "type": "Long"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1218,
+            "description": "Removes the specified Runnable from the message queue.",
+            "itemtype": "method",
+            "name": "removeCallbacks",
+            "params": [
+                {
+                    "name": "r",
+                    "description": "The Runnable to remove from the message handling queue.",
+                    "type": "Runnable"
+                }
+            ],
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1232,
+            "description": "Call this view's OnClickListener, if it is defined. Performs all normal actions associated with clicking: reporting accessibility event, playing a sound, etc.",
+            "itemtype": "method",
+            "name": "performClick",
+            "class": "View"
+        },
+        {
+            "file": "jndroid.core.js",
+            "line": 1243,
+            "description": "Call this view's OnLongClickListener, if it is defined. Invokes the context menu if the OnLongClickListener did not consume the event.",
+            "itemtype": "method",
+            "name": "performLongClick",
+            "class": "View"
+        },
+        {
+            "file": "jndroid.layout.js",
+            "line": 22,
+            "description": "Sets the margins, in pixels.",
+            "itemtype": "method",
+            "name": "setMargins",
+            "params": [
+                {
+                    "name": "l",
+                    "description": "the left margin size",
+                    "type": "Int"
+                },
+                {
+                    "name": "t",
+                    "description": "the top margin size",
+                    "type": "Int"
+                },
+                {
+                    "name": "r",
+                    "description": "the right margin size",
+                    "type": "Int"
+                },
+                {
+                    "name": "b",
+                    "description": "the bottom margin size",
+                    "type": "Int"
+                }
+            ],
+            "class": "LayoutParams"
+        },
+        {
+            "file": "jndroid.layout.js",
+            "line": 44,
+            "description": "Special value for the height or width requested by a View.\nFILL_PARENT means that the view wants to be as big as its parent,\nminus the parent's padding, if any.",
+            "itemtype": "property",
+            "name": "FILL_PARENT",
+            "type": "int",
+            "static": 1,
+            "final": 1,
+            "class": "LayoutParams"
+        },
+        {
+            "file": "jndroid.layout.js",
+            "line": 56,
+            "description": "Special value for the height or width requested by a View.\nMATCH_PARENT means that the view wants to be as big as its parent,\nminus the parent's padding, if any.",
+            "itemtype": "property",
+            "name": "MATCH_PARENT",
+            "type": "int",
+            "static": 1,
+            "final": 1,
+            "class": "LayoutParams"
+        },
+        {
+            "file": "jndroid.layout.js",
+            "line": 68,
+            "description": "Special value for the height or width requested by a View.\nWRAP_CONTENT means that the view wants to be just large enough to fit\nits own internal content, taking its own padding into account.",
+            "itemtype": "property",
+            "name": "WRAP_CONTENT",
+            "type": "int",
+            "static": 1,
+            "final": 1,
+            "class": "LayoutParams"
+        },
+        {
+            "file": "jndroid.layout.js",
+            "line": 148,
+            "description": "Should the layout be a column or a row.",
+            "itemtype": "method",
+            "name": "setOrientation",
+            "params": [
+                {
+                    "name": "o",
+                    "description": "Pass HORIZONTAL or VERTICAL. Default\nvalue is VERTICAL.",
+                    "type": "Int"
+                }
+            ],
+            "class": "LinearLayout"
+        },
+        {
+            "file": "jndroid.layout.js",
+            "line": 348,
+            "description": "for horizontal linear layouts.",
+            "itemtype": "property",
+            "name": "HORIZONTAL",
+            "type": "int",
+            "static": 1,
+            "final": 1,
+            "class": "LinearLayout"
+        },
+        {
+            "file": "jndroid.layout.js",
+            "line": 358,
+            "description": "for vertical linear layouts.",
+            "itemtype": "property",
+            "name": "VERTICAL",
+            "type": "int",
+            "static": 1,
+            "final": 1,
+            "class": "LinearLayout"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 96,
+            "description": "Set the scale type of image.",
+            "itemtype": "method",
+            "name": "setScaleType",
+            "params": [
+                {
+                    "name": "ScaleType.CENTER,ScaleType.FIT_XY,ScaleType.CENTER_INSIDE,ScaleType.FIT_CENTER",
+                    "description": "or ScaleType.CENTER_CROP.",
+                    "type": "Int"
+                }
+            ],
+            "class": "ImageView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 106,
+            "description": "Sets the content of this ImageView to the specified Uri.",
+            "itemtype": "method",
+            "name": "setImageUri",
+            "params": [
+                {
+                    "name": "The",
+                    "description": "Uri of an image",
+                    "type": "String"
+                }
+            ],
+            "class": "ImageView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 264,
+            "description": "Return the text that TextView is displaying.",
+            "itemtype": "method",
+            "name": "getText",
+            "return": {
+                "description": "The text in the TextView.",
+                "type": "String"
+            },
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 274,
+            "description": "Sets the string value of the TextView.",
+            "itemtype": "method",
+            "name": "setText",
+            "params": [
+                {
+                    "name": "text",
+                    "description": "Sets the string value.",
+                    "type": "String"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 287,
+            "description": "Sets whether the content of this view is selectable by the user.",
+            "itemtype": "method",
+            "name": "setTextIsSelectable",
+            "params": [
+                {
+                    "name": "selectable",
+                    "description": "Whether the content of this TextView should be selectable.",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 301,
+            "description": "Sets the text color.",
+            "itemtype": "method",
+            "name": "setTextColor",
+            "params": [
+                {
+                    "name": "color",
+                    "description": "The text color.",
+                    "type": "Int"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 311,
+            "description": "Set the default text size to the given value.",
+            "itemtype": "method",
+            "name": "setTextSize",
+            "params": [
+                {
+                    "name": "textsize",
+                    "description": "The default text size.",
+                    "type": "Int"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 322,
+            "description": "Gives the text a shadow of the specified blur radius and color, the specified\ndistance from its drawn position.",
+            "itemtype": "method",
+            "name": "setShadowLayer",
+            "params": [
+                {
+                    "name": "radius",
+                    "description": "If radius is 0, then the shadow layer is removed.",
+                    "type": "Int"
+                },
+                {
+                    "name": "dx",
+                    "description": "Specified offset of X.",
+                    "type": "Int"
+                },
+                {
+                    "name": "dy",
+                    "description": "Specified offset of Y.",
+                    "type": "Int"
+                },
+                {
+                    "name": "color",
+                    "description": "Specified color.",
+                    "type": "Int"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 336,
+            "description": "Set the line height.",
+            "itemtype": "method",
+            "name": "setLineHeight",
+            "params": [
+                {
+                    "name": "lineHeight",
+                    "description": "the line height.",
+                    "type": "Int"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 346,
+            "description": "Sets whether the line is single.",
+            "itemtype": "method",
+            "name": "setSingleLine",
+            "params": [
+                {
+                    "name": "singleLine",
+                    "description": "Whether the line is single.",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 413,
+            "description": "Sets the horizontal alignment of the text and the\nvertical gravity that will be used when there is extra space\nin the TextView beyond what is required for the text itself.",
+            "itemtype": "method",
+            "name": "setGravity",
+            "params": [
+                {
+                    "name": "gravity",
+                    "description": "",
+                    "type": "Int"
+                }
+            ],
+            "class": "TextView"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 494,
+            "description": "Sets whether the text of this EditText is password.",
+            "itemtype": "method",
+            "name": "setPassword",
+            "params": [
+                {
+                    "name": "isPassword",
+                    "description": "",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 542,
+            "description": "Set the selection anchor to start and the selection edge to end.",
+            "itemtype": "method",
+            "name": "setSelection",
+            "params": [
+                {
+                    "name": "start",
+                    "description": "Selection anchor to start.",
+                    "type": "Int"
+                },
+                {
+                    "name": "end",
+                    "description": "Selection anchor to end.",
+                    "type": "Int"
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 558,
+            "description": "Return the offset of the selection anchor or cursor.",
+            "itemtype": "method",
+            "name": "getSelectionStart",
+            "return": {
+                "description": "The offset.",
+                "type": "Int"
+            },
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 568,
+            "description": "Return the offset of the selection edge or cursor.",
+            "itemtype": "method",
+            "name": "getSelectionEnd",
+            "return": {
+                "description": "The offset.",
+                "type": "Int"
+            },
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 578,
+            "description": "set a listener to whose methods are called whenever this EditText's text changes.",
+            "itemtype": "method",
+            "name": "setTextChangedListener",
+            "params": [
+                {
+                    "name": "listener.",
+                    "description": ""
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 589,
+            "description": "Return the text that EditText is displaying.",
+            "itemtype": "method",
+            "name": "getText",
+            "return": {
+                "description": "The text in the EditText.",
+                "type": "String"
+            },
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 599,
+            "description": "Sets the string value of the EditText.",
+            "itemtype": "method",
+            "name": "setText",
+            "params": [
+                {
+                    "name": "text",
+                    "description": "Sets the string value.",
+                    "type": "String"
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 609,
+            "description": "Sets the text size of the EditText.",
+            "itemtype": "method",
+            "name": "setTextSize",
+            "params": [
+                {
+                    "name": "size",
+                    "description": "Sets the text size.",
+                    "type": "Int"
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 620,
+            "description": "Sets the text color of the EditText.",
+            "itemtype": "method",
+            "name": "setTextColor",
+            "params": [
+                {
+                    "name": "color",
+                    "description": "Sets the text color.",
+                    "type": "Int"
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 630,
+            "description": "Sets the text to be displayed when the text of the EditText is empty.",
+            "itemtype": "method",
+            "name": "setHint",
+            "params": [
+                {
+                    "name": "text",
+                    "description": "Sets the hint text.",
+                    "type": "String"
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 644,
+            "description": "Sets the color of the hint text for this EditText.",
+            "itemtype": "method",
+            "name": "setHintColor",
+            "params": [
+                {
+                    "name": "color",
+                    "description": "Sets the hint text's color.",
+                    "type": "Int"
+                }
+            ],
+            "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 657,
+            "description": "To get this EditText to take focus.",
+            "itemtype": "method",
+            "name": "requestFocus",
+            "class": "EditText"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:627"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:648"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:703"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:703"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:703"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:703"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:734"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:824"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:824"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:839"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:839"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:852"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:852"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:874"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:874"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:894"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:894"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:983"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:1010"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:1021"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:1034"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:1048"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:1091"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:1129"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:1145"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:1167"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:1182"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:1192"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:1203"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:1203"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " jndroid.core.js:1218"
+        },
+        {
+            "message": "Missing item type\nJndroid core functions",
+            "line": " jndroid.core.js:1"
+        },
+        {
+            "message": "Missing item type\nInvalidate the whole view. If the view is visible, will be called at some point in the future.\n\n\tThis must be called from a UI thread. To call from a non-UI thread, call postInvalidate().\n\nmethod invalidate",
+            "line": " jndroid.core.js:934"
+        }
+    ]
+}
