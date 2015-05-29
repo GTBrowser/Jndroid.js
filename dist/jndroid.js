@@ -3685,6 +3685,17 @@ function WaveDrawable() {
 }
 
 
+/**
+ * Layout container for a view hierarchy that can be scrolled by the user,
+ * allowing it to be larger than the physical display.  A child that is often used
+ * is a LinearLayout in a vertical orientation, presenting a vertical
+ * array of top-level items that the user can scroll through.
+ *
+ * ScrollView only supports vertical scrolling. For horizontal scrolling,
+ * use HorizontalScrollView.
+ *
+ * @class ScrollView
+ */
 function ScrollView() {
     ViewGroup.apply(this, []);
 
@@ -3711,6 +3722,17 @@ function ScrollView() {
     };
 }
 
+/**
+ * Layout container for a view hierarchy that can be scrolled by the user,
+ * allowing it to be larger than the physical display.  A child that is often used
+ * is a LinearLayout in a horizontal orientation, presenting a horizontal
+ * array of top-level items that the user can scroll through.
+ *
+ * HorizontalScrollView only supports horizontal scrolling. For vertical scrolling,
+ * use ScrollView.
+ *
+ * @class HorizontalScrollView
+ */
 function HorizontalScrollView() {
     ViewGroup.apply(this, []);
 
@@ -3742,6 +3764,11 @@ function HorizontalScrollView() {
     };
 }
 
+/**
+ * Displays an arbitrary icon.The ImageView class provides scaling display options.
+ *
+ * @class ImageView
+ */
 function ImageView() {
     ViewGroup.apply(this, []);
 
@@ -3753,10 +3780,22 @@ function ImageView() {
     var mCustomHeight = 0;
     var scaleTimeout = 0;
 
+    /**
+     * Set the scale type of image.
+     *
+     * @method setScaleType
+     * @param {int} ScaleType.CENTER,ScaleType.FIT_XY,ScaleType.CENTER_INSIDE,ScaleType.FIT_CENTER or ScaleType.CENTER_CROP.
+     */
     this.setScaleType = function(st) {
         mScaleType = st;
     };
 
+    /**
+     * Sets the content of this ImageView to the specified Uri.
+     *
+     * @method setImageUri
+     * @param {string} The Uri of an image
+     */
     this.setImageUri = function(src) {
         this.setImgSrc(src);
     };
@@ -3883,10 +3922,21 @@ Object.defineProperty(ScaleType,"CENTER",{value:5});
 Object.defineProperty(ScaleType,"CENTER_CROP",{value:6});
 Object.defineProperty(ScaleType,"CENTER_INSIDE",{value:7});
 
+/**
+ * Displays a button with an image (instead of text) that can be pressed
+ * or clicked by the user.
+ *
+ * @class ImageButton
+ */
 function ImageButton() {
     ImageView.apply(this, []);
 }
 
+/**
+ * Displays text to the user and not allows editing.
+ *
+ * @class TextView
+ */
 function TextView() {
     ViewGroup.apply(this, []);
 
@@ -3898,10 +3948,22 @@ function TextView() {
     mContent.style.whiteSpace = "normal";
     this.getDiv().appendChild(mContent);
 
+    /**
+     * Return the text that TextView is displaying.
+     *
+     * @method getText
+     * @return {string} The text in the TextView.
+     */
     this.getText = function() {
         return mContent.innerHTML;
     };
 
+    /**
+     * Sets the string value of the TextView.
+     *
+     * @method setText
+     * @param {string} text Sets the string value.
+     */
     this.setText = function(text) {
         mContent.innerHTML = text;
 
@@ -3909,6 +3971,12 @@ function TextView() {
         this.getDiv().scrollTop = "100px";
     };
 
+    /**
+     * Sets whether the content of this view is selectable by the user.
+     *
+     * @method setTextIsSelectable
+     * @param {boolean} selectable Whether the content of this TextView should be selectable.
+     */
     this.setTextIsSelectable = function(selectable) {
         if (selectable) {
             mContent.style["-webkit-user-select"] = "text";
@@ -3917,23 +3985,57 @@ function TextView() {
         }
     };
 
+    /**
+     * Sets the text color.
+     *
+     * @method setTextColor
+     * @param {int} color The text color.
+     */
     this.setTextColor = function(color) {
         mContent.style.color = Utils.toCssColor(color);
     };
 
+    /**
+     * Set the default text size to the given value.
+     *
+     * @method setTextSize
+     * @param {int} textsize The default text size.
+     */
     this.setTextSize = function(textsize) {
         mTextSize = textsize;
         mContent.style.fontSize = textsize + "px";
     };
 
+    /**
+     * Gives the text a shadow of the specified blur radius and color, the specified
+     * distance from its drawn position.
+     *
+     * @method setShadowLayer
+     * @param {int} radius If radius is 0, then the shadow layer is removed.
+     * @param {int} dx Specified offset of X.
+     * @param {int} dy Specified offset of Y.
+     * @param {int} color Specified color.
+     */
     this.setShadowLayer = function(radius, dx, dy, color) {
         mContent.style.textShadow = dx + "px " + dy + "px " + radius + "px " + Utils.toCssColor(color);
     };
 
+    /**
+     * Set the line height.
+     *
+     * @method setLineHeight
+     * @param {int} lineHeight the line height.
+     */
     this.setLineHeight = function(lineHeight) {
         mContent.style.lineHeight = lineHeight + "px";
     };
 
+    /**
+     * Sets whether the line is single.
+     *
+     * @method setSingleLine
+     * @param {boolean} singleLine Whether the line is single.
+     */
     this.setSingleLine = function(singleLine) {
         mSingleLine = singleLine;
         if (mSingleLine) {
@@ -3995,6 +4097,14 @@ function TextView() {
 
     };
 
+    /**
+     * Sets the horizontal alignment of the text and the
+     * vertical gravity that will be used when there is extra space
+     * in the TextView beyond what is required for the text itself.
+     *
+     * @method setGravity
+     * @param {int} gravity
+     */
     this.setGravity = function(gravity) {
         mGravity = gravity;
 
@@ -4009,6 +4119,12 @@ function TextView() {
     };
 }
 
+/**
+ * Represents a push-button widget.Push-buttons can be
+ * pressed, or clicked, by the user to perform an action.
+ *
+ * @class Button
+ */
 function Button() {
     TextView.apply(this, []);
 
@@ -4036,6 +4152,12 @@ function Button() {
     };
 }
 
+/**
+ * EditText is a thin veneer over TextView that configures itself
+ * to be editable.
+ *
+ * @class EditText
+ */
 function EditText() {
     ViewGroup.apply(this, []);
 
@@ -4056,6 +4178,12 @@ function EditText() {
         }
     };
 
+    /**
+     * Sets whether the text of this EditText is password.
+     *
+     * @method setPassword
+     * @param {boolean} isPassword
+     */
     this.setPassword = function(isPassword) {
         mIsPassword = isPassword;
         mInput.type = "password";
@@ -4098,6 +4226,13 @@ function EditText() {
         }
     };
 
+    /**
+     * Set the selection anchor to start and the selection edge to end.
+     *
+     * @method setSelection
+     * @param {int} start Selection anchor to start.
+     * @param {int} end Selection anchor to end.
+     */
     this.setSelection = function(start, end) {
         mInput.selectionStart = start;
         if (end == undefined) {
@@ -4107,36 +4242,84 @@ function EditText() {
         }
     };
 
+    /**
+     * Return the offset of the selection anchor or cursor.
+     *
+     * @method getSelectionStart
+     * @return {int} The offset.
+     */
     this.getSelectionStart = function() {
         return mInput.selectionStart;
     };
 
+    /**
+     * Return the offset of the selection edge or cursor.
+     *
+     * @method getSelectionEnd
+     * @return {int} The offset.
+     */
     this.getSelectionEnd = function() {
         return mInput.selectionEnd;
     };
 
+    /**
+     * set a listener to whose methods are called whenever this EditText's text changes.
+     *
+     * @method setTextChangedListener
+     * @param listener.
+     */
     this.setTextChangedListener = function(listener) {
         mTextListener = listener;
         mInput.oninput = listener;
     };
 
+    /**
+     * Return the text that EditText is displaying.
+     *
+     * @method getText
+     * @return {string} The text in the EditText.
+     */
     this.getText = function() {
         return mInput.value;
     };
 
+    /**
+     * Sets the string value of the EditText.
+     *
+     * @method setText
+     * @param {string} text Sets the string value.
+     */
     this.setText = function(text) {
         mInput.value = text;
     };
 
+    /**
+     * Sets the text size of the EditText.
+     *
+     * @method setTextSize
+     * @param {int} size Sets the text size.
+     */
     this.setTextSize = function(size) {
         mTextSize = size;
         mInput.style.fontSize = size + "px";
     };
 
+    /**
+     * Sets the text color of the EditText.
+     *
+     * @method setTextColor
+     * @param {int} color Sets the text color.
+     */
     this.setTextColor = function(color) {
         mInput.style.color = Utils.toCssColor(color);
     };
 
+    /**
+     * Sets the text to be displayed when the text of the EditText is empty.
+     *
+     * @method setHint
+     * @param {string} text Sets the hint text.
+     */
     this.setHint = function(text) {
         this.setHintText(text);
     };
@@ -4145,6 +4328,12 @@ function EditText() {
         mInput.placeholder = text;
     };
 
+    /**
+     * Sets the color of the hint text for this EditText.
+     *
+     * @method setHintColor
+     * @param {int} color Sets the hint text's color.
+     */
     this.setHintColor = function(color) {
         var css = document.createElement("style");
         css.innerHTML = "." + mTag + "::-webkit-input-placeholder{ color:" + Utils.toCssColor(color) + "}";
@@ -4152,6 +4341,11 @@ function EditText() {
         mInput.className += mTag + " ";
     };
 
+    /**
+     * To get this EditText to take focus.
+     *
+     * @method requestFocus
+     */
     this.requestFocus = function() {
         mInput.focus();
     };
@@ -4204,6 +4398,9 @@ function EditText() {
     }
 }
 
+/**
+ * @class WebView
+ */
 function WebView() {
     ViewGroup.apply(this, []);
 
