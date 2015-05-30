@@ -482,6 +482,7 @@ function EditText() {
     var mTextSize = 12;
     var mIsPassword = false;
     var mTextListener = null;
+    var mIsFocused;
 
     this.setDisabled = function(disabled) {
         if (disabled) {
@@ -521,11 +522,16 @@ function EditText() {
         this.getDiv().appendChild(mInput);
     };
 
+    this.isFocused = function() {
+        return mIsFocused;
+    };
+
     this.setOnFocusChangeListener = function(l) {
         mFocusListener = l;
     };
 
     this.onFocusChanged = function(focused) {
+        mIsFocused = focused;
         if (mFocusListener != null) {
             mFocusListener.call(this, focused);
         }

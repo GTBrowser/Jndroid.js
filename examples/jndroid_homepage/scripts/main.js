@@ -2,14 +2,17 @@
  * Created by lency on 4/28/15.
  */
 
+var mIsPhone;
 var mTab;
 var mMainView;
 var mGallery;
 var mIntroPage;
+var mVSPage;
 var mDocPage;
 var mAppPage;
 var mQAPage;
 var mIntroView = null;
+var mVSView = null;
 var mDocView = null;
 var mAppView = null;
 var mQAView = null;
@@ -24,10 +27,12 @@ function MainView() {
     this.addView(mTab);
 
     mIntroPage = new FrameLayout();
+    mVSPage = new FrameLayout();
     mDocPage = new FrameLayout();
     mAppPage = new FrameLayout();
     mQAPage = new FrameLayout();
     mGallery.addPage(mIntroPage);
+    mGallery.addPage(mVSPage);
     mGallery.addPage(mDocPage);
     mGallery.addPage(mAppPage);
     mGallery.addPage(mQAPage);
@@ -54,7 +59,11 @@ function MainView() {
 }
 
 window.onload = function(){
-
+    if (window.innerWidth <= 400) {
+        mIsPhone = true;
+    } else {
+        mIsPhone = false;
+    }
     var rootview = new FrameLayout();
     setContentView(rootview);
 

@@ -28,15 +28,38 @@ function Playground(title, initCode, isHtml) {
     mEditArea.setPadding(0);
     this.addView(mEditArea);
 
-    var mCodeMirrorView = new CodeMirrorView(isHtml);
-    mCodeMirrorView.setOnFocusChangeListener(function() {
-        resetBorder();
-    });
-    this.postDelayed(function() {
-        mCodeMirrorView.setText(initCode);
-        update();
-    }, 100);
-    mEditArea.addView(mCodeMirrorView);
+    var mEditView;
+
+    if (mIsPhone) {
+        mEditView = new EditText();
+        mEditView.setSingleLine(false);
+        mEditView.setOnFocusChangeListener(function() {
+            resetBorder();
+        });
+        this.postDelayed(function() {
+            mEditView.setText(initCode);
+            update();
+        }, 100);
+        var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        mEditArea.addView(mEditView, lp);
+    } else {
+        Utils.includeJs("codemirror/codemirror.js", function() {
+            Utils.includeJs("codemirror/htmlmixed.js");
+            Utils.includeJs("codemirror/javascript.js");
+            Utils.includeJs("codemirror/matchbrackets.js");
+            Utils.includeJs("codemirror/xml.js", function() {
+                mEditView = new CodeMirrorView(isHtml);
+                mEditView.setOnFocusChangeListener(function() {
+                    resetBorder();
+                });
+                mSelf.postDelayed(function() {
+                    mEditView.setText(initCode);
+                    update();
+                }, 100);
+                mEditArea.addView(mEditView);
+            });
+        });
+    }
 
     var mCodePreviewer;
     if (isHtml) {
@@ -115,7 +138,10 @@ function Playground(title, initCode, isHtml) {
     };
 
     function resetBorder() {
-        if (mCodeMirrorView.isFocused()) {
+        if (mEditView == undefined) {
+            return;
+        }
+        if (mEditView.isFocused()) {
             mEditArea.setBorder(1, 0xff1499f7);
         } else {
             mEditArea.setBorder(1, DIVIDERS_COLOR);
@@ -130,7 +156,7 @@ function Playground(title, initCode, isHtml) {
     }
 
     function update(){
-        var code = mCodeMirrorView.getText() + " " + mAppendCode;
+        var code = mEditView.getText() + " " + mAppendCode;
         mCodePreviewer.applyCode(code);
     }
 }
