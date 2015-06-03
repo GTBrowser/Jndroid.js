@@ -12,6 +12,7 @@
 function ScrollView() {
     ViewGroup.apply(this, []);
 
+    this.setTag("ScrollView");
     this.setStyle("overflow", "auto");
 
     this.onMeasure = function(widthMS, heightMS) {

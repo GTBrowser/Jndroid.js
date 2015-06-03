@@ -26,6 +26,18 @@
 </head>
 <body>
 <script>
+    if (window.innerWidth <= 400) {
+        mIsPhone = true;
+    } else {
+        mIsPhone = false;
+    }
+    var rootview = new FrameLayout();
+    setContentView(rootview);
+
+    mMainView = new MainView();
+    mMainView.setStyle("fontFamily", "RobotoDraft, Roboto, sans-serif, 微软雅黑");
+    rootview.addView(mMainView);
+
     Utils.includeJs("scripts/VSAndroidView.js");
     Utils.includeJs("scripts/DocumentationView.js");
     Utils.includeJs("scripts/ApplicationsView.js");

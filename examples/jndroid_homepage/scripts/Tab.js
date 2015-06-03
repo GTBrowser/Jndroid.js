@@ -110,10 +110,14 @@ function TabContent() {
         var button = createButton(text);
         button.setOnClickListener(function() {
             mSelf.setSelectIndex(index);
-            mGallery.snapToScreen(index, 300);
+            var curPage = mPages[mCurrentIndex];
+            var newPage = mPages[index];
+            curPage.setVisibility(View.GONE);
+            newPage.setVisibility(View.VISIBLE);
             if (action != undefined) {
-                this.postDelayed(action, 300);
+                action.call(this);
             }
+            mCurrentIndex = index;
         });
         mItems.push(button);
         mSelf.addView(button);

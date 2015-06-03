@@ -613,7 +613,7 @@ function View() {
     var mPaddingBottom = 0;
     var mLayoutParams = null;
     var mWillNotDraw = true;
-    var mVisibility = true;
+    var mVisibility = View.VISIBLE;
     var mClickable = false;
     var mLongClickable = true;
     var mClickListener = null;
@@ -1453,12 +1453,12 @@ function ViewGroup() {
         if (indexOrParams == undefined) {
             mChildren.add(view);
         } else {
-            if (indexOrParams.constructor.name == "Number") {
+            if ((typeof indexOrParams) == "number") {
                 mChildren.add(indexOrParams, view);
                 if (params != undefined) {
                     view.setLayoutParams(params);
                 }
-            } else if (indexOrParams.constructor.name == "LayoutParams") {
+            } else {
                 mChildren.add(view);
                 view.setLayoutParams(indexOrParams);
             }
