@@ -71,3 +71,4 @@ window.onload = function(){
     mMainView.setStyle("fontFamily", "RobotoDraft, Roboto, sans-serif");
     rootview.addView(mMainView);
 };
+
