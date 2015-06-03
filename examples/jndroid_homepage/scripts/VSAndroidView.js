@@ -53,6 +53,7 @@ function VSAndroidView() {
         this.addView(mCode);
 
         this.postDelayed(this.requestLayout, 100);
+        this.postDelayed(this.requestLayout, 500);
 
         this.onMeasure = function(widthMS, heightMS) {
             var width = MeasureSpec.getSize(widthMS);
