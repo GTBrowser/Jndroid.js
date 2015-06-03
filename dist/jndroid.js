@@ -957,7 +957,7 @@ function View() {
 	* Sets the tag associated with this view.
 	*
 	* @method setTag
-	* @params {Object} tag An Object to tag the view with
+	* @param {Object} tag An Object to tag the view with
 	*/
     this.setTag = function(tag) {
         mTag = tag;
@@ -978,7 +978,7 @@ function View() {
 	* Sets the parent.
 	*
 	* @method setParent
-	* @params {View} parent The parent.
+	* @param {View} parent The parent.
 	*/
     this.setParent = function(parent) {
         mParent = parent;
@@ -1033,10 +1033,10 @@ function View() {
 	* Sets the padding. The view may add on the space required to display the scrollbars, depending on the style and visibility of the scrollbars. So the values returned from getPaddingLeft(), getPaddingTop(), getPaddingRight() and getPaddingBottom() may be different from the values set in this call.
 	*
 	* @method setPadding
-	* @params {int} left The left padding in pixels
-	* @params {int} top The top padding in pixels
-	* @params {int} right The right padding in pixels
-	* @params {int} bottom The bottom padding in pixels
+	* @param {int} left The left padding in pixels
+	* @param {int} top The top padding in pixels
+	* @param {int} right The right padding in pixels
+	* @param {int} bottom The bottom padding in pixels
 	*/
     this.setPadding = function(left, top, right, bottom) {
         if (top === undefined && right === undefined && bottom === undefined) {
@@ -1064,7 +1064,7 @@ function View() {
 	* Set the layout parameters associated with this view. These supply parameters to the parent of this view specifying how it should be arranged. There are many subclasses of ViewGroup.LayoutParams, and these correspond to the different subclasses of ViewGroup that are responsible for arranging their children.
 	*
 	* @method setLayoutParams
-	* @params {ViewGroup.LayoutParams}  lp The layout parameters for this view, cannot be null.
+	* @param {ViewGroup.LayoutParams}  lp The layout parameters for this view, cannot be null.
 	*/
     this.setLayoutParams = function(lp) {
         mLayoutParams = lp;
@@ -1152,12 +1152,11 @@ function View() {
 
 	/**
 	* This is called to find out how big a view should be. The parent supplies constraint information in the width and height parameters.
-
 	The actual measurement work of a view is performed in onMeasure(int, int), called by this method. Therefore, only onMeasure(int, int) can and must be overridden by subclasses.
 	*
 	* @method measure
-	* @params {int} widthMS Horizontal space requirements as imposed by the parent.
-	* @params {int} heightMS Vertical space requirements as imposed by the parent.
+	* @param {int} widthMS Horizontal space requirements as imposed by the parent.
+	* @param {int} heightMS Vertical space requirements as imposed by the parent.
 	*/
     this.measure = function(widthMS, heightMS) {
         mWidthMS = widthMS;
@@ -1168,11 +1167,11 @@ function View() {
 	/**
 	* Measure the view and its content to determine the measured width and the measured height. This method is invoked by measure(int, int) and should be overriden by subclasses to provide accurate and efficient measurement of their contents.
 
-	CONTRACT: When overriding this method, you must call setMeasuredDimension(int, int) to store the measured width and height of this view. 
+	*CONTRACT: When overriding this method, you must call setMeasuredDimension(int, int) to store the measured width and height of this view. 
 	*
 	* @method onMeasure
-	* @params {int} widthMS horizontal space requirements as imposed by the parent. The requirements are encoded with View.MeasureSpec.
-	* @params {int} vertical space requirements as imposed by the parent. The requirements are encoded with View.MeasureSpec.
+	* @param {int} widthMS horizontal space requirements as imposed by the parent. The requirements are encoded with View.MeasureSpec.
+	* @param {int} vertical space requirements as imposed by the parent. The requirements are encoded with View.MeasureSpec.
 	*/
     this.onMeasure = function(widthMS, heightMS) {
         this.setMeasuredDimension(MeasureSpec.getSize(widthMS), MeasureSpec.getSize(heightMS));
@@ -1182,8 +1181,8 @@ function View() {
 	* This method must be called by onMeasure(int, int) to store the measured width and measured height.
 	*
 	* @method setMeasuredDimension
-	* @params {int} width The measured width of this view.
-	* @params {int} height The measured height of this view. 
+	* @param {int} width The measured width of this view.
+	* @param {int} height The measured height of this view. 
 	*/
     this.setMeasuredDimension = function(width, height) {
         if (mWidth == width && mHeight == height) {
@@ -1203,13 +1202,12 @@ function View() {
 	/**
 	* Assign a size and position to a view and all of its descendants
 
-	This is the second phase of the layout mechanism. (The first is measuring). In this phase, each parent calls layout on all of its children to position them. This is typically done using the child measurements that were stored in the measure pass().
-
+	*This is the second phase of the layout mechanism. (The first is measuring). In this phase, each parent calls layout on all of its children to position them. This is typically done using the child measurements that were stored in the measure pass().
 	Derived classes should not override this method. Derived classes with children should override onLayout. In that method, they should call layout on each of their children.
 	* 
 	* @method layout
-	* @params {int} x Left position, relative to parent.
-	* @params {int} y Top position, relative to parent.
+	* @param {int} x Left position, relative to parent.
+	* @param {int} y Top position, relative to parent.
 	*/
     this.layout = function(x, y) {
         mX = x;
@@ -1224,8 +1222,8 @@ function View() {
 	* Called from layout when this view should assign a size and position to each of its children. Derived classes with children should override this method and call layout on each of their children.
 	*
 	* @method onLayout
-	* @params {int} x Left position, relative to parent.
-	* @params {int} y Top position, relative to parent.
+	* @param {int} x Left position, relative to parent.
+	* @param {int} y Top position, relative to parent.
 	*/
     this.onLayout = function(x, y) {
 
@@ -1262,10 +1260,9 @@ function View() {
 
 	/**
 	* Invalidate the whole view. If the view is visible, will be called at some point in the future.
-
 	This must be called from a UI thread. To call from a non-UI thread, call postInvalidate().
 	*
-	* method invalidate
+	* @method invalidate
 	*/
     this.invalidate = function() {
         mSelf.draw();
@@ -1313,7 +1310,7 @@ function View() {
 	* If this view doesn't do any drawing on its own, set this flag to allow further optimizations. By default, this flag is not set on View, but could be set on some View subclasses such as ViewGroup. Typically, if you override onDraw(Canvas) you should clear this flag.
 	*
 	* @method setWillNotDraw
-	* @params {boolean} willnotdraw Whether or not this View draw on its own.
+	* @param {boolean} willnotdraw Whether or not this View draw on its own.
 	*/
     this.setWillNotDraw = function(willnotdraw) {
         mWillNotDraw = willnotdraw;
@@ -1340,7 +1337,7 @@ function View() {
 	* Sets the background color for this view.
 	*
 	* @method setBackgroundColor
-	* @params {int} color The color of the background.
+	* @param {int} color The color of the background.
 	*/
     this.setBackgroundColor = function(color) {
         mBackground = color;
@@ -1351,7 +1348,7 @@ function View() {
 	* Register a callback to be invoked when this view is clicked. If this view is not clickable, it becomes clickable.
 	*
 	* @method setOnClickListener
-	* @params {View.OnClickListener} l The callback that will run.
+	* @param {View.OnClickListener} l The callback that will run.
 	*/
     this.setOnClickListener = function(l) {
         if (!mClickable) {
@@ -1364,7 +1361,7 @@ function View() {
 	* Register a callback to be invoked when this view is clicked and held. If this view is not long clickable, it becomes long clickable.
 	*
 	* @method setOnLongClickListener
-	* @params {View.OnLongClickListener} l The callback that will run.
+	* @param {View.OnLongClickListener} l The callback that will run.
 	*
 	*/
     this.setOnLongClickListener = function(l) {
@@ -1378,7 +1375,7 @@ function View() {
 	* Enables or disables click events for this view. When a view is clickable it will change its state to "pressed" on every click. Subclasses should set the view clickable to visually react to user's clicks.
 	*
 	* @method setClickable
-	* @params {boolean} clickable True to make the view clickable, false otherwise.
+	* @param {boolean} clickable True to make the view clickable, false otherwise.
 	*/
     this.setClickable = function(clickable) {
         mClickable = clickable;
@@ -1421,7 +1418,7 @@ function View() {
 	* Enables or disables long click events for this view. When a view is long clickable it reacts to the user holding down the button for a longer duration than a tap. This event can either launch the listener or a context menu.
 	*
 	* @method setLongClickable
-	* @params {boolean} longClickable True to make the view long clickable, false otherwise.
+	* @param {boolean} longClickable True to make the view long clickable, false otherwise.
 	*/
     this.setLongClickable = function(longClickable) {
         mLongClickable = longClickable;
@@ -1430,7 +1427,7 @@ function View() {
 	/**
 	* Call this when something has changed which has invalidated the layout of this view. This will schedule a layout pass of the view tree. This should not be called while the view hierarchy is currently in a layout pass. If layout is happening, the request may be honored at the end of the current layout pass (and then layout will run again) or after the current frame is drawn and the next layout occurs.
 
-	Subclasses which override this method should call the superclass method to handle possible request-during-layout errors correctly.
+	*Subclasses which override this method should call the superclass method to handle possible request-during-layout errors correctly.
 	*
 	* @method requestLayout
 	*/
@@ -1458,14 +1455,16 @@ function View() {
 	/**
 	* Implement this method to handle touch screen motion events.
 
-	If this method is used to detect click actions, it is recommended that the actions be performed by implementing and calling performClick(). This will ensure consistent system behavior, including:
+	*If this method is used to detect click actions, it is recommended that the actions be performed by implementing and calling performClick(). This will ensure consistent system behavior, including:
 
-	obeying click sound preferences
-	dispatching OnClickListener calls
-	handling ACTION_CLICK when accessibility features are enabled
+	*obeying click sound preferences
+	
+	*dispatching OnClickListener calls
+	
+	*handling ACTION_CLICK when accessibility features are enabled
 	*
 	* @method onTouchEvent
-	* @params {MotionEvent} ev The motion event.
+	* @param {MotionEvent} ev The motion event.
 	*/
     this.onTouchEvent = function(ev) {
 
@@ -1474,10 +1473,10 @@ function View() {
 	/**
 	* Sets the opacity of the view. This is a value from 0 to 1, where 0 means the view is completely transparent and 1 means the view is completely opaque.
 
-	Note that setting alpha to a translucent value (0 < alpha < 1) can have significant performance implications, especially for large views. It is best to use the alpha property sparingly and transiently, as in the case of fading animations.
+	*Note that setting alpha to a translucent value (0 < alpha < 1) can have significant performance implications, especially for large views. It is best to use the alpha property sparingly and transiently, as in the case of fading animations.
 	*
 	* @method setAlpha
-	* @params {float} a The opacity of the view.
+	* @param {float} a The opacity of the view.
 	*/
     this.setAlpha = function(a) {
         mDiv.style.opacity = a;
@@ -1497,7 +1496,7 @@ function View() {
 	* Set the enabled state of this view.
 	*
 	* @method setVisibility
-	* @params {int} visibility
+	* @param {int} visibility
 	*/
     this.setVisibility = function(visibility) {
         mVisibility = visibility;
@@ -1512,7 +1511,7 @@ function View() {
 	* Sets the next animation to play for this view. If you want the animation to play immediately, use startAnimation(Animation) instead. This method provides allows fine-grained control over the start time and invalidation, but you must make sure that 1) the animation has a start time set, and 2) the view's parent (which controls animations on its children) will be invalidated when the animation is supposed to start.
 	*
 	* @method setAnimation
-	* @params {Animation} animation The next animation, or null.
+	* @param {Animation} animation The next animation, or null.
 	*/
     this.setAnimation = function(animation) {
         animation.setView(this);
@@ -1522,7 +1521,7 @@ function View() {
 	* Start the specified animation now.
 	*
 	* @method startAnimation
-	* @params {Animation} animation The animation to start now.
+	* @param {Animation} animation The animation to start now.
 	*/
     this.startAnimation = function(animation) {
         animation.setView(this);
@@ -1533,8 +1532,8 @@ function View() {
 	* Causes the Runnable to be added to the message queue, to be run after the specified amount of time elapses. The runnable will be run on the user interface thread.
 	*
 	* @method postDelayed
-	* @params {Runnable} r The Runnable that will be executed.
-	* @params {long} delay The delay (in milliseconds) until the Runnable will be executed.
+	* @param {Runnable} r The Runnable that will be executed.
+	* @param {long} delay The delay (in milliseconds) until the Runnable will be executed.
 	*/
     this.postDelayed = function(r, delay) {
         var mSelf = this;
@@ -1548,7 +1547,7 @@ function View() {
 	* Removes the specified Runnable from the message queue.
 	*
 	* @method removeCallbacks
-	* @params {Runnable} r The Runnable to remove from the message handling queue.
+	* @param {Runnable} r The Runnable to remove from the message handling queue.
 	*/
     this.removeCallbacks = function(r) {
         var id = mRunQueue.get(r);

@@ -675,7 +675,7 @@ function View() {
     this.getDiv = function() {
         return mDiv;
     };
-
+	
 	/**
 	* Returns the left padding of this view. If there are inset and enabled scrollbars, this value may include the space required to display the scrollbars as well.
 	*
