@@ -33,11 +33,16 @@ function TabContent() {
 
     var mSelf = this;
     var mItems = [];
-    var buttonWidth = 240;
+    var buttonWidth = 160;
     var mSelectIndex = 0;
 
     addTabItem("Jndroid", 0);
-    addTabItem("vs Android", 1);
+    addTabItem("vs Android", 1, function() {
+        if (mVSView == null) {
+            mVSView = new VSAndroidView();
+            mVSPage.addView(mVSView);
+        }
+    });
     addTabItem("Documentation", 2, function() {
         if (mDocView == null) {
             mDocView = new DocumentationView();
@@ -59,7 +64,7 @@ function TabContent() {
 
     var mIndicator = new Indicator();
     mIndicator.setStyle(Indicator.Line);
-    mIndicator.setIndicatorCount(4);
+    mIndicator.setIndicatorCount(5);
     mIndicator.setIndicatorColor(0xfff3ffa3);
     mIndicator.INDICATOR_SIZE = buttonWidth;
     mIndicator.GAP = 0;
@@ -67,7 +72,7 @@ function TabContent() {
 
     this.setSelectIndex = function(index) {
         mSelectIndex = index;
-        mIndicator.onXChanged(index / 3);
+        mIndicator.onXChanged(index / 4);
         for (var i = 0; i < mItems.length;i++) {
             if (i == mSelectIndex) {
                 mItems[i].setTextColor(0xffffffff);
@@ -121,7 +126,7 @@ function TabContent() {
         button.setDimBg(false);
         button.setWaveColor(0x33ffffff);
         button.setBoxShadow(0, 0, 0, 0, 0);
-        button.setTextSize(24);
+        button.setTextSize(16);
         return button;
     }
 }

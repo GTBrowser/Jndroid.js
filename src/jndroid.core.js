@@ -1011,7 +1011,9 @@ function View() {
             mHTMLCanvas.style.top = 0;
             mDiv.appendChild(mHTMLCanvas);
             mDiv.style.overflow = "hidden";
-            this.requestLayout();
+            if (this.getMeasuredWidth() != 0 || this.getMeasuredHeight() != 0) {
+                this.requestLayout();
+            }
         } else {
             if (mHTMLCanvas !== null) {
                 mDiv.removeChild(mHTMLCanvas);
@@ -1432,6 +1434,10 @@ function ViewGroup() {
         return mChildren[index];
     };
 
+    this.indexOfChild = function(child) {
+        return mChildren.indexOf(child);
+    };
+
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
@@ -1480,7 +1486,7 @@ function ViewGroup() {
         }
         mChildren.clear();
         this.getDiv().innerHTML = "";
-        if (this.getParent() !== null) {
+        if (this.getParent()) {
             this.getParent().requestLayout();
         }
     };
