@@ -419,19 +419,19 @@ function _Utils() {
         function(parent, node) {
             while (node && (node = node.parentNode)) {
                 if (node === parent) {
-					return true;
-				}
-			}
+                    return true;
+                }
+            }
             return false;
         };
 
     this.getOffset = function(div){
         if (!div) {
-			return null;
-		}
+            return null;
+        }
         if (!this.contains(document.documentElement, div)) {
             return {top: 0, left: 0};
-		}
+        }
         var obj = div.getBoundingClientRect();
         return {
             left: obj.left + window.pageXOffset,
@@ -452,6 +452,22 @@ function _Utils() {
             node = node.parentNode;
         }
         return fontFamily;
+    };
+
+    this.includeJs = function(path, callback) {
+        var sobj = document.createElement('script');
+        sobj.type = 'text/javascript';
+        sobj.src = path;
+        if (callback != undefined) {
+            sobj.onload = sobj.onreadystatechange = function () {
+                if (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete') {
+                    callback.call();
+                    sobj.onload = sobj.onreadystatechange = null;
+                }
+            };
+        }
+        var headobj = document.getElementsByTagName('head')[0];
+        headobj.appendChild(sobj)
     };
 }
 
@@ -957,7 +973,7 @@ function View() {
 	* Sets the tag associated with this view.
 	*
 	* @method setTag
-	* @param {Object} tag An Object to tag the view with
+	* @params {Object} tag An Object to tag the view with
 	*/
     this.setTag = function(tag) {
         mTag = tag;
@@ -978,7 +994,7 @@ function View() {
 	* Sets the parent.
 	*
 	* @method setParent
-	* @param {View} parent The parent.
+	* @params {View} parent The parent.
 	*/
     this.setParent = function(parent) {
         mParent = parent;
@@ -1033,10 +1049,10 @@ function View() {
 	* Sets the padding. The view may add on the space required to display the scrollbars, depending on the style and visibility of the scrollbars. So the values returned from getPaddingLeft(), getPaddingTop(), getPaddingRight() and getPaddingBottom() may be different from the values set in this call.
 	*
 	* @method setPadding
-	* @param {int} left The left padding in pixels
-	* @param {int} top The top padding in pixels
-	* @param {int} right The right padding in pixels
-	* @param {int} bottom The bottom padding in pixels
+	* @params {int} left The left padding in pixels
+	* @params {int} top The top padding in pixels
+	* @params {int} right The right padding in pixels
+	* @params {int} bottom The bottom padding in pixels
 	*/
     this.setPadding = function(left, top, right, bottom) {
         if (top === undefined && right === undefined && bottom === undefined) {
@@ -1064,7 +1080,7 @@ function View() {
 	* Set the layout parameters associated with this view. These supply parameters to the parent of this view specifying how it should be arranged. There are many subclasses of ViewGroup.LayoutParams, and these correspond to the different subclasses of ViewGroup that are responsible for arranging their children.
 	*
 	* @method setLayoutParams
-	* @param {ViewGroup.LayoutParams}  lp The layout parameters for this view, cannot be null.
+	* @params {ViewGroup.LayoutParams}  lp The layout parameters for this view, cannot be null.
 	*/
     this.setLayoutParams = function(lp) {
         mLayoutParams = lp;
@@ -1152,11 +1168,12 @@ function View() {
 
 	/**
 	* This is called to find out how big a view should be. The parent supplies constraint information in the width and height parameters.
+
 	The actual measurement work of a view is performed in onMeasure(int, int), called by this method. Therefore, only onMeasure(int, int) can and must be overridden by subclasses.
 	*
 	* @method measure
-	* @param {int} widthMS Horizontal space requirements as imposed by the parent.
-	* @param {int} heightMS Vertical space requirements as imposed by the parent.
+	* @params {int} widthMS Horizontal space requirements as imposed by the parent.
+	* @params {int} heightMS Vertical space requirements as imposed by the parent.
 	*/
     this.measure = function(widthMS, heightMS) {
         mWidthMS = widthMS;
@@ -1167,11 +1184,11 @@ function View() {
 	/**
 	* Measure the view and its content to determine the measured width and the measured height. This method is invoked by measure(int, int) and should be overriden by subclasses to provide accurate and efficient measurement of their contents.
 
-	*CONTRACT: When overriding this method, you must call setMeasuredDimension(int, int) to store the measured width and height of this view. 
+	CONTRACT: When overriding this method, you must call setMeasuredDimension(int, int) to store the measured width and height of this view.
 	*
 	* @method onMeasure
-	* @param {int} widthMS horizontal space requirements as imposed by the parent. The requirements are encoded with View.MeasureSpec.
-	* @param {int} vertical space requirements as imposed by the parent. The requirements are encoded with View.MeasureSpec.
+	* @params {int} widthMS horizontal space requirements as imposed by the parent. The requirements are encoded with View.MeasureSpec.
+	* @params {int} vertical space requirements as imposed by the parent. The requirements are encoded with View.MeasureSpec.
 	*/
     this.onMeasure = function(widthMS, heightMS) {
         this.setMeasuredDimension(MeasureSpec.getSize(widthMS), MeasureSpec.getSize(heightMS));
@@ -1181,8 +1198,8 @@ function View() {
 	* This method must be called by onMeasure(int, int) to store the measured width and measured height.
 	*
 	* @method setMeasuredDimension
-	* @param {int} width The measured width of this view.
-	* @param {int} height The measured height of this view. 
+	* @params {int} width The measured width of this view.
+	* @params {int} height The measured height of this view.
 	*/
     this.setMeasuredDimension = function(width, height) {
         if (mWidth == width && mHeight == height) {
@@ -1202,12 +1219,13 @@ function View() {
 	/**
 	* Assign a size and position to a view and all of its descendants
 
-	*This is the second phase of the layout mechanism. (The first is measuring). In this phase, each parent calls layout on all of its children to position them. This is typically done using the child measurements that were stored in the measure pass().
+	This is the second phase of the layout mechanism. (The first is measuring). In this phase, each parent calls layout on all of its children to position them. This is typically done using the child measurements that were stored in the measure pass().
+
 	Derived classes should not override this method. Derived classes with children should override onLayout. In that method, they should call layout on each of their children.
-	* 
+	*
 	* @method layout
-	* @param {int} x Left position, relative to parent.
-	* @param {int} y Top position, relative to parent.
+	* @params {int} x Left position, relative to parent.
+	* @params {int} y Top position, relative to parent.
 	*/
     this.layout = function(x, y) {
         mX = x;
@@ -1222,8 +1240,8 @@ function View() {
 	* Called from layout when this view should assign a size and position to each of its children. Derived classes with children should override this method and call layout on each of their children.
 	*
 	* @method onLayout
-	* @param {int} x Left position, relative to parent.
-	* @param {int} y Top position, relative to parent.
+	* @params {int} x Left position, relative to parent.
+	* @params {int} y Top position, relative to parent.
 	*/
     this.onLayout = function(x, y) {
 
@@ -1260,9 +1278,10 @@ function View() {
 
 	/**
 	* Invalidate the whole view. If the view is visible, will be called at some point in the future.
+
 	This must be called from a UI thread. To call from a non-UI thread, call postInvalidate().
 	*
-	* @method invalidate
+	* method invalidate
 	*/
     this.invalidate = function() {
         mSelf.draw();
@@ -1310,7 +1329,7 @@ function View() {
 	* If this view doesn't do any drawing on its own, set this flag to allow further optimizations. By default, this flag is not set on View, but could be set on some View subclasses such as ViewGroup. Typically, if you override onDraw(Canvas) you should clear this flag.
 	*
 	* @method setWillNotDraw
-	* @param {boolean} willnotdraw Whether or not this View draw on its own.
+	* @params {boolean} willnotdraw Whether or not this View draw on its own.
 	*/
     this.setWillNotDraw = function(willnotdraw) {
         mWillNotDraw = willnotdraw;
@@ -1321,7 +1340,9 @@ function View() {
             mHTMLCanvas.style.top = 0;
             mDiv.appendChild(mHTMLCanvas);
             mDiv.style.overflow = "hidden";
-            this.requestLayout();
+            if (this.getMeasuredWidth() != 0 || this.getMeasuredHeight() != 0) {
+                this.requestLayout();
+            }
         } else {
             if (mHTMLCanvas !== null) {
                 mDiv.removeChild(mHTMLCanvas);
@@ -1337,7 +1358,7 @@ function View() {
 	* Sets the background color for this view.
 	*
 	* @method setBackgroundColor
-	* @param {int} color The color of the background.
+	* @params {int} color The color of the background.
 	*/
     this.setBackgroundColor = function(color) {
         mBackground = color;
@@ -1348,7 +1369,7 @@ function View() {
 	* Register a callback to be invoked when this view is clicked. If this view is not clickable, it becomes clickable.
 	*
 	* @method setOnClickListener
-	* @param {View.OnClickListener} l The callback that will run.
+	* @params {View.OnClickListener} l The callback that will run.
 	*/
     this.setOnClickListener = function(l) {
         if (!mClickable) {
@@ -1361,7 +1382,7 @@ function View() {
 	* Register a callback to be invoked when this view is clicked and held. If this view is not long clickable, it becomes long clickable.
 	*
 	* @method setOnLongClickListener
-	* @param {View.OnLongClickListener} l The callback that will run.
+	* @params {View.OnLongClickListener} l The callback that will run.
 	*
 	*/
     this.setOnLongClickListener = function(l) {
@@ -1375,7 +1396,7 @@ function View() {
 	* Enables or disables click events for this view. When a view is clickable it will change its state to "pressed" on every click. Subclasses should set the view clickable to visually react to user's clicks.
 	*
 	* @method setClickable
-	* @param {boolean} clickable True to make the view clickable, false otherwise.
+	* @params {boolean} clickable True to make the view clickable, false otherwise.
 	*/
     this.setClickable = function(clickable) {
         mClickable = clickable;
@@ -1418,7 +1439,7 @@ function View() {
 	* Enables or disables long click events for this view. When a view is long clickable it reacts to the user holding down the button for a longer duration than a tap. This event can either launch the listener or a context menu.
 	*
 	* @method setLongClickable
-	* @param {boolean} longClickable True to make the view long clickable, false otherwise.
+	* @params {boolean} longClickable True to make the view long clickable, false otherwise.
 	*/
     this.setLongClickable = function(longClickable) {
         mLongClickable = longClickable;
@@ -1427,7 +1448,7 @@ function View() {
 	/**
 	* Call this when something has changed which has invalidated the layout of this view. This will schedule a layout pass of the view tree. This should not be called while the view hierarchy is currently in a layout pass. If layout is happening, the request may be honored at the end of the current layout pass (and then layout will run again) or after the current frame is drawn and the next layout occurs.
 
-	*Subclasses which override this method should call the superclass method to handle possible request-during-layout errors correctly.
+	Subclasses which override this method should call the superclass method to handle possible request-during-layout errors correctly.
 	*
 	* @method requestLayout
 	*/
@@ -1444,7 +1465,7 @@ function View() {
     };
 
 	/**
-	* Call this to try to give focus to a specific view or to one of its descendants. A view will not actually take focus if it is not focusable, or if it is focusable and it is not focusable in touch mode while the device is in touch mode. 
+	* Call this to try to give focus to a specific view or to one of its descendants. A view will not actually take focus if it is not focusable, or if it is focusable and it is not focusable in touch mode while the device is in touch mode.
 	*
 	* @method requestFocus
 	*/
@@ -1455,16 +1476,14 @@ function View() {
 	/**
 	* Implement this method to handle touch screen motion events.
 
-	*If this method is used to detect click actions, it is recommended that the actions be performed by implementing and calling performClick(). This will ensure consistent system behavior, including:
+	If this method is used to detect click actions, it is recommended that the actions be performed by implementing and calling performClick(). This will ensure consistent system behavior, including:
 
-	*obeying click sound preferences
-	
-	*dispatching OnClickListener calls
-	
-	*handling ACTION_CLICK when accessibility features are enabled
+	obeying click sound preferences
+	dispatching OnClickListener calls
+	handling ACTION_CLICK when accessibility features are enabled
 	*
 	* @method onTouchEvent
-	* @param {MotionEvent} ev The motion event.
+	* @params {MotionEvent} ev The motion event.
 	*/
     this.onTouchEvent = function(ev) {
 
@@ -1473,10 +1492,10 @@ function View() {
 	/**
 	* Sets the opacity of the view. This is a value from 0 to 1, where 0 means the view is completely transparent and 1 means the view is completely opaque.
 
-	*Note that setting alpha to a translucent value (0 < alpha < 1) can have significant performance implications, especially for large views. It is best to use the alpha property sparingly and transiently, as in the case of fading animations.
+	Note that setting alpha to a translucent value (0 < alpha < 1) can have significant performance implications, especially for large views. It is best to use the alpha property sparingly and transiently, as in the case of fading animations.
 	*
 	* @method setAlpha
-	* @param {float} a The opacity of the view.
+	* @params {float} a The opacity of the view.
 	*/
     this.setAlpha = function(a) {
         mDiv.style.opacity = a;
@@ -1496,7 +1515,7 @@ function View() {
 	* Set the enabled state of this view.
 	*
 	* @method setVisibility
-	* @param {int} visibility
+	* @params {int} visibility
 	*/
     this.setVisibility = function(visibility) {
         mVisibility = visibility;
@@ -1511,7 +1530,7 @@ function View() {
 	* Sets the next animation to play for this view. If you want the animation to play immediately, use startAnimation(Animation) instead. This method provides allows fine-grained control over the start time and invalidation, but you must make sure that 1) the animation has a start time set, and 2) the view's parent (which controls animations on its children) will be invalidated when the animation is supposed to start.
 	*
 	* @method setAnimation
-	* @param {Animation} animation The next animation, or null.
+	* @params {Animation} animation The next animation, or null.
 	*/
     this.setAnimation = function(animation) {
         animation.setView(this);
@@ -1521,7 +1540,7 @@ function View() {
 	* Start the specified animation now.
 	*
 	* @method startAnimation
-	* @param {Animation} animation The animation to start now.
+	* @params {Animation} animation The animation to start now.
 	*/
     this.startAnimation = function(animation) {
         animation.setView(this);
@@ -1532,8 +1551,8 @@ function View() {
 	* Causes the Runnable to be added to the message queue, to be run after the specified amount of time elapses. The runnable will be run on the user interface thread.
 	*
 	* @method postDelayed
-	* @param {Runnable} r The Runnable that will be executed.
-	* @param {long} delay The delay (in milliseconds) until the Runnable will be executed.
+	* @params {Runnable} r The Runnable that will be executed.
+	* @params {long} delay The delay (in milliseconds) until the Runnable will be executed.
 	*/
     this.postDelayed = function(r, delay) {
         var mSelf = this;
@@ -1542,12 +1561,12 @@ function View() {
         }, delay);
         mRunQueue.put(r, id);
     };
-	
+
 	/**
 	* Removes the specified Runnable from the message queue.
 	*
 	* @method removeCallbacks
-	* @param {Runnable} r The Runnable to remove from the message handling queue.
+	* @params {Runnable} r The Runnable to remove from the message handling queue.
 	*/
     this.removeCallbacks = function(r) {
         var id = mRunQueue.get(r);
@@ -1744,6 +1763,10 @@ function ViewGroup() {
         return mChildren[index];
     };
 
+    this.indexOfChild = function(child) {
+        return mChildren.indexOf(child);
+    };
+
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
@@ -1792,7 +1815,7 @@ function ViewGroup() {
         }
         mChildren.clear();
         this.getDiv().innerHTML = "";
-        if (this.getParent() !== null) {
+        if (this.getParent()) {
             this.getParent().requestLayout();
         }
     };
@@ -1817,6 +1840,9 @@ CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
 };
 
 // 以下为Activity方法
+var mRootNode;
+var mLastOffset = null;
+
 var mDecorView = null;
 var mRootView = null;
 
@@ -1840,29 +1866,26 @@ meta.name = "mobile-web-app-capable";
 meta.content = "yes";
 document.head.appendChild(meta);
 
-/* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
-var c = document.createElement('script');
-c.type = 'text/javascript';
-c.async = true;
-c.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'www.clicki.cn/boot/52027';
-var h = document.getElementsByTagName('script')[0];
-h.parentNode.insertBefore(c, h);
-/* statistics code end */
-
-function setContentView(view) {
+function setContentView(view, htmlnode) {
     addOrientationListener(function() {
         onOrientationChanged();
     });
 
+    mRootNode = htmlnode;
+    if (mRootNode == undefined) {
+        mRootNode = document.body;
+    } else {
+        setInterval(forceReLayout, 250);
+    }
 
     mHideDiv = document.createElement("div");
     mHideDiv.style.height = "100%";
     mHideDiv.style.width = "100%";
 
-    document.body.innerHTML = "";
-    document.body.style.PADDING = "0";
-    document.body.style.margin = "0";
-    document.body.appendChild(mHideDiv);
+    mRootNode.innerHTML = "";
+    mRootNode.style.PADDING = "0";
+    mRootNode.style.margin = "0";
+    mRootNode.appendChild(mHideDiv);
 
     mDecorView = new FrameLayout();
     mDecorView.setTag("decorview");
@@ -1871,13 +1894,8 @@ function setContentView(view) {
     mRootView.setTag("rootview");
     mDecorView.addView(mRootView);
 
-    mDecorView.addView(mDialogLayout);
-    mDialogLayout.setVisibility(View.GONE);
-    mDialogLayout.setTag("dialoglayout");
-
-
-    document.body.appendChild(mDecorView.getDiv());
-    document.body.style.overflow = "hidden";
+    mRootNode.appendChild(mDecorView.getDiv());
+    mRootNode.style.overflow = "hidden";
 
     forceReLayout();
 
@@ -1885,6 +1903,15 @@ function setContentView(view) {
     css.innerHTML = "*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px; height: 0px} input{outline:none}";
     document.head.appendChild(css);
 }
+
+/* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
+var c = document.createElement('script');
+c.type = 'text/javascript';
+c.async = true;
+c.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'www.clicki.cn/boot/52027';
+var h = document.getElementsByTagName('script')[0];
+h.parentNode.insertBefore(c, h);
+/* statistics code end */
 
 function getRootView() {
     return mRootView;
@@ -1895,8 +1922,21 @@ function forceReLayout() {
         log("gyy: mDecorView is null");
         return;
     }
-    mDecorView.measure(window.innerWidth, window.innerHeight);
-    mDecorView.layout(0, 0);
+    if (mRootNode == document.body) {
+        mDecorView.measure(window.innerWidth, window.innerHeight);
+        mDecorView.layout(0, 0);
+    } else {
+        var offset = Utils.getOffset(mRootNode);
+        if (mLastOffset == null || offset.width != mLastOffset.width
+            || offset.height != mLastOffset.height
+            || offset.left != mLastOffset.left
+            || offset.right != mLastOffset.right) {
+            mLastOffset = offset;
+            console.log(offset);
+            mDecorView.measure(offset.width, offset.height);
+            mDecorView.layout(offset.left, offset.top);
+        }
+    }
 }
 
 function onOrientationChanged() {
@@ -4168,6 +4208,7 @@ function EditText() {
     var mTextSize = 12;
     var mIsPassword = false;
     var mTextListener = null;
+    var mIsFocused;
 
     this.setDisabled = function(disabled) {
         if (disabled) {
@@ -4207,11 +4248,16 @@ function EditText() {
         this.getDiv().appendChild(mInput);
     };
 
+    this.isFocused = function() {
+        return mIsFocused;
+    };
+
     this.setOnFocusChangeListener = function(l) {
         mFocusListener = l;
     };
 
     this.onFocusChanged = function(focused) {
+        mIsFocused = focused;
         if (mFocusListener != null) {
             mFocusListener.call(this, focused);
         }
