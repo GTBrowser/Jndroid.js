@@ -1,11 +1,16 @@
 function VSAndroidView() {
     ScrollView.apply(this, []);
 
+    var CODE_HEIGHT = 1100;
+    if (mIsPhone) {
+        CODE_HEIGHT = 1900;
+    }
+
     var contentView = new LinearLayout();
     this.addView(contentView);
 
     var codeArea = new FrameLayout();
-    var codeAreaLp = new LayoutParams(LayoutParams.FILL_PARENT, 1100);
+    var codeAreaLp = new LayoutParams(LayoutParams.FILL_PARENT, CODE_HEIGHT);
     contentView.addView(codeArea, codeAreaLp);
 
     var linearLayout = new LinearLayout();
@@ -26,7 +31,7 @@ function VSAndroidView() {
     function CodeView(title, code) {
         ViewGroup.apply(this, []);
 
-        var CODE_HEIGHT = 1100;
+
 
         var mTitle = new TextView();
         mTitle.setTextSize(TITLE_SIZE);
@@ -38,6 +43,7 @@ function VSAndroidView() {
         var mCode;
         if (mIsPhone) {
             mCode = new EditText();
+            mCode.setTextSize(10);
             mCode.setSingleLine(false);
         } else {
             mCode = new CodeMirrorView();
@@ -53,7 +59,7 @@ function VSAndroidView() {
         this.addView(mCode);
 
         this.postDelayed(this.requestLayout, 100);
-        this.postDelayed(this.requestLayout, 500);
+        this.postDelayed(this.requestLayout, 5000);
 
         this.onMeasure = function(widthMS, heightMS) {
             var width = MeasureSpec.getSize(widthMS);
@@ -62,7 +68,8 @@ function VSAndroidView() {
             mTitle.measure(width, TITLE_SIZE);
 
             var contentHeight = height - PARAGRAPH_PADDING_TOP - TITLE_SIZE - PADDING * 4;
-            mCode.measure(width, contentHeight);
+            mCode.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(contentHeight, MeasureSpec.EXACTLY));
 
             this.setMeasuredDimension(width, height);
         };
