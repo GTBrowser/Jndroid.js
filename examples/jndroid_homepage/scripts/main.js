@@ -5,7 +5,6 @@
 var mIsPhone;
 var mTab;
 var mMainView;
-var mPageContent;
 var mGallery;
 var mIntroPage;
 var mVSPage;
