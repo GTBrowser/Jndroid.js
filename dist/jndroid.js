@@ -942,7 +942,7 @@ function View() {
     var mPaddingBottom = 0;
     var mLayoutParams = null;
     var mWillNotDraw = true;
-    var mVisibility = true;
+    var mVisibility = View.VISIBLE;
     var mClickable = false;
     var mLongClickable = true;
     var mClickListener = null;
@@ -1782,12 +1782,12 @@ function ViewGroup() {
         if (indexOrParams == undefined) {
             mChildren.add(view);
         } else {
-            if (indexOrParams.constructor.name == "Number") {
+            if ((typeof indexOrParams) == "number") {
                 mChildren.add(indexOrParams, view);
                 if (params != undefined) {
                     view.setLayoutParams(params);
                 }
-            } else if (indexOrParams.constructor.name == "LayoutParams") {
+            } else {
                 mChildren.add(view);
                 view.setLayoutParams(indexOrParams);
             }
@@ -2270,12 +2270,12 @@ function dismissDialog() {
  * @class LayoutParams
  */
 function LayoutParams(widthOrParams, height) {
-    if (widthOrParams.constructor.name == "LayoutParams") {
-        this.width = widthOrParams.width;
-        this.height = widthOrParams.height;
-    } else {
+    if ((typeof widthOrParams) == "number") {
         this.width = widthOrParams;
         this.height = height;
+    } else {
+        this.width = widthOrParams.width;
+        this.height = widthOrParams.height;
     }
     this.leftMargin = 0;
     this.topMargin = 0;
@@ -2649,6 +2649,9 @@ function FrameLayout() {
         var childHeight = height - this.getPaddingTop() - this.getPaddingBottom();
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() != View.VISIBLE) {
+                continue;
+            }
             var lp = getLayoutParams(child);
             var cw = childWidth - lp.leftMargin - lp.rightMargin;
             var ch = childHeight - lp.topMargin - lp.bottomMargin;
@@ -2662,6 +2665,9 @@ function FrameLayout() {
     this.onLayout = function(x, y) {
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() != View.VISIBLE) {
+                continue;
+            }
             var offsetX = calcOffsetXByGravity(this, child);
             var offsetY = calcOffsetYByGravity(this, child);
             child.layout(offsetX, offsetY);
@@ -2699,6 +2705,10 @@ function Gallery() {
 
     this.addPage = function(view) {
         content.addView(view);
+    };
+
+    this.removeAllPages = function() {
+        content.removeAllViews();
     };
 
     this.scrollTo = function(x) {
@@ -3738,6 +3748,7 @@ function WaveDrawable() {
 function ScrollView() {
     ViewGroup.apply(this, []);
 
+    this.setTag("ScrollView");
     this.setStyle("overflow", "auto");
 
     this.onMeasure = function(widthMS, heightMS) {
