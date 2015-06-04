@@ -7,6 +7,7 @@ function VSAndroidView() {
     }
 
     var contentView = new LinearLayout();
+    contentView.setPadding(0, 0, 0, PARAGRAPH_PADDING_TOP);
     this.addView(contentView);
 
     var codeArea = new FrameLayout();
@@ -16,7 +17,7 @@ function VSAndroidView() {
     var linearLayout = new LinearLayout();
     linearLayout.setOrientation(LinearLayout.HORIZONTAL);
     var linearLayoutLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-    linearLayoutLp.setMargins(PADDING, 0, PADDING, PADDING);
+    linearLayoutLp.setMargins(PADDING, 0, PADDING, 0);
     codeArea.addView(linearLayout, linearLayoutLp);
 
     var codeViewLp = new LayoutParams(0, LayoutParams.FILL_PARENT);
@@ -28,10 +29,26 @@ function VSAndroidView() {
     var androidView = new CodeView("Android", mAndroidCode);
     linearLayout.addView(androidView, codeViewLp);
 
+    var moreTip = new TextView();
+    moreTip.setTextSize(TITLE_SIZE);
+    moreTip.setTextColor(THEME_COLOR);
+    moreTip.setText("More tips");
+    var moreTipLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    moreTipLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP - 32, PADDING, 0);
+    contentView.addView(moreTip, moreTipLp);
+
+    var tipLp = new LayoutParams(moreTipLp);
+    tipLp.setMargins(PADDING, PADDING, PADDING, 0);
+    for (var i = 0; i < mTips.length; i++) {
+        var tip = new TextView();
+        tip.setText(mTips[i]);
+        tip.setTextSize(TEXT_SIZE);
+        tip.setTextColor(TEXT_COLOR);
+        contentView.addView(tip, tipLp);
+    }
+
     function CodeView(title, code) {
         ViewGroup.apply(this, []);
-
-
 
         var mTitle = new TextView();
         mTitle.setTextSize(TITLE_SIZE);
@@ -181,4 +198,15 @@ var mAndroidCode = "" +
     "\t\treturn (float)(getMeasuredWidth() - textWidth) / 2;\n" +
     "\t}\n" +
     "}";
+
+var mTips = ["▪ 在Jndroid中，this的概念与Android中的this类似但不完全相同",
+    "▪ 在Jndroid中，this一般指向调用它的那个东西",
+    "▪ 在Jndroid中，定义一个变量并需要指明它的类型",
+    "▪ 在Jndroid中，用var定义的变量和方法，在该类的代码中可以直接调用，外部不可调用",
+    "▪ 在Jndroid中，用this定义的变量和方法，在外部可以通过对象.变量和对象.方法的方式调用，在该类的代码中，通过this.变量和this.方法的方式调用",
+    "▪ 在Jndroid中，没有Context",
+    "▪ 在Jndroid中，尺寸的密度都是1",
+    "▪ 在Jndroid中，目前还没有办法在一个方法中完美地调用父类的方法，使用组合方式吧",
+    "▪ 在Jndroid中，图片与View大小一样时，图片会有锯齿，可以使用更大的图片，放缩后就没有锯齿了",
+    "▪ 在Jndorid中，没有重载（overload），不过好在Jndroid中方法的参数个数是没有限制的"];
 

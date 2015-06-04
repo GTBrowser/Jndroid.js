@@ -7,6 +7,7 @@ function IntroductionView() {
     this.setBackgroundColor(CARD_BG_COLOR);
 
     var contentView = new LinearLayout();
+    contentView.setPadding(0, 0, 0, TITLE_PADDING_TOP);
     this.addView(contentView);
 
     loadMasterpiece();
