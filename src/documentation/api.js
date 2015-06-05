@@ -16,6 +16,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "ScrollView",
         "TextView",
         "View",
+        "ViewGroup",
         "WebView"
     ],
     "modules": [],

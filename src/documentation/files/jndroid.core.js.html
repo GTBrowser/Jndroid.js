@@ -56,6 +56,7 @@
                 <li><a class="type" href="../classes/ScrollView.html">ScrollView</a></li>
                 <li><a class="type" href="../classes/TextView.html">TextView</a></li>
                 <li><a class="type" href="../classes/View.html">View</a></li>
+                <li><a class="type" href="../classes/ViewGroup.html">ViewGroup</a></li>
                 <li><a class="type" href="../classes/WebView.html">WebView</a></li>
               </ul>
             </div>
@@ -161,19 +162,19 @@
                     function(parent, node) {
                         while (node &amp;&amp; (node = node.parentNode)) {
                             if (node === parent) {
-            					return true;
-            				}
-            			}
+                                return true;
+                            }
+                        }
                         return false;
                     };
             
                 this.getOffset = function(div){
                     if (!div) {
-            			return null;
-            		}
+                        return null;
+                    }
                     if (!this.contains(document.documentElement, div)) {
                         return {top: 0, left: 0};
-            		}
+                    }
                     var obj = div.getBoundingClientRect();
                     return {
                         left: obj.left + window.pageXOffset,
@@ -194,6 +195,22 @@
                         node = node.parentNode;
                     }
                     return fontFamily;
+                };
+            
+                this.includeJs = function(path, callback) {
+                    var sobj = document.createElement(&#x27;script&#x27;);
+                    sobj.type = &#x27;text/javascript&#x27;;
+                    sobj.src = path;
+                    if (callback != undefined) {
+                        sobj.onload = sobj.onreadystatechange = function () {
+                            if (!this.readyState || this.readyState == &#x27;loaded&#x27; || this.readyState == &#x27;complete&#x27;) {
+                                callback.call();
+                                sobj.onload = sobj.onreadystatechange = null;
+                            }
+                        };
+                    }
+                    var headobj = document.getElementsByTagName(&#x27;head&#x27;)[0];
+                    headobj.appendChild(sobj)
                 };
             }
             
@@ -668,7 +685,7 @@
                 var mPaddingBottom = 0;
                 var mLayoutParams = null;
                 var mWillNotDraw = true;
-                var mVisibility = true;
+                var mVisibility = View.VISIBLE;
                 var mClickable = false;
                 var mLongClickable = true;
                 var mClickListener = null;
@@ -796,7 +813,7 @@
             	* Get the LayoutParams associated with this view. All views should have layout parameters. These supply parameters to the parent of this view specifying how it should be arranged. There are many subclasses of ViewGroup.LayoutParams, and these correspond to the different subclasses of ViewGroup that are responsible for arranging their children. This method may return null if this View is not attached to a parent ViewGroup or setLayoutParams(ViewGroup.LayoutParams) was not invoked successfully. When a View is attached to a parent ViewGroup, this method must not return null.
             	*
             	* @method getLayoutParams
-            	* @return {ViewGroup.LayoutParams} Returns the LayoutParams associated with this view, or null if no parameters have been set yet.
+            	* @return {LayoutParams} Returns the LayoutParams associated with this view, or null if no parameters have been set yet.
             	*/
                 this.getLayoutParams = function() {
                     return mLayoutParams;
@@ -806,7 +823,7 @@
             	* Set the layout parameters associated with this view. These supply parameters to the parent of this view specifying how it should be arranged. There are many subclasses of ViewGroup.LayoutParams, and these correspond to the different subclasses of ViewGroup that are responsible for arranging their children.
             	*
             	* @method setLayoutParams
-            	* @params {ViewGroup.LayoutParams}  lp The layout parameters for this view, cannot be null.
+            	* @params {LayoutParams}  lp The layout parameters for this view, cannot be null.
             	*/
                 this.setLayoutParams = function(lp) {
                     mLayoutParams = lp;
@@ -910,7 +927,7 @@
             	/**
             	* Measure the view and its content to determine the measured width and the measured height. This method is invoked by measure(int, int) and should be overriden by subclasses to provide accurate and efficient measurement of their contents.
             
-            	CONTRACT: When overriding this method, you must call setMeasuredDimension(int, int) to store the measured width and height of this view. 
+            	CONTRACT: When overriding this method, you must call setMeasuredDimension(int, int) to store the measured width and height of this view.
             	*
             	* @method onMeasure
             	* @params {int} widthMS horizontal space requirements as imposed by the parent. The requirements are encoded with View.MeasureSpec.
@@ -925,7 +942,7 @@
             	*
             	* @method setMeasuredDimension
             	* @params {int} width The measured width of this view.
-            	* @params {int} height The measured height of this view. 
+            	* @params {int} height The measured height of this view.
             	*/
                 this.setMeasuredDimension = function(width, height) {
                     if (mWidth == width &amp;&amp; mHeight == height) {
@@ -948,7 +965,7 @@
             	This is the second phase of the layout mechanism. (The first is measuring). In this phase, each parent calls layout on all of its children to position them. This is typically done using the child measurements that were stored in the measure pass().
             
             	Derived classes should not override this method. Derived classes with children should override onLayout. In that method, they should call layout on each of their children.
-            	* 
+            	*
             	* @method layout
             	* @params {int} x Left position, relative to parent.
             	* @params {int} y Top position, relative to parent.
@@ -1066,7 +1083,9 @@
                         mHTMLCanvas.style.top = 0;
                         mDiv.appendChild(mHTMLCanvas);
                         mDiv.style.overflow = &quot;hidden&quot;;
-                        this.requestLayout();
+                        if (this.getMeasuredWidth() != 0 || this.getMeasuredHeight() != 0) {
+                            this.requestLayout();
+                        }
                     } else {
                         if (mHTMLCanvas !== null) {
                             mDiv.removeChild(mHTMLCanvas);
@@ -1189,7 +1208,7 @@
                 };
             
             	/**
-            	* Call this to try to give focus to a specific view or to one of its descendants. A view will not actually take focus if it is not focusable, or if it is focusable and it is not focusable in touch mode while the device is in touch mode. 
+            	* Call this to try to give focus to a specific view or to one of its descendants. A view will not actually take focus if it is not focusable, or if it is focusable and it is not focusable in touch mode while the device is in touch mode.
             	*
             	* @method requestFocus
             	*/
@@ -1285,7 +1304,7 @@
                     }, delay);
                     mRunQueue.put(r, id);
                 };
-            	
+            
             	/**
             	* Removes the specified Runnable from the message queue.
             	*
@@ -1474,17 +1493,44 @@
             Object.defineProperty(View,&quot;VIEW_STATE_ENABLED&quot;,{value:(1 &lt;&lt; 3)});
             Object.defineProperty(View,&quot;VIEW_STATE_PRESSED&quot;,{value:(1 &lt;&lt; 4)});
             
+            /**
+             * A ViewGroup is a special view that can contain other views
+             * (called children.) The view group is the base class for layouts and views
+             * containers.
+             *
+             * @class ViewGroup
+             * @extends View
+             */
             function ViewGroup() {
                 View.apply(this, []);
                 var mChildren = [];
                 var mTag = &quot;ViewGroup&quot;;
             
+                /**
+                 * Returns the number of children in the group.
+                 *
+                 * @method getChildCount
+                 * @return {int} a positive integer representing the number of children in
+                 *         the group
+                 */
                 this.getChildCount = function() {
                     return mChildren.length;
                 };
             
+                /**
+                 * Returns the view at the specified position in the group.
+                 *
+                 * @method getChildAt
+                 * @param {int} index the position at which to get the view from
+                 * @return {int} the view at the specified position or null if the position
+                 *         does not exist within the group
+                 */
                 this.getChildAt = function(index) {
                     return mChildren[index];
+                };
+            
+                this.indexOfChild = function(child) {
+                    return mChildren.indexOf(child);
                 };
             
                 this.onMeasure = function(widthMS, heightMS) {
@@ -1493,6 +1539,14 @@
                     this.setMeasuredDimension(width, height);
                 };
             
+                /**
+                 * Adds a child view with the specified layout parameters.
+                 *
+                 * @method addView
+                 * @param {View} child the child view to add
+                 * @param {int} index the position at which to add the child
+                 * @param {LayoutParams} params the layout parameters to set on the child
+                 */
                 this.addView = function(view, indexOrParams, params) {
                     if (view.getParent() != null) {
                         console.log(&quot;IllegalStateException: &quot; + view.getTag() + &quot; 只能拥有一个父节点&quot;);
@@ -1502,12 +1556,12 @@
                     if (indexOrParams == undefined) {
                         mChildren.add(view);
                     } else {
-                        if (indexOrParams.constructor.name == &quot;Number&quot;) {
+                        if ((typeof indexOrParams) == &quot;number&quot;) {
                             mChildren.add(indexOrParams, view);
                             if (params != undefined) {
                                 view.setLayoutParams(params);
                             }
-                        } else if (indexOrParams.constructor.name == &quot;LayoutParams&quot;) {
+                        } else {
                             mChildren.add(view);
                             view.setLayoutParams(indexOrParams);
                         }
@@ -1519,6 +1573,12 @@
                     }
                 };
             
+                /**
+                 * Removes a view from the group.
+                 *
+                 * @method removeView
+                 * @param {View} view the view to remove from the group.
+                 */
                 this.removeView = function(view) {
                     if (view !== null &amp;&amp; mChildren.contains(view)) {
                         view.setParent(null);
@@ -1529,13 +1589,19 @@
                     }
                 };
             
+                /**
+                 * Call this method to remove all child views from the
+                 * ViewGroup.
+                 *
+                 * @method removeAllViews
+                 */
                 this.removeAllViews = function() {
                     for (var i = 0; i &lt; mChildren.length; i++) {
                         mChildren[i].setParent(null);
                     }
                     mChildren.clear();
                     this.getDiv().innerHTML = &quot;&quot;;
-                    if (this.getParent() !== null) {
+                    if (this.getParent()) {
                         this.getParent().requestLayout();
                     }
                 };
@@ -1560,6 +1626,9 @@
             };
             
             // 以下为Activity方法
+            var mRootNode;
+            var mLastOffset = null;
+            
             var mDecorView = null;
             var mRootView = null;
             
@@ -1583,29 +1652,26 @@
             meta.content = &quot;yes&quot;;
             document.head.appendChild(meta);
             
-            /* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
-            var c = document.createElement(&#x27;script&#x27;);
-            c.type = &#x27;text/javascript&#x27;;
-            c.async = true;
-            c.src = (&#x27;https:&#x27; == document.location.protocol ? &#x27;https://&#x27; : &#x27;http://&#x27;) + &#x27;www.clicki.cn/boot/52027&#x27;;
-            var h = document.getElementsByTagName(&#x27;script&#x27;)[0];
-            h.parentNode.insertBefore(c, h);
-            /* statistics code end */
-            
-            function setContentView(view) {
+            function setContentView(view, htmlnode) {
                 addOrientationListener(function() {
                     onOrientationChanged();
                 });
             
+                mRootNode = htmlnode;
+                if (mRootNode == undefined) {
+                    mRootNode = document.body;
+                } else {
+                    setInterval(forceReLayout, 250);
+                }
             
                 mHideDiv = document.createElement(&quot;div&quot;);
                 mHideDiv.style.height = &quot;100%&quot;;
                 mHideDiv.style.width = &quot;100%&quot;;
             
-                document.body.innerHTML = &quot;&quot;;
-                document.body.style.PADDING = &quot;0&quot;;
-                document.body.style.margin = &quot;0&quot;;
-                document.body.appendChild(mHideDiv);
+                mRootNode.innerHTML = &quot;&quot;;
+                mRootNode.style.PADDING = &quot;0&quot;;
+                mRootNode.style.margin = &quot;0&quot;;
+                mRootNode.appendChild(mHideDiv);
             
                 mDecorView = new FrameLayout();
                 mDecorView.setTag(&quot;decorview&quot;);
@@ -1614,13 +1680,8 @@
                 mRootView.setTag(&quot;rootview&quot;);
                 mDecorView.addView(mRootView);
             
-                mDecorView.addView(mDialogLayout);
-                mDialogLayout.setVisibility(View.GONE);
-                mDialogLayout.setTag(&quot;dialoglayout&quot;);
-            
-            
-                document.body.appendChild(mDecorView.getDiv());
-                document.body.style.overflow = &quot;hidden&quot;;
+                mRootNode.appendChild(mDecorView.getDiv());
+                mRootNode.style.overflow = &quot;hidden&quot;;
             
                 forceReLayout();
             
@@ -1628,6 +1689,15 @@
                 css.innerHTML = &quot;*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px; height: 0px} input{outline:none}&quot;;
                 document.head.appendChild(css);
             }
+            
+            /* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
+            var c = document.createElement(&#x27;script&#x27;);
+            c.type = &#x27;text/javascript&#x27;;
+            c.async = true;
+            c.src = (&#x27;https:&#x27; == document.location.protocol ? &#x27;https://&#x27; : &#x27;http://&#x27;) + &#x27;www.clicki.cn/boot/52027&#x27;;
+            var h = document.getElementsByTagName(&#x27;script&#x27;)[0];
+            h.parentNode.insertBefore(c, h);
+            /* statistics code end */
             
             function getRootView() {
                 return mRootView;
@@ -1638,8 +1708,21 @@
                     log(&quot;gyy: mDecorView is null&quot;);
                     return;
                 }
-                mDecorView.measure(window.innerWidth, window.innerHeight);
-                mDecorView.layout(0, 0);
+                if (mRootNode == document.body) {
+                    mDecorView.measure(window.innerWidth, window.innerHeight);
+                    mDecorView.layout(0, 0);
+                } else {
+                    var offset = Utils.getOffset(mRootNode);
+                    if (mLastOffset == null || offset.width != mLastOffset.width
+                        || offset.height != mLastOffset.height
+                        || offset.left != mLastOffset.left
+                        || offset.right != mLastOffset.right) {
+                        mLastOffset = offset;
+                        console.log(offset);
+                        mDecorView.measure(offset.width, offset.height);
+                        mDecorView.layout(offset.left, offset.top);
+                    }
+                }
             }
             
             function onOrientationChanged() {

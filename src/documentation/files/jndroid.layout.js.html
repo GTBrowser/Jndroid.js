@@ -56,6 +56,7 @@
                 <li><a class="type" href="../classes/ScrollView.html">ScrollView</a></li>
                 <li><a class="type" href="../classes/TextView.html">TextView</a></li>
                 <li><a class="type" href="../classes/View.html">View</a></li>
+                <li><a class="type" href="../classes/ViewGroup.html">ViewGroup</a></li>
                 <li><a class="type" href="../classes/WebView.html">WebView</a></li>
               </ul>
             </div>
@@ -76,12 +77,12 @@
              * @class LayoutParams
              */
             function LayoutParams(widthOrParams, height) {
-                if (widthOrParams.constructor.name == &quot;LayoutParams&quot;) {
-                    this.width = widthOrParams.width;
-                    this.height = widthOrParams.height;
-                } else {
+                if ((typeof widthOrParams) == &quot;number&quot;) {
                     this.width = widthOrParams;
                     this.height = height;
+                } else {
+                    this.width = widthOrParams.width;
+                    this.height = widthOrParams.height;
                 }
                 this.leftMargin = 0;
                 this.topMargin = 0;
@@ -455,6 +456,9 @@
                     var childHeight = height - this.getPaddingTop() - this.getPaddingBottom();
                     for (var i = 0; i &lt; this.getChildCount(); i++) {
                         var child = this.getChildAt(i);
+                        if (child.getVisibility() != View.VISIBLE) {
+                            continue;
+                        }
                         var lp = getLayoutParams(child);
                         var cw = childWidth - lp.leftMargin - lp.rightMargin;
                         var ch = childHeight - lp.topMargin - lp.bottomMargin;
@@ -468,6 +472,9 @@
                 this.onLayout = function(x, y) {
                     for (var i = 0; i &lt; this.getChildCount(); i++) {
                         var child = this.getChildAt(i);
+                        if (child.getVisibility() != View.VISIBLE) {
+                            continue;
+                        }
                         var offsetX = calcOffsetXByGravity(this, child);
                         var offsetY = calcOffsetYByGravity(this, child);
                         child.layout(offsetX, offsetY);
@@ -505,6 +512,10 @@
             
                 this.addPage = function(view) {
                     content.addView(view);
+                };
+            
+                this.removeAllPages = function() {
+                    content.removeAllViews();
                 };
             
                 this.scrollTo = function(x) {

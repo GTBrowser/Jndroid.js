@@ -1421,6 +1421,14 @@ Object.defineProperty(View,"GONE",{value:8});
 Object.defineProperty(View,"VIEW_STATE_ENABLED",{value:(1 << 3)});
 Object.defineProperty(View,"VIEW_STATE_PRESSED",{value:(1 << 4)});
 
+/**
+ * A ViewGroup is a special view that can contain other views
+ * (called children.) The view group is the base class for layouts and views
+ * containers.
+ *
+ * @class ViewGroup
+ * @extends View
+ */
 function ViewGroup() {
     View.apply(this, []);
     var mChildren = [];
