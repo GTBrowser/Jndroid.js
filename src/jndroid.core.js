@@ -741,7 +741,7 @@ function View() {
 	* Get the LayoutParams associated with this view. All views should have layout parameters. These supply parameters to the parent of this view specifying how it should be arranged. There are many subclasses of ViewGroup.LayoutParams, and these correspond to the different subclasses of ViewGroup that are responsible for arranging their children. This method may return null if this View is not attached to a parent ViewGroup or setLayoutParams(ViewGroup.LayoutParams) was not invoked successfully. When a View is attached to a parent ViewGroup, this method must not return null.
 	*
 	* @method getLayoutParams
-	* @return {ViewGroup.LayoutParams} Returns the LayoutParams associated with this view, or null if no parameters have been set yet.
+	* @return {LayoutParams} Returns the LayoutParams associated with this view, or null if no parameters have been set yet.
 	*/
     this.getLayoutParams = function() {
         return mLayoutParams;
@@ -751,7 +751,7 @@ function View() {
 	* Set the layout parameters associated with this view. These supply parameters to the parent of this view specifying how it should be arranged. There are many subclasses of ViewGroup.LayoutParams, and these correspond to the different subclasses of ViewGroup that are responsible for arranging their children.
 	*
 	* @method setLayoutParams
-	* @params {ViewGroup.LayoutParams}  lp The layout parameters for this view, cannot be null.
+	* @params {LayoutParams}  lp The layout parameters for this view, cannot be null.
 	*/
     this.setLayoutParams = function(lp) {
         mLayoutParams = lp;
@@ -1421,15 +1421,38 @@ Object.defineProperty(View,"GONE",{value:8});
 Object.defineProperty(View,"VIEW_STATE_ENABLED",{value:(1 << 3)});
 Object.defineProperty(View,"VIEW_STATE_PRESSED",{value:(1 << 4)});
 
+/**
+ * A ViewGroup is a special view that can contain other views
+ * (called children.) The view group is the base class for layouts and views
+ * containers.
+ *
+ * @class ViewGroup
+ * @extends View
+ */
 function ViewGroup() {
     View.apply(this, []);
     var mChildren = [];
     var mTag = "ViewGroup";
 
+    /**
+     * Returns the number of children in the group.
+     *
+     * @method getChildCount
+     * @return {int} a positive integer representing the number of children in
+     *         the group
+     */
     this.getChildCount = function() {
         return mChildren.length;
     };
 
+    /**
+     * Returns the view at the specified position in the group.
+     *
+     * @method getChildAt
+     * @param {int} index the position at which to get the view from
+     * @return {int} the view at the specified position or null if the position
+     *         does not exist within the group
+     */
     this.getChildAt = function(index) {
         return mChildren[index];
     };
@@ -1444,6 +1467,14 @@ function ViewGroup() {
         this.setMeasuredDimension(width, height);
     };
 
+    /**
+     * Adds a child view with the specified layout parameters.
+     *
+     * @method addView
+     * @param {View} child the child view to add
+     * @param {int} index the position at which to add the child
+     * @param {LayoutParams} params the layout parameters to set on the child
+     */
     this.addView = function(view, indexOrParams, params) {
         if (view.getParent() != null) {
             console.log("IllegalStateException: " + view.getTag() + " 只能拥有一个父节点");
@@ -1470,6 +1501,12 @@ function ViewGroup() {
         }
     };
 
+    /**
+     * Removes a view from the group.
+     *
+     * @method removeView
+     * @param {View} view the view to remove from the group.
+     */
     this.removeView = function(view) {
         if (view !== null && mChildren.contains(view)) {
             view.setParent(null);
@@ -1480,6 +1517,12 @@ function ViewGroup() {
         }
     };
 
+    /**
+     * Call this method to remove all child views from the
+     * ViewGroup.
+     *
+     * @method removeAllViews
+     */
     this.removeAllViews = function() {
         for (var i = 0; i < mChildren.length; i++) {
             mChildren[i].setParent(null);
