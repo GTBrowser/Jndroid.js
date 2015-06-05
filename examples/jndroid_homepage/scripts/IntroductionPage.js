@@ -70,6 +70,8 @@ function IntroductionView() {
 
     loadGithubView();
 
+    loadGitCafeView();
+
     Utils.includeJs("codemirror/codemirror.js", function() {
         Utils.includeJs("codemirror/htmlmixed.js");
         Utils.includeJs("codemirror/javascript.js");
@@ -87,6 +89,44 @@ function IntroductionView() {
         imageView.setBoxShadow(0, 3, 3, 0, 0x42000000);
         var imgLp = new LayoutParams(LayoutParams.FILL_PARENT, 144);
         contentView.addView(imageView, imgLp);
+    }
+
+    function loadGitCafeView() {
+        var gitcafe = new TextView();
+        gitcafe.setTextSize(TITLE_SIZE);
+        gitcafe.setTextColor(THEME_COLOR);
+        gitcafe.setText("GitCafé");
+        var gitcafeLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        gitcafeLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP, PADDING, PADDING);
+        contentView.addView(gitcafe, gitcafeLp);
+
+        var gitcafeLayoutlp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
+        var cafeLayout = new LinearLayout();
+        cafeLayout.setOnClickListener(function() {
+            window.open("https://gitcafe.com/GTBrowser/Jndroid.js");
+        });
+        cafeLayout.setOrientation(LinearLayout.HORIZONTAL);
+        contentView.addView(cafeLayout, gitcafeLayoutlp);
+
+        var imgLp = new LayoutParams(64, 24);
+        imgLp.gravity = Gravity.CENTER;
+        imgLp.leftMargin = PADDING;
+        var urlLp = new LayoutParams(0, LayoutParams.FILL_PARENT);
+        urlLp.weight = 1;
+        urlLp.leftMargin = PADDING;
+        var cafeImg = new ImageView();
+        cafeImg.setImgSrc("images/gitcafe.png");
+        cafeImg.setCornerSize(3);
+        cafeImg.setBoxShadow(0, 1, 2, 0, 0x33000000);
+        cafeImg.setImgHeight(24);
+        cafeLayout.addView(cafeImg, imgLp);
+        var cafeLink = new TextView();
+        cafeLink.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        cafeLink.setText("https://gitcafe.com/GTBrowser/Jndroid.js");
+        cafeLink.setTextSize(SUB_TEXT_SIZE);
+        cafeLink.setTextColor(SUB_TEXT_COLOR);
+        cafeLayout.addView(cafeLink, urlLp);
+
     }
 
     function loadGithubView() {
