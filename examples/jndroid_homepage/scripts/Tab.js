@@ -55,9 +55,9 @@ function TabContent() {
             mAppPage.addView(mAppView);
         }
     });
-    addTabItem("Q&A", 4, function() {
+    addTabItem("About", 4, function() {
         if (mQAView == null) {
-            mQAView = new QAView();
+            mQAView = new AboutView();
             mQAPage.addView(mQAView);
         }
     });
