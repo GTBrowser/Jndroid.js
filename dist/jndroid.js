@@ -1750,15 +1750,38 @@ Object.defineProperty(View,"GONE",{value:8});
 Object.defineProperty(View,"VIEW_STATE_ENABLED",{value:(1 << 3)});
 Object.defineProperty(View,"VIEW_STATE_PRESSED",{value:(1 << 4)});
 
+/**
+ * A ViewGroup is a special view that can contain other views
+ * (called children.) The view group is the base class for layouts and views
+ * containers.
+ *
+ * @class ViewGroup
+ * @extends View
+ */
 function ViewGroup() {
     View.apply(this, []);
     var mChildren = [];
     var mTag = "ViewGroup";
 
+    /**
+     * Returns the number of children in the group.
+     *
+     * @method getChildCount
+     * @return {int} a positive integer representing the number of children in
+     *         the group
+     */
     this.getChildCount = function() {
         return mChildren.length;
     };
 
+    /**
+     * Returns the view at the specified position in the group.
+     *
+     * @method getChildAt
+     * @param {int} index the position at which to get the view from
+     * @return {int} the view at the specified position or null if the position
+     *         does not exist within the group
+     */
     this.getChildAt = function(index) {
         return mChildren[index];
     };
@@ -1773,6 +1796,14 @@ function ViewGroup() {
         this.setMeasuredDimension(width, height);
     };
 
+    /**
+     * Adds a child view with the specified layout parameters.
+     *
+     * @method addView
+     * @param {View} child the child view to add
+     * @param {int} index the position at which to add the child
+     * @param {LayoutParams} params the layout parameters to set on the child
+     */
     this.addView = function(view, indexOrParams, params) {
         if (view.getParent() != null) {
             console.log("IllegalStateException: " + view.getTag() + " 只能拥有一个父节点");
@@ -1799,6 +1830,12 @@ function ViewGroup() {
         }
     };
 
+    /**
+     * Removes a view from the group.
+     *
+     * @method removeView
+     * @param {View} view the view to remove from the group.
+     */
     this.removeView = function(view) {
         if (view !== null && mChildren.contains(view)) {
             view.setParent(null);
@@ -1809,6 +1846,12 @@ function ViewGroup() {
         }
     };
 
+    /**
+     * Call this method to remove all child views from the
+     * ViewGroup.
+     *
+     * @method removeAllViews
+     */
     this.removeAllViews = function() {
         for (var i = 0; i < mChildren.length; i++) {
             mChildren[i].setParent(null);
