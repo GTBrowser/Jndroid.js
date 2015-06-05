@@ -7,6 +7,7 @@ function IntroductionView() {
     this.setBackgroundColor(CARD_BG_COLOR);
 
     var contentView = new LinearLayout();
+    contentView.setPadding(0, 0, 0, TITLE_PADDING_TOP);
     this.addView(contentView);
 
     loadMasterpiece();
@@ -37,6 +38,12 @@ function IntroductionView() {
     slogan.setText("Jndroid is a JavaScript framework to write WebApp in Android way.");
     contentView.addView(slogan, sloganLp);
 
+    var sloganC = new TextView();
+    sloganC.setTextSize(TEXT_SIZE);
+    sloganC.setTextColor(TEXT_COLOR);
+    sloganC.setText("Jndroid是一个JavaScript框架，使用Android的方式编写Web App。");
+    contentView.addView(sloganC, sloganLp);
+
     var slogan2 = new TextView();
     slogan2.setTextSize(TEXT_SIZE);
     slogan2.setTextColor(TEXT_COLOR);
@@ -61,68 +68,17 @@ function IntroductionView() {
     sloganJ.setText("Jndroidは、Androidの方法でのWebAppを書くためのJavaScriptフレームワークです。");
     contentView.addView(sloganJ, sloganLp);
 
-    var sloganC = new TextView();
-    sloganC.setTextSize(TEXT_SIZE);
-    sloganC.setTextColor(TEXT_COLOR);
-    sloganC.setText("Jndroid是一個JavaScript框架，使用Android的方式編寫Web應用程序。");
-    contentView.addView(sloganC, sloganLp);
-
     loadGithubView();
 
-    var getstart = new TextView();
-    getstart.setTextSize(TITLE_SIZE);
-    getstart.setTextColor(THEME_COLOR);
-    getstart.setText("Getting Started");
-    var getstartLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    getstartLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP, PADDING, PADDING);
-    contentView.addView(getstart, getstartLp);
-
-    var playground = new Playground("Hello World", mHelloWorldCode, true);
-    playground.setEditHeight(280);
-    var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    lp.setMargins(16);
-    contentView.addView(playground, lp);
-
-    var androidL = new TextView();
-    androidL.setTextSize(TITLE_SIZE);
-    androidL.setTextColor(THEME_COLOR);
-    androidL.setText("Material Design");
-    var androidLLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    androidLLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP, PADDING, PADDING);
-    contentView.addView(androidL, androidLLp);
-
-    playground = new Playground("Widgets", mMaterialDesignCode);
-    playground.setEditHeight(450);
-    contentView.addView(playground, lp);
-
-    var apidemos = new TextView();
-    apidemos.setTextSize(TITLE_SIZE);
-    apidemos.setTextColor(THEME_COLOR);
-    apidemos.setText("API Demos");
-    var apidemosLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    apidemosLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP, PADDING, PADDING);
-    contentView.addView(apidemos, apidemosLp);
-
-    playground = new Playground("Widgets", mWidgetCode);
-    playground.setEditHeight(450);
-    contentView.addView(playground, lp);
-
-    playground = new Playground("onMeasure & onLayout", mMeausreCode);
-    playground.setEditHeight(400);
-    contentView.addView(playground, lp);
-
-    playground = new Playground("onDraw", mDrawCode);
-    playground.setEditHeight(300);
-    contentView.addView(playground, lp);
-
-    playground = new Playground("onTouchEvent", mTouchCode);
-    playground.setEditHeight(480);
-    contentView.addView(playground, lp);
-
-    playground = new Playground("Animation", mAnimationCode);
-    playground.setAppendCode(mAnimatonAppendCode);
-    playground.setEditHeight(500);
-    contentView.addView(playground, lp);
+    Utils.includeJs("codemirror/codemirror.js", function() {
+        Utils.includeJs("codemirror/htmlmixed.js");
+        Utils.includeJs("codemirror/javascript.js");
+        Utils.includeJs("codemirror/matchbrackets.js");
+        Utils.includeJs("codemirror/xml.js");
+        Utils.includeJs("scripts/CodeMirrorView.js", function() {
+            loadPlaygrounds();
+        });
+    });
 
     function loadMasterpiece() {
         var imageView = new ImageView();
@@ -184,18 +140,84 @@ function IntroductionView() {
         forkLayout.addView(forkLink, urlLp);
 
     }
+
+    function loadPlaygrounds() {
+        var getstart = new TextView();
+        getstart.setTextSize(TITLE_SIZE);
+        getstart.setTextColor(THEME_COLOR);
+        getstart.setText("Getting Started");
+        var getstartLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        getstartLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP, PADDING, PADDING);
+        contentView.addView(getstart, getstartLp);
+
+        var playground = new Playground("Hello World", mHelloWorldCode, true);
+        playground.setEditHeight(400);
+        var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        lp.setMargins(16);
+        contentView.addView(playground, lp);
+
+        var androidL = new TextView();
+        androidL.setTextSize(TITLE_SIZE);
+        androidL.setTextColor(THEME_COLOR);
+        androidL.setText("Material Design");
+        var androidLLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        androidLLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP, PADDING, PADDING);
+        contentView.addView(androidL, androidLLp);
+
+        playground = new Playground("Widgets", mMaterialDesignCode);
+        playground.setEditHeight(450);
+        contentView.addView(playground, lp);
+
+        var apidemos = new TextView();
+        apidemos.setTextSize(TITLE_SIZE);
+        apidemos.setTextColor(THEME_COLOR);
+        apidemos.setText("API Demos");
+        var apidemosLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        apidemosLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP, PADDING, PADDING);
+        contentView.addView(apidemos, apidemosLp);
+
+        playground = new Playground("Widgets", mWidgetCode);
+        playground.setEditHeight(450);
+        contentView.addView(playground, lp);
+
+        playground = new Playground("onMeasure & onLayout", mMeausreCode);
+        playground.setEditHeight(400);
+        contentView.addView(playground, lp);
+
+        playground = new Playground("onDraw", mDrawCode);
+        playground.setEditHeight(300);
+        contentView.addView(playground, lp);
+
+        playground = new Playground("onTouchEvent", mTouchCode);
+        playground.setEditHeight(480);
+        contentView.addView(playground, lp);
+
+        playground = new Playground("Animation", mAnimationCode);
+        playground.setAppendCode(mAnimatonAppendCode);
+        playground.setEditHeight(500);
+        contentView.addView(playground, lp);
+    }
 }
 
 var mHelloWorldCode = "<!DOCTYPE html>\n" +
     "<html>\n" +
     "<head>\n" +
-    "\t<script src=\"http://file.gtbrowser.cn/jndroid/jndroid.min.js\"></script>\n" +
+    "\t<!-- you only need to import jndroid.js -->\n" +
+    "\t<!-- 你仅需引入jndroid.js便可进行开发了 -->\n" +
+    "\t<script src=\"http://file.gtbrowser.cn/jndroid/jndroid.js\"></script>\n" +
     "</head>\n" +
     "<body>\n" +
     "<script>\n" +
+    "\t/* your code here */\n" +
+    "\t/* 在这里编写你的代码 */\n" +
+    "\tvar mLayout = new FrameLayout();\n" +
+    "\tmLayout.setBackgroundColor(0x1a000000);\n\n" +
+    "\t/* no activity here, setContentView will show your view fullscreen */\n" +
+    "\t/* 没有Activity，直接setContentView就可以得到一个全屏的视图 */\n" +
+    "\tsetContentView(mLayout);\n\n" +
     "\tvar mTextView = new TextView();\n" +
-    "\tmTextView.setText(\"hello world\");\n\n" +
-    "\tsetContentView(mTextView);\n" +
+    "\tmTextView.setText(\"helle world\");\n" +
+    "\tmLayout.addView(mTextView);\n\n" +
     "</script>\n" +
     "</body>\n" +
     "</html>";

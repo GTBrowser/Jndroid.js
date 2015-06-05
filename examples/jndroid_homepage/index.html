@@ -2,7 +2,6 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
     <title>Jndroid</title>
 
     <!-- Jndroid libraries -->
@@ -17,23 +16,33 @@
     <!-- Source files -->
     <script src="scripts/res.js"></script>
     <script type="text/javascript" src="scripts/playground.js"></script>
-    <script type="text/javascript" src="scripts/comment.js"></script>
     <script type="text/javascript" src="scripts/IntroductionPage.js"></script>
-    <script type="text/javascript" src="scripts/DocumentationView.js"></script>
-    <script type="text/javascript" src="scripts/ApplicationsView.js"></script>
-    <script type="text/javascript" src="scripts/QAView.js"></script>
     <script type="text/javascript" src="scripts/main.js"></script>
     <script type="text/javascript" src="scripts/Tab.js"></script>
     <script type="text/javascript" src="scripts/Indicator.js"></script>
 
     <!-- Code Editor -->
     <link rel="stylesheet" href="codemirror/codemirror.css">
-    <script src="codemirror/codemirror.js"></script>
-    <script src="codemirror/htmlmixed.js"></script>
-    <script src="codemirror/javascript.js"></script>
-    <script src="codemirror/matchbrackets.js"></script>
-    <script src="codemirror/xml.js"></script>
 </head>
 <body>
+<script>
+    if (window.innerWidth <= 400) {
+        mIsPhone = true;
+    } else {
+        mIsPhone = false;
+    }
+    var rootview = new FrameLayout();
+    setContentView(rootview);
+
+    mMainView = new MainView();
+    mMainView.setStyle("fontFamily", "RobotoDraft, Roboto, sans-serif, 微软雅黑");
+    rootview.addView(mMainView);
+
+    Utils.includeJs("scripts/VSAndroidView.js");
+    Utils.includeJs("scripts/DocumentationView.js");
+    Utils.includeJs("scripts/ApplicationsView.js");
+    Utils.includeJs("scripts/QAView.js");
+    Utils.includeJs("scripts/comment.js");
+</script>
 </body>
 </html>

@@ -33,73 +33,38 @@ function TabContent() {
 
     var mSelf = this;
     var mItems = [];
-    var buttonWidth = 240;
+    var buttonWidth = 160;
     var mSelectIndex = 0;
 
-    var createButton = function (text) {
-        var button = new LButton();
-        button.setText(text);
-        button.setTextColor(0xffffffff);
-        button.setDimBg(false);
-        button.setWaveColor(0x33ffffff);
-        button.setBoxShadow(0, 0, 0, 0, 0);
-        button.setTextSize(24);
-        return button;
-    };
-
-    var mIntroductionButton = createButton("Introduction");
-    mIntroductionButton.setOnClickListener(function() {
-        mSelf.setSelectIndex(0);
-        mGallery.snapToScreen(0, 300);
+    addTabItem("Jndroid", 0);
+    addTabItem("vs Android", 1, function() {
+        if (mVSView == null) {
+            mVSView = new VSAndroidView();
+            mVSPage.addView(mVSView);
+        }
     });
-    mItems.push(mIntroductionButton);
-    this.addView(mIntroductionButton);
-
-    var mDocumentationButton = createButton("Documentation");
-    mDocumentationButton.setOnClickListener(function() {
-        mSelf.setSelectIndex(1);
-        mGallery.snapToScreen(1, 300);
-        this.postDelayed(function() {
-            if (mDocView == null) {
-                mDocView = new DocumentationView();
-                mDocPage.addView(mDocView);
-            }
-        }, 300);
+    addTabItem("Documentation", 2, function() {
+        if (mDocView == null) {
+            mDocView = new DocumentationView();
+            mDocPage.addView(mDocView);
+        }
     });
-    mItems.push(mDocumentationButton);
-    this.addView(mDocumentationButton);
-
-    var mApplicationsButton = createButton("Applications");
-    mApplicationsButton.setOnClickListener(function() {
-        mGallery.snapToScreen(2, 300);
-        mSelf.setSelectIndex(2);
-        this.postDelayed(function() {
-            if (mAppView == null) {
-                mAppView = new ApplicationsView();
-                mAppPage.addView(mAppView);
-            }
-        }, 300);
+    addTabItem("Applications", 3, function() {
+        if (mAppView == null) {
+            mAppView = new ApplicationsView();
+            mAppPage.addView(mAppView);
+        }
     });
-    mItems.push(mApplicationsButton);
-    this.addView(mApplicationsButton);
-
-    var mQAButton = createButton("Q&A");
-    mQAButton.setOnClickListener(function() {
-        mGallery.snapToScreen(3, 300);
-        mSelf.setSelectIndex(3);
-        this.postDelayed(function() {
-            if (mQAView == null) {
-                mQAView = new QAView();
-                mQAPage.addView(mQAView);
-            }
-        }, 300);
+    addTabItem("Q&A", 4, function() {
+        if (mQAView == null) {
+            mQAView = new QAView();
+            mQAPage.addView(mQAView);
+        }
     });
-    mItems.push(mQAButton);
-    this.addView(mQAButton);
 
     var mIndicator = new Indicator();
     mIndicator.setStyle(Indicator.Line);
-    mIndicator.setIndicatorCount(4);
+    mIndicator.setIndicatorCount(5);
     mIndicator.setIndicatorColor(0xfff3ffa3);
     mIndicator.INDICATOR_SIZE = buttonWidth;
     mIndicator.GAP = 0;
@@ -107,7 +72,7 @@ function TabContent() {
 
     this.setSelectIndex = function(index) {
         mSelectIndex = index;
-        mIndicator.onXChanged(index / 3);
+        mIndicator.onXChanged(index / 4);
         for (var i = 0; i < mItems.length;i++) {
             if (i == mSelectIndex) {
                 mItems[i].setTextColor(0xffffffff);
@@ -140,4 +105,32 @@ function TabContent() {
         offsetY = this.getMeasuredHeight() - mIndicator.getMeasuredHeight();
         mIndicator.layout(offsetX, offsetY);
     };
+
+    function addTabItem(text, index, action) {
+        var button = createButton(text);
+        button.setOnClickListener(function() {
+            mSelf.setSelectIndex(index);
+            var curPage = mPages[mCurrentIndex];
+            var newPage = mPages[index];
+            curPage.setVisibility(View.GONE);
+            newPage.setVisibility(View.VISIBLE);
+            if (action != undefined) {
+                action.call(this);
+            }
+            mCurrentIndex = index;
+        });
+        mItems.push(button);
+        mSelf.addView(button);
+    }
+
+    function createButton(text) {
+        var button = new LButton();
+        button.setText(text);
+        button.setTextColor(0xffffffff);
+        button.setDimBg(false);
+        button.setWaveColor(0x33ffffff);
+        button.setBoxShadow(0, 0, 0, 0, 0);
+        button.setTextSize(16);
+        return button;
+    }
 }

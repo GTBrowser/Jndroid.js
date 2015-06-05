@@ -8,4 +8,6 @@ function DocumentationView() {
     webView.loadUrl("http://jndroid.com/documentation");
     //webView.loadUrl("../../src/out/index.html");
     this.addView(webView);
+
+    this.requestLayout();
 }

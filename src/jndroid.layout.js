@@ -5,12 +5,12 @@
  * @class LayoutParams
  */
 function LayoutParams(widthOrParams, height) {
-    if (widthOrParams.constructor.name == "LayoutParams") {
-        this.width = widthOrParams.width;
-        this.height = widthOrParams.height;
-    } else {
+    if ((typeof widthOrParams) == "number") {
         this.width = widthOrParams;
         this.height = height;
+    } else {
+        this.width = widthOrParams.width;
+        this.height = widthOrParams.height;
     }
     this.leftMargin = 0;
     this.topMargin = 0;
@@ -384,6 +384,9 @@ function FrameLayout() {
         var childHeight = height - this.getPaddingTop() - this.getPaddingBottom();
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() != View.VISIBLE) {
+                continue;
+            }
             var lp = getLayoutParams(child);
             var cw = childWidth - lp.leftMargin - lp.rightMargin;
             var ch = childHeight - lp.topMargin - lp.bottomMargin;
@@ -397,6 +400,9 @@ function FrameLayout() {
     this.onLayout = function(x, y) {
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() != View.VISIBLE) {
+                continue;
+            }
             var offsetX = calcOffsetXByGravity(this, child);
             var offsetY = calcOffsetYByGravity(this, child);
             child.layout(offsetX, offsetY);
@@ -434,6 +440,10 @@ function Gallery() {
 
     this.addPage = function(view) {
         content.addView(view);
+    };
+
+    this.removeAllPages = function() {
+        content.removeAllViews();
     };
 
     this.scrollTo = function(x) {

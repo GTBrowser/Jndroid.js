@@ -90,19 +90,19 @@ function _Utils() {
         function(parent, node) {
             while (node && (node = node.parentNode)) {
                 if (node === parent) {
-					return true;
-				}
-			}
+                    return true;
+                }
+            }
             return false;
         };
 
     this.getOffset = function(div){
         if (!div) {
-			return null;
-		}
+            return null;
+        }
         if (!this.contains(document.documentElement, div)) {
             return {top: 0, left: 0};
-		}
+        }
         var obj = div.getBoundingClientRect();
         return {
             left: obj.left + window.pageXOffset,
@@ -123,6 +123,22 @@ function _Utils() {
             node = node.parentNode;
         }
         return fontFamily;
+    };
+
+    this.includeJs = function(path, callback) {
+        var sobj = document.createElement('script');
+        sobj.type = 'text/javascript';
+        sobj.src = path;
+        if (callback != undefined) {
+            sobj.onload = sobj.onreadystatechange = function () {
+                if (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete') {
+                    callback.call();
+                    sobj.onload = sobj.onreadystatechange = null;
+                }
+            };
+        }
+        var headobj = document.getElementsByTagName('head')[0];
+        headobj.appendChild(sobj)
     };
 }
 
@@ -597,7 +613,7 @@ function View() {
     var mPaddingBottom = 0;
     var mLayoutParams = null;
     var mWillNotDraw = true;
-    var mVisibility = true;
+    var mVisibility = View.VISIBLE;
     var mClickable = false;
     var mLongClickable = true;
     var mClickListener = null;
@@ -839,7 +855,7 @@ function View() {
 	/**
 	* Measure the view and its content to determine the measured width and the measured height. This method is invoked by measure(int, int) and should be overriden by subclasses to provide accurate and efficient measurement of their contents.
 
-	CONTRACT: When overriding this method, you must call setMeasuredDimension(int, int) to store the measured width and height of this view. 
+	CONTRACT: When overriding this method, you must call setMeasuredDimension(int, int) to store the measured width and height of this view.
 	*
 	* @method onMeasure
 	* @params {int} widthMS horizontal space requirements as imposed by the parent. The requirements are encoded with View.MeasureSpec.
@@ -854,7 +870,7 @@ function View() {
 	*
 	* @method setMeasuredDimension
 	* @params {int} width The measured width of this view.
-	* @params {int} height The measured height of this view. 
+	* @params {int} height The measured height of this view.
 	*/
     this.setMeasuredDimension = function(width, height) {
         if (mWidth == width && mHeight == height) {
@@ -877,7 +893,7 @@ function View() {
 	This is the second phase of the layout mechanism. (The first is measuring). In this phase, each parent calls layout on all of its children to position them. This is typically done using the child measurements that were stored in the measure pass().
 
 	Derived classes should not override this method. Derived classes with children should override onLayout. In that method, they should call layout on each of their children.
-	* 
+	*
 	* @method layout
 	* @params {int} x Left position, relative to parent.
 	* @params {int} y Top position, relative to parent.
@@ -995,7 +1011,9 @@ function View() {
             mHTMLCanvas.style.top = 0;
             mDiv.appendChild(mHTMLCanvas);
             mDiv.style.overflow = "hidden";
-            this.requestLayout();
+            if (this.getMeasuredWidth() != 0 || this.getMeasuredHeight() != 0) {
+                this.requestLayout();
+            }
         } else {
             if (mHTMLCanvas !== null) {
                 mDiv.removeChild(mHTMLCanvas);
@@ -1118,7 +1136,7 @@ function View() {
     };
 
 	/**
-	* Call this to try to give focus to a specific view or to one of its descendants. A view will not actually take focus if it is not focusable, or if it is focusable and it is not focusable in touch mode while the device is in touch mode. 
+	* Call this to try to give focus to a specific view or to one of its descendants. A view will not actually take focus if it is not focusable, or if it is focusable and it is not focusable in touch mode while the device is in touch mode.
 	*
 	* @method requestFocus
 	*/
@@ -1214,7 +1232,7 @@ function View() {
         }, delay);
         mRunQueue.put(r, id);
     };
-	
+
 	/**
 	* Removes the specified Runnable from the message queue.
 	*
@@ -1431,6 +1449,10 @@ function ViewGroup() {
         return mChildren[index];
     };
 
+    this.indexOfChild = function(child) {
+        return mChildren.indexOf(child);
+    };
+
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
@@ -1454,12 +1476,12 @@ function ViewGroup() {
         if (indexOrParams == undefined) {
             mChildren.add(view);
         } else {
-            if (indexOrParams.constructor.name == "Number") {
+            if ((typeof indexOrParams) == "number") {
                 mChildren.add(indexOrParams, view);
                 if (params != undefined) {
                     view.setLayoutParams(params);
                 }
-            } else if (indexOrParams.constructor.name == "LayoutParams") {
+            } else {
                 mChildren.add(view);
                 view.setLayoutParams(indexOrParams);
             }
@@ -1499,7 +1521,7 @@ function ViewGroup() {
         }
         mChildren.clear();
         this.getDiv().innerHTML = "";
-        if (this.getParent() !== null) {
+        if (this.getParent()) {
             this.getParent().requestLayout();
         }
     };
@@ -1524,6 +1546,9 @@ CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
 };
 
 // 以下为Activity方法
+var mRootNode;
+var mLastOffset = null;
+
 var mDecorView = null;
 var mRootView = null;
 
@@ -1547,29 +1572,26 @@ meta.name = "mobile-web-app-capable";
 meta.content = "yes";
 document.head.appendChild(meta);
 
-/* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
-var c = document.createElement('script');
-c.type = 'text/javascript';
-c.async = true;
-c.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'www.clicki.cn/boot/52027';
-var h = document.getElementsByTagName('script')[0];
-h.parentNode.insertBefore(c, h);
-/* statistics code end */
-
-function setContentView(view) {
+function setContentView(view, htmlnode) {
     addOrientationListener(function() {
         onOrientationChanged();
     });
 
+    mRootNode = htmlnode;
+    if (mRootNode == undefined) {
+        mRootNode = document.body;
+    } else {
+        setInterval(forceReLayout, 250);
+    }
 
     mHideDiv = document.createElement("div");
     mHideDiv.style.height = "100%";
     mHideDiv.style.width = "100%";
 
-    document.body.innerHTML = "";
-    document.body.style.PADDING = "0";
-    document.body.style.margin = "0";
-    document.body.appendChild(mHideDiv);
+    mRootNode.innerHTML = "";
+    mRootNode.style.PADDING = "0";
+    mRootNode.style.margin = "0";
+    mRootNode.appendChild(mHideDiv);
 
     mDecorView = new FrameLayout();
     mDecorView.setTag("decorview");
@@ -1578,13 +1600,8 @@ function setContentView(view) {
     mRootView.setTag("rootview");
     mDecorView.addView(mRootView);
 
-    mDecorView.addView(mDialogLayout);
-    mDialogLayout.setVisibility(View.GONE);
-    mDialogLayout.setTag("dialoglayout");
-
-
-    document.body.appendChild(mDecorView.getDiv());
-    document.body.style.overflow = "hidden";
+    mRootNode.appendChild(mDecorView.getDiv());
+    mRootNode.style.overflow = "hidden";
 
     forceReLayout();
 
@@ -1592,6 +1609,15 @@ function setContentView(view) {
     css.innerHTML = "*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px; height: 0px} input{outline:none}";
     document.head.appendChild(css);
 }
+
+/* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
+var c = document.createElement('script');
+c.type = 'text/javascript';
+c.async = true;
+c.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'www.clicki.cn/boot/52027';
+var h = document.getElementsByTagName('script')[0];
+h.parentNode.insertBefore(c, h);
+/* statistics code end */
 
 function getRootView() {
     return mRootView;
@@ -1602,8 +1628,21 @@ function forceReLayout() {
         log("gyy: mDecorView is null");
         return;
     }
-    mDecorView.measure(window.innerWidth, window.innerHeight);
-    mDecorView.layout(0, 0);
+    if (mRootNode == document.body) {
+        mDecorView.measure(window.innerWidth, window.innerHeight);
+        mDecorView.layout(0, 0);
+    } else {
+        var offset = Utils.getOffset(mRootNode);
+        if (mLastOffset == null || offset.width != mLastOffset.width
+            || offset.height != mLastOffset.height
+            || offset.left != mLastOffset.left
+            || offset.right != mLastOffset.right) {
+            mLastOffset = offset;
+            console.log(offset);
+            mDecorView.measure(offset.width, offset.height);
+            mDecorView.layout(offset.left, offset.top);
+        }
+    }
 }
 
 function onOrientationChanged() {

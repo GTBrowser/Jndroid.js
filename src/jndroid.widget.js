@@ -12,6 +12,7 @@
 function ScrollView() {
     ViewGroup.apply(this, []);
 
+    this.setTag("ScrollView");
     this.setStyle("overflow", "auto");
 
     this.onMeasure = function(widthMS, heightMS) {
@@ -482,6 +483,7 @@ function EditText() {
     var mTextSize = 12;
     var mIsPassword = false;
     var mTextListener = null;
+    var mIsFocused;
 
     this.setDisabled = function(disabled) {
         if (disabled) {
@@ -521,11 +523,16 @@ function EditText() {
         this.getDiv().appendChild(mInput);
     };
 
+    this.isFocused = function() {
+        return mIsFocused;
+    };
+
     this.setOnFocusChangeListener = function(l) {
         mFocusListener = l;
     };
 
     this.onFocusChanged = function(focused) {
+        mIsFocused = focused;
         if (mFocusListener != null) {
             mFocusListener.call(this, focused);
         }

@@ -419,19 +419,19 @@ function _Utils() {
         function(parent, node) {
             while (node && (node = node.parentNode)) {
                 if (node === parent) {
-					return true;
-				}
-			}
+                    return true;
+                }
+            }
             return false;
         };
 
     this.getOffset = function(div){
         if (!div) {
-			return null;
-		}
+            return null;
+        }
         if (!this.contains(document.documentElement, div)) {
             return {top: 0, left: 0};
-		}
+        }
         var obj = div.getBoundingClientRect();
         return {
             left: obj.left + window.pageXOffset,
@@ -452,6 +452,22 @@ function _Utils() {
             node = node.parentNode;
         }
         return fontFamily;
+    };
+
+    this.includeJs = function(path, callback) {
+        var sobj = document.createElement('script');
+        sobj.type = 'text/javascript';
+        sobj.src = path;
+        if (callback != undefined) {
+            sobj.onload = sobj.onreadystatechange = function () {
+                if (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete') {
+                    callback.call();
+                    sobj.onload = sobj.onreadystatechange = null;
+                }
+            };
+        }
+        var headobj = document.getElementsByTagName('head')[0];
+        headobj.appendChild(sobj)
     };
 }
 
@@ -926,7 +942,7 @@ function View() {
     var mPaddingBottom = 0;
     var mLayoutParams = null;
     var mWillNotDraw = true;
-    var mVisibility = true;
+    var mVisibility = View.VISIBLE;
     var mClickable = false;
     var mLongClickable = true;
     var mClickListener = null;
@@ -1168,7 +1184,7 @@ function View() {
 	/**
 	* Measure the view and its content to determine the measured width and the measured height. This method is invoked by measure(int, int) and should be overriden by subclasses to provide accurate and efficient measurement of their contents.
 
-	CONTRACT: When overriding this method, you must call setMeasuredDimension(int, int) to store the measured width and height of this view. 
+	CONTRACT: When overriding this method, you must call setMeasuredDimension(int, int) to store the measured width and height of this view.
 	*
 	* @method onMeasure
 	* @params {int} widthMS horizontal space requirements as imposed by the parent. The requirements are encoded with View.MeasureSpec.
@@ -1183,7 +1199,7 @@ function View() {
 	*
 	* @method setMeasuredDimension
 	* @params {int} width The measured width of this view.
-	* @params {int} height The measured height of this view. 
+	* @params {int} height The measured height of this view.
 	*/
     this.setMeasuredDimension = function(width, height) {
         if (mWidth == width && mHeight == height) {
@@ -1206,7 +1222,7 @@ function View() {
 	This is the second phase of the layout mechanism. (The first is measuring). In this phase, each parent calls layout on all of its children to position them. This is typically done using the child measurements that were stored in the measure pass().
 
 	Derived classes should not override this method. Derived classes with children should override onLayout. In that method, they should call layout on each of their children.
-	* 
+	*
 	* @method layout
 	* @params {int} x Left position, relative to parent.
 	* @params {int} y Top position, relative to parent.
@@ -1324,7 +1340,9 @@ function View() {
             mHTMLCanvas.style.top = 0;
             mDiv.appendChild(mHTMLCanvas);
             mDiv.style.overflow = "hidden";
-            this.requestLayout();
+            if (this.getMeasuredWidth() != 0 || this.getMeasuredHeight() != 0) {
+                this.requestLayout();
+            }
         } else {
             if (mHTMLCanvas !== null) {
                 mDiv.removeChild(mHTMLCanvas);
@@ -1447,7 +1465,7 @@ function View() {
     };
 
 	/**
-	* Call this to try to give focus to a specific view or to one of its descendants. A view will not actually take focus if it is not focusable, or if it is focusable and it is not focusable in touch mode while the device is in touch mode. 
+	* Call this to try to give focus to a specific view or to one of its descendants. A view will not actually take focus if it is not focusable, or if it is focusable and it is not focusable in touch mode while the device is in touch mode.
 	*
 	* @method requestFocus
 	*/
@@ -1543,7 +1561,7 @@ function View() {
         }, delay);
         mRunQueue.put(r, id);
     };
-	
+
 	/**
 	* Removes the specified Runnable from the message queue.
 	*
@@ -1745,6 +1763,10 @@ function ViewGroup() {
         return mChildren[index];
     };
 
+    this.indexOfChild = function(child) {
+        return mChildren.indexOf(child);
+    };
+
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
@@ -1760,12 +1782,12 @@ function ViewGroup() {
         if (indexOrParams == undefined) {
             mChildren.add(view);
         } else {
-            if (indexOrParams.constructor.name == "Number") {
+            if ((typeof indexOrParams) == "number") {
                 mChildren.add(indexOrParams, view);
                 if (params != undefined) {
                     view.setLayoutParams(params);
                 }
-            } else if (indexOrParams.constructor.name == "LayoutParams") {
+            } else {
                 mChildren.add(view);
                 view.setLayoutParams(indexOrParams);
             }
@@ -1793,7 +1815,7 @@ function ViewGroup() {
         }
         mChildren.clear();
         this.getDiv().innerHTML = "";
-        if (this.getParent() !== null) {
+        if (this.getParent()) {
             this.getParent().requestLayout();
         }
     };
@@ -1818,6 +1840,9 @@ CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
 };
 
 // 以下为Activity方法
+var mRootNode;
+var mLastOffset = null;
+
 var mDecorView = null;
 var mRootView = null;
 
@@ -1841,29 +1866,26 @@ meta.name = "mobile-web-app-capable";
 meta.content = "yes";
 document.head.appendChild(meta);
 
-/* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
-var c = document.createElement('script');
-c.type = 'text/javascript';
-c.async = true;
-c.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'www.clicki.cn/boot/52027';
-var h = document.getElementsByTagName('script')[0];
-h.parentNode.insertBefore(c, h);
-/* statistics code end */
-
-function setContentView(view) {
+function setContentView(view, htmlnode) {
     addOrientationListener(function() {
         onOrientationChanged();
     });
 
+    mRootNode = htmlnode;
+    if (mRootNode == undefined) {
+        mRootNode = document.body;
+    } else {
+        setInterval(forceReLayout, 250);
+    }
 
     mHideDiv = document.createElement("div");
     mHideDiv.style.height = "100%";
     mHideDiv.style.width = "100%";
 
-    document.body.innerHTML = "";
-    document.body.style.PADDING = "0";
-    document.body.style.margin = "0";
-    document.body.appendChild(mHideDiv);
+    mRootNode.innerHTML = "";
+    mRootNode.style.PADDING = "0";
+    mRootNode.style.margin = "0";
+    mRootNode.appendChild(mHideDiv);
 
     mDecorView = new FrameLayout();
     mDecorView.setTag("decorview");
@@ -1872,13 +1894,8 @@ function setContentView(view) {
     mRootView.setTag("rootview");
     mDecorView.addView(mRootView);
 
-    mDecorView.addView(mDialogLayout);
-    mDialogLayout.setVisibility(View.GONE);
-    mDialogLayout.setTag("dialoglayout");
-
-
-    document.body.appendChild(mDecorView.getDiv());
-    document.body.style.overflow = "hidden";
+    mRootNode.appendChild(mDecorView.getDiv());
+    mRootNode.style.overflow = "hidden";
 
     forceReLayout();
 
@@ -1886,6 +1903,15 @@ function setContentView(view) {
     css.innerHTML = "*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px; height: 0px} input{outline:none}";
     document.head.appendChild(css);
 }
+
+/* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
+var c = document.createElement('script');
+c.type = 'text/javascript';
+c.async = true;
+c.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'www.clicki.cn/boot/52027';
+var h = document.getElementsByTagName('script')[0];
+h.parentNode.insertBefore(c, h);
+/* statistics code end */
 
 function getRootView() {
     return mRootView;
@@ -1896,8 +1922,21 @@ function forceReLayout() {
         log("gyy: mDecorView is null");
         return;
     }
-    mDecorView.measure(window.innerWidth, window.innerHeight);
-    mDecorView.layout(0, 0);
+    if (mRootNode == document.body) {
+        mDecorView.measure(window.innerWidth, window.innerHeight);
+        mDecorView.layout(0, 0);
+    } else {
+        var offset = Utils.getOffset(mRootNode);
+        if (mLastOffset == null || offset.width != mLastOffset.width
+            || offset.height != mLastOffset.height
+            || offset.left != mLastOffset.left
+            || offset.right != mLastOffset.right) {
+            mLastOffset = offset;
+            console.log(offset);
+            mDecorView.measure(offset.width, offset.height);
+            mDecorView.layout(offset.left, offset.top);
+        }
+    }
 }
 
 function onOrientationChanged() {
@@ -2231,12 +2270,12 @@ function dismissDialog() {
  * @class LayoutParams
  */
 function LayoutParams(widthOrParams, height) {
-    if (widthOrParams.constructor.name == "LayoutParams") {
-        this.width = widthOrParams.width;
-        this.height = widthOrParams.height;
-    } else {
+    if ((typeof widthOrParams) == "number") {
         this.width = widthOrParams;
         this.height = height;
+    } else {
+        this.width = widthOrParams.width;
+        this.height = widthOrParams.height;
     }
     this.leftMargin = 0;
     this.topMargin = 0;
@@ -2610,6 +2649,9 @@ function FrameLayout() {
         var childHeight = height - this.getPaddingTop() - this.getPaddingBottom();
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() != View.VISIBLE) {
+                continue;
+            }
             var lp = getLayoutParams(child);
             var cw = childWidth - lp.leftMargin - lp.rightMargin;
             var ch = childHeight - lp.topMargin - lp.bottomMargin;
@@ -2623,6 +2665,9 @@ function FrameLayout() {
     this.onLayout = function(x, y) {
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
+            if (child.getVisibility() != View.VISIBLE) {
+                continue;
+            }
             var offsetX = calcOffsetXByGravity(this, child);
             var offsetY = calcOffsetYByGravity(this, child);
             child.layout(offsetX, offsetY);
@@ -2660,6 +2705,10 @@ function Gallery() {
 
     this.addPage = function(view) {
         content.addView(view);
+    };
+
+    this.removeAllPages = function() {
+        content.removeAllViews();
     };
 
     this.scrollTo = function(x) {
@@ -3685,9 +3734,21 @@ function WaveDrawable() {
 }
 
 
+/**
+ * Layout container for a view hierarchy that can be scrolled by the user,
+ * allowing it to be larger than the physical display.  A child that is often used
+ * is a LinearLayout in a vertical orientation, presenting a vertical
+ * array of top-level items that the user can scroll through.
+ *
+ * ScrollView only supports vertical scrolling. For horizontal scrolling,
+ * use HorizontalScrollView.
+ *
+ * @class ScrollView
+ */
 function ScrollView() {
     ViewGroup.apply(this, []);
 
+    this.setTag("ScrollView");
     this.setStyle("overflow", "auto");
 
     this.onMeasure = function(widthMS, heightMS) {
@@ -3711,6 +3772,17 @@ function ScrollView() {
     };
 }
 
+/**
+ * Layout container for a view hierarchy that can be scrolled by the user,
+ * allowing it to be larger than the physical display.  A child that is often used
+ * is a LinearLayout in a horizontal orientation, presenting a horizontal
+ * array of top-level items that the user can scroll through.
+ *
+ * HorizontalScrollView only supports horizontal scrolling. For vertical scrolling,
+ * use ScrollView.
+ *
+ * @class HorizontalScrollView
+ */
 function HorizontalScrollView() {
     ViewGroup.apply(this, []);
 
@@ -3742,6 +3814,11 @@ function HorizontalScrollView() {
     };
 }
 
+/**
+ * Displays an arbitrary icon.The ImageView class provides scaling display options.
+ *
+ * @class ImageView
+ */
 function ImageView() {
     ViewGroup.apply(this, []);
 
@@ -3753,10 +3830,22 @@ function ImageView() {
     var mCustomHeight = 0;
     var scaleTimeout = 0;
 
+    /**
+     * Set the scale type of image.
+     *
+     * @method setScaleType
+     * @param {int} ScaleType.CENTER,ScaleType.FIT_XY,ScaleType.CENTER_INSIDE,ScaleType.FIT_CENTER or ScaleType.CENTER_CROP.
+     */
     this.setScaleType = function(st) {
         mScaleType = st;
     };
 
+    /**
+     * Sets the content of this ImageView to the specified Uri.
+     *
+     * @method setImageUri
+     * @param {string} The Uri of an image
+     */
     this.setImageUri = function(src) {
         this.setImgSrc(src);
     };
@@ -3883,10 +3972,21 @@ Object.defineProperty(ScaleType,"CENTER",{value:5});
 Object.defineProperty(ScaleType,"CENTER_CROP",{value:6});
 Object.defineProperty(ScaleType,"CENTER_INSIDE",{value:7});
 
+/**
+ * Displays a button with an image (instead of text) that can be pressed
+ * or clicked by the user.
+ *
+ * @class ImageButton
+ */
 function ImageButton() {
     ImageView.apply(this, []);
 }
 
+/**
+ * Displays text to the user and not allows editing.
+ *
+ * @class TextView
+ */
 function TextView() {
     ViewGroup.apply(this, []);
 
@@ -3898,10 +3998,22 @@ function TextView() {
     mContent.style.whiteSpace = "normal";
     this.getDiv().appendChild(mContent);
 
+    /**
+     * Return the text that TextView is displaying.
+     *
+     * @method getText
+     * @return {string} The text in the TextView.
+     */
     this.getText = function() {
         return mContent.innerHTML;
     };
 
+    /**
+     * Sets the string value of the TextView.
+     *
+     * @method setText
+     * @param {string} text Sets the string value.
+     */
     this.setText = function(text) {
         mContent.innerHTML = text;
 
@@ -3909,6 +4021,12 @@ function TextView() {
         this.getDiv().scrollTop = "100px";
     };
 
+    /**
+     * Sets whether the content of this view is selectable by the user.
+     *
+     * @method setTextIsSelectable
+     * @param {boolean} selectable Whether the content of this TextView should be selectable.
+     */
     this.setTextIsSelectable = function(selectable) {
         if (selectable) {
             mContent.style["-webkit-user-select"] = "text";
@@ -3917,23 +4035,57 @@ function TextView() {
         }
     };
 
+    /**
+     * Sets the text color.
+     *
+     * @method setTextColor
+     * @param {int} color The text color.
+     */
     this.setTextColor = function(color) {
         mContent.style.color = Utils.toCssColor(color);
     };
 
+    /**
+     * Set the default text size to the given value.
+     *
+     * @method setTextSize
+     * @param {int} textsize The default text size.
+     */
     this.setTextSize = function(textsize) {
         mTextSize = textsize;
         mContent.style.fontSize = textsize + "px";
     };
 
+    /**
+     * Gives the text a shadow of the specified blur radius and color, the specified
+     * distance from its drawn position.
+     *
+     * @method setShadowLayer
+     * @param {int} radius If radius is 0, then the shadow layer is removed.
+     * @param {int} dx Specified offset of X.
+     * @param {int} dy Specified offset of Y.
+     * @param {int} color Specified color.
+     */
     this.setShadowLayer = function(radius, dx, dy, color) {
         mContent.style.textShadow = dx + "px " + dy + "px " + radius + "px " + Utils.toCssColor(color);
     };
 
+    /**
+     * Set the line height.
+     *
+     * @method setLineHeight
+     * @param {int} lineHeight the line height.
+     */
     this.setLineHeight = function(lineHeight) {
         mContent.style.lineHeight = lineHeight + "px";
     };
 
+    /**
+     * Sets whether the line is single.
+     *
+     * @method setSingleLine
+     * @param {boolean} singleLine Whether the line is single.
+     */
     this.setSingleLine = function(singleLine) {
         mSingleLine = singleLine;
         if (mSingleLine) {
@@ -3995,6 +4147,14 @@ function TextView() {
 
     };
 
+    /**
+     * Sets the horizontal alignment of the text and the
+     * vertical gravity that will be used when there is extra space
+     * in the TextView beyond what is required for the text itself.
+     *
+     * @method setGravity
+     * @param {int} gravity
+     */
     this.setGravity = function(gravity) {
         mGravity = gravity;
 
@@ -4009,6 +4169,12 @@ function TextView() {
     };
 }
 
+/**
+ * Represents a push-button widget.Push-buttons can be
+ * pressed, or clicked, by the user to perform an action.
+ *
+ * @class Button
+ */
 function Button() {
     TextView.apply(this, []);
 
@@ -4036,6 +4202,12 @@ function Button() {
     };
 }
 
+/**
+ * EditText is a thin veneer over TextView that configures itself
+ * to be editable.
+ *
+ * @class EditText
+ */
 function EditText() {
     ViewGroup.apply(this, []);
 
@@ -4047,6 +4219,7 @@ function EditText() {
     var mTextSize = 12;
     var mIsPassword = false;
     var mTextListener = null;
+    var mIsFocused;
 
     this.setDisabled = function(disabled) {
         if (disabled) {
@@ -4056,6 +4229,12 @@ function EditText() {
         }
     };
 
+    /**
+     * Sets whether the text of this EditText is password.
+     *
+     * @method setPassword
+     * @param {boolean} isPassword
+     */
     this.setPassword = function(isPassword) {
         mIsPassword = isPassword;
         mInput.type = "password";
@@ -4080,11 +4259,16 @@ function EditText() {
         this.getDiv().appendChild(mInput);
     };
 
+    this.isFocused = function() {
+        return mIsFocused;
+    };
+
     this.setOnFocusChangeListener = function(l) {
         mFocusListener = l;
     };
 
     this.onFocusChanged = function(focused) {
+        mIsFocused = focused;
         if (mFocusListener != null) {
             mFocusListener.call(this, focused);
         }
@@ -4098,6 +4282,13 @@ function EditText() {
         }
     };
 
+    /**
+     * Set the selection anchor to start and the selection edge to end.
+     *
+     * @method setSelection
+     * @param {int} start Selection anchor to start.
+     * @param {int} end Selection anchor to end.
+     */
     this.setSelection = function(start, end) {
         mInput.selectionStart = start;
         if (end == undefined) {
@@ -4107,36 +4298,84 @@ function EditText() {
         }
     };
 
+    /**
+     * Return the offset of the selection anchor or cursor.
+     *
+     * @method getSelectionStart
+     * @return {int} The offset.
+     */
     this.getSelectionStart = function() {
         return mInput.selectionStart;
     };
 
+    /**
+     * Return the offset of the selection edge or cursor.
+     *
+     * @method getSelectionEnd
+     * @return {int} The offset.
+     */
     this.getSelectionEnd = function() {
         return mInput.selectionEnd;
     };
 
+    /**
+     * set a listener to whose methods are called whenever this EditText's text changes.
+     *
+     * @method setTextChangedListener
+     * @param listener.
+     */
     this.setTextChangedListener = function(listener) {
         mTextListener = listener;
         mInput.oninput = listener;
     };
 
+    /**
+     * Return the text that EditText is displaying.
+     *
+     * @method getText
+     * @return {string} The text in the EditText.
+     */
     this.getText = function() {
         return mInput.value;
     };
 
+    /**
+     * Sets the string value of the EditText.
+     *
+     * @method setText
+     * @param {string} text Sets the string value.
+     */
     this.setText = function(text) {
         mInput.value = text;
     };
 
+    /**
+     * Sets the text size of the EditText.
+     *
+     * @method setTextSize
+     * @param {int} size Sets the text size.
+     */
     this.setTextSize = function(size) {
         mTextSize = size;
         mInput.style.fontSize = size + "px";
     };
 
+    /**
+     * Sets the text color of the EditText.
+     *
+     * @method setTextColor
+     * @param {int} color Sets the text color.
+     */
     this.setTextColor = function(color) {
         mInput.style.color = Utils.toCssColor(color);
     };
 
+    /**
+     * Sets the text to be displayed when the text of the EditText is empty.
+     *
+     * @method setHint
+     * @param {string} text Sets the hint text.
+     */
     this.setHint = function(text) {
         this.setHintText(text);
     };
@@ -4145,6 +4384,12 @@ function EditText() {
         mInput.placeholder = text;
     };
 
+    /**
+     * Sets the color of the hint text for this EditText.
+     *
+     * @method setHintColor
+     * @param {int} color Sets the hint text's color.
+     */
     this.setHintColor = function(color) {
         var css = document.createElement("style");
         css.innerHTML = "." + mTag + "::-webkit-input-placeholder{ color:" + Utils.toCssColor(color) + "}";
@@ -4152,6 +4397,11 @@ function EditText() {
         mInput.className += mTag + " ";
     };
 
+    /**
+     * To get this EditText to take focus.
+     *
+     * @method requestFocus
+     */
     this.requestFocus = function() {
         mInput.focus();
     };
@@ -4204,6 +4454,9 @@ function EditText() {
     }
 }
 
+/**
+ * @class WebView
+ */
 function WebView() {
     ViewGroup.apply(this, []);
 
