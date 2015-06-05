@@ -1054,7 +1054,7 @@ function View() {
 	* Get the LayoutParams associated with this view. All views should have layout parameters. These supply parameters to the parent of this view specifying how it should be arranged. There are many subclasses of ViewGroup.LayoutParams, and these correspond to the different subclasses of ViewGroup that are responsible for arranging their children. This method may return null if this View is not attached to a parent ViewGroup or setLayoutParams(ViewGroup.LayoutParams) was not invoked successfully. When a View is attached to a parent ViewGroup, this method must not return null.
 	*
 	* @method getLayoutParams
-	* @return {ViewGroup.LayoutParams} Returns the LayoutParams associated with this view, or null if no parameters have been set yet.
+	* @return {LayoutParams} Returns the LayoutParams associated with this view, or null if no parameters have been set yet.
 	*/
     this.getLayoutParams = function() {
         return mLayoutParams;
@@ -1064,7 +1064,7 @@ function View() {
 	* Set the layout parameters associated with this view. These supply parameters to the parent of this view specifying how it should be arranged. There are many subclasses of ViewGroup.LayoutParams, and these correspond to the different subclasses of ViewGroup that are responsible for arranging their children.
 	*
 	* @method setLayoutParams
-	* @params {ViewGroup.LayoutParams}  lp The layout parameters for this view, cannot be null.
+	* @params {LayoutParams}  lp The layout parameters for this view, cannot be null.
 	*/
     this.setLayoutParams = function(lp) {
         mLayoutParams = lp;
