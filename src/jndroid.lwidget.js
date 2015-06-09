@@ -889,3 +889,75 @@ function WaveDrawable() {
     };
 }
 
+var LSnackBar = new _LSnackbar();
+function _LSnackbar() {
+    ViewGroup.apply(this, []);
+    var MAX_WIDTH = 568;
+    var MIN_WIDTH = 288;
+    var HEIGHT = 48;
+    var TEXT_SIZE = 14;
+    var mSelf = this;
+    var mShowing = false;
+
+    var hide = function() {
+        console.log("hide snackbar");
+        var t = new TranslateAnimation(0, 0, 0, HEIGHT);
+        t.setDuration(200);
+        t.setAnimationEndListener(function() {
+            mRootView.removeView(mSelf);
+            mShowing = false;
+        });
+        mSelf.startAnimation(t);
+    };
+
+    this.setTag("SnackBar");
+    this.setCornerSize(2);
+    this.setBackgroundColor(0xff323232);
+
+    var content = new TextView();
+    content.setSingleLine(true);
+    content.setTextSize(TEXT_SIZE);
+    content.setTextColor(0xffffffff);
+    content.setPadding(24, 0, 0, 0);
+    content.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+    this.addView(content);
+
+    this.show = function(text, time) {
+        if (mShowing == true) {
+            return;
+        }
+        console.log("show snackbar");
+        mShowing = true;
+        content.setText(text);
+        var lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        lp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+        mRootView.addView(this, lp);
+        var t = new TranslateAnimation(0, 0, HEIGHT, 0);
+        t.setDuration(200);
+        this.startAnimation(t);
+
+        var duration = 2500;
+        if (time != undefined) {
+            duration = time;
+        }
+        this.postDelayed(function() {
+            hide();
+        }, duration);
+    };
+
+    this.onMeasure = function(widthMS, heightMS) {
+        var width = MeasureSpec.getSize(widthMS);
+        width = Math.min(width, MAX_WIDTH);
+
+        content.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.UNSPECIFIED),
+            MeasureSpec.makeMeasureSpec(HEIGHT, MeasureSpec.EXACTLY));
+
+
+        this.setMeasuredDimension(content.getMeasuredWidth(), HEIGHT);
+    };
+
+    this.onLayout = function(x, y) {
+        content.layout(0, 0);
+    };
+}
+

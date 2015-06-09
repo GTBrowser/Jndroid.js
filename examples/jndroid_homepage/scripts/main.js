@@ -65,6 +65,15 @@ function MainView() {
 
     mIntroPage.addView(mIntroView);
 
+
+    this.postDelayed(function() {
+        if (Manifest.isVersionUpgrade()) {
+            if (LSnackBar) {
+                LSnackBar.show("版本已更新");
+            }
+        }
+    }, 1000);
+
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);

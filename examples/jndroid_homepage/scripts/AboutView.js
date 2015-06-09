@@ -32,7 +32,6 @@ function AboutView() {
     commentTitle.setTextColor(THEME_COLOR);
     commentTitle.setTextSize(TITLE_SIZE);
 
-
     contentView.addView(commentTitle, titlelp);
 
     var commentView = new CommentView();
@@ -66,6 +65,8 @@ function LogoView() {
     var LOGO_SIZE = 128;
     var SUBHEADER_HEIGHT = 48;
 
+    var mSelf = this;
+
     this.setBackgroundColor(0xffffffff);
     this.setCornerSize(2, 2, 2, 2);
     this.setBoxShadow(0, 1, 2, 0, 0x66000000);
@@ -93,7 +94,7 @@ function LogoView() {
     this.addView(mTitle);
 
     var mVersion = new TextView();
-    mVersion.setText("Version:" + VERSION);
+    mVersion.setText("Version: " + Manifest.versionName);
     mVersion.setTextSize(SUB_TEXT_SIZE);
     mVersion.setTextColor(SUB_TEXT_COLOR);
     this.addView(mVersion);
@@ -104,13 +105,9 @@ function LogoView() {
     mCopyRight.setTextColor(SUB_TEXT_COLOR);
     this.addView(mCopyRight);
 
-    var mChangeLogTitle = new TextView();
-    mChangeLogTitle.setText("Change Logs");
-    mChangeLogTitle.setTextSize(TEXT_SIZE);
-    mChangeLogTitle.setTextColor(SUB_TEXT_COLOR);
-    mChangeLogTitle.setBorderTop(1, DIVIDERS_COLOR);
-    mChangeLogTitle.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-    //this.addView(mChangeLogTitle);
+    var mMileStoneView;
+
+    loadLog();
 
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
@@ -125,7 +122,10 @@ function LogoView() {
         mVersion.measure(contentWidth, 0);
         mCopyRight.measure(contentWidth, 0);
 
-        mChangeLogTitle.measure(width - PADDING * 2, MeasureSpec.makeMeasureSpec(SUBHEADER_HEIGHT, MeasureSpec.EXACTLY));
+        if (mMileStoneView) {
+            mMileStoneView.measure(width, 0);
+            height += mMileStoneView.getMeasuredHeight();
+        }
 
         this.setMeasuredDimension(width, height);
     };
@@ -152,11 +152,167 @@ function LogoView() {
         offsetY += mVersion.getMeasuredHeight() + 8;
         mCopyRight.layout(offsetX, offsetY);
 
-        offsetX = PADDING;
-        offsetY = PADDING + LOGO_AREA + PADDING;
-        mChangeLogTitle.layout(offsetX, offsetY);
+        if (mMileStoneView) {
+            offsetX = 0;
+            offsetY = PADDING + LOGO_AREA + PADDING;
+            mMileStoneView.layout(offsetX, offsetY);
+        }
+    };
+
+    function loadLog() {
+        liteAjax("http://pd.mb.lenovomm.com/api/jndroid/milestone", function(data) {
+            try {
+                var milestones = JSON.parse(data);
+                mMileStoneView = new MileStoneView(milestones);
+                mSelf.addView(mMileStoneView);
+                mSelf.requestLayout();
+                mSelf.getParent().requestLayout();
+            } catch(e) {
+
+            }
+        })
+    }
+
+    function MileStoneView(milestones) {
+        LinearLayout.apply(this, []);
+
+        var mSelf = this;
+        var mIsExpand = false;
+
+        loadViews();
+
+        function loadViews() {
+            var mChangeLogTitle = new TextView();
+            mChangeLogTitle.setText("Change Logs");
+            mChangeLogTitle.setTextSize(TEXT_SIZE);
+            mChangeLogTitle.setTextColor(SUB_TEXT_COLOR);
+            mChangeLogTitle.setBorderTop(1, DIVIDERS_COLOR);
+            mChangeLogTitle.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+            var titleLp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
+            titleLp.leftMargin = PADDING;
+            titleLp.rightMargin = PADDING;
+            titleLp.bottomMargin = -8;
+            mSelf.addView(mChangeLogTitle, titleLp);
+
+            var issueLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+            issueLp.leftMargin = PADDING;
+
+            var length = 1;
+            if (mIsExpand) {
+                length = milestones.length;
+            }
+            for (var i = 0; i < length; i++) {
+                if (milestones[i].issues && milestones[i].issues.length > 0) {
+                    var item = new MileStoneItem(milestones[i]);
+                    mSelf.addView(item, issueLp);
+                }
+            }
+            var mButton = new LButton();
+            if (mIsExpand) {
+                mButton.setText("show less");
+            } else {
+                mButton.setText("show more");
+            }
+            mButton.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+            mButton.setPadding(8);
+            mButton.setDimBg(false);
+            mButton.setTextSize(TEXT_SIZE);
+            mButton.setTextColor(0xff454545);
+            mButton.setOnClickListener(function() {
+                mIsExpand = !mIsExpand;
+                mSelf.removeAllViews();
+                loadViews();
+                mSelf.getParent().requestLayout();
+            });
+            mButton.setBorder(0);
+            mButton.setBoxShadow(0, 0, 0, 0, 0);
+
+            var buttonLp = new LayoutParams(88, 36);
+            buttonLp.setMargins(8);
+            mSelf.addView(mButton, buttonLp);
+        }
+
+    }
+
+    function MileStoneItem(milestone) {
+        ViewGroup.apply(this, []);
+
+        var mLine = new View();
+        mLine.setBackgroundColor(THEME_COLOR);
+        this.addView(mLine);
+
+        var mVersion = new TextView();
+        mVersion.setText("Version: " +milestone.title);
+        mVersion.setTextSize(SUB_TEXT_SIZE);
+        mVersion.setTextColor(TEXT_COLOR);
+        mVersion.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        this.addView(mVersion);
+
+        var mIssueViews = [];
+
+        var issues = milestone.issues;
+        for (var i = 0; i < issues.length; i++) {
+            var issue = new TextView();
+            issue.setTextSize(SUB_TEXT_SIZE);
+            issue.setTextColor(SUB_TEXT_COLOR);
+            issue.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+            issue.setText(issues[i].title.trim());
+            mIssueViews.add(issue);
+            this.addView(issue);
+        }
+
+        var time = issues[0].created_at;
+        time = time.substring(0, time.indexOf("T"));
+        var mTimeView = new TextView();
+        mTimeView.setTextSize(SUB_TEXT_SIZE);
+        mTimeView.setTextColor(SUB_TEXT_COLOR);
+        mTimeView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        mTimeView.setText(time);
+        this.addView(mTimeView);
+
+        this.onMeasure = function(widthMS, heightMS) {
+            var width = MeasureSpec.getSize(widthMS);
+            var height = 0;
+
+            mVersion.measure(LOGO_AREA, MeasureSpec.makeMeasureSpec(32, MeasureSpec.EXACTLY));
+            mTimeView.measure(LOGO_AREA, MeasureSpec.makeMeasureSpec(32, MeasureSpec.EXACTLY));
+
+            var contentWidth = width - LOGO_AREA - PADDING;
+            for (var i = 0; i < mIssueViews.length; i++) {
+                mIssueViews[i].measure(contentWidth, MeasureSpec.makeMeasureSpec(32, MeasureSpec.EXACTLY));
+                height += mIssueViews[i].getMeasuredHeight();
+            }
+            height = Math.max(64, height);
+
+            mLine.measure(4, height - 16);
+
+            this.setMeasuredDimension(width, height);
+        };
+
+        this.onLayout = function(x, y) {
+            var offsetX, offsetY;
+
+            offsetX = 0;
+            offsetY = 8;
+            mLine.layout(offsetX, offsetY);
+
+            offsetX = mLine.getMeasuredWidth() + PADDING;
+            offsetY = 0;
+            mVersion.layout(offsetX, offsetY);
+
+            offsetY += mVersion.getMeasuredHeight();
+            mTimeView.layout(offsetX, offsetY);
+
+            offsetX = LOGO_AREA + PADDING;
+            offsetY = 0;
+            for (var i = 0; i < mIssueViews.length; i++) {
+                mIssueViews[i].layout(offsetX, offsetY);
+                offsetY += mIssueViews[i].getMeasuredHeight();
+            }
+        }
     }
 }
+
 
 function CommentView() {
     LinearLayout.apply(this, []);

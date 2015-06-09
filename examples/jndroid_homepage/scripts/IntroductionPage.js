@@ -12,15 +12,6 @@ function IntroductionView() {
 
     loadMasterpiece();
 
-    var tips = new TextView();
-    tips.setTextSize(TITLE_SIZE);
-    tips.setTextColor(TEXT_COLOR);
-    tips.setText("Tips: this site is still in developing.");
-    tips.setTextColor(0xffdd3226);
-    var tipLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    tipLp.setMargins(PADDING, TITLE_PADDING_TOP, PADDING, 0);
-    contentView.addView(tips, tipLp);
-
     var intro = new TextView();
     intro.setTextSize(TITLE_SIZE);
     intro.setTextColor(THEME_COLOR);
@@ -269,7 +260,7 @@ var mMaterialDesignCode = "" +
     "lp.gravity = Gravity.CENTER;\n" +
     "lp.setMargins(8);\n\n" +
     "var mButton = new LButton();\n" +
-    "mButton.setBackgroundColor(0xff009688);\n" +
+    "mButton.setBackgroundColor(0xff3F51B5);\n" +
     "mButton.setTextColor(0xffffffff);\n" +
     "mButton.setText(\"button\");\n" +
     "mButton.setOnClickListener(function() {\n" +
@@ -316,7 +307,7 @@ var mMeausreCode = "" +
     "\tViewGroup.apply(this, []);\n" +
     "\tthis.setBackgroundColor(0x1a000000);\n\n" +
     "\tvar mChild = new View();\n" +
-    "\tmChild.setBackgroundColor(0xff009688);\n" +
+    "\tmChild.setBackgroundColor(0xff3F51B5);\n" +
     "\tthis.addView(mChild);\n\n" +
     "\tthis.onMeasure = function(widthMS, heightMS) {\n" +
     "\t\tvar width = MeasureSpec.getSize(widthMS);\n" +
@@ -342,7 +333,7 @@ var mDrawCode = "" +
     "\t\tcanvas.beginPath();\n" +
     "\t\tcanvas.arc(100, 100, 50, 0, Math.PI * 2, true);\n" +
     "\t\tcanvas.closePath();\n" +
-    "\t\tcanvas.fillStyle = \"#009688\";\n" +
+    "\t\tcanvas.fillStyle = \"#3F51B5\";\n" +
     "\t\tcanvas.fill();" +
     "\t}\n" +
     "}";
@@ -356,7 +347,7 @@ var mTouchCode = "" +
     "\tthis.setText(\"Drag Me\");\n" +
     "\tthis.setTextColor(0xffffffff);\n" +
     "\tthis.setGravity(Gravity.CENTER);\n" +
-    "\tthis.setBackgroundColor(0xff009688);\n" +
+    "\tthis.setBackgroundColor(0xff3F51B5);\n" +
     "\tthis.setClickable(true);\n\n" +
     "\tvar mLastX = 0;\n" +
     "\tvar mLastY = 0;\n" +
@@ -365,7 +356,7 @@ var mTouchCode = "" +
     "\t\t\tcase MotionEvent.ACTION_DOWN:\n" +
     "\t\t\t\tmLastX = e.getRawX();\n" +
     "\t\t\t\tmLastY = e.getRawY();\n" +
-    "\t\t\t\tthis.setBackgroundColor(0xcc009688);\n" +
+    "\t\t\t\tthis.setBackgroundColor(0xcc3F51B5);\n" +
     "\t\t\tbreak;\n" +
     "\t\t\tcase MotionEvent.ACTION_MOVE:\n" +
     "\t\t\t\tvar dx = e.getRawX() - mLastX;\n" +
@@ -376,7 +367,7 @@ var mTouchCode = "" +
     "\t\t\tbreak;\n" +
     "\t\t\tcase MotionEvent.ACTION_UP:\n" +
     "\t\t\tcase MotionEvent.ACTION_CANCEL:\n" +
-    "\t\t\t\tthis.setBackgroundColor(0xff009688);\n" +
+    "\t\t\t\tthis.setBackgroundColor(0xff3F51B5);\n" +
     "\t\t\tbreak;\n" +
     "\t\t}\n" +
     "\t}" +
@@ -384,7 +375,7 @@ var mTouchCode = "" +
 
 var mAnimationCode = "" +
     "var target = new View();\n" +
-    "target.setBackgroundColor(0xff009688);\n" +
+    "target.setBackgroundColor(0xff3F51B5);\n" +
     "var targetlp = new LayoutParams(100, 50);\n" +
     "targetlp.gravity = Gravity.CENTER;\n" +
     "this.addView(target, targetlp);\n\n" +

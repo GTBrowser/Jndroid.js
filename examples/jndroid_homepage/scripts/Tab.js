@@ -77,7 +77,7 @@ function TabContent() {
             if (i == mSelectIndex) {
                 mItems[i].setTextColor(0xffffffff);
             } else {
-                mItems[i].setTextColor(0xff96E9F1);
+                mItems[i].setTextColor(0x99ffffff);
             }
         }
     };
