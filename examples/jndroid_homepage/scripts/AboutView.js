@@ -107,7 +107,11 @@ function LogoView() {
 
     var mMileStoneView;
 
-    loadLog();
+    try {
+        loadLog();
+    } catch(e) {
+
+    }
 
     this.onMeasure = function(widthMS, heightMS) {
         var width = MeasureSpec.getSize(widthMS);
