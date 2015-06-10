@@ -1723,26 +1723,24 @@ function View() {
 
 	//TODO
     this.setBoxShadow = function(x, y, blur, spread, color) {
-
         var styleString = x + "px " + y + "px";
 
-        if(typeof(blur) != "undefined")
-        {
+        if(typeof(blur) != "undefined") {
             styleString = styleString + " " + blur + "px";
         }
-
-        if(typeof(spread) != "undefined")
-        {
+        if(typeof(spread) != "undefined") {
             styleString = styleString + " " + spread + "px";
         }
-
-        if(typeof(color) != "undefined")
-        {
+        if(typeof(color) != "undefined") {
             styleString = styleString + " " + Utils.toCssColor(color);
         }
 
         this.getDiv().style.webkitBoxShadow =  styleString;
     };
+
+    this.setFontFamily = function(fontFamily) {
+        this.getDiv().style.fontFamily = fontFamily;
+    }
 }
 Object.defineProperty(View,"VISIBLE",{value:0});
 Object.defineProperty(View,"INVISIBLE",{value:4});
