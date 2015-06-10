@@ -1,5 +1,8 @@
 {
-    "project": {},
+    "project": {
+        "name": "Jndroid",
+        "description": "Jndroid: a JavaScrip framework to write Webapp in Android way"
+    },
     "files": {
         "jndroid.core.js": {
             "name": "jndroid.core.js",
@@ -37,7 +40,8 @@
                 "TextView": 1,
                 "Button": 1,
                 "EditText": 1,
-                "WebView": 1
+                "WebView": 1,
+                "ToggleButton": 1
             },
             "fors": {},
             "namespaces": {}
@@ -104,7 +108,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "jndroid.core.js",
-            "line": 1424,
+            "line": 1422,
             "description": "A ViewGroup is a special view that can contain other views\n(called children.) The view group is the base class for layouts and views\ncontainers.",
             "extends": "View"
         },
@@ -253,6 +257,19 @@
             "extension_for": [],
             "file": "jndroid.widget.js",
             "line": 721
+        },
+        "ToggleButton": {
+            "name": "ToggleButton",
+            "shortname": "ToggleButton",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.widget.js",
+            "line": 766,
+            "description": "A button with two states, checked and unchecked. When the button is pressed\n or clicked, the state changes automatically.",
+            "extends": "Button"
         }
     },
     "classitems": [
@@ -1215,7 +1232,7 @@
         },
         {
             "file": "jndroid.core.js",
-            "line": 1437,
+            "line": 1435,
             "description": "Returns the number of children in the group.",
             "itemtype": "method",
             "name": "getChildCount",
@@ -1227,7 +1244,7 @@
         },
         {
             "file": "jndroid.core.js",
-            "line": 1448,
+            "line": 1446,
             "description": "Returns the view at the specified position in the group.",
             "itemtype": "method",
             "name": "getChildAt",
@@ -1246,7 +1263,7 @@
         },
         {
             "file": "jndroid.core.js",
-            "line": 1470,
+            "line": 1468,
             "description": "Adds a child view with the specified layout parameters.",
             "itemtype": "method",
             "name": "addView",
@@ -1271,7 +1288,7 @@
         },
         {
             "file": "jndroid.core.js",
-            "line": 1504,
+            "line": 1502,
             "description": "Removes a view from the group.",
             "itemtype": "method",
             "name": "removeView",
@@ -1286,7 +1303,7 @@
         },
         {
             "file": "jndroid.core.js",
-            "line": 1520,
+            "line": 1518,
             "description": "Call this method to remove all child views from the\nViewGroup.",
             "itemtype": "method",
             "name": "removeAllViews",
@@ -1736,6 +1753,47 @@
             "itemtype": "method",
             "name": "requestFocus",
             "class": "EditText"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 816,
+            "description": "Register a callback to be invoked when the checked state of this button\nchanges.",
+            "itemtype": "method",
+            "name": "setOnCheckedChangeListener",
+            "params": [
+                {
+                    "name": "listener",
+                    "description": "the callback to call on checked state change"
+                }
+            ],
+            "class": "ToggleButton"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 827,
+            "description": "return the checked state of this button.",
+            "itemtype": "method",
+            "name": "isChecked",
+            "return": {
+                "description": "the checked state of this button.",
+                "type": "Boolean"
+            },
+            "class": "ToggleButton"
+        },
+        {
+            "file": "jndroid.widget.js",
+            "line": 850,
+            "description": "Changes the checked state of this button.The default state is true.",
+            "itemtype": "method",
+            "name": "setChecked",
+            "params": [
+                {
+                    "name": "checked",
+                    "description": "true to check the button, false to uncheck it",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "ToggleButton"
         }
     ],
     "warnings": [

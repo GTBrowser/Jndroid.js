@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>jndroid.core.js</title>
+    <title>jndroid.core.js - Jndroid</title>
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -16,7 +16,6 @@
         <div class="content">
           <div class="project-title">
             <h1 class="project-name">Jndroid</h1>
-
 
           </div>
           <ul class="jump-links">
@@ -55,6 +54,7 @@
                 <li><a class="type" href="../classes/MotionEvent.html">MotionEvent</a></li>
                 <li><a class="type" href="../classes/ScrollView.html">ScrollView</a></li>
                 <li><a class="type" href="../classes/TextView.html">TextView</a></li>
+                <li><a class="type" href="../classes/ToggleButton.html">ToggleButton</a></li>
                 <li><a class="type" href="../classes/View.html">View</a></li>
                 <li><a class="type" href="../classes/ViewGroup.html">ViewGroup</a></li>
                 <li><a class="type" href="../classes/WebView.html">WebView</a></li>
@@ -1466,26 +1466,24 @@
             
             	//TODO
                 this.setBoxShadow = function(x, y, blur, spread, color) {
-            
                     var styleString = x + &quot;px &quot; + y + &quot;px&quot;;
             
-                    if(typeof(blur) != &quot;undefined&quot;)
-                    {
+                    if(typeof(blur) != &quot;undefined&quot;) {
                         styleString = styleString + &quot; &quot; + blur + &quot;px&quot;;
                     }
-            
-                    if(typeof(spread) != &quot;undefined&quot;)
-                    {
+                    if(typeof(spread) != &quot;undefined&quot;) {
                         styleString = styleString + &quot; &quot; + spread + &quot;px&quot;;
                     }
-            
-                    if(typeof(color) != &quot;undefined&quot;)
-                    {
+                    if(typeof(color) != &quot;undefined&quot;) {
                         styleString = styleString + &quot; &quot; + Utils.toCssColor(color);
                     }
             
                     this.getDiv().style.webkitBoxShadow =  styleString;
                 };
+            
+                this.setFontFamily = function(fontFamily) {
+                    this.getDiv().style.fontFamily = fontFamily;
+                }
             }
             Object.defineProperty(View,&quot;VISIBLE&quot;,{value:0});
             Object.defineProperty(View,&quot;INVISIBLE&quot;,{value:4});
@@ -1669,7 +1667,7 @@
                 mHideDiv.style.width = &quot;100%&quot;;
             
                 mRootNode.innerHTML = &quot;&quot;;
-                mRootNode.style.PADDING = &quot;0&quot;;
+                mRootNode.style.padding = &quot;0&quot;;
                 mRootNode.style.margin = &quot;0&quot;;
                 mRootNode.appendChild(mHideDiv);
             

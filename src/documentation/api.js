@@ -15,6 +15,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "MotionEvent",
         "ScrollView",
         "TextView",
+        "ToggleButton",
         "View",
         "ViewGroup",
         "WebView"
