@@ -5,9 +5,10 @@ function VSAndroidView() {
     if (mIsPhone) {
         CODE_HEIGHT = 1900;
     }
+    var mPadding = R.dimen.padding;
 
     var contentView = new LinearLayout();
-    contentView.setPadding(0, 0, 0, PARAGRAPH_PADDING_TOP);
+    contentView.setPadding(0, 0, 0, R.dimen.paragraph_padding_top);
     this.addView(contentView);
 
     var codeArea = new FrameLayout();
@@ -17,7 +18,7 @@ function VSAndroidView() {
     var linearLayout = new LinearLayout();
     linearLayout.setOrientation(LinearLayout.HORIZONTAL);
     var linearLayoutLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-    linearLayoutLp.setMargins(PADDING, 0, PADDING, 0);
+    linearLayoutLp.setMargins(mPadding, 0, mPadding, 0);
     codeArea.addView(linearLayout, linearLayoutLp);
 
     var codeViewLp = new LayoutParams(0, LayoutParams.FILL_PARENT);
@@ -30,20 +31,20 @@ function VSAndroidView() {
     linearLayout.addView(androidView, codeViewLp);
 
     var moreTip = new TextView();
-    moreTip.setTextSize(TITLE_SIZE);
-    moreTip.setTextColor(THEME_COLOR);
+    moreTip.setTextSize(R.dimen.title);
+    moreTip.setTextColor(R.color.theme);
     moreTip.setText("More tips");
     var moreTipLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    moreTipLp.setMargins(PADDING, PARAGRAPH_PADDING_TOP - 32, PADDING, 0);
+    moreTipLp.setMargins(mPadding, R.dimen.paragraph_padding_top - 32, mPadding, 0);
     contentView.addView(moreTip, moreTipLp);
 
     var tipLp = new LayoutParams(moreTipLp);
-    tipLp.setMargins(PADDING, PADDING, PADDING, 0);
+    tipLp.setMargins(mPadding, mPadding, mPadding, 0);
     for (var i = 0; i < mTips.length; i++) {
         var tip = new TextView();
         tip.setText(mTips[i]);
-        tip.setTextSize(TEXT_SIZE);
-        tip.setTextColor(TEXT_COLOR);
+        tip.setTextSize(R.dimen.text);
+        tip.setTextColor(R.color.text);
         contentView.addView(tip, tipLp);
     }
 
@@ -51,8 +52,8 @@ function VSAndroidView() {
         ViewGroup.apply(this, []);
 
         var mTitle = new TextView();
-        mTitle.setTextSize(TITLE_SIZE);
-        mTitle.setTextColor(THEME_COLOR);
+        mTitle.setTextSize(R.dimen.title);
+        mTitle.setTextColor(R.color.theme);
         mTitle.setText(title);
         mTitle.setGravity(Gravity.CENTER);
         this.addView(mTitle);
@@ -67,11 +68,11 @@ function VSAndroidView() {
         }
         mCode.setText(code);
         if (title == "Jndroid") {
-            mCode.setBorder(1, DIVIDERS_COLOR);
+            mCode.setBorder(1, R.color.dividers);
         } else {
-            mCode.setBorderTop(1, DIVIDERS_COLOR);
-            mCode.setBorderRight(1, DIVIDERS_COLOR);
-            mCode.setBorderBottom(1, DIVIDERS_COLOR);
+            mCode.setBorderTop(1, R.color.dividers);
+            mCode.setBorderRight(1, R.color.dividers);
+            mCode.setBorderBottom(1, R.color.dividers);
         }
         this.addView(mCode);
 
@@ -82,9 +83,9 @@ function VSAndroidView() {
             var width = MeasureSpec.getSize(widthMS);
             var height = CODE_HEIGHT;
 
-            mTitle.measure(width, TITLE_SIZE);
+            mTitle.measure(width, R.dimen.title);
 
-            var contentHeight = height - PARAGRAPH_PADDING_TOP - TITLE_SIZE - PADDING * 4;
+            var contentHeight = height - R.dimen.paragraph_padding_top - R.dimen.title - mPadding * 4;
             mCode.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(contentHeight, MeasureSpec.EXACTLY));
 
@@ -93,10 +94,10 @@ function VSAndroidView() {
 
         this.onLayout = function(x, y) {
             var offsetX = 0;
-            var offsetY = PARAGRAPH_PADDING_TOP;
+            var offsetY = R.dimen.paragraph_padding_top;
             mTitle.layout(offsetX, offsetY);
 
-            offsetY += PADDING + mTitle.getMeasuredHeight();
+            offsetY += mPadding + mTitle.getMeasuredHeight();
             mCode.layout(offsetX, offsetY);
         }
     }

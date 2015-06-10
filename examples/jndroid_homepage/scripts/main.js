@@ -29,12 +29,12 @@ function MainView() {
     //this.addView(mGallery);
 
     //mTitle = new TextView();
-    //mTitle.setTextSize(TITLE_SIZE);
+    //mTitle.setTextSize(R.dimen.title);
     //mTitle.setTextColor(0xffffffff);
     //mTitle.setText("Jndroid");
     //mTitle.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
     //mTitle.setPadding(52, 0, 0, 0);
-    //mTitle.setBackgroundColor(THEME_COLOR);
+    //mTitle.setBackgroundColor(R.color.theme);
     //this.addView(mTitle);
 
     mTab = new Tab();

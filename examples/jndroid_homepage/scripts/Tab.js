@@ -1,6 +1,6 @@
 function Tab () {
     ViewGroup.apply(this, []);
-    this.setBackgroundColor(THEME_COLOR);
+    this.setBackgroundColor(R.color.theme);
     this.setBoxShadow(0, 6, 6, 0, 0x42000000);
 
     var mScrollView = new HorizontalScrollView();
@@ -91,17 +91,17 @@ function TabContent() {
         }
         var width = mItems[0].getMeasuredWidth() * mItems.length;
         mIndicator.measure(width, 2);
-        this.setMeasuredDimension(width + PADDING * 2, height);
+        this.setMeasuredDimension(width + R.dimen.padding * 2, height);
     };
 
     this.onLayout = function(x, y) {
-        var offsetX = PADDING;
+        var offsetX = R.dimen.padding;
         var offsetY = 0;
         for (var i = 0; i < mItems.length; i++) {
             mItems[i].layout(offsetX, offsetY);
             offsetX += mItems[i].getMeasuredWidth();
         }
-        offsetX = PADDING;
+        offsetX = R.dimen.padding;
         offsetY = this.getMeasuredHeight() - mIndicator.getMeasuredHeight();
         mIndicator.layout(offsetX, offsetY);
     };

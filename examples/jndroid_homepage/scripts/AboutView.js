@@ -4,24 +4,24 @@
 function AboutView() {
     ScrollView.apply(this, []);
 
-    this.setBackgroundColor(CARD_BG_COLOR);
+    this.setBackgroundColor(R.color.card_bg);
 
     var contentView = new LinearLayout();
-    contentView.setPadding(0, 0, 0, PARAGRAPH_PADDING_TOP);
+    contentView.setPadding(0, 0, 0, R.dimen.content_padding_bottom);
     this.addView(contentView);
 
     var titlelp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    titlelp.topMargin = PARAGRAPH_PADDING_TOP;
-    titlelp.leftMargin = PADDING;
-    titlelp.bottomMargin = PADDING;
+    titlelp.topMargin = R.dimen.paragraph_padding_top;
+    titlelp.leftMargin = R.dimen.padding;
+    titlelp.bottomMargin = R.dimen.padding;
 
     var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     lp.setMargins(8);
 
     var logoTitle = new TextView();
     logoTitle.setText("About");
-    logoTitle.setTextColor(THEME_COLOR);
-    logoTitle.setTextSize(TITLE_SIZE);
+    logoTitle.setTextColor(R.color.theme);
+    logoTitle.setTextSize(R.dimen.title);
     contentView.addView(logoTitle, titlelp);
 
     var logoView = new LogoView();
@@ -29,8 +29,8 @@ function AboutView() {
 
     var commentTitle = new TextView();
     commentTitle.setText("Comments");
-    commentTitle.setTextColor(THEME_COLOR);
-    commentTitle.setTextSize(TITLE_SIZE);
+    commentTitle.setTextColor(R.color.theme);
+    commentTitle.setTextSize(R.dimen.title);
 
     contentView.addView(commentTitle, titlelp);
 
@@ -39,8 +39,8 @@ function AboutView() {
 
     var question = new TextView();
     question.setText("Q&A");
-    question.setTextColor(THEME_COLOR);
-    question.setTextSize(TITLE_SIZE);
+    question.setTextColor(R.color.theme);
+    question.setTextSize(R.dimen.title);
     contentView.addView(question, titlelp);
 
     var questionView = new QuestionView();
@@ -48,8 +48,8 @@ function AboutView() {
 
     //var contributorTitle = new TextView();
     //contributorTitle.setText("Contributors");
-    //contributorTitle.setTextColor(THEME_COLOR);
-    //contributorTitle.setTextSize(TITLE_SIZE);
+    //contributorTitle.setTextColor(R.color.theme);
+    //contributorTitle.setTextSize(R.dimen.title);
     //contentView.addView(contributorTitle, titlelp);
     //
     //var contributorView = new ContributorView();
@@ -70,7 +70,7 @@ function LogoView() {
     this.setBackgroundColor(0xffffffff);
     this.setCornerSize(2, 2, 2, 2);
     this.setBoxShadow(0, 1, 2, 0, 0x66000000);
-    this.setPadding(PADDING, PADDING, PADDING, 0);
+    this.setPadding(R.dimen.padding, R.dimen.padding, R.dimen.padding, 0);
 
     var mLogoArea = new View();
     mLogoArea.setCornerSize(2);
@@ -89,20 +89,20 @@ function LogoView() {
 
     var mTitle = new TextView();
     mTitle.setText("Jndroid Homepage");
-    mTitle.setTextSize(TITLE_SIZE);
-    mTitle.setTextColor(TEXT_COLOR);
+    mTitle.setTextSize(R.dimen.title);
+    mTitle.setTextColor(R.color.text);
     this.addView(mTitle);
 
     var mVersion = new TextView();
     mVersion.setText("Version: " + Manifest.versionName);
-    mVersion.setTextSize(SUB_TEXT_SIZE);
-    mVersion.setTextColor(SUB_TEXT_COLOR);
+    mVersion.setTextSize(R.dimen.sub_text);
+    mVersion.setTextColor(R.color.sub_text);
     this.addView(mVersion);
 
     var mCopyRight = new TextView();
     mCopyRight.setText("Copyright©2015 Jndroid. All Rights Reserved.");
-    mCopyRight.setTextSize(SUB_TEXT_SIZE);
-    mCopyRight.setTextColor(SUB_TEXT_COLOR);
+    mCopyRight.setTextSize(R.dimen.sub_text);
+    mCopyRight.setTextColor(R.color.sub_text);
     this.addView(mCopyRight);
 
     var mMileStoneView;
@@ -114,14 +114,15 @@ function LogoView() {
     }
 
     this.onMeasure = function(widthMS, heightMS) {
+        var padding = R.dimen.padding;
         var width = MeasureSpec.getSize(widthMS);
-        var height = LOGO_AREA + PADDING * 2;
+        var height = LOGO_AREA + padding * 2;
 
         mLogoArea.measure(LOGO_AREA, LOGO_AREA);
         mLogoImg.measure(LOGO_SIZE, LOGO_SIZE);
         mLogoName.measure(LOGO_SIZE, LOGO_AREA - LOGO_SIZE);
 
-        var contentWidth = width - PADDING * 3 - LOGO_AREA;
+        var contentWidth = width - padding * 3 - LOGO_AREA;
         mTitle.measure(contentWidth, 0);
         mVersion.measure(contentWidth, 0);
         mCopyRight.measure(contentWidth, 0);
@@ -135,18 +136,19 @@ function LogoView() {
     };
 
     this.onLayout = function(x, y) {
-        var offsetX = PADDING;
-        var offsetY = PADDING;
+        var padding = R.dimen.padding;
+        var offsetX = padding;
+        var offsetY = padding;
         mLogoArea.layout(offsetX, offsetY);
 
-        offsetX = PADDING + (LOGO_AREA - LOGO_SIZE) / 2;
+        offsetX = padding + (LOGO_AREA - LOGO_SIZE) / 2;
         offsetY = 8;
         mLogoImg.layout(offsetX, offsetY);
 
         offsetY += mLogoImg.getMeasuredHeight() - 8;
         mLogoName.layout(offsetX, offsetY);
 
-        offsetX = PADDING * 2 + LOGO_AREA;
+        offsetX = padding * 2 + LOGO_AREA;
         offsetY = 24;
         mTitle.layout(offsetX, offsetY);
 
@@ -158,7 +160,7 @@ function LogoView() {
 
         if (mMileStoneView) {
             offsetX = 0;
-            offsetY = PADDING + LOGO_AREA + PADDING;
+            offsetY = padding + LOGO_AREA + padding;
             mMileStoneView.layout(offsetX, offsetY);
         }
     };
@@ -188,18 +190,18 @@ function LogoView() {
         function loadViews() {
             var mChangeLogTitle = new TextView();
             mChangeLogTitle.setText("Change Logs");
-            mChangeLogTitle.setTextSize(TEXT_SIZE);
-            mChangeLogTitle.setTextColor(SUB_TEXT_COLOR);
-            mChangeLogTitle.setBorderTop(1, DIVIDERS_COLOR);
+            mChangeLogTitle.setTextSize(R.dimen.text);
+            mChangeLogTitle.setTextColor(R.color.sub_text);
+            mChangeLogTitle.setBorderTop(1, R.color.dividers);
             mChangeLogTitle.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
             var titleLp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
-            titleLp.leftMargin = PADDING;
-            titleLp.rightMargin = PADDING;
-            titleLp.bottomMargin = -8;
+            titleLp.leftMargin = R.dimen.padding;
+            titleLp.rightMargin = R.dimen.padding;
+            titleLp.bottomMargin = -R.dimen.half_padding;
             mSelf.addView(mChangeLogTitle, titleLp);
 
             var issueLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-            issueLp.leftMargin = PADDING;
+            issueLp.leftMargin = R.dimen.padding;
 
             var length = 1;
             if (mIsExpand) {
@@ -218,15 +220,15 @@ function LogoView() {
                 mButton.setText("show more");
             }
             mButton.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-            mButton.setPadding(8);
+            mButton.setPadding(R.dimen.half_padding);
             mButton.setDimBg(false);
-            mButton.setTextSize(TEXT_SIZE);
-            mButton.setTextColor(0xff454545);
+            mButton.setTextSize(R.dimen.text);
+            mButton.setTextColor(R.color.secondary_text);
             mButton.setOnClickListener(function() {
                 mIsExpand = !mIsExpand;
                 mSelf.removeAllViews();
                 loadViews();
-                mSelf.getParent().requestLayout();
+                mSelf.getParent().getParent().requestLayout();
             });
             mButton.setBorder(0);
             mButton.setBoxShadow(0, 0, 0, 0, 0);
@@ -242,13 +244,13 @@ function LogoView() {
         ViewGroup.apply(this, []);
 
         var mLine = new View();
-        mLine.setBackgroundColor(THEME_COLOR);
+        mLine.setBackgroundColor(R.color.theme);
         this.addView(mLine);
 
         var mVersion = new TextView();
         mVersion.setText("Version: " +milestone.title);
-        mVersion.setTextSize(SUB_TEXT_SIZE);
-        mVersion.setTextColor(TEXT_COLOR);
+        mVersion.setTextSize(R.dimen.sub_text);
+        mVersion.setTextColor(R.color.text);
         mVersion.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
         this.addView(mVersion);
 
@@ -257,8 +259,8 @@ function LogoView() {
         var issues = milestone.issues;
         for (var i = 0; i < issues.length; i++) {
             var issue = new TextView();
-            issue.setTextSize(SUB_TEXT_SIZE);
-            issue.setTextColor(SUB_TEXT_COLOR);
+            issue.setTextSize(R.dimen.sub_text);
+            issue.setTextColor(R.color.sub_text);
             issue.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
             issue.setText(issues[i].title.trim());
             mIssueViews.add(issue);
@@ -268,8 +270,8 @@ function LogoView() {
         var time = issues[0].created_at;
         time = time.substring(0, time.indexOf("T"));
         var mTimeView = new TextView();
-        mTimeView.setTextSize(SUB_TEXT_SIZE);
-        mTimeView.setTextColor(SUB_TEXT_COLOR);
+        mTimeView.setTextSize(R.dimen.sub_text);
+        mTimeView.setTextColor(R.color.sub_text);
         mTimeView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
         mTimeView.setText(time);
         this.addView(mTimeView);
@@ -281,7 +283,7 @@ function LogoView() {
             mVersion.measure(LOGO_AREA, MeasureSpec.makeMeasureSpec(32, MeasureSpec.EXACTLY));
             mTimeView.measure(LOGO_AREA, MeasureSpec.makeMeasureSpec(32, MeasureSpec.EXACTLY));
 
-            var contentWidth = width - LOGO_AREA - PADDING;
+            var contentWidth = width - LOGO_AREA - R.dimen.padding;
             for (var i = 0; i < mIssueViews.length; i++) {
                 mIssueViews[i].measure(contentWidth, MeasureSpec.makeMeasureSpec(32, MeasureSpec.EXACTLY));
                 height += mIssueViews[i].getMeasuredHeight();
@@ -300,14 +302,14 @@ function LogoView() {
             offsetY = 8;
             mLine.layout(offsetX, offsetY);
 
-            offsetX = mLine.getMeasuredWidth() + PADDING;
+            offsetX = mLine.getMeasuredWidth() + R.dimen.padding;
             offsetY = 0;
             mVersion.layout(offsetX, offsetY);
 
             offsetY += mVersion.getMeasuredHeight();
             mTimeView.layout(offsetX, offsetY);
 
-            offsetX = LOGO_AREA + PADDING;
+            offsetX = LOGO_AREA + R.dimen.padding;
             offsetY = 0;
             for (var i = 0; i < mIssueViews.length; i++) {
                 mIssueViews[i].layout(offsetX, offsetY);
@@ -322,25 +324,25 @@ function CommentView() {
     LinearLayout.apply(this, []);
 
     this.setBackgroundColor(0xffffffff);
-    this.setCornerSize(2, 2, 2, 2);
-    this.setBoxShadow(0, 1, 2, 0, 0x66000000);
-    this.setPadding(PADDING, PADDING, PADDING, 0);
+    this.setCornerSize(R.dimen.corner);
+    this.setBoxShadow(0, 1, 2, 0, R.color.shadow);
+    this.setPadding(R.dimen.padding, R.dimen.padding, R.dimen.padding, 0);
 
 
     var comment1 = new Comment('images/kkmoving.jpg', 'kkmoving，资深架构师', '这可能是东半球最好用的WebApp框架了。');
-    comment1.setBorderBottom(1, DIVIDERS_COLOR);
+    comment1.setBorderBottom(1, R.color.dividers);
     this.addView(comment1);
 
     comment1 = new Comment('images/zhuyunbin.jpg', '朱云斌，安卓程序员', '作为一个Android开发者，Jndroid是一件令人兴奋的礼物。');
-    comment1.setBorderBottom(1, DIVIDERS_COLOR);
+    comment1.setBorderBottom(1, R.color.dividers);
     this.addView(comment1);
 
     comment1 = new Comment('images/yanglingfeng.png', 'Hulk Yang，一个见钱眼开的手艺人', 'Jndroid > (AngularJS | Backbone.js | Ember.js)');
-    comment1.setBorderBottom(1, DIVIDERS_COLOR);
+    comment1.setBorderBottom(1, R.color.dividers);
     this.addView(comment1);
 
     comment1 = new Comment('images/liuchenchen.png', 'UG84，资深设计师，手机应用设计领路人', '虽然我不知道这是什么，但是我觉得还是挺好看的。');
-    comment1.setBorderBottom(1, DIVIDERS_COLOR);
+    comment1.setBorderBottom(1, R.color.dividers);
     this.addView(comment1);
 
     comment1 = new Comment('images/zhangyang.png', '张阳', '本以为平行的世界有了交集，除了打破常规，强大的功能，快速的使用和轻松的体验，才是让人激动的。绝对是轻应用的一大步。');
@@ -351,14 +353,14 @@ function QuestionView() {
     LinearLayout.apply(this, []);
 
     this.setBackgroundColor(0xffffffff);
-    this.setCornerSize(2, 2, 2, 2);
-    this.setBoxShadow(0, 1, 2, 0, 0x66000000);
-    this.setPadding(PADDING);
+    this.setCornerSize(R.dimen.corner);
+    this.setBoxShadow(0, 1, 2, 0, R.color.shadow);
+    this.setPadding(R.dimen.padding);
 
     var question = new TextView();
     question.setText("To ask question, please send email to guyiyang@outlook.com");
-    question.setTextSize(TEXT_SIZE);
-    question.setTextColor(TEXT_COLOR);
+    question.setTextSize(R.dimen.text);
+    question.setTextColor(R.color.text);
     this.addView(question);
 }
 
@@ -373,8 +375,8 @@ function ContributorView() {
     for (var i = 0; i < mContributors.length; i++) {
         var name = new TextView();
         name.setText(mContributors[i]);
-        name.setTextSize(TEXT_SIZE);
-        name.setTextColor(TEXT_COLOR);
+        name.setTextSize(R.dimen.text);
+        name.setTextColor(R.color.text);
         this.addView(name);
     }
 

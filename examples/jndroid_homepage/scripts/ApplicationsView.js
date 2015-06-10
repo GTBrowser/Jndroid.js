@@ -4,21 +4,23 @@
 function ApplicationsView() {
     ScrollView.apply(this, []);
 
-    this.setBackgroundColor(CARD_BG_COLOR);
+    this.setBackgroundColor(R.color.card_bg);
 
     var mSelf = this;
+    var mPadding = R.dimen.padding;
 
     var content = new LinearLayout();
     content.setOrientation(LinearLayout.VERTICAL);
+    content.setPadding(0, 0, 0, R.dimen.content_padding_bottom);
     var contentLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     this.addView(content, contentLp);
 
     var intro = new TextView();
     intro.setText("This page shows Web Apps which developing by Jndroid, including this website.");
-    intro.setTextColor(TEXT_COLOR);
-    intro.setTextSize(TEXT_SIZE);
+    intro.setTextColor(R.color.text);
+    intro.setTextSize(R.color.text);
     var introlp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    introlp.setMargins(PADDING, PARAGRAPH_PADDING_TOP, PADDING, PADDING);
+    introlp.setMargins(mPadding, R.dimen.paragraph_padding_top, mPadding, mPadding);
     //content.addView(intro, introlp);
 
     var appsList = [];
@@ -28,12 +30,12 @@ function ApplicationsView() {
 
     var appItemTopLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     appItemTopLp.gravity = Gravity.CENTER;
-    appItemTopLp.setMargins(8);
-    appItemTopLp.topMargin = PARAGRAPH_PADDING_TOP;
+    appItemTopLp.setMargins(R.dimen.half_padding);
+    appItemTopLp.topMargin = R.dimen.paragraph_padding_top;
 
     var appItemLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     appItemLp.gravity = Gravity.CENTER;
-    appItemLp.setMargins(8, 0, 8, 8);
+    appItemLp.setMargins(R.dimen.padding);
 
     for (var i = 0; i< appsList.length; i++) {
         var appItem = new AppItem(appsList[i]);
@@ -58,23 +60,23 @@ function ApplicationsView() {
         LinearLayout.apply(this,[]);
 
         this.setBackgroundColor(0xffffffff);
-        this.setCornerSize(2, 2, 2, 2);
-        this.setBoxShadow(0, 1, 2, 0, 0x66000000);
+        this.setCornerSize(R.dimen.corner);
+        this.setBoxShadow(0, 1, 2, 0, R.color.shadow);
         this.setPadding(16);
 
         var MAX_WIDTH = 800;
 
         var mTitle = new TextView();
         mTitle.setText(appData.mTitle);
-        mTitle.setTextSize(TITLE_SIZE);
-        mTitle.setTextColor(TEXT_COLOR);
+        mTitle.setTextSize(R.dimen.title);
+        mTitle.setTextColor(R.color.text);
         mTitle.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
         this.addView(mTitle);
 
         var mUrl = new TextView();
         mUrl.setText(appData.mUrl);
-        mUrl.setTextSize(SUB_TEXT_SIZE);
-        mUrl.setTextColor(SUB_TEXT_COLOR);
+        mUrl.setTextSize(R.dimen.sub_text);
+        mUrl.setTextColor(R.color.sub_text);
         mUrl.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
         mUrl.setTextIsSelectable(true);
         this.addView(mUrl);
@@ -96,35 +98,35 @@ function ApplicationsView() {
             var contentWidth = 0;
             var contentHeight = 0;
             if (appData.mIsPC) {
-                contentWidth = width - PADDING * 2;
+                contentWidth = width - mPadding * 2;
                 contentHeight = contentWidth / 16 * 9;
             } else {
                 if (MeasureSpec.getSize(widthMS) > height) {
                     contentHeight = height * 3 / 4;
                     contentWidth = contentHeight * 5 / 8;
                 } else {
-                    contentWidth = (width - PADDING * 2) * 3 / 4;
+                    contentWidth = (width - mPadding * 2) * 3 / 4;
                     contentHeight = contentWidth * 8 / 5;
                 }
             }
 
             mWebView.measure(MeasureSpec.makeMeasureSpec(contentWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(contentHeight, MeasureSpec.EXACTLY));
-            height = TITLE_PADDING_TOP + mTitle.getMeasuredHeight() + PADDING + mUrl.getMeasuredHeight() + PADDING + contentHeight + PADDING;
+            height = R.dimen.title_padding_top + mTitle.getMeasuredHeight() + mPadding + mUrl.getMeasuredHeight() + mPadding + contentHeight + mPadding;
 
             this.setMeasuredDimension(width, height);
         };
 
         this.onLayout = function(x, y) {
-            var offsetX = PADDING;
-            var offsetY = TITLE_PADDING_TOP;
+            var offsetX = mPadding;
+            var offsetY = R.dimen.title_padding_top;
             mTitle.layout(offsetX, offsetY);
 
-            offsetY += mTitle.getMeasuredHeight() + PADDING;
+            offsetY += mTitle.getMeasuredHeight() + mPadding;
             mUrl.layout(offsetX, offsetY);
 
             offsetX = (this.getMeasuredWidth() - mWebView.getMeasuredWidth()) / 2;
-            offsetY += PADDING + mUrl.getMeasuredHeight();
+            offsetY += mPadding + mUrl.getMeasuredHeight();
             mWebView.layout(offsetX, offsetY);
         }
     }

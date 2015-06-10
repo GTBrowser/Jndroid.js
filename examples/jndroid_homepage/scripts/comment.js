@@ -36,19 +36,19 @@ function Comment(avatar, name, text) {
 
     var mName = new TextView();
     mName.setText(name);
-    mName.setTextSize(TEXT_SIZE);
+    mName.setTextSize(R.dimen.text);
     var namelp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    namelp.topMargin = PADDING;
+    namelp.topMargin = R.dimen.padding;
     contentArea.addView(mName, namelp);
 
     var mComment = new TextView();
     mComment.setText(text);
-    mComment.setTextSize(SUB_TEXT_SIZE);
-    mComment.setTextColor(SUB_TEXT_COLOR);
-    mComment.setLineHeight(TEXT_SIZE + TEXT_SIZE);
+    mComment.setTextSize(R.dimen.sub_text);
+    mComment.setTextColor(R.dimen.sub_text);
+    mComment.setLineHeight(R.dimen.text * 2);
     var commentlp = new LayoutParams(namelp);
-    commentlp.topMargin = 8;
-    commentlp.bottomMargin = PADDING;
+    commentlp.topMargin = R.dimen.half_padding;
+    commentlp.bottomMargin = R.dimen.padding;
     contentArea.addView(mComment, commentlp);
 
 }

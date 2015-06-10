@@ -9,6 +9,7 @@ function Playground(title, initCode, isHtml) {
     var BUTTON_WIDTH = 48;
     var BUTTON_HEIGHT = 48;
 
+    var mPadding = R.dimen.padding;
     var mSelf = this;
     var mEditHeight = 300;
     var mAppendCode = "";
@@ -19,8 +20,8 @@ function Playground(title, initCode, isHtml) {
     this.setPadding(16);
 
     var mTitle = new TextView();
-    mTitle.setTextSize(TITLE_SIZE);
-    mTitle.setTextColor(TEXT_COLOR);
+    mTitle.setTextSize(R.dimen.title);
+    mTitle.setTextColor(R.color.text);
     mTitle.setText(title);
     this.addView(mTitle);
 
@@ -55,7 +56,7 @@ function Playground(title, initCode, isHtml) {
     this.addView(mCodePreviewer);
 
     var mTryButton = new LImageButton();
-    mTryButton.setBackgroundColor(THEME_COLOR);
+    mTryButton.setBackgroundColor(R.color.theme);
     mTryButton.setCornerSize(24);
     mTryButton.setImgSrc("images/play_icon.png");
     mTryButton.setImgWidth(40);
@@ -83,40 +84,41 @@ function Playground(title, initCode, isHtml) {
         mTryButton.measure(MeasureSpec.makeMeasureSpec(BUTTON_WIDTH, MeasureSpec.EXACTLY),
             MeasureSpec.makeMeasureSpec(BUTTON_HEIGHT, MeasureSpec.EXACTLY));
 
-        var contentWidth = width - PADDING * 2;
+        var contentWidth = width - mPadding * 2;
         if(width > 700) {
             mEditArea.measure(contentWidth / 2, mEditHeight);
             mCodePreviewer.measure(contentWidth / 2, mEditHeight);
-            height = mEditHeight + PADDING * 2;
+            height = mEditHeight + mPadding * 2;
         } else{
             mEditArea.measure(contentWidth, mEditHeight);
             mCodePreviewer.measure(contentWidth, mEditHeight);
-            height = mEditHeight * 2 + PADDING * 2;
+            height = mEditHeight * 2 + mPadding * 2;
         }
-        height += TITLE_PADDING_TOP + mTitle.getMeasuredHeight();
+        height += R.dimen.title_padding_top + mTitle.getMeasuredHeight();
         this.setMeasuredDimension(width, height);
     };
 
     this.onLayout = function(x, y){
-        var offsetX = PADDING;
-        var offsetY = TITLE_PADDING_TOP;
+        var padding = R.dimen.padding;
+        var offsetX = padding;
+        var offsetY = R.dimen.title_padding_top;
         mTitle.layout(offsetX, offsetY);
 
-        offsetY += mTitle.getMeasuredHeight() + PADDING;
+        offsetY += mTitle.getMeasuredHeight() + padding;
         mEditArea.layout(offsetX, offsetY);
 
         var width = this.getMeasuredWidth();
         var height = this.getMeasuredHeight();
 
         if(width > 700) {
-            mCodePreviewer.layout(mCodePreviewer.getMeasuredWidth() + PADDING, offsetY);
+            mCodePreviewer.layout(mCodePreviewer.getMeasuredWidth() + padding, offsetY);
         } else {
-            mCodePreviewer.layout(PADDING, offsetY + mEditArea.getMeasuredHeight());
+            mCodePreviewer.layout(mPadding, offsetY + mEditArea.getMeasuredHeight());
         }
 
         offsetX = (width - mTryButton.getMeasuredWidth()) / 2;
-        offsetY = (height - TITLE_PADDING_TOP - mTitle.getMeasuredHeight() - mTryButton.getMeasuredHeight()) / 2;
-        offsetY += TITLE_PADDING_TOP + mTitle.getMeasuredHeight();
+        offsetY = (height - R.dimen.title_padding_top - mTitle.getMeasuredHeight() - mTryButton.getMeasuredHeight()) / 2;
+        offsetY += R.dimen.title_padding_top + mTitle.getMeasuredHeight();
         mTryButton.layout(offsetX, offsetY);
 
         resetBorder();
@@ -129,14 +131,14 @@ function Playground(title, initCode, isHtml) {
         if (mEditView.isFocused()) {
             mEditArea.setBorder(1, 0xff1499f7);
         } else {
-            mEditArea.setBorder(1, DIVIDERS_COLOR);
+            mEditArea.setBorder(1, R.color.dividers);
         }
-        mCodePreviewer.setBorderRight(1, DIVIDERS_COLOR);
-        mCodePreviewer.setBorderBottom(1, DIVIDERS_COLOR);
+        mCodePreviewer.setBorderRight(1, R.color.dividers);
+        mCodePreviewer.setBorderBottom(1, R.color.dividers);
         if (mSelf.getMeasuredWidth() > 700) {
-            mCodePreviewer.setBorderTop(1, DIVIDERS_COLOR);
+            mCodePreviewer.setBorderTop(1, R.color.dividers);
         } else {
-            mCodePreviewer.setBorderLeft(1, DIVIDERS_COLOR);
+            mCodePreviewer.setBorderLeft(1, R.color.dividers);
         }
     }
 
