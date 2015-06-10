@@ -10,11 +10,22 @@ function _R() {
         if (lang.indexOf("zh") >= 0) {
             this.intro = "简介";
             this.getstart = "开始";
+            this.vs_android = "前言";
+            this.documentation = "文档";
+            this.application = "应用";
+            this.about = "关于";
+
+            this.to_android_develop = "致安卓开发者";
         } else {
             this.intro = "Introduction";
             this.getstart = "Getting Started";
-        }
+            this.vs_android = "vs Android";
+            this.documentation = "Documentation";
+            this.application = "Application";
+            this.about = "About";
 
+            this.to_android_develop = "To Android Developer";
+        }
     }
 
     function _color() {

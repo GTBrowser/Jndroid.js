@@ -11,6 +11,14 @@ function VSAndroidView() {
     contentView.setPadding(0, 0, 0, R.dimen.paragraph_padding_top);
     this.addView(contentView);
 
+    var codeTitle = new TextView();
+    codeTitle.setTextSize(R.dimen.title);
+    codeTitle.setTextColor(R.color.theme);
+    codeTitle.setText(R.string.to_android_develop);
+    var codeTitleLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    codeTitleLp.setMargins(mPadding, R.dimen.paragraph_padding_top, mPadding, 0);
+    contentView.addView(codeTitle, codeTitleLp);
+
     var codeArea = new FrameLayout();
     var codeAreaLp = new LayoutParams(LayoutParams.FILL_PARENT, CODE_HEIGHT);
     contentView.addView(codeArea, codeAreaLp);
@@ -51,13 +59,6 @@ function VSAndroidView() {
     function CodeView(title, code) {
         ViewGroup.apply(this, []);
 
-        var mTitle = new TextView();
-        mTitle.setTextSize(R.dimen.title);
-        mTitle.setTextColor(R.color.theme);
-        mTitle.setText(title);
-        mTitle.setGravity(Gravity.CENTER);
-        this.addView(mTitle);
-
         var mCode;
         if (mIsPhone) {
             mCode = new EditText();
@@ -83,9 +84,7 @@ function VSAndroidView() {
             var width = MeasureSpec.getSize(widthMS);
             var height = CODE_HEIGHT;
 
-            mTitle.measure(width, R.dimen.title);
-
-            var contentHeight = height - R.dimen.paragraph_padding_top - R.dimen.title - mPadding * 4;
+            var contentHeight = height - mPadding * 2;
             mCode.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(contentHeight, MeasureSpec.EXACTLY));
 
@@ -94,16 +93,19 @@ function VSAndroidView() {
 
         this.onLayout = function(x, y) {
             var offsetX = 0;
-            var offsetY = R.dimen.paragraph_padding_top;
-            mTitle.layout(offsetX, offsetY);
-
-            offsetY += mPadding + mTitle.getMeasuredHeight();
+            var offsetY = R.dimen.padding;
             mCode.layout(offsetX, offsetY);
         }
     }
 }
 
 var mJndroidCode = "" +
+    "/**\n" +
+    " *\n" +
+    " * Jndroid Code\n" +
+    " * Jndroid 代码\n" +
+    " *\n" +
+    " */\n\n" +
     "function MyView() {\n" +
     "\t/* in Jndroid, we use apply instead of extend | 在Jndroid中，使用apply来实现继承 */\n" +
     "\tView.apply(this, []);\n\n" +
@@ -154,6 +156,12 @@ var mJndroidCode = "" +
     "}";
 
 var mAndroidCode = "" +
+    "/**\n" +
+    " *\n" +
+    " * Android Code\n" +
+    " * Android 代码\n" +
+    " *\n" +
+    " */\n\n" +
     "public class MyView extends View {\n\n\n\n" +
     "\t/* public variable | 公开变量 */\n" +
     "\tpublic static final int UI_WIDTH = 100;\n" +

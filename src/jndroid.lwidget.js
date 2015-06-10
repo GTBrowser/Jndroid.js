@@ -205,6 +205,10 @@ function LImageButton() {
         mBgDrawable.setDimBg(dimBg);
     };
 
+    this.setWaveColor = function(color) {
+        mBgDrawable.setWaveColor(color);
+    };
+
     this.onTouchEvent = function(ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:

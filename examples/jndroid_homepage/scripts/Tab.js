@@ -36,26 +36,26 @@ function TabContent() {
     var buttonWidth = 160;
     var mSelectIndex = 0;
 
-    addTabItem("Jndroid", 0);
-    addTabItem("vs Android", 1, function() {
+    addTabItem(R.string.intro, 0);
+    addTabItem(R.string.vs_android, 1, function() {
         if (mVSView == null) {
             mVSView = new VSAndroidView();
             mVSPage.addView(mVSView);
         }
     });
-    addTabItem("Documentation", 2, function() {
+    addTabItem(R.string.documentation, 2, function() {
         if (mDocView == null) {
             mDocView = new DocumentationView();
             mDocPage.addView(mDocView);
         }
     });
-    addTabItem("Applications", 3, function() {
+    addTabItem(R.string.application, 3, function() {
         if (mAppView == null) {
             mAppView = new ApplicationsView();
             mAppPage.addView(mAppView);
         }
     });
-    addTabItem("About", 4, function() {
+    addTabItem(R.string.about, 4, function() {
         if (mQAView == null) {
             mQAView = new AboutView();
             mQAPage.addView(mQAView);
@@ -95,13 +95,13 @@ function TabContent() {
     };
 
     this.onLayout = function(x, y) {
-        var offsetX = R.dimen.padding;
+        var offsetX = 0;
         var offsetY = 0;
         for (var i = 0; i < mItems.length; i++) {
             mItems[i].layout(offsetX, offsetY);
             offsetX += mItems[i].getMeasuredWidth();
         }
-        offsetX = R.dimen.padding;
+        offsetX = 0;
         offsetY = this.getMeasuredHeight() - mIndicator.getMeasuredHeight();
         mIndicator.layout(offsetX, offsetY);
     };

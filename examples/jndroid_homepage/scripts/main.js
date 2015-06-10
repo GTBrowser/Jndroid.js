@@ -28,14 +28,9 @@ function MainView() {
     mGallery = new Gallery();
     //this.addView(mGallery);
 
-    //mTitle = new TextView();
-    //mTitle.setTextSize(R.dimen.title);
-    //mTitle.setTextColor(0xffffffff);
-    //mTitle.setText("Jndroid");
-    //mTitle.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-    //mTitle.setPadding(52, 0, 0, 0);
-    //mTitle.setBackgroundColor(R.color.theme);
-    //this.addView(mTitle);
+    mTitle = new Titlebar();
+    mTitle.setBackgroundColor(R.color.theme);
+    this.addView(mTitle);
 
     mTab = new Tab();
     this.addView(mTab);
@@ -78,8 +73,8 @@ function MainView() {
         var width = MeasureSpec.getSize(widthMS);
         var height = MeasureSpec.getSize(heightMS);
 
-        //mTitle.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-        //    MeasureSpec.makeMeasureSpec(48, MeasureSpec.EXACTLY));
+        mTitle.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(48, MeasureSpec.EXACTLY));
         mTab.measure(widthMS, 48);
 
         var contentHeight = height - mTab.getMeasuredHeight();
@@ -91,9 +86,9 @@ function MainView() {
     this.onLayout = function(x, y) {
         var offsetX = 0;
         var offSetY = 0;
-        //mTitle.layout(offsetX, offSetY);
+        mTitle.layout(offsetX, offSetY);
 
-        //offSetY += mTitle.getMeasuredHeight();
+        offSetY += mTitle.getMeasuredHeight();
         mTab.layout(offsetX, offSetY);
 
         offSetY += mTab.getMeasuredHeight();
