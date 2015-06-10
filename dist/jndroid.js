@@ -670,7 +670,7 @@ function MotionEvent(rawEv) {
         } else if (rawEv.type == "touchcancel") {
             return MotionEvent.ACTION_CANCEL;
         } else if (rawEv.type == "mouseout") {
-            var div = rawEv.target;
+            var div = this.realView.getDiv();
             var offset = Utils.getOffset(div);
             if (this.getRawX() < offset.left || this.getRawX() > (offset.left + offset.width) || this.getRawY() < offset.top || this.getRawY() > (offset.top + offset.height)) {
                 return MotionEvent.ACTION_CANCEL;
@@ -1618,6 +1618,7 @@ function View() {
 	//TODO
     this.touch = function(e) {
         e.stopPropagation();
+        e.preventDefault();
 
         if (e.type == "mousemove" && !mInTouch) {
             return;
@@ -3088,6 +3089,10 @@ function LImageButton() {
 
     this.setDimBg = function(dimBg) {
         mBgDrawable.setDimBg(dimBg);
+    };
+
+    this.setWaveColor = function(color) {
+        mBgDrawable.setWaveColor(color);
     };
 
     this.onTouchEvent = function(ev) {
