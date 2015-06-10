@@ -18,7 +18,7 @@ function IntroductionView() {
     var mIntro = new TextView();
     mIntro.setTextSize(R.dimen.title);
     mIntro.setTextColor(R.color.theme);
-    mIntro.setText("Introduction");
+    mIntro.setText(R.string.intro);
     var introLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     introLp.setMargins(mPadding, mParaPaddingTop, mPadding, 0);
     mContentView.addView(mIntro, introLp);
@@ -158,7 +158,7 @@ function IntroductionView() {
         var getstart = new TextView();
         getstart.setTextSize(R.dimen.title);
         getstart.setTextColor(R.color.theme);
-        getstart.setText("Getting Started");
+        getstart.setText(R.string.getstart);
         var getstartLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         getstartLp.setMargins(mPadding, mParaPaddingTop, mPadding, mPadding);
         mContentView.addView(getstart, getstartLp);

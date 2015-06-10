@@ -5,23 +5,23 @@
     <title>Jndroid</title>
 
     <!-- Jndroid libraries -->
-    <!--<script src="../../src/jndroid.core.js"></script>-->
-    <!--<script src="../../src/jndroid.animation.js"></script>-->
-    <!--<script src="../../src/jndroid.dialog.js"></script>-->
-    <!--<script src="../../src/jndroid.widget.js"></script>-->
-    <!--<script src="../../src/jndroid.layout.js"></script>-->
-    <!--<script src="../../src/jndroid.lwidget.js"></script>-->
-    <!--<script src="../../src/jndroid.net.js"></script>-->
-    <script src="http://file.gtbrowser.cn/jndroid/jndroid.js"></script>
+    <script src="../../src/jndroid.core.js"></script>
+    <script src="../../src/jndroid.animation.js"></script>
+    <script src="../../src/jndroid.dialog.js"></script>
+    <script src="../../src/jndroid.widget.js"></script>
+    <script src="../../src/jndroid.layout.js"></script>
+    <script src="../../src/jndroid.lwidget.js"></script>
+    <script src="../../src/jndroid.net.js"></script>
+    <!--<script src="http://file.gtbrowser.cn/jndroid/jndroid.js"></script>-->
 
 
     <!-- Source files -->
     <script src="scripts/res.js"></script>
-    <script src="scripts/playground.js"></script>
-    <script src="scripts/IntroductionPage.js"></script>
     <script src="scripts/main.js"></script>
+    <script src="scripts/IntroductionPage.js"></script>
     <script src="scripts/Tab.js"></script>
     <script src="scripts/Indicator.js"></script>
+    <script src="scripts/playground.js"></script>
     <script src="scripts/manifest.js"></script>
 
     <!-- Code Editor -->
@@ -38,7 +38,16 @@
     setContentView(rootview);
 
     mMainView = new MainView();
-    mMainView.setStyle("fontFamily", "RobotoDraft, Roboto, sans-serif, 微软雅黑");
+    try {
+        var lang = getLocale();
+        if (lang.indexOf("zh") >= 0) {
+            mMainView.setFontFamily("微软雅黑");
+        } else {
+            mMainView.setFontFamily("RobotoDraft, Roboto, sans-serif");
+        }
+    } catch(e) {
+        console.log(e);
+    }
     rootview.addView(mMainView);
 
     Utils.includeJs("scripts/VSAndroidView.js");

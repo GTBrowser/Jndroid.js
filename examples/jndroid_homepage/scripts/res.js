@@ -6,7 +6,15 @@ function _R() {
     this.dimen = new _dimen();
 
     function _string() {
-        this.intro = "简介";
+        var lang = getLocale();
+        if (lang.indexOf("zh") >= 0) {
+            this.intro = "简介";
+            this.getstart = "开始";
+        } else {
+            this.intro = "Introduction";
+            this.getstart = "Getting Started";
+        }
+
     }
 
     function _color() {
@@ -33,4 +41,10 @@ function _R() {
         this.text = 14;
         this.sub_text = 12;
     }
+}
+
+function getLocale() {
+    var DEFAULT_VALUE = 'zh'; /* 默认设置为中文 */
+    var PREFERRED_LANGUAGE = navigator.language || navigator.userLanguage || navigator.browserLanguage || navigator.systemLanguage || DEFAULT_VALUE;
+    return PREFERRED_LANGUAGE;
 }
