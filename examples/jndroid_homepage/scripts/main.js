@@ -77,7 +77,7 @@ function MainView() {
             MeasureSpec.makeMeasureSpec(48, MeasureSpec.EXACTLY));
         mTab.measure(widthMS, 48);
 
-        var contentHeight = height - mTab.getMeasuredHeight();
+        var contentHeight = height - mTab.getMeasuredHeight() - mTitle.getMeasuredHeight();
         mPageContent.measure(widthMS, contentHeight);
 
         this.setMeasuredDimension(width, height);
