@@ -1926,7 +1926,7 @@ function setContentView(view, htmlnode) {
     mHideDiv.style.width = "100%";
 
     mRootNode.innerHTML = "";
-    mRootNode.style.PADDING = "0";
+    mRootNode.style.padding = "0";
     mRootNode.style.margin = "0";
     mRootNode.appendChild(mHideDiv);
 
