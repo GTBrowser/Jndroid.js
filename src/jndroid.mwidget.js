@@ -877,8 +877,8 @@ function WaveDrawable() {
             canvas.fillRect(b.left, b.top, b.width(), b.height());
         }
 
-        var offsetX = mX;
-        var offsetY = mY;
+        var offsetX = b.left + mX;
+        var offsetY = b.top + mY;
         var radius = b.height() / 2 + b.width() * mWaveProcessor.getCurrProcess() * 2;
         radius = radius / 2;
         radius = Math.min(radius, maxRadius);
@@ -1128,9 +1128,10 @@ function MRadioButton() {
  * @extends Button
  */
 function MToggleButton() {
-    Button.apply(this, []);
+    View.apply(this, []);
 
-    this.OFFSETX = 3;
+    var mPaddingX = 24;
+    var mTrackRadius = 8;
     var mSelf = this;
     var mChecked;
     var mOnCheckedChangeListener;
@@ -1141,10 +1142,16 @@ function MToggleButton() {
     var mDistance;
     var mRadius;
 
+    var mWaveDrawable = new WaveDrawable();
+    mWaveDrawable.setDimBg(false);
+    mWaveDrawable.setX(24);
+    mWaveDrawable.setY(24);
+    mWaveDrawable.setMaxRadius(24);
+    mWaveDrawable.setCallback(this);
+
     this.setClickable(true);
     this.setWillNotDraw(false);
     this.setBackgroundColor(0x00000000);
-    this.setBorder(0, 0x00000000);
 
     mProcessor.setProcessListener(function() {
         if (mProcessor.getCurrProcess() < 0.5) {
@@ -1154,19 +1161,23 @@ function MToggleButton() {
         }
 
         if (mOnCheckedChangeListener != null) {
-            mOnCheckedChangeListener.onCheckedChanged(mSelf, mChecked);
+            mOnCheckedChangeListener.call(mSelf, mChecked);
         }
     });
 
     function refreshColors() {
-        if (!mChecked && mProcessor.getCurrProcess() == 0) {
-            mColor = 0xfff1f1f1;
-            mBgColor = 0xffacabab;
+        if (mProcessor.getCurrProcess() == 0) {
+            mColor = 0xfffafafa;
+            mBgColor = 0x42000000;
+            mWaveDrawable.setWaveColor(0x33000000);
         } else {
             mColor = 0xff009688;
-            mBgColor = 0xff77c1ba;
+            var r = Color.red(mColor);
+            var g = Color.green(mColor);
+            var b = Color.blue(mColor);
+            mBgColor = Color.argb(128, r, g, b);
+            mWaveDrawable.setWaveColor(Color.argb(50, r, g, b));
         }
-        mSelf.postInvalidate();
     }
 
     /**
@@ -1217,44 +1228,52 @@ function MToggleButton() {
             mProcessor.setCurrProcess(0);
         }
         mSelf.postInvalidate();
+        refreshColors();
     };
 
     this.setChecked(false);
+
+    this.onMeasure = function(widthMS, heightMS) {
+        var trackWidth = 24 - mTrackRadius;
+        var width = trackWidth + 48;
+        var height = 48;
+        this.setMeasuredDimension(width, height);
+    };
 
     this.onDraw = function(canvas) {
         var w = mSelf.getMeasuredWidth();
         var h = mSelf.getMeasuredHeight();
         var p = mProcessor.getCurrProcess();
-        mRadius = Math.min(w,h) * 3 / 8;
-        mDistance = w - this.OFFSETX * 2 - mRadius * 2;
+        var offsetX;
+        var offsetY;
+        mRadius = 10;
+        mDistance = w - mPaddingX * 2;
 
-        if (p == 0) {
-            mColor = 0xfff1f1f1;
-            mBgColor = 0xffacabab;
-        } else {
-            mColor = 0xff009688;
-            mBgColor = 0xff77c1ba;
-        }
-
-        var lineWidth = h / 2;
+        refreshColors();
 
         canvas.beginPath();
-        canvas.lineWidth = lineWidth;
+        canvas.lineWidth = mTrackRadius * 2;
         canvas.lineCap = 'round';
-        canvas.moveTo(lineWidth/2 + this.OFFSETX , h / 2);
-        canvas.lineTo(w - (lineWidth/2 + this.OFFSETX), h / 2);
+        canvas.moveTo(24, h / 2);
+        canvas.lineTo(w - 24, h / 2);
         canvas.strokeStyle = Utils.toCssColor(mBgColor);
         canvas.stroke();
 
+
+        offsetX = mPaddingX + mDistance *  p;
+        offsetY = h / 2;
         canvas.shadowOffsetX = 0;
         canvas.shadowOffsetY = 0;
         canvas.shadowBlur = 3;
         canvas.shadowColor = Utils.toCssColor(0x66000000);
         canvas.beginPath();
-        canvas.arc(this.OFFSETX + mDistance *  p + mRadius, h / 2, mRadius, 0, Math.PI * 2, true);
+        canvas.arc(offsetX, offsetY, mRadius, 0, Math.PI * 2, true);
         canvas.closePath();
         canvas.fillStyle = Utils.toCssColor(mColor);
         canvas.fill();
+
+        mWaveDrawable.setBounds(offsetX - 24, offsetY - 24, offsetX + 24, offsetY + 24);
+        mWaveDrawable.draw(canvas);
 
         if (mProcessor.computeProcessOffset()) {
             mSelf.postInvalidate();
@@ -1274,6 +1293,7 @@ function MToggleButton() {
         process = Math.min(1, process);
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                mWaveDrawable.setState(View.VIEW_STATE_PRESSED);
                 mDownX = ev.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -1284,6 +1304,7 @@ function MToggleButton() {
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                mWaveDrawable.setState(View.VIEW_STATE_ENABLED);
                 if (isClick(ev)) {
                     if (mChecked) {
                         mProcessor.startProcess(1, 0, 100);
