@@ -728,6 +728,113 @@ Object.defineProperty(MotionEvent,"ACTION_MOVE",{value:2});
 Object.defineProperty(MotionEvent,"ACTION_CANCEL",{value:3});
 
 /**
+ * The Color class defines methods for creating and converting color ints.
+ * Colors are represented as packed ints, made up of 4 bytes: alpha, red,
+ * green, blue. The values are unpremultiplied, meaning any transparency is
+ * stored solely in the alpha component, and not in the color components. The
+ * components are stored as follows (alpha << 24) | (red << 16) |
+ * (green << 8) | blue. Each component ranges between 0..255 with 0
+ * meaning no contribution for that component, and 255 meaning 100%
+ * contribution. Thus opaque-black would be 0xFF000000 (100% opaque but
+ * no contributions from red, green, or blue), and opaque-white would be
+ * 0xFFFFFFFF
+ * @class Color
+ * @static
+ */
+var Color = new _Color();
+function _Color() {
+    /**
+     * Return the alpha component of a color int. This is the same as saying
+     * color >>> 24
+     *
+     * @method alpha
+     * @return {int}
+     */
+    this.alpha = function (color) {
+        return color >>> 24;
+    };
+
+    /**
+     * Return the red component of a color int. This is the same as saying
+     * (color >> 16) & 0xFF
+     *
+     * @method red
+     * @return {int}
+     */
+    this.red = function (color) {
+        return (color >> 16) & 0xFF;
+    };
+
+    /**
+     * Return the green component of a color int. This is the same as saying
+     * (color >> 8) & 0xFF
+     *
+     * @method green
+     * @return {int}
+     */
+    this.green = function (color) {
+        return (color >> 8) & 0xFF;
+    };
+
+    /**
+     * Return the blue component of a color int. This is the same as saying
+     * color & 0xFF
+     *
+     * @method blue
+     * @return {int}
+     */
+    this.blue = function (color) {
+        return color & 0xFF;
+    };
+
+    /**
+     * Return a color-int from red, green, blue components.
+     * The alpha component is implicity 255 (fully opaque).
+     * These component values should be [0..255], but there is no
+     * range check performed, so if they are out of range, the
+     * returned color is undefined.
+     *
+     * @method rgb
+     * @param red  Red component [0..255] of the color
+     * @param green Green component [0..255] of the color
+     * @param blue  Blue component [0..255] of the color
+     * @return {int}
+     */
+    this.rgb = function (red, green, blue) {
+        return (0xFF << 24) | (red << 16) | (green << 8) | blue;
+    };
+
+    /**
+     * Return a color-int from alpha, red, green, blue components.
+     * These component values should be [0..255], but there is no
+     * range check performed, so if they are out of range, the
+     * returned color is undefined.
+     * @method argb
+     * @param alpha Alpha component [0..255] of the color
+     * @param red   Red component [0..255] of the color
+     * @param green Green component [0..255] of the color
+     * @param blue  Blue component [0..255] of the color
+     * @return {int}
+     */
+    this.argb = function (alpha, red, green, blue) {
+        return (alpha << 24) | (red << 16) | (green << 8) | blue;
+    };
+}
+Object.defineProperty(MotionEvent,"BLACK",{value:0xFF000000});
+Object.defineProperty(MotionEvent,"DKGRAY",{value:0xFF444444});
+Object.defineProperty(MotionEvent,"GRAY",{value:0xFF888888});
+Object.defineProperty(MotionEvent,"LTGRAY",{value:0xFFCCCCCC});
+Object.defineProperty(MotionEvent,"WHITE",{value:0xFFFFFFFF});
+Object.defineProperty(MotionEvent,"RED",{value:0xFFFF0000});
+Object.defineProperty(MotionEvent,"GREEN",{value:0xFF00FF00});
+Object.defineProperty(MotionEvent,"BLUE",{value:0xFF0000FF});
+Object.defineProperty(MotionEvent,"YELLOW",{value:0xFFFFFF00});
+Object.defineProperty(MotionEvent,"CYAN",{value:0xFF00FFFF});
+Object.defineProperty(MotionEvent,"MAGENTA",{value:0xFFFF00FF});
+Object.defineProperty(MotionEvent,"TRANSPARENT",{value:0});
+
+
+/**
  * A Drawable is a general abstraction for "something that can be drawn."  Most
  * often you will deal with Drawable as the type of resource retrieved for
  * drawing things to the screen; the Drawable class provides a generic API for
@@ -948,6 +1055,7 @@ function View() {
     var mClickListener = null;
     var mLongClickListener = null;
     var mTag = "View";
+    var mID = View.NO_ID;
     var mHTMLCanvas = null;
     var canvas = null;
     var mInTouch = false;
@@ -958,6 +1066,28 @@ function View() {
 
 
     var mRunQueue = new Map();
+
+    /**
+     * Returns this view's identifier.
+     *
+     * @return a positive integer used to identify the view or NO_ID
+     *         if the view has no ID
+
+     */
+    this.getId = function() {
+        return mID;
+    };
+
+    /**
+     * Sets the identifier for this view. The identifier does not have to be
+     * unique in this view's hierarchy. The identifier should be a positive
+     * number.
+     *
+     * @param id a number used to identify the view
+     */
+    this.setId = function(id) {
+        mID = id;
+    };
 
 	/**
 	* Returns this view's tag.
@@ -1741,8 +1871,30 @@ function View() {
 
     this.setFontFamily = function(fontFamily) {
         this.getDiv().style.fontFamily = fontFamily;
+    };
+
+    /**
+     * Look for a child view with the given id.  If this view has the given
+     * id, return this view.
+     *
+     * @param id The id to search for.
+     * @return The view that has the given id in the hierarchy or null
+     */
+    this.findViewById = function(id) {
+        if (id < 0) {
+            return null;
+        }
+        return this.findViewTraversal(id);
+    };
+
+    this.findViewTraversal = function(id) {
+        if (id == mID) {
+            return this;
+        }
+        return null;
     }
 }
+Object.defineProperty(View,"NO_ID",{value:-1});
 Object.defineProperty(View,"VISIBLE",{value:0});
 Object.defineProperty(View,"INVISIBLE",{value:4});
 Object.defineProperty(View,"GONE",{value:8});
@@ -1800,7 +1952,8 @@ function ViewGroup() {
      *
      * @method addView
      * @param {View} child the child view to add
-     * @param {int} index the position at which to add the child
+     * @param {int} index the position at which to add the child,
+     *          or {LayoutParams} params the layout parameters to set on the child
      * @param {LayoutParams} params the layout parameters to set on the child
      */
     this.addView = function(view, indexOrParams, params) {
@@ -1861,6 +2014,21 @@ function ViewGroup() {
             this.getParent().requestLayout();
         }
     };
+
+    this.findViewTraversal = function(id) {
+        if (id == this.getId()) {
+            return this;
+        }
+
+        for (var i = 0; i < mChildren.length; i++) {
+            var v = mChildren[i];
+            v = v.findViewById(id);
+            if (v != null) {
+                return v;
+            }
+        }
+        return null;
+    }
 }
 
 // 以下为Canvas方法
@@ -3710,6 +3878,7 @@ function WaveDrawable() {
     var mDimBg = true;
     var maxRadius = 9999;
     var mWaveColor = 0x25191919;
+    var mBgColor = 0x33191919;
 
     this.onStateChange = function(state) {
         if (mCurrentState != View.VIEW_STATE_PRESSED && state == View.VIEW_STATE_PRESSED) {
@@ -3758,13 +3927,13 @@ function WaveDrawable() {
         var b = this.getBounds();
 
         if (mDimBg) {
-            canvas.fillStyle = Utils.toCssColor(0x33191919);
+            canvas.fillStyle = Utils.toCssColor(mWaveColor);
             canvas.fillRect(b.left, b.top, b.width(), b.height());
         }
 
         var offsetX = mX;
         var offsetY = mY;
-        var radius = b.height() + b.width() * mWaveProcessor.getCurrProcess() * 2;
+        var radius = b.height() / 2 + b.width() * mWaveProcessor.getCurrProcess() * 2;
         radius = radius / 2;
         radius = Math.min(radius, maxRadius);
         canvas.beginPath();
@@ -3777,6 +3946,231 @@ function WaveDrawable() {
     this.drawEnable = function(canvas) {
 
     };
+}
+
+function LRadioGroup() {
+    LinearLayout.apply(this, []);
+
+    var mSelf = this;
+    var mCheckedId = -1;
+    var mOnCheckedChangeListener = null;
+
+    this.addChild = function(child, indexOrParams, params) {
+        if (child.isChecked()) {
+            if (mCheckedId != -1) {
+                setCheckedStateForView(mCheckedId, false);
+            }
+            setCheckedId(child.getId());
+        }
+        child.setCheckedListener(function() {
+            mSelf.check(child.getId());
+        });
+        this.addView(child, indexOrParams, params);
+    };
+
+    /**
+     * <p>Register a callback to be invoked when the checked radio button
+     * changes in this group.</p>
+     *
+     * @method setOnCheckedChangeListener
+     */
+    this.setOnCheckedChangeListener = function(l) {
+        mOnCheckedChangeListener = l;
+    };
+
+    /**
+     * <p>Sets the selection to the radio button whose identifier is passed in
+     * parameter. Using -1 as the selection identifier clears the selection;
+     *
+     * @method
+     * @param id the unique id of the radio button to select in this group
+     */
+    this.check = function(id) {
+        // don't even bother
+        if (id != -1 && (id == mCheckedId)) {
+            return;
+        }
+        if (mCheckedId != -1) {
+            setCheckedStateForView(mCheckedId, false);
+        }
+        if (id != -1) {
+            setCheckedStateForView(id, true);
+        }
+        setCheckedId(id);
+    };
+
+    /**
+     * <p>Returns the identifier of the selected radio button in this group.
+     * Upon empty selection, the returned value is -1.</p>
+     *
+     * @method getCheckedRadioButtonId
+     * @return the unique id of the selected radio button in this group
+     *
+     */
+    this.getCheckedRadioButtonId = function() {
+        return mCheckedId;
+    };
+
+    /**
+     * <p>Clears the selection. When the selection is cleared, no radio button
+     * in this group is selected and {@link #getCheckedRadioButtonId()} returns
+     * null.</p>
+     *
+     * @method clearCheck
+     */
+    this.clearCheck = function() {
+        this.check(-1);
+    };
+
+    function setCheckedId(id) {
+        mCheckedId = id;
+        if (mOnCheckedChangeListener != null) {
+            mOnCheckedChangeListener.call(this, mCheckedId);
+        }
+    }
+
+    function setCheckedStateForView(viewId, checked) {
+        var checkedView = mSelf.findViewById(viewId);
+        if (checkedView != null) {
+            checkedView.setChecked(checked);
+        }
+    }
+}
+
+function LRadioButton() {
+    ViewGroup.apply(this, []);
+
+    this.HEIGHT = 48;
+
+    var mSelf = this;
+    var mColor = 0xff009688;
+    var mChecked = false;
+
+    var mCheckedListener = null;
+
+    var mRadioCheck = new LRadioCheck();
+    mRadioCheck.setOnClickListener(onclick);
+    this.addView(mRadioCheck);
+
+    var mText = new TextView();
+    mText.setTextSize(16);
+    mText.setTextColor(0xff212121);
+    mText.setPadding(4);
+    mText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+    this.addView(mText);
+
+    this.setOnClickListener(onclick);
+
+    this.setColor = function(c) {
+        mColor = c;
+    };
+
+    this.setText = function(text) {
+        mText.setText(text);
+    };
+
+    this.isChecked = function() {
+        return mChecked;
+    };
+
+    this.setChecked = function(checked) {
+        mChecked = checked;
+        mRadioCheck.setChecked(checked);
+    };
+
+    this.setCheckedListener = function(l) {
+        mCheckedListener = l;
+    };
+
+    this.onTouchEvent = function(ev) {
+        mRadioCheck.onTouchEvent(ev);
+        mRadioCheck.getBgDrawable().setX(48);
+    };
+
+    this.onMeasure = function(widthMS, heightMS) {
+        var width = MeasureSpec.getSize(widthMS);
+        var height = this.HEIGHT;
+
+        mRadioCheck.measure(50, 48);
+        mText.measure(width - 50, MeasureSpec.makeMeasureSpec(48, MeasureSpec.EXACTLY));
+
+        this.setMeasuredDimension(width, height);
+    };
+
+    this.onLayout = function(x, y) {
+        var offsetX = 0;
+        var offsetY = 0;
+        mRadioCheck.layout(offsetX, offsetY);
+
+        offsetX += 50;
+        mText.layout(offsetX, offsetY);
+    };
+
+    function onclick() {
+        mSelf.setChecked(!mChecked);
+        if (mCheckedListener != null) {
+            mCheckedListener.call(mSelf, mChecked);
+        }
+    }
+
+    function LRadioCheck() {
+        View.apply(this, []);
+
+        var mBgDrawable = new WaveDrawable();
+        mBgDrawable.setCallback(this);
+
+        this.setWillNotDraw(false);
+        this.setCornerSize(24);
+
+        this.getBgDrawable = function() {
+            return mBgDrawable;
+        };
+
+        this.setChecked = function(check) {
+            var r = Color.red(mColor);
+            var g = Color.green(mColor);
+            var b = Color.blue(mColor);
+            mBgDrawable.setWaveColor(Color.argb(25, r, g, b));
+            this.postInvalidate();
+        };
+
+        this.onTouchEvent = function(ev) {
+            switch (ev.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    mBgDrawable.setState(View.VIEW_STATE_PRESSED);
+                    mBgDrawable.setX(ev.getX());
+                    mBgDrawable.setY(ev.getY());
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                case MotionEvent.ACTION_UP:
+                    mBgDrawable.setState(View.VIEW_STATE_ENABLED);
+                    break;
+            }
+        };
+
+        this.onDraw = function(canvas) {
+            if (mChecked) {
+                canvas.strokeStyle = Utils.toCssColor(mColor);
+                canvas.fillStyle = Utils.toCssColor(mColor);
+            } else {
+                canvas.strokeStyle = Utils.toCssColor(0x88000000);
+                canvas.fillStyle = Utils.toCssColor(0x88000000);
+            }
+            canvas.lineWidth = "2";
+            canvas.beginPath();
+            canvas.arc(24, 24, 9, 0, Math.PI * 2, false);
+            canvas.closePath();
+            canvas.stroke();
+
+            canvas.beginPath();
+            canvas.arc(24, 24, 5, 0, Math.PI * 2, false);
+            canvas.closePath();
+            canvas.fill();
+
+            mBgDrawable.setBounds(0, 0, this.getMeasuredWidth(), this.getMeasuredHeight());
+            mBgDrawable.draw(canvas);
+        };
+    }
 }
 
 var LSnackBar = new _LSnackbar();
