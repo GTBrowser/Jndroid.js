@@ -894,6 +894,22 @@ function WaveDrawable() {
     };
 }
 
+/**
+ *
+ * This class is used to create a multiple-exclusion scope for a set of radio
+ * buttons. Checking one radio button that belongs to a radio group unchecks
+ * any previously checked radio button within the same group.
+ *
+ * Intially, all of the radio buttons are unchecked. While it is not possible
+ * to uncheck a particular radio button, the radio group can be cleared to
+ * remove the checked state.
+ *
+ * The selection is identified by the unique id of the radio button as defined
+ * in the XML layout file.
+ *
+ * @class MRadioGroup
+ * @extends LinearLayout
+ */
 function MRadioGroup() {
     LinearLayout.apply(this, []);
 
@@ -983,6 +999,20 @@ function MRadioGroup() {
     }
 }
 
+/**
+ *
+ * A radio button is a two-states button that can be either checked or
+ * unchecked. When the radio button is unchecked, the user can press or click it
+ * to check it. However, contrary to a CheckBox, a radio
+ * button cannot be unchecked by the user once checked.
+ *
+ * Radio buttons are normally used together in a
+ * RadioGroup. When several radio buttons live inside
+ * a radio group, checking one radio button unchecks all the others.
+ *
+ * @class MRadioButton
+ * @extends ViewGroup
+ */
 function MRadioButton() {
     ViewGroup.apply(this, []);
 
@@ -1125,7 +1155,7 @@ function MRadioButton() {
  * or clicked, the state changes automatically.
  *
  * @class MToggleButton
- * @extends Button
+ * @extends View
  */
 function MToggleButton() {
     View.apply(this, []);
