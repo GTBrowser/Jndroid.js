@@ -55,6 +55,8 @@
                 <li><a class="type" href="../classes/LinearLayout.html">LinearLayout</a></li>
                 <li><a class="type" href="../classes/MeasureSpec.html">MeasureSpec</a></li>
                 <li><a class="type" href="../classes/MotionEvent.html">MotionEvent</a></li>
+                <li><a class="type" href="../classes/MRadioButton.html">MRadioButton</a></li>
+                <li><a class="type" href="../classes/MRadioGroup.html">MRadioGroup</a></li>
                 <li><a class="type" href="../classes/MToggleButton.html">MToggleButton</a></li>
                 <li><a class="type" href="../classes/ScrollView.html">ScrollView</a></li>
                 <li><a class="type" href="../classes/TextView.html">TextView</a></li>
@@ -969,6 +971,22 @@
                 };
             }
             
+            /**
+             *
+             * This class is used to create a multiple-exclusion scope for a set of radio
+             * buttons. Checking one radio button that belongs to a radio group unchecks
+             * any previously checked radio button within the same group.
+             *
+             * Intially, all of the radio buttons are unchecked. While it is not possible
+             * to uncheck a particular radio button, the radio group can be cleared to
+             * remove the checked state.
+             *
+             * The selection is identified by the unique id of the radio button as defined
+             * in the XML layout file.
+             *
+             * @class MRadioGroup
+             * @extends LinearLayout
+             */
             function MRadioGroup() {
                 LinearLayout.apply(this, []);
             
@@ -1058,6 +1076,20 @@
                 }
             }
             
+            /**
+             *
+             * A radio button is a two-states button that can be either checked or
+             * unchecked. When the radio button is unchecked, the user can press or click it
+             * to check it. However, contrary to a CheckBox, a radio
+             * button cannot be unchecked by the user once checked.
+             *
+             * Radio buttons are normally used together in a
+             * RadioGroup. When several radio buttons live inside
+             * a radio group, checking one radio button unchecks all the others.
+             *
+             * @class MRadioButton
+             * @extends ViewGroup
+             */
             function MRadioButton() {
                 ViewGroup.apply(this, []);
             
@@ -1200,7 +1232,7 @@
              * or clicked, the state changes automatically.
              *
              * @class MToggleButton
-             * @extends Button
+             * @extends View
              */
             function MToggleButton() {
                 View.apply(this, []);

@@ -12,6 +12,8 @@ YUI.add("yuidoc-meta", function(Y) {
         "ImageView",
         "LayoutParams",
         "LinearLayout",
+        "MRadioButton",
+        "MRadioGroup",
         "MToggleButton",
         "MeasureSpec",
         "MotionEvent",

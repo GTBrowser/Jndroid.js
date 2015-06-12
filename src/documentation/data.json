@@ -34,6 +34,8 @@
             "name": "jndroid.mwidget.js",
             "modules": {},
             "classes": {
+                "MRadioGroup": 1,
+                "MRadioButton": 1,
                 "MToggleButton": 1
             },
             "fors": {},
@@ -185,6 +187,32 @@
             "description": "A view that shows items in a center-locked, horizontally scrolling list.",
             "extends": "ViewGroup"
         },
+        "MRadioGroup": {
+            "name": "MRadioGroup",
+            "shortname": "MRadioGroup",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.mwidget.js",
+            "line": 897,
+            "description": "This class is used to create a multiple-exclusion scope for a set of radio\n buttons. Checking one radio button that belongs to a radio group unchecks\n any previously checked radio button within the same group.\nIntially, all of the radio buttons are unchecked. While it is not possible\n to uncheck a particular radio button, the radio group can be cleared to\n remove the checked state.\nThe selection is identified by the unique id of the radio button as defined\n in the XML layout file.",
+            "extends": "LinearLayout"
+        },
+        "MRadioButton": {
+            "name": "MRadioButton",
+            "shortname": "MRadioButton",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "jndroid.mwidget.js",
+            "line": 1002,
+            "description": "A radio button is a two-states button that can be either checked or\n unchecked. When the radio button is unchecked, the user can press or click it\n to check it. However, contrary to a CheckBox, a radio\n button cannot be unchecked by the user once checked.\nRadio buttons are normally used together in a\n RadioGroup. When several radio buttons live inside\n a radio group, checking one radio button unchecks all the others.",
+            "extends": "ViewGroup"
+        },
         "MToggleButton": {
             "name": "MToggleButton",
             "shortname": "MToggleButton",
@@ -194,9 +222,9 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "jndroid.mwidget.js",
-            "line": 1122,
+            "line": 1152,
             "description": "A button with two states, checked and unchecked. When the button is pressed\n or clicked, the state changes automatically.",
-            "extends": "Button"
+            "extends": "View"
         },
         "ScrollView": {
             "name": "ScrollView",
@@ -1573,15 +1601,15 @@
         },
         {
             "file": "jndroid.mwidget.js",
-            "line": 917,
+            "line": 933,
             "description": "<p>Register a callback to be invoked when the checked radio button\nchanges in this group.</p>",
             "itemtype": "method",
             "name": "setOnCheckedChangeListener",
-            "class": "MToggleButton"
+            "class": "MRadioGroup"
         },
         {
             "file": "jndroid.mwidget.js",
-            "line": 927,
+            "line": 943,
             "description": "<p>Sets the selection to the radio button whose identifier is passed in\nparameter. Using -1 as the selection identifier clears the selection;",
             "itemtype": "method",
             "name": "",
@@ -1591,30 +1619,30 @@
                     "description": "the unique id of the radio button to select in this group"
                 }
             ],
-            "class": "MToggleButton"
+            "class": "MRadioGroup"
         },
         {
             "file": "jndroid.mwidget.js",
-            "line": 948,
+            "line": 964,
             "description": "<p>Returns the identifier of the selected radio button in this group.\nUpon empty selection, the returned value is -1.</p>",
             "itemtype": "method",
             "name": "getCheckedRadioButtonId",
             "return": {
                 "description": "the unique id of the selected radio button in this group"
             },
-            "class": "MToggleButton"
+            "class": "MRadioGroup"
         },
         {
             "file": "jndroid.mwidget.js",
-            "line": 960,
+            "line": 976,
             "description": "<p>Clears the selection. When the selection is cleared, no radio button\nin this group is selected and {@link #getCheckedRadioButtonId()} returns\nnull.</p>",
             "itemtype": "method",
             "name": "clearCheck",
-            "class": "MToggleButton"
+            "class": "MRadioGroup"
         },
         {
             "file": "jndroid.mwidget.js",
-            "line": 1188,
+            "line": 1218,
             "description": "Register a callback to be invoked when the checked state of this button\nchanges.",
             "itemtype": "method",
             "name": "setOnCheckedChangeListener",
@@ -1628,7 +1656,7 @@
         },
         {
             "file": "jndroid.mwidget.js",
-            "line": 1199,
+            "line": 1229,
             "description": "return the checked state of this button.",
             "itemtype": "method",
             "name": "isChecked",
@@ -1640,7 +1668,7 @@
         },
         {
             "file": "jndroid.mwidget.js",
-            "line": 1222,
+            "line": 1252,
             "description": "Changes the checked state of this button.The default state is true.",
             "itemtype": "method",
             "name": "setChecked",
