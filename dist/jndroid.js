@@ -4190,8 +4190,9 @@ function MToggleButton() {
     var mChecked;
     var mOnCheckedChangeListener;
     var mDownX;
-    var mColor;
-    var mBgColor;
+    var mColor = 0xff009688;
+    var mThumbColor;
+    var mTrackColor;
     var mProcessor = new Processor();
     var mDistance;
     var mRadius;
@@ -4221,18 +4222,22 @@ function MToggleButton() {
 
     function refreshColors() {
         if (mProcessor.getCurrProcess() == 0) {
-            mColor = 0xfffafafa;
-            mBgColor = 0x42000000;
-            mWaveDrawable.setWaveColor(0x33000000);
+            mThumbColor = 0xfffafafa;
+            mTrackColor = 0x42000000;
+            mWaveDrawable.setWaveColor(0x1a000000);
         } else {
-            mColor = 0xff009688;
-            var r = Color.red(mColor);
-            var g = Color.green(mColor);
-            var b = Color.blue(mColor);
-            mBgColor = Color.argb(128, r, g, b);
+            mThumbColor = mColor;
+            var r = Color.red(mThumbColor);
+            var g = Color.green(mThumbColor);
+            var b = Color.blue(mThumbColor);
+            mTrackColor = Color.argb(128, r, g, b);
             mWaveDrawable.setWaveColor(Color.argb(50, r, g, b));
         }
     }
+
+    this.setColor = function(c) {
+        mColor = c;
+    };
 
     /**
      * Register a callback to be invoked when the checked state of this button
@@ -4310,20 +4315,20 @@ function MToggleButton() {
         canvas.lineCap = 'round';
         canvas.moveTo(24, h / 2);
         canvas.lineTo(w - 24, h / 2);
-        canvas.strokeStyle = Utils.toCssColor(mBgColor);
+        canvas.strokeStyle = Utils.toCssColor(mTrackColor);
         canvas.stroke();
 
 
         offsetX = mPaddingX + mDistance *  p;
         offsetY = h / 2;
         canvas.shadowOffsetX = 0;
-        canvas.shadowOffsetY = 0;
-        canvas.shadowBlur = 3;
+        canvas.shadowOffsetY = 2;
+        canvas.shadowBlur = 5;
         canvas.shadowColor = Utils.toCssColor(0x66000000);
         canvas.beginPath();
         canvas.arc(offsetX, offsetY, mRadius, 0, Math.PI * 2, true);
         canvas.closePath();
-        canvas.fillStyle = Utils.toCssColor(mColor);
+        canvas.fillStyle = Utils.toCssColor(mThumbColor);
         canvas.fill();
 
         mWaveDrawable.setBounds(offsetX - 24, offsetY - 24, offsetX + 24, offsetY + 24);
