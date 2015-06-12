@@ -121,7 +121,7 @@ table {
   background-color: #f7f7f7;
   width: 100%;
   font-size: 1em;
-  margin .5em 1em 1em 0;
+  margin: 0.5em 1em 1em 0;
   table-layout:fixed ;
 }
 
@@ -157,7 +157,6 @@ td.methods-return {
   z-index: 100;
   text-align: center;
   background-color:#f9f9f9;
-  text-shadow: 0 -1px 0 rbga(0, 0, 0, 1);
   border-bottom: 1px solid #F80;
   color: #222;
 }
@@ -261,7 +260,7 @@ td.methods-return {
 
 .top-jump-link {
   opacity: 0;
-  transition: opacity 0.5s ease 0;
+  transition: opacity 0.5s ease ;
   pointer-events: none;
 }
 

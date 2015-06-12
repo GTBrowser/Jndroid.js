@@ -19,10 +19,11 @@ function Titlebar() {
     titleLp.weight = 1;
     this.addView(mTitle, titleLp);
 
-    var mSetting = new LImageButton();
+    var mSetting = new MImageButton();
     mSetting.setDimBg(false);
     mSetting.setOnClickListener(function() {
         var maskView = new View();
+        maskView.setStyle("z-index", 10);
         maskView.setOnClickListener(function() {
             var alpha = new AlphaAnimation(1, 0);
             alpha.setDuration(200);
@@ -40,6 +41,7 @@ function Titlebar() {
         getRootView().addView(maskView);
 
         var settingView = new SettingView();
+        settingView.setStyle("z-index", 10);
         var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
         lp.gravity = Gravity.RIGHT;
         getRootView().addView(settingView, lp);

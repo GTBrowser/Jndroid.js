@@ -26,12 +26,7 @@ function IntroductionView() {
     var sloganLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     sloganLp.setMargins(mPadding, mPadding, mPadding, 0);
 
-    loadSlogan("Jndroid is a JavaScript framework to write WebApp in Android way.");
-    loadSlogan("Jndroid是一个JavaScript框架，使用Android的方式编写Web App。");
-    loadSlogan("Jndroid est un framework JavaScript pour écrire de manière WebApp Android .");
-    loadSlogan("Jndroid ist ein JavaScript-Framework an WebApp in Android Weg zu schreiben.");
-    loadSlogan("Jndroid этооснова JavaScript , чтобы написать веб-приложение в Android образом ");
-    loadSlogan("Jndroidは、Androidの方法でのWebAppを書くためのJavaScriptフレームワークです。");
+    loadSlogan(R.string.intro_content);
 
     loadGithubView();
 
@@ -241,7 +236,7 @@ var mMaterialDesignCode = "" +
     "var lp = new LayoutParams(LayoutParams.FILL_PARENT, 48);\n" +
     "lp.gravity = Gravity.CENTER;\n" +
     "lp.setMargins(8);\n\n" +
-    "var mButton = new LButton();\n" +
+    "var mButton = new MButton();\n" +
     "mButton.setBackgroundColor(0xff3F51B5);\n" +
     "mButton.setTextColor(0xffffffff);\n" +
     "mButton.setText(\"button\");\n" +
@@ -249,13 +244,13 @@ var mMaterialDesignCode = "" +
     "\twindow.alert(\"Material Design\");\n" +
     "});\n" +
     "mLayout.addView(mButton, lp);\n\n" +
-    "var mEditText = new LEditText();\n" +
+    "var mEditText = new MEditText();\n" +
     "mEditText.setHint(\"input text here\");\n" +
     "mLayout.addView(mEditText, lp);\n\n" +
-    "var progress = new LProgressBar();\n" +
+    "var progress = new MProgressBar();\n" +
     "mLayout.addView(progress, lp);\n\n" +
-    "var circle = new LProgressBar();\n" +
-    "circle.setStyle(LProgressBar.Large);\n" +
+    "var circle = new MProgressBar();\n" +
+    "circle.setStyle(MProgressBar.Large);\n" +
     "mLayout.addView(circle, lp);\n\n";
 
 

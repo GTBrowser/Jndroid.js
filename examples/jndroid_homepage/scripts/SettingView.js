@@ -27,17 +27,17 @@ function SettingView() {
     var subTitleLp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
     mContent.addView(mLanguageTitle, subTitleLp);
 
-    var mZhRadioButton = new LRadioButton();
+    var mZhRadioButton = new MRadioButton();
     mZhRadioButton.setText("中文");
     mZhRadioButton.setId(0);
     mZhRadioButton.setColor(R.color.theme);
 
-    var mEnRadioButton = new LRadioButton();
+    var mEnRadioButton = new MRadioButton();
     mEnRadioButton.setText("English");
     mEnRadioButton.setId(1);
     mEnRadioButton.setColor(R.color.theme);
 
-    var mLanguageGroup = new LRadioGroup();
+    var mLanguageGroup = new MRadioGroup();
     mLanguageGroup.addChild(mZhRadioButton);
     mLanguageGroup.addChild(mEnRadioButton);
     mLanguageGroup.setOnCheckedChangeListener(function(id) {

@@ -213,7 +213,7 @@ function LogoView() {
                     mSelf.addView(item, issueLp);
                 }
             }
-            var mButton = new LButton();
+            var mButton = new MButton();
             if (mIsExpand) {
                 mButton.setText("show less");
             } else {

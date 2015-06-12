@@ -16,6 +16,8 @@ function _R() {
             this.setting = "设置";
             this.language = "语言";
 
+            this.intro_content = "Jndroid是一个JavaScript框架，能够让开发者使用Android的方式开发网页。";
+
             this.to_android_develop = "致安卓开发者";
         } else {
             this.intro = "Introduction";
@@ -26,6 +28,8 @@ function _R() {
             this.about = "About";
             this.setting = "Setting";
             this.language = "Language";
+
+            this.intro_content = "Jndroid is a JavaScript framework to write WebApp in Android way.";
 
             this.to_android_develop = "To Android Developer";
         }

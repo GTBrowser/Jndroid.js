@@ -124,7 +124,7 @@ function TabContent() {
     }
 
     function createButton(text) {
-        var button = new LButton();
+        var button = new MButton();
         button.setText(text);
         button.setTextColor(0xffffffff);
         button.setDimBg(false);

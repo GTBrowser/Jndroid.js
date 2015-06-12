@@ -55,7 +55,7 @@ function Playground(title, initCode, isHtml) {
     }
     this.addView(mCodePreviewer);
 
-    var mTryButton = new LImageButton();
+    var mTryButton = new MImageButton();
     mTryButton.setBackgroundColor(R.color.theme);
     mTryButton.setCornerSize(24);
     mTryButton.setImgSrc("images/play_icon.png");

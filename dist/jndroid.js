@@ -3271,7 +3271,7 @@ function LEditText() {
     var textColor = 0xff212121;
     var maxCount = 0;
 
-    this.setTag("LEditText");
+    this.setTag("MEditText");
 
     var makeEditText = function() {
         edittext.setHintText(hint);
@@ -3517,7 +3517,7 @@ function LEditText() {
 function LSelectionButton() {
     LinearLayout.apply(this, []);
 
-    this.setTag("LSelectionButton");
+    this.setTag("MSelectionButton");
 
     this.WIDTH = 160;
     this.HEIGHT = 48;
@@ -4677,7 +4677,7 @@ function WebView() {
  * A button with two states, checked and unchecked. When the button is pressed
  * or clicked, the state changes automatically.
  *
- * @class ToggleButton
+ * @class MToggleButton
  * @extends Button
  */
 function ToggleButton() {
