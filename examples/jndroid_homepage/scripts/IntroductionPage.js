@@ -167,13 +167,13 @@ function IntroductionView() {
         var androidL = new TextView();
         androidL.setTextSize(R.dimen.title);
         androidL.setTextColor(R.color.theme);
-        androidL.setText("Material Design");
+        androidL.setText(R.string.material_design);
         var androidLLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         androidLLp.setMargins(mPadding, mParaPaddingTop, mPadding, mPadding);
         mContentView.addView(androidL, androidLLp);
 
         playground = new Playground("Widgets", mMaterialDesignCode);
-        playground.setEditHeight(450);
+        playground.setEditHeight(480);
         mContentView.addView(playground, lp);
 
         var apidemos = new TextView();
@@ -234,7 +234,7 @@ var mMaterialDesignCode = "" +
     "var mLayout = new LinearLayout();\n" +
     "this.addView(mLayout);\n\n" +
     "var lp = new LayoutParams(LayoutParams.FILL_PARENT, 48);\n" +
-    "lp.gravity = Gravity.CENTER;\n" +
+    "lp.gravity = Gravity.LEFT;\n" +
     "lp.setMargins(8);\n\n" +
     "var mButton = new MButton();\n" +
     "mButton.setBackgroundColor(0xff3F51B5);\n" +
@@ -244,14 +244,27 @@ var mMaterialDesignCode = "" +
     "\twindow.alert(\"Material Design\");\n" +
     "});\n" +
     "mLayout.addView(mButton, lp);\n\n" +
+    "var group = new MRadioGroup();\n" +
+    "for (var i = 0; i < 3; i++) {\n" +
+    "\tvar radioButton = new MRadioButton();\n" +
+    "\tradioButton.setId(i);\n" +
+    "\tradioButton.setColor(0xff3F51B5);\n" +
+    "\tradioButton.setText(\"RadioButton \" + i);\n" +
+    "\tgroup.addChild(radioButton);\n" +
+    "}\n" +
+    "mLayout.addView(group);\n\n" +
     "var mEditText = new MEditText();\n" +
     "mEditText.setHint(\"input text here\");\n" +
+    "mEditText.setHighlightColor(0xff3F51B5);\n" +
     "mLayout.addView(mEditText, lp);\n\n" +
     "var progress = new MProgressBar();\n" +
+    "progress.setProgressColor(0xff3F51B5);\n" +
+    "progress.setStyle(MProgressBar.Small);\n" +
     "mLayout.addView(progress, lp);\n\n" +
-    "var circle = new MProgressBar();\n" +
-    "circle.setStyle(MProgressBar.Large);\n" +
-    "mLayout.addView(circle, lp);\n\n";
+    "var toggleButton = new MToggleButton();\n" +
+    "toggleButton.setColor(0xff3F51B5);" +
+    "mLayout.addView(toggleButton, lp);\n" +
+    "";
 
 
 var mWidgetCode = "" +

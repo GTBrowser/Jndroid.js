@@ -116,7 +116,7 @@ function Playground(title, initCode, isHtml) {
             mCodePreviewer.layout(mPadding, offsetY + mEditArea.getMeasuredHeight());
         }
 
-        offsetX = (width - mTryButton.getMeasuredWidth()) / 2;
+        offsetX = (width - mTryButton.getMeasuredWidth()) / 2 - 2;
         offsetY = (height - R.dimen.title_padding_top - mTitle.getMeasuredHeight() - mTryButton.getMeasuredHeight()) / 2;
         offsetY += R.dimen.title_padding_top + mTitle.getMeasuredHeight();
         mTryButton.layout(offsetX, offsetY);
