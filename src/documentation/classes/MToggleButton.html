@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>ToggleButton - Jndroid</title>
+    <title>MToggleButton - Jndroid</title>
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -12,18 +12,20 @@
   <body>
 
     <div id="doc">
-      <header class="main-header">
-        <div class="content">
-          <div class="project-title">
-            <h1 class="project-name">Jndroid</h1>
+      <!-- <header class="main-header"> -->
+      <!--   <div class="content"> -->
+      <!--     <div class="project-title"> -->
+      <!--        -->
+      <!--       <h1 class="project-name">Jndroid</h1> -->
+      <!--        -->
 
-          </div>
-          <ul class="jump-links">
-            <li><a href="#index" class="index-jump-link">index</a></li>
-            <li><a href="#top" class="top-jump-link">top</a></li>
-          </ul>
-        </div>
-      </header>
+      <!--     </div> -->
+      <!--     <ul class="jump-links"> -->
+      <!--       <li><a href="#index" class="index-jump-link">index</a></li> -->
+      <!--       <li><a href="#top" class="top-jump-link">top</a></li> -->
+      <!--     </ul> -->
+      <!--   </div> -->
+      <!-- </header> -->
       <div id="bd" class="main-body">
 
         <div id="docs-sidebar" class="sidebar apidocs">
@@ -41,6 +43,7 @@
             <div id="api-tabview-panel">
               <ul id="api-classes" class="apis classes">
                 <li><a class="type" href="../classes/Button.html">Button</a></li>
+                <li><a class="type" href="../classes/Color.html">Color</a></li>
                 <li><a class="type" href="../classes/Drawable.html">Drawable</a></li>
                 <li><a class="type" href="../classes/EditText.html">EditText</a></li>
                 <li><a class="type" href="../classes/FrameLayout.html">FrameLayout</a></li>
@@ -52,9 +55,9 @@
                 <li><a class="type" href="../classes/LinearLayout.html">LinearLayout</a></li>
                 <li><a class="type" href="../classes/MeasureSpec.html">MeasureSpec</a></li>
                 <li><a class="type" href="../classes/MotionEvent.html">MotionEvent</a></li>
+                <li><a class="type" href="../classes/MToggleButton.html">MToggleButton</a></li>
                 <li><a class="type" href="../classes/ScrollView.html">ScrollView</a></li>
                 <li><a class="type" href="../classes/TextView.html">TextView</a></li>
-                <li><a class="type" href="../classes/ToggleButton.html">ToggleButton</a></li>
                 <li><a class="type" href="../classes/View.html">View</a></li>
                 <li><a class="type" href="../classes/ViewGroup.html">ViewGroup</a></li>
                 <li><a class="type" href="../classes/WebView.html">WebView</a></li>
@@ -66,7 +69,7 @@
 
         <div id="docs-main" class="apidocs">
           <div class="content container">
-            <h1>ToggleButton Class</h1>
+            <h1>MToggleButton Class</h1>
             <div class="box meta">
             
                     <div class="extends">
@@ -74,7 +77,7 @@
                     </div>
             
                     <div class="foundat">
-                        Defined in: <a href="../files/jndroid.widget.js.html#l766"><code>jndroid.widget.js:766</code></a>
+                        Defined in: <a href="../files/jndroid.mwidget.js.html#l1122"><code>jndroid.mwidget.js:1122</code></a>
                     </div>
             
                 <!--  -->
@@ -131,6 +134,79 @@
                           </tr>
                         <!--  -->
                         
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            void
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_setOnCheckedChangeListener">setOnCheckedChangeListener()</a></nobr>
+                           <div class="desc">
+                             <p>Register a callback to be invoked when the checked radio button
+            changes in this group.</p>
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_setOnCheckedChangeListener">setOnCheckedChangeListener</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            void
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_">(<span class="index-param">id</span>)</a></nobr>
+                           <div class="desc">
+                             <p>Sets the selection to the radio button whose identifier is passed in
+            parameter. Using -1 as the selection identifier clears the selection;
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_"></a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            void
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_clearCheck">clearCheck()</a></nobr>
+                           <div class="desc">
+                             <p>Clears the selection. When the selection is cleared, no radio button
+            in this group is selected and {@link #getCheckedRadioButtonId()} returns
+            null.</p>
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_clearCheck">clearCheck</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
+                        <tr>
+                          <td colspan="3" class="methods-return">
+                            
+                          </td>
+                          <td colspan="9" class="methods-info">
+                            <nobr> <a href="#method_getCheckedRadioButtonId">getCheckedRadioButtonId()</a></nobr>
+                           <div class="desc">
+                             <p>Returns the identifier of the selected radio button in this group.
+            Upon empty selection, the returned value is -1.</p>
+                           </div>
+                          </td>
+                        </tr>
+                            <!-- <li class="index-item method"> -->
+                            <!--     <a href="#method_getCheckedRadioButtonId">getCheckedRadioButtonId</a> -->
+            
+                            <!--      -->
+                            <!--      -->
+                            <!-- </li> -->
                         <tr>
                           <td colspan="3" class="methods-return">
                             Boolean
@@ -201,6 +277,229 @@
                 <div class="methods-detail">
                     <h2>Methods</h2>
             
+                        <a name="method_setOnCheckedChangeListener" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>setOnCheckedChangeListener</code>
+                        
+                                <span class="paren">()</span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.mwidget.js.html#l917"><code>jndroid.mwidget.js:917</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Register a callback to be invoked when the checked radio button
+                        changes in this group.</p>
+                                </div>
+                        
+                        
+                        
+                            </div>
+                        </div>
+                        <a name="method_" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code></code>
+                        
+                                <div class="args">
+                                    <span class="paren">(</span><ul class="args-list inline commas">
+                                        <li class="arg">
+                                                <code>id</code>
+                                        </li>
+                                    </ul><span class="paren">)</span>
+                                </div>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.mwidget.js.html#l927"><code>jndroid.mwidget.js:927</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Sets the selection to the radio button whose identifier is passed in
+                        parameter. Using -1 as the selection identifier clears the selection;
+                                </div>
+                        
+                                    <div class="params">
+                                        <h4>Parameters:</h4>
+                        
+                                        <ul class="params-list">
+                                            <li class="param">
+                                                    <code class="param-name">id</code>
+                                                    <span class="type">Object</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>the unique id of the radio button to select in this group</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                        </ul>
+                                    </div>
+                        
+                        
+                            </div>
+                        </div>
+                        <a name="method_clearCheck" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>clearCheck</code>
+                        
+                                <span class="paren">()</span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.mwidget.js.html#l960"><code>jndroid.mwidget.js:960</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Clears the selection. When the selection is cleared, no radio button
+                        in this group is selected and {@link #getCheckedRadioButtonId()} returns
+                        null.</p>
+                                </div>
+                        
+                        
+                        
+                            </div>
+                        </div>
+                        <a name="method_getCheckedRadioButtonId" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>getCheckedRadioButtonId</code>
+                        
+                                <span class="paren">()</span>
+                        
+                                <span class="returns-inline">
+                                    <span class="type"></span>
+                                </span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.mwidget.js.html#l948"><code>jndroid.mwidget.js:948</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Returns the identifier of the selected radio button in this group.
+                        Upon empty selection, the returned value is -1.</p>
+                                </div>
+                        
+                        
+                                    <div class="returns">
+                                        <h4>Returns:</h4>
+                        
+                                        <div class="returns-description">
+                                                <p>the unique id of the selected radio button in this group</p>
+                        
+                                        </div>
+                                    </div>
+                        
+                            </div>
+                        </div>
                         <a name="method_isChecked" class="anchor-link"></a>
                         <div class="method item">
                             <h3 class="name"><code>isChecked</code>
@@ -230,7 +529,7 @@
                                 <!--      -->
                                 <!--  -->
                                 <!--  -->
-                                <!-- <a href="../files/jndroid.widget.js.html#l827"><code>jndroid.widget.js:827</code></a> -->
+                                <!-- <a href="../files/jndroid.mwidget.js.html#l1199"><code>jndroid.mwidget.js:1199</code></a> -->
                                 <!--  -->
                                 <!-- </p> -->
                         
@@ -292,7 +591,7 @@
                                 <!--      -->
                                 <!--  -->
                                 <!--  -->
-                                <!-- <a href="../files/jndroid.widget.js.html#l850"><code>jndroid.widget.js:850</code></a> -->
+                                <!-- <a href="../files/jndroid.mwidget.js.html#l1222"><code>jndroid.mwidget.js:1222</code></a> -->
                                 <!--  -->
                                 <!-- </p> -->
                         
@@ -362,7 +661,7 @@
                                 <!--      -->
                                 <!--  -->
                                 <!--  -->
-                                <!-- <a href="../files/jndroid.widget.js.html#l816"><code>jndroid.widget.js:816</code></a> -->
+                                <!-- <a href="../files/jndroid.mwidget.js.html#l1188"><code>jndroid.mwidget.js:1188</code></a> -->
                                 <!--  -->
                                 <!-- </p> -->
                         

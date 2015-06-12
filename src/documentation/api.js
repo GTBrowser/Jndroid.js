@@ -2,6 +2,7 @@ YUI.add("yuidoc-meta", function(Y) {
    Y.YUIDoc = { meta: {
     "classes": [
         "Button",
+        "Color",
         "Drawable",
         "EditText",
         "FrameLayout",
@@ -11,11 +12,11 @@ YUI.add("yuidoc-meta", function(Y) {
         "ImageView",
         "LayoutParams",
         "LinearLayout",
+        "MToggleButton",
         "MeasureSpec",
         "MotionEvent",
         "ScrollView",
         "TextView",
-        "MToggleButton",
         "View",
         "ViewGroup",
         "WebView"

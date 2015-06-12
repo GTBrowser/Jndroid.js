@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Drawable - Jndroid</title>
+    <title>Color - Jndroid</title>
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -69,12 +69,12 @@
 
         <div id="docs-main" class="apidocs">
           <div class="content container">
-            <h1>Drawable Class</h1>
+            <h1>Color Class</h1>
             <div class="box meta">
             
             
                     <div class="foundat">
-                        Defined in: <a href="../files/jndroid.core.js.html#l508"><code>jndroid.core.js:508</code></a>
+                        Defined in: <a href="../files/jndroid.core.js.html#l401"><code>jndroid.core.js:401</code></a>
                     </div>
             
                 <!--  -->
@@ -84,10 +84,16 @@
             <!--  -->
             
             <div class="box intro">
-                <p>A Drawable is a general abstraction for &quot;something that can be drawn.&quot;  Most
-            often you will deal with Drawable as the type of resource retrieved for
-            drawing things to the screen; the Drawable class provides a generic API for
-            dealing with an underlying visual resource that may take a variety of forms.</p>
+                <p>The Color class defines methods for creating and converting color ints.
+            Colors are represented as packed ints, made up of 4 bytes: alpha, red,
+            green, blue. The values are unpremultiplied, meaning any transparency is
+            stored solely in the alpha component, and not in the color components. The
+            components are stored as follows (alpha &lt;&lt; 24) | (red &lt;&lt; 16) |
+            (green &lt;&lt; 8) | blue. Each component ranges between 0..255 with 0
+            meaning no contribution for that component, and 255 meaning 100%
+            contribution. Thus opaque-black would be 0xFF000000 (100% opaque but
+            no contributions from red, green, or blue), and opaque-white would be
+            0xFFFFFFFF</p>
             
             </div>
             
@@ -135,37 +141,19 @@
                         
                         <tr>
                           <td colspan="3" class="methods-return">
-                            void
+                            Int
                           </td>
                           <td colspan="9" class="methods-info">
-                            <nobr> <a href="#method_draw">draw(<span class="index-param">canvas</span>)</a></nobr>
+                            <nobr> <a href="#method_alpha">alpha()</a></nobr>
                            <div class="desc">
-                             <p>Draw in its bounds (set via setBounds) respecting optional effects such
-            as alpha (set via setAlpha) and color filter (set via setColorFilter).</p>
+                             <p>Return the alpha component of a color int. This is the same as saying
+            color &gt;&gt;&gt; 24</p>
             
                            </div>
                           </td>
                         </tr>
                             <!-- <li class="index-item method"> -->
-                            <!--     <a href="#method_draw">draw</a> -->
-            
-                            <!--      -->
-                            <!--      -->
-                            <!-- </li> -->
-                        <tr>
-                          <td colspan="3" class="methods-return">
-                            Rect
-                          </td>
-                          <td colspan="9" class="methods-info">
-                            <nobr> <a href="#method_getBounds">getBounds()</a></nobr>
-                           <div class="desc">
-                             <p>Return the drawable's bounds Rect.</p>
-            
-                           </div>
-                          </td>
-                        </tr>
-                            <!-- <li class="index-item method"> -->
-                            <!--     <a href="#method_getBounds">getBounds</a> -->
+                            <!--     <a href="#method_alpha">alpha</a> -->
             
                             <!--      -->
                             <!--      -->
@@ -175,15 +163,18 @@
                             Int
                           </td>
                           <td colspan="9" class="methods-info">
-                            <nobr> <a href="#method_getIntrinsicHeight">getIntrinsicHeight()</a></nobr>
+                            <nobr> <a href="#method_argb">argb(<span class="index-param">alpha</span><span class="index-param">red</span><span class="index-param">green</span><span class="index-param">blue</span>)</a></nobr>
                            <div class="desc">
-                             <p>Return the intrinsic height of the underlying drawable object.</p>
+                             <p>Return a color-int from alpha, red, green, blue components.
+            These component values should be [0..255], but there is no
+            range check performed, so if they are out of range, the
+            returned color is undefined.</p>
             
                            </div>
                           </td>
                         </tr>
                             <!-- <li class="index-item method"> -->
-                            <!--     <a href="#method_getIntrinsicHeight">getIntrinsicHeight</a> -->
+                            <!--     <a href="#method_argb">argb</a> -->
             
                             <!--      -->
                             <!--      -->
@@ -193,111 +184,76 @@
                             Int
                           </td>
                           <td colspan="9" class="methods-info">
-                            <nobr> <a href="#method_getIntrinsicWidth">getIntrinsicWidth()</a></nobr>
+                            <nobr> <a href="#method_blue">blue()</a></nobr>
                            <div class="desc">
-                             <p>Return the intrinsic width of the underlying drawable object.</p>
+                             <p>Return the blue component of a color int. This is the same as saying
+            color &amp; 0xFF</p>
             
                            </div>
                           </td>
                         </tr>
                             <!-- <li class="index-item method"> -->
-                            <!--     <a href="#method_getIntrinsicWidth">getIntrinsicWidth</a> -->
+                            <!--     <a href="#method_blue">blue</a> -->
             
                             <!--      -->
                             <!--      -->
                             <!-- </li> -->
                         <tr>
                           <td colspan="3" class="methods-return">
-                            void
+                            Int
                           </td>
                           <td colspan="9" class="methods-info">
-                            <nobr> <a href="#method_invalidateSelf">invalidateSelf()</a></nobr>
+                            <nobr> <a href="#method_green">green()</a></nobr>
                            <div class="desc">
-                             <p>Use the current implementation to have this Drawable
-            redrawn. Does nothing if there is no Callback attached to the
-            Drawable.</p>
+                             <p>Return the green component of a color int. This is the same as saying
+            (color &gt;&gt; 8) &amp; 0xFF</p>
             
                            </div>
                           </td>
                         </tr>
                             <!-- <li class="index-item method"> -->
-                            <!--     <a href="#method_invalidateSelf">invalidateSelf</a> -->
+                            <!--     <a href="#method_green">green</a> -->
             
                             <!--      -->
                             <!--      -->
                             <!-- </li> -->
                         <tr>
                           <td colspan="3" class="methods-return">
-                            Boolean
+                            Int
                           </td>
                           <td colspan="9" class="methods-info">
-                            <nobr> <a href="#method_onStateChange">onStateChange(<span class="index-param">state</span>)</a></nobr>
+                            <nobr> <a href="#method_red">red()</a></nobr>
                            <div class="desc">
-                             <p>Override this in your subclass to change appearance if you recognize the
-            specified state.</p>
+                             <p>Return the red component of a color int. This is the same as saying
+            (color &gt;&gt; 16) &amp; 0xFF</p>
             
                            </div>
                           </td>
                         </tr>
                             <!-- <li class="index-item method"> -->
-                            <!--     <a href="#method_onStateChange">onStateChange</a> -->
+                            <!--     <a href="#method_red">red</a> -->
             
                             <!--      -->
                             <!--      -->
                             <!-- </li> -->
                         <tr>
                           <td colspan="3" class="methods-return">
-                            void
+                            Int
                           </td>
                           <td colspan="9" class="methods-info">
-                            <nobr> <a href="#method_setBounds">setBounds()</a></nobr>
+                            <nobr> <a href="#method_rgb">rgb(<span class="index-param">red</span><span class="index-param">green</span><span class="index-param">blue</span>)</a></nobr>
                            <div class="desc">
-                             <p>Specify a bounding rectangle for the Drawable. This is where the drawable
-            will draw when its draw() method is called.</p>
+                             <p>Return a color-int from red, green, blue components.
+            The alpha component is implicity 255 (fully opaque).
+            These component values should be [0..255], but there is no
+            range check performed, so if they are out of range, the
+            returned color is undefined.</p>
             
                            </div>
                           </td>
                         </tr>
                             <!-- <li class="index-item method"> -->
-                            <!--     <a href="#method_setBounds">setBounds</a> -->
-            
-                            <!--      -->
-                            <!--      -->
-                            <!-- </li> -->
-                        <tr>
-                          <td colspan="3" class="methods-return">
-                            void
-                          </td>
-                          <td colspan="9" class="methods-info">
-                            <nobr> <a href="#method_setCallback">setCallback(<span class="index-param">cb</span>)</a></nobr>
-                           <div class="desc">
-                             <p>Bind a object to this Drawable.  Required for clients
-            that want to support animated drawables.</p>
-            
-                           </div>
-                          </td>
-                        </tr>
-                            <!-- <li class="index-item method"> -->
-                            <!--     <a href="#method_setCallback">setCallback</a> -->
-            
-                            <!--      -->
-                            <!--      -->
-                            <!-- </li> -->
-                        <tr>
-                          <td colspan="3" class="methods-return">
-                            void
-                          </td>
-                          <td colspan="9" class="methods-info">
-                            <nobr> <a href="#method_setState">setState(<span class="index-param">state</span>)</a></nobr>
-                           <div class="desc">
-                             <p>Specify a set of states for the drawable. These are use-case specific,
-            so see the relevant documentation.</p>
-            
-                           </div>
-                          </td>
-                        </tr>
-                            <!-- <li class="index-item method"> -->
-                            <!--     <a href="#method_setState">setState</a> -->
+                            <!--     <a href="#method_rgb">rgb</a> -->
             
                             <!--      -->
                             <!--      -->
@@ -317,139 +273,9 @@
                 <div class="methods-detail">
                     <h2>Methods</h2>
             
-                        <a name="method_draw" class="anchor-link"></a>
+                        <a name="method_alpha" class="anchor-link"></a>
                         <div class="method item">
-                            <h3 class="name"><code>draw</code>
-                        
-                                <div class="args">
-                                    <span class="paren">(</span><ul class="args-list inline commas">
-                                        <li class="arg">
-                                                <code>canvas</code>
-                                        </li>
-                                    </ul><span class="paren">)</span>
-                                </div>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                            </h3>
-                        
-                            <!-- <div class="meta"> -->
-                                <!--  -->
-                                <!--      -->
-                                <!--          -->
-                                <!--         <p> -->
-                                <!--          -->
-                                <!--         Defined in -->
-                                <!--          -->
-                                <!--      -->
-                                <!--  -->
-                                <!--  -->
-                                <!-- <a href="../files/jndroid.core.js.html#l520"><code>jndroid.core.js:520</code></a> -->
-                                <!--  -->
-                                <!-- </p> -->
-                        
-                        
-                                <!--  -->
-                        
-                                <!--  -->
-                            <!-- </div> -->
-                        
-                            <div class="extended-detail">
-                        
-                                <div class="description">
-                                    <p>Draw in its bounds (set via setBounds) respecting optional effects such
-                        as alpha (set via setAlpha) and color filter (set via setColorFilter).</p>
-                        
-                                </div>
-                        
-                                    <div class="params">
-                                        <h4>Parameters:</h4>
-                        
-                                        <ul class="params-list">
-                                            <li class="param">
-                                                    <code class="param-name">canvas</code>
-                                                    <span class="type">Canvas</span>
-                        
-                        
-                                                <div class="param-description">
-                                                    <p>The canvas to draw into.</p>
-                        
-                                                </div>
-                        
-                                            </li>
-                                        </ul>
-                                    </div>
-                        
-                        
-                            </div>
-                        </div>
-                        <a name="method_getBounds" class="anchor-link"></a>
-                        <div class="method item">
-                            <h3 class="name"><code>getBounds</code>
-                        
-                                <span class="paren">()</span>
-                        
-                                <span class="returns-inline">
-                                    <span class="type">Rect</span>
-                                </span>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                            </h3>
-                        
-                            <!-- <div class="meta"> -->
-                                <!--  -->
-                                <!--      -->
-                                <!--          -->
-                                <!--         <p> -->
-                                <!--          -->
-                                <!--         Defined in -->
-                                <!--          -->
-                                <!--      -->
-                                <!--  -->
-                                <!--  -->
-                                <!-- <a href="../files/jndroid.core.js.html#l530"><code>jndroid.core.js:530</code></a> -->
-                                <!--  -->
-                                <!-- </p> -->
-                        
-                        
-                                <!--  -->
-                        
-                                <!--  -->
-                            <!-- </div> -->
-                        
-                            <div class="extended-detail">
-                        
-                                <div class="description">
-                                    <p>Return the drawable's bounds Rect.</p>
-                        
-                                </div>
-                        
-                        
-                                    <div class="returns">
-                                        <h4>Returns:</h4>
-                        
-                                        <div class="returns-description">
-                                                    <span class="type">Rect</span>:
-                                                <p>The bounds of the drawable.</p>
-                        
-                                        </div>
-                                    </div>
-                        
-                            </div>
-                        </div>
-                        <a name="method_getIntrinsicHeight" class="anchor-link"></a>
-                        <div class="method item">
-                            <h3 class="name"><code>getIntrinsicHeight</code>
+                            <h3 class="name"><code>alpha</code>
                         
                                 <span class="paren">()</span>
                         
@@ -476,7 +302,7 @@
                                 <!--      -->
                                 <!--  -->
                                 <!--  -->
-                                <!-- <a href="../files/jndroid.core.js.html#l610"><code>jndroid.core.js:610</code></a> -->
+                                <!-- <a href="../files/jndroid.core.js.html#l417"><code>jndroid.core.js:417</code></a> -->
                                 <!--  -->
                                 <!-- </p> -->
                         
@@ -489,7 +315,8 @@
                             <div class="extended-detail">
                         
                                 <div class="description">
-                                    <p>Return the intrinsic height of the underlying drawable object.</p>
+                                    <p>Return the alpha component of a color int. This is the same as saying
+                        color &gt;&gt;&gt; 24</p>
                         
                                 </div>
                         
@@ -499,16 +326,139 @@
                         
                                         <div class="returns-description">
                                                     <span class="type">Int</span>:
-                                                <p>Returns -1 if it has no intrinsic height, such as with a solid color.</p>
-                        
                                         </div>
                                     </div>
                         
                             </div>
                         </div>
-                        <a name="method_getIntrinsicWidth" class="anchor-link"></a>
+                        <a name="method_argb" class="anchor-link"></a>
                         <div class="method item">
-                            <h3 class="name"><code>getIntrinsicWidth</code>
+                            <h3 class="name"><code>argb</code>
+                        
+                                <div class="args">
+                                    <span class="paren">(</span><ul class="args-list inline commas">
+                                        <li class="arg">
+                                                <code>alpha</code>
+                                        </li>
+                                        <li class="arg">
+                                                <code>red</code>
+                                        </li>
+                                        <li class="arg">
+                                                <code>green</code>
+                                        </li>
+                                        <li class="arg">
+                                                <code>blue</code>
+                                        </li>
+                                    </ul><span class="paren">)</span>
+                                </div>
+                        
+                                <span class="returns-inline">
+                                    <span class="type">Int</span>
+                                </span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.core.js.html#l478"><code>jndroid.core.js:478</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Return a color-int from alpha, red, green, blue components.
+                        These component values should be [0..255], but there is no
+                        range check performed, so if they are out of range, the
+                        returned color is undefined.</p>
+                        
+                                </div>
+                        
+                                    <div class="params">
+                                        <h4>Parameters:</h4>
+                        
+                                        <ul class="params-list">
+                                            <li class="param">
+                                                    <code class="param-name">alpha</code>
+                                                    <span class="type">Object</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>Alpha component [0..255] of the color</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                            <li class="param">
+                                                    <code class="param-name">red</code>
+                                                    <span class="type">Object</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>Red component [0..255] of the color</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                            <li class="param">
+                                                    <code class="param-name">green</code>
+                                                    <span class="type">Object</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>Green component [0..255] of the color</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                            <li class="param">
+                                                    <code class="param-name">blue</code>
+                                                    <span class="type">Object</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>Blue component [0..255] of the color</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                        </ul>
+                                    </div>
+                        
+                                    <div class="returns">
+                                        <h4>Returns:</h4>
+                        
+                                        <div class="returns-description">
+                                                    <span class="type">Int</span>:
+                                        </div>
+                                    </div>
+                        
+                            </div>
+                        </div>
+                        <a name="method_blue" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>blue</code>
                         
                                 <span class="paren">()</span>
                         
@@ -535,7 +485,7 @@
                                 <!--      -->
                                 <!--  -->
                                 <!--  -->
-                                <!-- <a href="../files/jndroid.core.js.html#l601"><code>jndroid.core.js:601</code></a> -->
+                                <!-- <a href="../files/jndroid.core.js.html#l450"><code>jndroid.core.js:450</code></a> -->
                                 <!--  -->
                                 <!-- </p> -->
                         
@@ -548,7 +498,8 @@
                             <div class="extended-detail">
                         
                                 <div class="description">
-                                    <p>Return the intrinsic width of the underlying drawable object.</p>
+                                    <p>Return the blue component of a color int. This is the same as saying
+                        color &amp; 0xFF</p>
                         
                                 </div>
                         
@@ -558,76 +509,19 @@
                         
                                         <div class="returns-description">
                                                     <span class="type">Int</span>:
-                                                <p>Returns -1 if it has no intrinsic width, such as with a solid color.</p>
-                        
                                         </div>
                                     </div>
                         
                             </div>
                         </div>
-                        <a name="method_invalidateSelf" class="anchor-link"></a>
+                        <a name="method_green" class="anchor-link"></a>
                         <div class="method item">
-                            <h3 class="name"><code>invalidateSelf</code>
+                            <h3 class="name"><code>green</code>
                         
                                 <span class="paren">()</span>
                         
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                            </h3>
-                        
-                            <!-- <div class="meta"> -->
-                                <!--  -->
-                                <!--      -->
-                                <!--          -->
-                                <!--         <p> -->
-                                <!--          -->
-                                <!--         Defined in -->
-                                <!--          -->
-                                <!--      -->
-                                <!--  -->
-                                <!--  -->
-                                <!-- <a href="../files/jndroid.core.js.html#l563"><code>jndroid.core.js:563</code></a> -->
-                                <!--  -->
-                                <!-- </p> -->
-                        
-                        
-                                <!--  -->
-                        
-                                <!--  -->
-                            <!-- </div> -->
-                        
-                            <div class="extended-detail">
-                        
-                                <div class="description">
-                                    <p>Use the current implementation to have this Drawable
-                        redrawn. Does nothing if there is no Callback attached to the
-                        Drawable.</p>
-                        
-                                </div>
-                        
-                        
-                        
-                            </div>
-                        </div>
-                        <a name="method_onStateChange" class="anchor-link"></a>
-                        <div class="method item">
-                            <h3 class="name"><code>onStateChange</code>
-                        
-                                <div class="args">
-                                    <span class="paren">(</span><ul class="args-list inline commas">
-                                        <li class="arg">
-                                                <code>state</code>
-                                        </li>
-                                    </ul><span class="paren">)</span>
-                                </div>
-                        
                                 <span class="returns-inline">
-                                    <span class="type">Boolean</span>
+                                    <span class="type">Int</span>
                                 </span>
                         
                         
@@ -649,7 +543,7 @@
                                 <!--      -->
                                 <!--  -->
                                 <!--  -->
-                                <!-- <a href="../files/jndroid.core.js.html#l587"><code>jndroid.core.js:587</code></a> -->
+                                <!-- <a href="../files/jndroid.core.js.html#l439"><code>jndroid.core.js:439</code></a> -->
                                 <!--  -->
                                 <!-- </p> -->
                         
@@ -662,8 +556,139 @@
                             <div class="extended-detail">
                         
                                 <div class="description">
-                                    <p>Override this in your subclass to change appearance if you recognize the
-                        specified state.</p>
+                                    <p>Return the green component of a color int. This is the same as saying
+                        (color &gt;&gt; 8) &amp; 0xFF</p>
+                        
+                                </div>
+                        
+                        
+                                    <div class="returns">
+                                        <h4>Returns:</h4>
+                        
+                                        <div class="returns-description">
+                                                    <span class="type">Int</span>:
+                                        </div>
+                                    </div>
+                        
+                            </div>
+                        </div>
+                        <a name="method_red" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>red</code>
+                        
+                                <span class="paren">()</span>
+                        
+                                <span class="returns-inline">
+                                    <span class="type">Int</span>
+                                </span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.core.js.html#l428"><code>jndroid.core.js:428</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Return the red component of a color int. This is the same as saying
+                        (color &gt;&gt; 16) &amp; 0xFF</p>
+                        
+                                </div>
+                        
+                        
+                                    <div class="returns">
+                                        <h4>Returns:</h4>
+                        
+                                        <div class="returns-description">
+                                                    <span class="type">Int</span>:
+                                        </div>
+                                    </div>
+                        
+                            </div>
+                        </div>
+                        <a name="method_rgb" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>rgb</code>
+                        
+                                <div class="args">
+                                    <span class="paren">(</span><ul class="args-list inline commas">
+                                        <li class="arg">
+                                                <code>red</code>
+                                        </li>
+                                        <li class="arg">
+                                                <code>green</code>
+                                        </li>
+                                        <li class="arg">
+                                                <code>blue</code>
+                                        </li>
+                                    </ul><span class="paren">)</span>
+                                </div>
+                        
+                                <span class="returns-inline">
+                                    <span class="type">Int</span>
+                                </span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.core.js.html#l461"><code>jndroid.core.js:461</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Return a color-int from red, green, blue components.
+                        The alpha component is implicity 255 (fully opaque).
+                        These component values should be [0..255], but there is no
+                        range check performed, so if they are out of range, the
+                        returned color is undefined.</p>
                         
                                 </div>
                         
@@ -672,12 +697,34 @@
                         
                                         <ul class="params-list">
                                             <li class="param">
-                                                    <code class="param-name">state</code>
-                                                    <span class="type">Int</span>
+                                                    <code class="param-name">red</code>
+                                                    <span class="type">Object</span>
                         
                         
                                                 <div class="param-description">
-                                                    <p>The new set of states to be displayed.</p>
+                                                    <p>Red component [0..255] of the color</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                            <li class="param">
+                                                    <code class="param-name">green</code>
+                                                    <span class="type">Object</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>Green component [0..255] of the color</p>
+                        
+                                                </div>
+                        
+                                            </li>
+                                            <li class="param">
+                                                    <code class="param-name">blue</code>
+                                                    <span class="type">Object</span>
+                        
+                        
+                                                <div class="param-description">
+                                                    <p>Blue component [0..255] of the color</p>
                         
                                                 </div>
                         
@@ -689,204 +736,9 @@
                                         <h4>Returns:</h4>
                         
                                         <div class="returns-description">
-                                                    <span class="type">Boolean</span>:
-                                                <p>Returns true if the state change has caused the appearance of
-                        the Drawable to change (that is, it needs to be drawn), else false
-                        if it looks the same and there is no need to redraw it since its
-                        last state.</p>
-                        
+                                                    <span class="type">Int</span>:
                                         </div>
                                     </div>
-                        
-                            </div>
-                        </div>
-                        <a name="method_setBounds" class="anchor-link"></a>
-                        <div class="method item">
-                            <h3 class="name"><code>setBounds</code>
-                        
-                                <span class="paren">()</span>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                            </h3>
-                        
-                            <!-- <div class="meta"> -->
-                                <!--  -->
-                                <!--      -->
-                                <!--          -->
-                                <!--         <p> -->
-                                <!--          -->
-                                <!--         Defined in -->
-                                <!--          -->
-                                <!--      -->
-                                <!--  -->
-                                <!--  -->
-                                <!-- <a href="../files/jndroid.core.js.html#l540"><code>jndroid.core.js:540</code></a> -->
-                                <!--  -->
-                                <!-- </p> -->
-                        
-                        
-                                <!--  -->
-                        
-                                <!--  -->
-                            <!-- </div> -->
-                        
-                            <div class="extended-detail">
-                        
-                                <div class="description">
-                                    <p>Specify a bounding rectangle for the Drawable. This is where the drawable
-                        will draw when its draw() method is called.</p>
-                        
-                                </div>
-                        
-                        
-                        
-                            </div>
-                        </div>
-                        <a name="method_setCallback" class="anchor-link"></a>
-                        <div class="method item">
-                            <h3 class="name"><code>setCallback</code>
-                        
-                                <div class="args">
-                                    <span class="paren">(</span><ul class="args-list inline commas">
-                                        <li class="arg">
-                                                <code>cb</code>
-                                        </li>
-                                    </ul><span class="paren">)</span>
-                                </div>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                            </h3>
-                        
-                            <!-- <div class="meta"> -->
-                                <!--  -->
-                                <!--      -->
-                                <!--          -->
-                                <!--         <p> -->
-                                <!--          -->
-                                <!--         Defined in -->
-                                <!--          -->
-                                <!--      -->
-                                <!--  -->
-                                <!--  -->
-                                <!-- <a href="../files/jndroid.core.js.html#l552"><code>jndroid.core.js:552</code></a> -->
-                                <!--  -->
-                                <!-- </p> -->
-                        
-                        
-                                <!--  -->
-                        
-                                <!--  -->
-                            <!-- </div> -->
-                        
-                            <div class="extended-detail">
-                        
-                                <div class="description">
-                                    <p>Bind a object to this Drawable.  Required for clients
-                        that want to support animated drawables.</p>
-                        
-                                </div>
-                        
-                                    <div class="params">
-                                        <h4>Parameters:</h4>
-                        
-                                        <ul class="params-list">
-                                            <li class="param">
-                                                    <code class="param-name">cb</code>
-                                                    <span class="type">Callback</span>
-                        
-                        
-                                                <div class="param-description">
-                                                    <p>The client's Callback implementation.</p>
-                        
-                                                </div>
-                        
-                                            </li>
-                                        </ul>
-                                    </div>
-                        
-                        
-                            </div>
-                        </div>
-                        <a name="method_setState" class="anchor-link"></a>
-                        <div class="method item">
-                            <h3 class="name"><code>setState</code>
-                        
-                                <div class="args">
-                                    <span class="paren">(</span><ul class="args-list inline commas">
-                                        <li class="arg">
-                                                <code>state</code>
-                                        </li>
-                                    </ul><span class="paren">)</span>
-                                </div>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                            </h3>
-                        
-                            <!-- <div class="meta"> -->
-                                <!--  -->
-                                <!--      -->
-                                <!--          -->
-                                <!--         <p> -->
-                                <!--          -->
-                                <!--         Defined in -->
-                                <!--          -->
-                                <!--      -->
-                                <!--  -->
-                                <!--  -->
-                                <!-- <a href="../files/jndroid.core.js.html#l576"><code>jndroid.core.js:576</code></a> -->
-                                <!--  -->
-                                <!-- </p> -->
-                        
-                        
-                                <!--  -->
-                        
-                                <!--  -->
-                            <!-- </div> -->
-                        
-                            <div class="extended-detail">
-                        
-                                <div class="description">
-                                    <p>Specify a set of states for the drawable. These are use-case specific,
-                        so see the relevant documentation.</p>
-                        
-                                </div>
-                        
-                                    <div class="params">
-                                        <h4>Parameters:</h4>
-                        
-                                        <ul class="params-list">
-                                            <li class="param">
-                                                    <code class="param-name">state</code>
-                                                    <span class="type">Int</span>
-                        
-                        
-                                                <div class="param-description">
-                                                    <p>The new set of states to be displayed.</p>
-                        
-                                                </div>
-                        
-                                            </li>
-                                        </ul>
-                                    </div>
-                        
                         
                             </div>
                         </div>
