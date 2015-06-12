@@ -3052,7 +3052,7 @@ function Gallery() {
 
 
 
-function LProgressBar() {
+function MProgressBar() {
     View.apply(this, []);
 
     var HORIZONTAL_HEIGHT = 3;
@@ -3060,7 +3060,7 @@ function LProgressBar() {
     var LARGE_SIZE = 45;
 
     var mSelf = this;
-    var mStyle = LProgressBar.Horizontal;
+    var mStyle = MProgressBar.Horizontal;
     var mColor = 0xff4688f5;
     var mSecondaryColor = 0xffb3d3ea;
     var mBeginDegree = 0;
@@ -3098,13 +3098,13 @@ function LProgressBar() {
 
     this.onMeasure = function (widthMS, heightMS) {
         var width, height;
-        if (mStyle == LProgressBar.Horizontal) {
+        if (mStyle == MProgressBar.Horizontal) {
             width = MeasureSpec.getSize(widthMS);
             height = HORIZONTAL_HEIGHT;
-        } else if (mStyle == LProgressBar.Small) {
+        } else if (mStyle == MProgressBar.Small) {
             width = SMALL_SIZE;
             height = SMALL_SIZE;
-        } else if (mStyle == LProgressBar.Large) {
+        } else if (mStyle == MProgressBar.Large) {
             width = LARGE_SIZE;
             height = LARGE_SIZE;
         }
@@ -3112,7 +3112,7 @@ function LProgressBar() {
     };
 
     this.onDraw = function(canvas) {
-        if (mStyle == LProgressBar.Horizontal) {
+        if (mStyle == MProgressBar.Horizontal) {
             drawLine(canvas);
         } else {
             drawCircle(canvas);
@@ -3192,11 +3192,11 @@ function LProgressBar() {
         }
     }
 }
-Object.defineProperty(LProgressBar,"Horizontal",{value:0});
-Object.defineProperty(LProgressBar,"Small",{value:1});
-Object.defineProperty(LProgressBar,"Large",{value:2});
+Object.defineProperty(MProgressBar,"Horizontal",{value:0});
+Object.defineProperty(MProgressBar,"Small",{value:1});
+Object.defineProperty(MProgressBar,"Large",{value:2});
 
-function LButton() {
+function MButton() {
     TextView.apply(this, []);
     var mId;
 
@@ -3246,7 +3246,7 @@ function LButton() {
     };
 }
 
-function LImageButton() {
+function MImageButton() {
     ImageButton.apply(this, []);
     var mId;
 
@@ -3283,11 +3283,11 @@ function LImageButton() {
     };
 }
 
-var LDialog = new _LDialog();
-function _LDialog() {
+var MDialog = new _MDialog();
+function _MDialog() {
     LinearLayout.apply(this, []);
 
-    this.setTag("LDialog");
+    this.setTag("MDialog");
     this.setBackgroundColor(0xffffffff);
     this.setCornerSize(2);
     this.setBoxShadow(0, 4, 16, 8, 0x33000000);
@@ -3324,7 +3324,7 @@ function _LDialog() {
 
     var btnLp = new LayoutParams(80, 36);
 
-    var mCancel = new LButton();
+    var mCancel = new MButton();
     mCancel.setText("cancel");
     mCancel.setBoxShadow(0, 0, 0, 0, 0);
     mCancel.setDimBg(false);
@@ -3336,7 +3336,7 @@ function _LDialog() {
     });
     mButtonarea.addView(mCancel, btnLp);
 
-    var mOk = new LButton();
+    var mOk = new MButton();
     mOk.setBoxShadow(0, 0, 0, 0, 0);
     mOk.setText("ok");
     mOk.setDimBg(false);
@@ -3416,7 +3416,7 @@ function _LDialog() {
     };
 }
 
-function LEditText() {
+function MEditText() {
     ViewGroup.apply(this, []);
 
     this.LABEL_SIZE = 12;
@@ -3682,7 +3682,7 @@ function LEditText() {
     }
 }
 
-function LSelectionButton() {
+function MSelectionButton() {
     LinearLayout.apply(this, []);
 
     this.setTag("MSelectionButton");
@@ -3851,7 +3851,7 @@ function LSelectionButton() {
         };
 
         var createButton = function(text) {
-            var b = new LButton();
+            var b = new MButton();
             b.setText(text);
             b.setTextColor(textColor);
             b.setTextSize(textSize);
@@ -3948,7 +3948,7 @@ function WaveDrawable() {
     };
 }
 
-function LRadioGroup() {
+function MRadioGroup() {
     LinearLayout.apply(this, []);
 
     var mSelf = this;
@@ -4037,7 +4037,7 @@ function LRadioGroup() {
     }
 }
 
-function LRadioButton() {
+function MRadioButton() {
     ViewGroup.apply(this, []);
 
     this.HEIGHT = 48;
@@ -4171,6 +4171,196 @@ function LRadioButton() {
             mBgDrawable.draw(canvas);
         };
     }
+}
+
+/**
+ *
+ * A button with two states, checked and unchecked. When the button is pressed
+ * or clicked, the state changes automatically.
+ *
+ * @class MToggleButton
+ * @extends Button
+ */
+function MToggleButton() {
+    Button.apply(this, []);
+
+    this.OFFSETX = 3;
+    var mSelf = this;
+    var mChecked;
+    var mOnCheckedChangeListener;
+    var mDownX;
+    var mColor;
+    var mBgColor;
+    var mProcessor = new Processor();
+    var mDistance;
+    var mRadius;
+
+    this.setClickable(true);
+    this.setWillNotDraw(false);
+    this.setBackgroundColor(0x00000000);
+    this.setBorder(0, 0x00000000);
+
+    mProcessor.setProcessListener(function() {
+        if (mProcessor.getCurrProcess() < 0.5) {
+            mChecked = false
+        } else {
+            mChecked = true;
+        }
+
+        if (mOnCheckedChangeListener != null) {
+            mOnCheckedChangeListener.onCheckedChanged(mSelf, mChecked);
+        }
+    });
+
+    function refreshColors() {
+        if (!mChecked && mProcessor.getCurrProcess() == 0) {
+            mColor = 0xfff1f1f1;
+            mBgColor = 0xffacabab;
+        } else {
+            mColor = 0xff009688;
+            mBgColor = 0xff77c1ba;
+        }
+        mSelf.postInvalidate();
+    }
+
+    /**
+     * Register a callback to be invoked when the checked state of this button
+     * changes.
+     *
+     * @method setOnCheckedChangeListener
+     * @param listener the callback to call on checked state change
+     */
+    this.setOnCheckedChangeListener = function (listener) {
+        mOnCheckedChangeListener = listener;
+    };
+
+    /**
+     * return the checked state of this button.
+     *
+     * @method isChecked
+     * @return {boolean} the checked state of this button.
+     */
+    this.isChecked = function() {
+        return mChecked;
+    };
+
+    function setCurrProcess(process) {
+        mProcessor.setCurrProcess(process);
+        mSelf.postInvalidate();
+    }
+
+    function isClick(ev) {
+        var deltaX = Math.abs(mDownX - ev.getX());
+        if (deltaX < 3) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Changes the checked state of this button.The default state is true.
+     *
+     * @method setChecked
+     * @param {boolean} checked true to check the button, false to uncheck it
+     */
+    this.setChecked = function (checked) {
+        mChecked = checked;
+        if (checked) {
+            mProcessor.setCurrProcess(1);
+        } else {
+            mProcessor.setCurrProcess(0);
+        }
+        mSelf.postInvalidate();
+    };
+
+    this.setChecked(false);
+
+    this.onDraw = function(canvas) {
+        var w = mSelf.getMeasuredWidth();
+        var h = mSelf.getMeasuredHeight();
+        var p = mProcessor.getCurrProcess();
+        mRadius = Math.min(w,h) * 3 / 8;
+        mDistance = w - this.OFFSETX * 2 - mRadius * 2;
+
+        if (p == 0) {
+            mColor = 0xfff1f1f1;
+            mBgColor = 0xffacabab;
+        } else {
+            mColor = 0xff009688;
+            mBgColor = 0xff77c1ba;
+        }
+
+        var lineWidth = h / 2;
+
+        canvas.beginPath();
+        canvas.lineWidth = lineWidth;
+        canvas.lineCap = 'round';
+        canvas.moveTo(lineWidth/2 + this.OFFSETX , h / 2);
+        canvas.lineTo(w - (lineWidth/2 + this.OFFSETX), h / 2);
+        canvas.strokeStyle = Utils.toCssColor(mBgColor);
+        canvas.stroke();
+
+        canvas.shadowOffsetX = 0;
+        canvas.shadowOffsetY = 0;
+        canvas.shadowBlur = 3;
+        canvas.shadowColor = Utils.toCssColor(0x66000000);
+        canvas.beginPath();
+        canvas.arc(this.OFFSETX + mDistance *  p + mRadius, h / 2, mRadius, 0, Math.PI * 2, true);
+        canvas.closePath();
+        canvas.fillStyle = Utils.toCssColor(mColor);
+        canvas.fill();
+
+        if (mProcessor.computeProcessOffset()) {
+            mSelf.postInvalidate();
+        }
+    };
+
+    this.onTouchEvent = function(ev) {
+        var w = mSelf.getMeasuredWidth();
+
+        var process = 0;
+        if (mChecked) {
+            process = 1 - (mDownX - ev.getX()) / mDistance;
+        } else {
+            process = (ev.getX() - mDownX) / mDistance;
+        }
+        process = Math.max(0, process);
+        process = Math.min(1, process);
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mDownX = ev.getX();
+                break;
+            case MotionEvent.ACTION_MOVE:
+
+                if (!isClick(ev)) {
+                    setCurrProcess(process);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                if (isClick(ev)) {
+                    if (mChecked) {
+                        mProcessor.startProcess(1, 0, 100);
+                    } else {
+                        mProcessor.startProcess(0, 1, 100);
+                    }
+                } else {
+                    if (process > 0.5) {
+                        mChecked = true;
+                        mProcessor.startProcess(process, 1.0, (1 - process) * 100);
+                    } else {
+                        mChecked = false;
+                        mProcessor.startProcess(process, 0, process * 100);
+                    }
+                }
+                if (mProcessor.computeProcessOffset()) {
+                    mSelf.postInvalidate();
+                }
+                break;
+            default:
+                break;
+        }
+    };
 }
 
 var LSnackBar = new _LSnackbar();
@@ -5063,195 +5253,5 @@ function WebView() {
         mFrame.style.width = width + "px";
         mFrame.style.height = height + "px";
         this.setMeasuredDimension(width, height);
-    };
-}
-
-/**
- *
- * A button with two states, checked and unchecked. When the button is pressed
- * or clicked, the state changes automatically.
- *
- * @class MToggleButton
- * @extends Button
- */
-function ToggleButton() {
-    Button.apply(this, []);
-
-    this.OFFSETX = 3;
-    var mSelf = this;
-    var mChecked;
-    var mOnCheckedChangeListener;
-    var mDownX;
-    var mColor;
-    var mBgColor;
-    var mProcessor = new Processor();
-    var mDistance;
-    var mRadius;
-
-    this.setClickable(true);
-    this.setWillNotDraw(false);
-    this.setBackgroundColor(0x00000000);
-    this.setBorder(0, 0x00000000);
-
-    mProcessor.setProcessListener(function() {
-        if (mProcessor.getCurrProcess() < 0.5) {
-            mChecked = false
-        } else {
-            mChecked = true;
-        }
-
-        if (mOnCheckedChangeListener != null) {
-            mOnCheckedChangeListener.onCheckedChanged(mSelf, mChecked);
-        }
-    });
-
-    function refreshColors() {
-        if (!mChecked && mProcessor.getCurrProcess() == 0) {
-            mColor = 0xfff1f1f1;
-            mBgColor = 0xffacabab;
-        } else {
-            mColor = 0xff009688;
-            mBgColor = 0xff77c1ba;
-        }
-        mSelf.postInvalidate();
-    }
-
-    /**
-     * Register a callback to be invoked when the checked state of this button
-     * changes.
-     *
-     * @method setOnCheckedChangeListener
-     * @param listener the callback to call on checked state change
-     */
-    this.setOnCheckedChangeListener = function (listener) {
-        mOnCheckedChangeListener = listener;
-    };
-
-    /**
-     * return the checked state of this button.
-     *
-     * @method isChecked
-     * @return {boolean} the checked state of this button.
-     */
-    this.isChecked = function() {
-        return mChecked;
-    };
-
-    function setCurrProcess(process) {
-        mProcessor.setCurrProcess(process);
-        mSelf.postInvalidate();
-    }
-
-    function isClick(ev) {
-        var deltaX = Math.abs(mDownX - ev.getX());
-        if (deltaX < 3) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Changes the checked state of this button.The default state is true.
-     *
-     * @method setChecked
-     * @param {boolean} checked true to check the button, false to uncheck it
-     */
-    this.setChecked = function (checked) {
-        mChecked = checked;
-        if (checked) {
-            mProcessor.setCurrProcess(1);
-        } else {
-            mProcessor.setCurrProcess(0);
-        }
-        mSelf.postInvalidate();
-    };
-
-    this.setChecked(false);
-
-    this.onDraw = function(canvas) {
-        var w = mSelf.getMeasuredWidth();
-        var h = mSelf.getMeasuredHeight();
-        var p = mProcessor.getCurrProcess();
-        mRadius = Math.min(w,h) * 3 / 8;
-        mDistance = w - this.OFFSETX * 2 - mRadius * 2;
-
-        if (p == 0) {
-            mColor = 0xfff1f1f1;
-            mBgColor = 0xffacabab;
-        } else {
-            mColor = 0xff009688;
-            mBgColor = 0xff77c1ba;
-        }
-
-        var lineWidth = h / 2;
-
-        canvas.beginPath();
-        canvas.lineWidth = lineWidth;
-        canvas.lineCap = 'round';
-        canvas.moveTo(lineWidth/2 + this.OFFSETX , h / 2);
-        canvas.lineTo(w - (lineWidth/2 + this.OFFSETX), h / 2);
-        canvas.strokeStyle = Utils.toCssColor(mBgColor);
-        canvas.stroke();
-
-        canvas.shadowOffsetX = 0;
-        canvas.shadowOffsetY = 0;
-        canvas.shadowBlur = 3;
-        canvas.shadowColor = Utils.toCssColor(0x66000000);
-        canvas.beginPath();
-        canvas.arc(this.OFFSETX + mDistance *  p + mRadius, h / 2, mRadius, 0, Math.PI * 2, true);
-        canvas.closePath();
-        canvas.fillStyle = Utils.toCssColor(mColor);
-        canvas.fill();
-
-        if (mProcessor.computeProcessOffset()) {
-            mSelf.postInvalidate();
-        }
-    };
-
-    this.onTouchEvent = function(ev) {
-        var w = mSelf.getMeasuredWidth();
-
-        var process = 0;
-        if (mChecked) {
-            process = 1 - (mDownX - ev.getX()) / mDistance;
-        } else {
-            process = (ev.getX() - mDownX) / mDistance;
-        }
-        process = Math.max(0, process);
-        process = Math.min(1, process);
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mDownX = ev.getX();
-                break;
-            case MotionEvent.ACTION_MOVE:
-
-                if (!isClick(ev)) {
-                    setCurrProcess(process);
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                if (isClick(ev)) {
-                    if (mChecked) {
-                        mProcessor.startProcess(1, 0, 100);
-                    } else {
-                        mProcessor.startProcess(0, 1, 100);
-                    }
-                } else {
-                    if (process > 0.5) {
-                        mChecked = true;
-                        mProcessor.startProcess(process, 1.0, (1 - process) * 100);
-                    } else {
-                        mChecked = false;
-                        mProcessor.startProcess(process, 0, process * 100);
-                    }
-                }
-                if (mProcessor.computeProcessOffset()) {
-                    mSelf.postInvalidate();
-                }
-                break;
-            default:
-                break;
-        }
     };
 }
