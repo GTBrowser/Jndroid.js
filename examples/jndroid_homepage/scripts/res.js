@@ -6,14 +6,15 @@ function _R() {
     this.dimen = new _dimen();
 
     function _string() {
-        var lang = getLocale();
-        if (lang.indexOf("zh") >= 0) {
+        if (Manifest.language.indexOf("zh") >= 0) {
             this.intro = "简介";
             this.getstart = "开始";
             this.vs_android = "前言";
             this.documentation = "文档";
             this.application = "应用";
             this.about = "关于";
+            this.setting = "设置";
+            this.language = "语言";
 
             this.to_android_develop = "致安卓开发者";
         } else {
@@ -23,6 +24,8 @@ function _R() {
             this.documentation = "Documentation";
             this.application = "Application";
             this.about = "About";
+            this.setting = "Setting";
+            this.language = "Language";
 
             this.to_android_develop = "To Android Developer";
         }
@@ -52,10 +55,4 @@ function _R() {
         this.text = 14;
         this.sub_text = 12;
     }
-}
-
-function getLocale() {
-    var DEFAULT_VALUE = 'zh'; /* 默认设置为中文 */
-    var PREFERRED_LANGUAGE = navigator.language || navigator.userLanguage || navigator.browserLanguage || navigator.systemLanguage || DEFAULT_VALUE;
-    return PREFERRED_LANGUAGE;
 }

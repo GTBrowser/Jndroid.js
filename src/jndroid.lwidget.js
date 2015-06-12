@@ -824,6 +824,7 @@ function WaveDrawable() {
     var mDimBg = true;
     var maxRadius = 9999;
     var mWaveColor = 0x25191919;
+    var mBgColor = 0x33191919;
 
     this.onStateChange = function(state) {
         if (mCurrentState != View.VIEW_STATE_PRESSED && state == View.VIEW_STATE_PRESSED) {
@@ -872,13 +873,13 @@ function WaveDrawable() {
         var b = this.getBounds();
 
         if (mDimBg) {
-            canvas.fillStyle = Utils.toCssColor(0x33191919);
+            canvas.fillStyle = Utils.toCssColor(mWaveColor);
             canvas.fillRect(b.left, b.top, b.width(), b.height());
         }
 
         var offsetX = mX;
         var offsetY = mY;
-        var radius = b.height() + b.width() * mWaveProcessor.getCurrProcess() * 2;
+        var radius = b.height() / 2 + b.width() * mWaveProcessor.getCurrProcess() * 2;
         radius = radius / 2;
         radius = Math.min(radius, maxRadius);
         canvas.beginPath();
@@ -891,6 +892,231 @@ function WaveDrawable() {
     this.drawEnable = function(canvas) {
 
     };
+}
+
+function LRadioGroup() {
+    LinearLayout.apply(this, []);
+
+    var mSelf = this;
+    var mCheckedId = -1;
+    var mOnCheckedChangeListener = null;
+
+    this.addChild = function(child, indexOrParams, params) {
+        if (child.isChecked()) {
+            if (mCheckedId != -1) {
+                setCheckedStateForView(mCheckedId, false);
+            }
+            setCheckedId(child.getId());
+        }
+        child.setCheckedListener(function() {
+            mSelf.check(child.getId());
+        });
+        this.addView(child, indexOrParams, params);
+    };
+
+    /**
+     * <p>Register a callback to be invoked when the checked radio button
+     * changes in this group.</p>
+     *
+     * @method setOnCheckedChangeListener
+     */
+    this.setOnCheckedChangeListener = function(l) {
+        mOnCheckedChangeListener = l;
+    };
+
+    /**
+     * <p>Sets the selection to the radio button whose identifier is passed in
+     * parameter. Using -1 as the selection identifier clears the selection;
+     *
+     * @method
+     * @param id the unique id of the radio button to select in this group
+     */
+    this.check = function(id) {
+        // don't even bother
+        if (id != -1 && (id == mCheckedId)) {
+            return;
+        }
+        if (mCheckedId != -1) {
+            setCheckedStateForView(mCheckedId, false);
+        }
+        if (id != -1) {
+            setCheckedStateForView(id, true);
+        }
+        setCheckedId(id);
+    };
+
+    /**
+     * <p>Returns the identifier of the selected radio button in this group.
+     * Upon empty selection, the returned value is -1.</p>
+     *
+     * @method getCheckedRadioButtonId
+     * @return the unique id of the selected radio button in this group
+     *
+     */
+    this.getCheckedRadioButtonId = function() {
+        return mCheckedId;
+    };
+
+    /**
+     * <p>Clears the selection. When the selection is cleared, no radio button
+     * in this group is selected and {@link #getCheckedRadioButtonId()} returns
+     * null.</p>
+     *
+     * @method clearCheck
+     */
+    this.clearCheck = function() {
+        this.check(-1);
+    };
+
+    function setCheckedId(id) {
+        mCheckedId = id;
+        if (mOnCheckedChangeListener != null) {
+            mOnCheckedChangeListener.call(this, mCheckedId);
+        }
+    }
+
+    function setCheckedStateForView(viewId, checked) {
+        var checkedView = mSelf.findViewById(viewId);
+        if (checkedView != null) {
+            checkedView.setChecked(checked);
+        }
+    }
+}
+
+function LRadioButton() {
+    ViewGroup.apply(this, []);
+
+    this.HEIGHT = 48;
+
+    var mSelf = this;
+    var mColor = 0xff009688;
+    var mChecked = false;
+
+    var mCheckedListener = null;
+
+    var mRadioCheck = new LRadioCheck();
+    mRadioCheck.setOnClickListener(onclick);
+    this.addView(mRadioCheck);
+
+    var mText = new TextView();
+    mText.setTextSize(16);
+    mText.setTextColor(0xff212121);
+    mText.setPadding(4);
+    mText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+    this.addView(mText);
+
+    this.setOnClickListener(onclick);
+
+    this.setColor = function(c) {
+        mColor = c;
+    };
+
+    this.setText = function(text) {
+        mText.setText(text);
+    };
+
+    this.isChecked = function() {
+        return mChecked;
+    };
+
+    this.setChecked = function(checked) {
+        mChecked = checked;
+        mRadioCheck.setChecked(checked);
+    };
+
+    this.setCheckedListener = function(l) {
+        mCheckedListener = l;
+    };
+
+    this.onTouchEvent = function(ev) {
+        mRadioCheck.onTouchEvent(ev);
+        mRadioCheck.getBgDrawable().setX(48);
+    };
+
+    this.onMeasure = function(widthMS, heightMS) {
+        var width = MeasureSpec.getSize(widthMS);
+        var height = this.HEIGHT;
+
+        mRadioCheck.measure(50, 48);
+        mText.measure(width - 50, MeasureSpec.makeMeasureSpec(48, MeasureSpec.EXACTLY));
+
+        this.setMeasuredDimension(width, height);
+    };
+
+    this.onLayout = function(x, y) {
+        var offsetX = 0;
+        var offsetY = 0;
+        mRadioCheck.layout(offsetX, offsetY);
+
+        offsetX += 50;
+        mText.layout(offsetX, offsetY);
+    };
+
+    function onclick() {
+        mSelf.setChecked(!mChecked);
+        if (mCheckedListener != null) {
+            mCheckedListener.call(mSelf, mChecked);
+        }
+    }
+
+    function LRadioCheck() {
+        View.apply(this, []);
+
+        var mBgDrawable = new WaveDrawable();
+        mBgDrawable.setCallback(this);
+
+        this.setWillNotDraw(false);
+        this.setCornerSize(24);
+
+        this.getBgDrawable = function() {
+            return mBgDrawable;
+        };
+
+        this.setChecked = function(check) {
+            var r = Color.red(mColor);
+            var g = Color.green(mColor);
+            var b = Color.blue(mColor);
+            mBgDrawable.setWaveColor(Color.argb(25, r, g, b));
+            this.postInvalidate();
+        };
+
+        this.onTouchEvent = function(ev) {
+            switch (ev.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    mBgDrawable.setState(View.VIEW_STATE_PRESSED);
+                    mBgDrawable.setX(ev.getX());
+                    mBgDrawable.setY(ev.getY());
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                case MotionEvent.ACTION_UP:
+                    mBgDrawable.setState(View.VIEW_STATE_ENABLED);
+                    break;
+            }
+        };
+
+        this.onDraw = function(canvas) {
+            if (mChecked) {
+                canvas.strokeStyle = Utils.toCssColor(mColor);
+                canvas.fillStyle = Utils.toCssColor(mColor);
+            } else {
+                canvas.strokeStyle = Utils.toCssColor(0x88000000);
+                canvas.fillStyle = Utils.toCssColor(0x88000000);
+            }
+            canvas.lineWidth = "2";
+            canvas.beginPath();
+            canvas.arc(24, 24, 9, 0, Math.PI * 2, false);
+            canvas.closePath();
+            canvas.stroke();
+
+            canvas.beginPath();
+            canvas.arc(24, 24, 5, 0, Math.PI * 2, false);
+            canvas.closePath();
+            canvas.fill();
+
+            mBgDrawable.setBounds(0, 0, this.getMeasuredWidth(), this.getMeasuredHeight());
+            mBgDrawable.draw(canvas);
+        };
+    }
 }
 
 var LSnackBar = new _LSnackbar();

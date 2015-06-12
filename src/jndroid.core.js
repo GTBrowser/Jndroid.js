@@ -399,6 +399,113 @@ Object.defineProperty(MotionEvent,"ACTION_MOVE",{value:2});
 Object.defineProperty(MotionEvent,"ACTION_CANCEL",{value:3});
 
 /**
+ * The Color class defines methods for creating and converting color ints.
+ * Colors are represented as packed ints, made up of 4 bytes: alpha, red,
+ * green, blue. The values are unpremultiplied, meaning any transparency is
+ * stored solely in the alpha component, and not in the color components. The
+ * components are stored as follows (alpha << 24) | (red << 16) |
+ * (green << 8) | blue. Each component ranges between 0..255 with 0
+ * meaning no contribution for that component, and 255 meaning 100%
+ * contribution. Thus opaque-black would be 0xFF000000 (100% opaque but
+ * no contributions from red, green, or blue), and opaque-white would be
+ * 0xFFFFFFFF
+ * @class Color
+ * @static
+ */
+var Color = new _Color();
+function _Color() {
+    /**
+     * Return the alpha component of a color int. This is the same as saying
+     * color >>> 24
+     *
+     * @method alpha
+     * @return {int}
+     */
+    this.alpha = function (color) {
+        return color >>> 24;
+    };
+
+    /**
+     * Return the red component of a color int. This is the same as saying
+     * (color >> 16) & 0xFF
+     *
+     * @method red
+     * @return {int}
+     */
+    this.red = function (color) {
+        return (color >> 16) & 0xFF;
+    };
+
+    /**
+     * Return the green component of a color int. This is the same as saying
+     * (color >> 8) & 0xFF
+     *
+     * @method green
+     * @return {int}
+     */
+    this.green = function (color) {
+        return (color >> 8) & 0xFF;
+    };
+
+    /**
+     * Return the blue component of a color int. This is the same as saying
+     * color & 0xFF
+     *
+     * @method blue
+     * @return {int}
+     */
+    this.blue = function (color) {
+        return color & 0xFF;
+    };
+
+    /**
+     * Return a color-int from red, green, blue components.
+     * The alpha component is implicity 255 (fully opaque).
+     * These component values should be [0..255], but there is no
+     * range check performed, so if they are out of range, the
+     * returned color is undefined.
+     *
+     * @method rgb
+     * @param red  Red component [0..255] of the color
+     * @param green Green component [0..255] of the color
+     * @param blue  Blue component [0..255] of the color
+     * @return {int}
+     */
+    this.rgb = function (red, green, blue) {
+        return (0xFF << 24) | (red << 16) | (green << 8) | blue;
+    };
+
+    /**
+     * Return a color-int from alpha, red, green, blue components.
+     * These component values should be [0..255], but there is no
+     * range check performed, so if they are out of range, the
+     * returned color is undefined.
+     * @method argb
+     * @param alpha Alpha component [0..255] of the color
+     * @param red   Red component [0..255] of the color
+     * @param green Green component [0..255] of the color
+     * @param blue  Blue component [0..255] of the color
+     * @return {int}
+     */
+    this.argb = function (alpha, red, green, blue) {
+        return (alpha << 24) | (red << 16) | (green << 8) | blue;
+    };
+}
+Object.defineProperty(MotionEvent,"BLACK",{value:0xFF000000});
+Object.defineProperty(MotionEvent,"DKGRAY",{value:0xFF444444});
+Object.defineProperty(MotionEvent,"GRAY",{value:0xFF888888});
+Object.defineProperty(MotionEvent,"LTGRAY",{value:0xFFCCCCCC});
+Object.defineProperty(MotionEvent,"WHITE",{value:0xFFFFFFFF});
+Object.defineProperty(MotionEvent,"RED",{value:0xFFFF0000});
+Object.defineProperty(MotionEvent,"GREEN",{value:0xFF00FF00});
+Object.defineProperty(MotionEvent,"BLUE",{value:0xFF0000FF});
+Object.defineProperty(MotionEvent,"YELLOW",{value:0xFFFFFF00});
+Object.defineProperty(MotionEvent,"CYAN",{value:0xFF00FFFF});
+Object.defineProperty(MotionEvent,"MAGENTA",{value:0xFFFF00FF});
+Object.defineProperty(MotionEvent,"TRANSPARENT",{value:0});
+
+
+/**
  * A Drawable is a general abstraction for "something that can be drawn."  Most
  * often you will deal with Drawable as the type of resource retrieved for
  * drawing things to the screen; the Drawable class provides a generic API for
@@ -619,6 +726,7 @@ function View() {
     var mClickListener = null;
     var mLongClickListener = null;
     var mTag = "View";
+    var mID = View.NO_ID;
     var mHTMLCanvas = null;
     var canvas = null;
     var mInTouch = false;
@@ -629,6 +737,28 @@ function View() {
 
 
     var mRunQueue = new Map();
+
+    /**
+     * Returns this view's identifier.
+     *
+     * @return a positive integer used to identify the view or NO_ID
+     *         if the view has no ID
+
+     */
+    this.getId = function() {
+        return mID;
+    };
+
+    /**
+     * Sets the identifier for this view. The identifier does not have to be
+     * unique in this view's hierarchy. The identifier should be a positive
+     * number.
+     *
+     * @param id a number used to identify the view
+     */
+    this.setId = function(id) {
+        mID = id;
+    };
 
 	/**
 	* Returns this view's tag.
@@ -1412,8 +1542,30 @@ function View() {
 
     this.setFontFamily = function(fontFamily) {
         this.getDiv().style.fontFamily = fontFamily;
+    };
+
+    /**
+     * Look for a child view with the given id.  If this view has the given
+     * id, return this view.
+     *
+     * @param id The id to search for.
+     * @return The view that has the given id in the hierarchy or null
+     */
+    this.findViewById = function(id) {
+        if (id < 0) {
+            return null;
+        }
+        return this.findViewTraversal(id);
+    };
+
+    this.findViewTraversal = function(id) {
+        if (id == mID) {
+            return this;
+        }
+        return null;
     }
 }
+Object.defineProperty(View,"NO_ID",{value:-1});
 Object.defineProperty(View,"VISIBLE",{value:0});
 Object.defineProperty(View,"INVISIBLE",{value:4});
 Object.defineProperty(View,"GONE",{value:8});
@@ -1471,7 +1623,8 @@ function ViewGroup() {
      *
      * @method addView
      * @param {View} child the child view to add
-     * @param {int} index the position at which to add the child
+     * @param {int} index the position at which to add the child,
+     *          or {LayoutParams} params the layout parameters to set on the child
      * @param {LayoutParams} params the layout parameters to set on the child
      */
     this.addView = function(view, indexOrParams, params) {
@@ -1532,6 +1685,21 @@ function ViewGroup() {
             this.getParent().requestLayout();
         }
     };
+
+    this.findViewTraversal = function(id) {
+        if (id == this.getId()) {
+            return this;
+        }
+
+        for (var i = 0; i < mChildren.length; i++) {
+            var v = mChildren[i];
+            v = v.findViewById(id);
+            if (v != null) {
+                return v;
+            }
+        }
+        return null;
+    }
 }
 
 // 以下为Canvas方法

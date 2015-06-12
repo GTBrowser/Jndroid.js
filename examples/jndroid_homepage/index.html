@@ -16,6 +16,7 @@
 
 
     <!-- Source files -->
+    <script src="scripts/manifest.js"></script>
     <script src="scripts/res.js"></script>
     <script src="scripts/main.js"></script>
     <script src="scripts/IntroductionPage.js"></script>
@@ -23,7 +24,6 @@
     <script src="scripts/Tab.js"></script>
     <script src="scripts/Indicator.js"></script>
     <script src="scripts/playground.js"></script>
-    <script src="scripts/manifest.js"></script>
 
     <!-- Code Editor -->
     <link rel="stylesheet" href="codemirror/codemirror.css">
@@ -42,9 +42,9 @@
     try {
         var lang = getLocale();
         if (lang.indexOf("zh") >= 0) {
-            mMainView.setFontFamily("微软雅黑");
+            getRootView().setFontFamily("微软雅黑");
         } else {
-            mMainView.setFontFamily("RobotoDraft, Roboto, sans-serif");
+            getRootView().setFontFamily("RobotoDraft, Roboto, sans-serif");
         }
     } catch(e) {
         console.log(e);
@@ -56,6 +56,7 @@
     Utils.includeJs("scripts/ApplicationsView.js");
     Utils.includeJs("scripts/AboutView.js");
     Utils.includeJs("scripts/comment.js");
+    Utils.includeJs("scripts/SettingView.js");
 </script>
 </body>
 </html>
