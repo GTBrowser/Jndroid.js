@@ -41,7 +41,7 @@ function VSAndroidView() {
     var moreTip = new TextView();
     moreTip.setTextSize(R.dimen.title);
     moreTip.setTextColor(R.color.theme);
-    moreTip.setText("More tips");
+    moreTip.setText(R.string.more_tips);
     var moreTipLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     moreTipLp.setMargins(mPadding, R.dimen.paragraph_padding_top - 32, mPadding, 0);
     contentView.addView(moreTip, moreTipLp);

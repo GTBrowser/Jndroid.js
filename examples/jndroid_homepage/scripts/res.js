@@ -17,9 +17,24 @@ function _R() {
             this.language = "语言";
 
             this.intro_content = "Jndroid是一个JavaScript框架，能够让开发者使用Android的方式开发网页。";
-            this.material_design = "谷歌 Material Design";
+            this.material_design = "谷歌Material Design";
 
             this.to_android_develop = "致安卓开发者";
+            this.more_tips = "更多建议";
+
+            this.jndroid_home = "Jndroid官网";
+            this.calculator = "关系计算器";
+
+            this.version = "版本号";
+            this.show_more = "显示更多";
+            this.show_less = "收起显示";
+            this.change_log = "更新记录";
+            this.comments = "评论";
+            this.qa = "答问";
+            this.ask_question = "如需讨论，请发邮件至guyiyang@outlook.com";
+
+            this.version_update = "版本已更新";
+
         } else {
             this.intro = "Introduction";
             this.getstart = "Getting Started";
@@ -34,6 +49,21 @@ function _R() {
             this.material_design = "Google Material Design";
 
             this.to_android_develop = "To Android Developer";
+            this.more_tips = "More Tips";
+
+            this.jndroid_home = "Jndroid Homepage";
+            this.calculator = "Relationship Calculator";
+
+            this.version = "Version";
+            this.show_more = "show more";
+            this.show_less = "show less";
+            this.change_log = "Change Logs";
+            this.comments = "Comments";
+            this.qa = "Q&A";
+            this.ask_question = "To ask question, please send email to guyiyang@outlook.com";
+
+            this.version_update = "Version Updated";
+
         }
     }
 

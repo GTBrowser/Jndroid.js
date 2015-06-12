@@ -24,8 +24,8 @@ function ApplicationsView() {
     //content.addView(intro, introlp);
 
     var appsList = [];
-    appsList.push(new AppData("Jndroid Homepage", "http://jndroid.com", true));
-    appsList.push(new AppData("Relationship Calculator", "http://lite.mb.lenovomm.com/rcalc/", false));
+    appsList.push(new AppData(R.string.jndroid_home, "http://jndroid.com", true));
+    appsList.push(new AppData(R.string.calculator, "http://lite.mb.lenovomm.com/rcalc/", false));
     //appsList.push(new AppData("Delivery Search", "http://testbrowser.cn/kuaidi.html", false));
 
     var appItemTopLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);

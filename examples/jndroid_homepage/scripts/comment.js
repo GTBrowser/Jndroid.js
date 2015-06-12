@@ -44,7 +44,7 @@ function Comment(avatar, name, text) {
     var mComment = new TextView();
     mComment.setText(text);
     mComment.setTextSize(R.dimen.sub_text);
-    mComment.setTextColor(R.dimen.sub_text);
+    mComment.setTextColor(R.color.sub_text);
     mComment.setLineHeight(R.dimen.text * 2);
     var commentlp = new LayoutParams(namelp);
     commentlp.topMargin = R.dimen.half_padding;

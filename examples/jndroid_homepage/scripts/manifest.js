@@ -1,7 +1,7 @@
 var Manifest = new _Manifest();
 function _Manifest() {
-    this.versionCode = 000000080000;
-    this.versionName = "0.8.1";
+    this.versionCode = 000000080002;
+    this.versionName = "0.8.2";
 
     this.lastVersionCode = localStorage["versionCode"];
     localStorage["versionCode"] = this.versionCode;
