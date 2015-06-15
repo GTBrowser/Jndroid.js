@@ -833,6 +833,16 @@ Object.defineProperty(MotionEvent,"CYAN",{value:0xFF00FFFF});
 Object.defineProperty(MotionEvent,"MAGENTA",{value:0xFFFF00FF});
 Object.defineProperty(MotionEvent,"TRANSPARENT",{value:0});
 
+/**
+ * A structure describing general information about a display, such as its
+ * size and density of canvas.
+ * To access the DisplayMetrics members, initialize an object like this:
+ * DisplayMetrics.density;
+ */
+var DisplayMetrics = new _DisplayMetrics();
+function _DisplayMetrics() {
+    this.density = window.devicePixelRatio;
+}
 
 /**
  * A Drawable is a general abstraction for "something that can be drawn."  Most
@@ -1342,9 +1352,22 @@ function View() {
         if (mHTMLCanvas !== null) {
             mHTMLCanvas.width = width;
             mHTMLCanvas.height = height;
-
+            changeDensity(mHTMLCanvas);
         }
     };
+
+    function changeDensity(canvas) {
+        if (!canvas.style.width)
+            canvas.style.width = canvas.width + 'px';
+        if (!canvas.style.height)
+            canvas.style.height = canvas.height + 'px';
+
+        var density = DisplayMetrics.density;
+        canvas.width = Math.ceil(canvas.width * density);
+        canvas.height = Math.ceil(canvas.height * density);
+        var ctx = canvas.getContext('2d');
+        ctx.scale(density, density);
+    }
 
 	/**
 	* Assign a size and position to a view and all of its descendants
@@ -1431,8 +1454,6 @@ function View() {
                 if (mHTMLCanvas.getContext) {
                     if (canvas == null) {
                         canvas = mHTMLCanvas.getContext("2d");
-                        canvas.width = this.getMeasuredWidth();
-                        canvas.height = this.getMeasuredHeight();
                     }
                     this.onDraw(canvas);
                 }
@@ -3067,6 +3088,8 @@ function MProgressBar() {
     var mEndDegree = Math.PI * 2;
     var mOffsetDegree = 0;
     var mFinish = false;
+    var mDensity = DisplayMetrics.density;
+
     var mProcessor = new Processor();
     mProcessor.startProcess(0, 1, 2000);
     mProcessor.setProcessListener(function() {
@@ -3120,8 +3143,8 @@ function MProgressBar() {
     };
 
     function drawLine(canvas) {
-        var w = mSelf.getMeasuredWidth();
-        var h = mSelf.getMeasuredHeight();
+        var w = mSelf.getMeasuredWidth() * mDensity;
+        var h = mSelf.getMeasuredHeight() * mDensity;
         var distance = w * 1.1;
         var p = mProcessor.getCurrProcess();
         var p1 = f2(p);
@@ -3148,10 +3171,10 @@ function MProgressBar() {
     }
 
     function drawCircle(canvas) {
-        var x = mSelf.getMeasuredWidth() / 2;
-        var y = mSelf.getMeasuredHeight() / 2;
+        var x = mSelf.getMeasuredWidth() / 2 * mDensity;
+        var y = mSelf.getMeasuredHeight() / 2 * mDensity;
         var lineWidth = x / 5;
-        var radius = mSelf.getMeasuredWidth() / 2;
+        var radius = mSelf.getMeasuredWidth() / 2 * mDensity;
         var distance = Math.PI * 3;
         var p = mProcessor.getCurrProcess();
         var p1 = f1(p);
@@ -3200,6 +3223,7 @@ function MButton() {
     TextView.apply(this, []);
     var mId;
 
+    var mDensity = DisplayMetrics.density;
     var mBgDrawable = new WaveDrawable();
     mBgDrawable.setCallback(this);
 
@@ -3230,8 +3254,8 @@ function MButton() {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mBgDrawable.setState(View.VIEW_STATE_PRESSED);
-                mBgDrawable.setX(ev.getX());
-                mBgDrawable.setY(ev.getY());
+                mBgDrawable.setX(ev.getX() * mDensity);
+                mBgDrawable.setY(ev.getY() * mDensity);
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
@@ -3241,7 +3265,7 @@ function MButton() {
     };
 
     this.onDraw = function(canvas) {
-        mBgDrawable.setBounds(0, 0, this.getMeasuredWidth(), this.getMeasuredHeight());
+        mBgDrawable.setBounds(0, 0, this.getMeasuredWidth() * mDensity, this.getMeasuredHeight() * mDensity);
         mBgDrawable.draw(canvas);
     };
 }
@@ -3250,6 +3274,7 @@ function MImageButton() {
     ImageButton.apply(this, []);
     var mId;
 
+    var mDenisty = DisplayMetrics.density;
     var mBgDrawable = new WaveDrawable();
     mBgDrawable.setCallback(this);
 
@@ -3267,8 +3292,8 @@ function MImageButton() {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mBgDrawable.setState(View.VIEW_STATE_PRESSED);
-                mBgDrawable.setX(ev.getX());
-                mBgDrawable.setY(ev.getY());
+                mBgDrawable.setX(ev.getX() * mDenisty);
+                mBgDrawable.setY(ev.getY() * mDenisty);
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
@@ -3278,7 +3303,7 @@ function MImageButton() {
     };
 
     this.onDraw = function(canvas) {
-        mBgDrawable.setBounds(0, 0, this.getMeasuredWidth(), this.getMeasuredHeight());
+        mBgDrawable.setBounds(0, 0, this.getMeasuredWidth() * mDenisty, this.getMeasuredHeight() * mDenisty);
         mBgDrawable.draw(canvas);
     };
 }
@@ -3800,8 +3825,8 @@ function MSelectionButton() {
         };
 
         this.onDraw = function(canvas) {
-            var w = this.getMeasuredWidth();
-            var h = this.getMeasuredHeight();
+            var w = this.getMeasuredWidth() * DisplayMetrics.density;
+            var h = this.getMeasuredHeight() * DisplayMetrics.density;
             var s = 6;
             var x = (w - h) + (h / 2) - 10;
             var y = (h - s) / 2;
@@ -4114,7 +4139,7 @@ function MRadioButton() {
 
     this.onTouchEvent = function(ev) {
         mRadioCheck.onTouchEvent(ev);
-        mRadioCheck.getBgDrawable().setX(48);
+        mRadioCheck.getBgDrawable().setX(48 * DisplayMetrics.density);
     };
 
     this.onMeasure = function(widthMS, heightMS) {
@@ -4146,6 +4171,8 @@ function MRadioButton() {
     function LRadioCheck() {
         View.apply(this, []);
 
+        var mDensity = DisplayMetrics.density;
+
         var mBgDrawable = new WaveDrawable();
         mBgDrawable.setCallback(this);
 
@@ -4168,8 +4195,8 @@ function MRadioButton() {
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     mBgDrawable.setState(View.VIEW_STATE_PRESSED);
-                    mBgDrawable.setX(ev.getX());
-                    mBgDrawable.setY(ev.getY());
+                    mBgDrawable.setX(ev.getX() * mDensity);
+                    mBgDrawable.setY(ev.getY() * mDensity);
                     break;
                 case MotionEvent.ACTION_CANCEL:
                 case MotionEvent.ACTION_UP:
@@ -4186,18 +4213,20 @@ function MRadioButton() {
                 canvas.strokeStyle = Utils.toCssColor(0x88000000);
                 canvas.fillStyle = Utils.toCssColor(0x88000000);
             }
-            canvas.lineWidth = "2";
+            var x = 24 * mDensity;
+            var y = 24 * mDensity;
+            canvas.lineWidth = 2 * mDensity;
             canvas.beginPath();
-            canvas.arc(24, 24, 9, 0, Math.PI * 2, false);
+            canvas.arc(x, y, 9 * mDensity, 0, Math.PI * 2, false);
             canvas.closePath();
             canvas.stroke();
 
             canvas.beginPath();
-            canvas.arc(24, 24, 5, 0, Math.PI * 2, false);
+            canvas.arc(x, y, 5 * mDensity, 0, Math.PI * 2, false);
             canvas.closePath();
             canvas.fill();
 
-            mBgDrawable.setBounds(0, 0, this.getMeasuredWidth(), this.getMeasuredHeight());
+            mBgDrawable.setBounds(0, 0, this.getMeasuredWidth() * mDensity, this.getMeasuredHeight() * mDensity);
             mBgDrawable.draw(canvas);
         };
     }
@@ -4214,6 +4243,7 @@ function MRadioButton() {
 function MToggleButton() {
     View.apply(this, []);
 
+    var mDensity = DisplayMetrics.density;
     var mPaddingX = 24;
     var mTrackRadius = 8;
     var mSelf = this;
@@ -4229,9 +4259,9 @@ function MToggleButton() {
 
     var mWaveDrawable = new WaveDrawable();
     mWaveDrawable.setDimBg(false);
-    mWaveDrawable.setX(24);
-    mWaveDrawable.setY(24);
-    mWaveDrawable.setMaxRadius(24);
+    mWaveDrawable.setX(24 * mDensity);
+    mWaveDrawable.setY(24 * mDensity);
+    mWaveDrawable.setMaxRadius(24 * mDensity);
     mWaveDrawable.setCallback(this);
 
     this.setClickable(true);
@@ -4330,30 +4360,31 @@ function MToggleButton() {
     };
 
     this.onDraw = function(canvas) {
-        var w = mSelf.getMeasuredWidth();
-        var h = mSelf.getMeasuredHeight();
+        var w = mSelf.getMeasuredWidth() * mDensity;
+        var h = mSelf.getMeasuredHeight() * mDensity;
         var p = mProcessor.getCurrProcess();
+        var r = 24 * mDensity;
         var offsetX;
         var offsetY;
-        mRadius = 10;
-        mDistance = w - mPaddingX * 2;
+        mRadius = 10 * mDensity;
+        mDistance = w - mPaddingX * 2 * mDensity;
 
         refreshColors();
 
         canvas.beginPath();
-        canvas.lineWidth = mTrackRadius * 2;
+        canvas.lineWidth = mTrackRadius * 2 * mDensity;
         canvas.lineCap = 'round';
-        canvas.moveTo(24, h / 2);
-        canvas.lineTo(w - 24, h / 2);
+        canvas.moveTo(r, h / 2);
+        canvas.lineTo(w - r, h / 2);
         canvas.strokeStyle = Utils.toCssColor(mTrackColor);
         canvas.stroke();
 
 
-        offsetX = mPaddingX + mDistance *  p;
+        offsetX = mPaddingX * mDensity + mDistance *  p;
         offsetY = h / 2;
         canvas.shadowOffsetX = 0;
         canvas.shadowOffsetY = 2;
-        canvas.shadowBlur = 5;
+        canvas.shadowBlur = 5 * mDensity;
         canvas.shadowColor = Utils.toCssColor(0x66000000);
         canvas.beginPath();
         canvas.arc(offsetX, offsetY, mRadius, 0, Math.PI * 2, true);
@@ -4361,7 +4392,7 @@ function MToggleButton() {
         canvas.fillStyle = Utils.toCssColor(mThumbColor);
         canvas.fill();
 
-        mWaveDrawable.setBounds(offsetX - 24, offsetY - 24, offsetX + 24, offsetY + 24);
+        mWaveDrawable.setBounds(offsetX - r, offsetY - r, offsetX + r, offsetY + r);
         mWaveDrawable.draw(canvas);
 
         if (mProcessor.computeProcessOffset()) {
@@ -4374,9 +4405,9 @@ function MToggleButton() {
 
         var process = 0;
         if (mChecked) {
-            process = 1 - (mDownX - ev.getX()) / mDistance;
+            process = 1 - (mDownX - ev.getX()) / (mDistance / mDensity);
         } else {
-            process = (ev.getX() - mDownX) / mDistance;
+            process = (ev.getX() - mDownX) / (mDistance / mDensity);
         }
         process = Math.max(0, process);
         process = Math.min(1, process);
