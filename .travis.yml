@@ -5,6 +5,9 @@ node_js:
   - "0.10"
   - "iojs"
 
+notification:
+  webhooks: https://hooks.pubu.im/services/m8g89bmggle9iq
+
 install:
   - "npm install"
 
