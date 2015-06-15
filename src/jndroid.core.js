@@ -504,6 +504,16 @@ Object.defineProperty(MotionEvent,"CYAN",{value:0xFF00FFFF});
 Object.defineProperty(MotionEvent,"MAGENTA",{value:0xFFFF00FF});
 Object.defineProperty(MotionEvent,"TRANSPARENT",{value:0});
 
+/**
+ * A structure describing general information about a display, such as its
+ * size and density of canvas.
+ * To access the DisplayMetrics members, initialize an object like this:
+ * DisplayMetrics.density;
+ */
+var DisplayMetrics = new _DisplayMetrics();
+function _DisplayMetrics() {
+    this.density = window.devicePixelRatio;
+}
 
 /**
  * A Drawable is a general abstraction for "something that can be drawn."  Most
@@ -1013,9 +1023,22 @@ function View() {
         if (mHTMLCanvas !== null) {
             mHTMLCanvas.width = width;
             mHTMLCanvas.height = height;
-
+            changeDensity(mHTMLCanvas);
         }
     };
+
+    function changeDensity(canvas) {
+        if (!canvas.style.width)
+            canvas.style.width = canvas.width + 'px';
+        if (!canvas.style.height)
+            canvas.style.height = canvas.height + 'px';
+
+        var density = DisplayMetrics.density;
+        canvas.width = Math.ceil(canvas.width * density);
+        canvas.height = Math.ceil(canvas.height * density);
+        var ctx = canvas.getContext('2d');
+        ctx.scale(density, density);
+    }
 
 	/**
 	* Assign a size and position to a view and all of its descendants
@@ -1102,8 +1125,6 @@ function View() {
                 if (mHTMLCanvas.getContext) {
                     if (canvas == null) {
                         canvas = mHTMLCanvas.getContext("2d");
-                        canvas.width = this.getMeasuredWidth();
-                        canvas.height = this.getMeasuredHeight();
                     }
                     this.onDraw(canvas);
                 }
