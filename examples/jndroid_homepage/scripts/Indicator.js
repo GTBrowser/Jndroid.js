@@ -6,6 +6,7 @@ function Indicator() {
     this.INDICATOR_SIZE = 8;
     this.GAP = 16;
 
+    var mDensity = DisplayMetrics.density;
     var mStyle = Indicator.Spot;
     var mIndicatorCount = 0;
     var mSelectIndex = 0;
@@ -58,13 +59,13 @@ function Indicator() {
     };
 
     this.onDrawLine = function(canvas) {
-        var totalWidth = this.getMeasuredWidth() - this.INDICATOR_SIZE;
-        var h = this.getMeasuredHeight();
+        var totalWidth = (this.getMeasuredWidth() - this.INDICATOR_SIZE) * mDensity;
+        var h = this.getMeasuredHeight() * mDensity;
         canvas.lineWidth = h;
         canvas.beginPath();
         var offSetX = totalWidth * mProcess;
         canvas.moveTo(offSetX, h/2);
-        canvas.lineTo(offSetX + this.INDICATOR_SIZE, h/2);
+        canvas.lineTo(offSetX + this.INDICATOR_SIZE * mDensity, h/2);
         canvas.closePath();
         canvas.strokeStyle = Utils.toCssColor(mIndicatorColor);
         canvas.stroke();

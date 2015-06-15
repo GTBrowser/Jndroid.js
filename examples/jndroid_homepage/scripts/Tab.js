@@ -33,8 +33,17 @@ function TabContent() {
 
     var mSelf = this;
     var mItems = [];
-    var buttonWidth = 160;
     var mSelectIndex = 0;
+    var mItemMaxWidth;
+    var mItemMinWidth;
+    if (Manifest.language.indexOf("zh") >= 0) {
+        mItemMaxWidth = 160;
+        mItemMinWidth = 60;
+    } else {
+        mItemMaxWidth = 160;
+        mItemMinWidth = 160;
+    }
+    var buttonWidth;
 
     addTabItem(R.string.intro, 0);
     addTabItem(R.string.vs_android, 1, function() {
@@ -66,7 +75,6 @@ function TabContent() {
     mIndicator.setStyle(Indicator.Line);
     mIndicator.setIndicatorCount(5);
     mIndicator.setIndicatorColor(0xfff3ffa3);
-    mIndicator.INDICATOR_SIZE = buttonWidth;
     mIndicator.GAP = 0;
     this.addView(mIndicator);
 
@@ -86,6 +94,11 @@ function TabContent() {
 
     this.onMeasure = function(widthMS, heightMS) {
         var height = MeasureSpec.getSize(heightMS);
+        buttonWidth = MeasureSpec.getSize(widthMS) / mItems.length;
+        buttonWidth = Math.min(buttonWidth, mItemMaxWidth);
+        buttonWidth = Math.max(buttonWidth, mItemMinWidth);
+        mIndicator.INDICATOR_SIZE = buttonWidth;
+
         for (var i = 0; i < mItems.length; i++) {
             mItems[i].measure(buttonWidth, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
         }
