@@ -483,6 +483,11 @@ Object.defineProperty(MotionEvent,"ACTION_MOVE",{value:2});
  */
 Object.defineProperty(MotionEvent,"ACTION_CANCEL",{value:3});
 
+/**
+ * Helper for tracking the velocity of touch events, for implementing
+ * flinging and other such gestures.
+ * @class VelocityTracker
+ */
 function VelocityTracker() {
     var mScope = 10;
     var mX = [];
@@ -497,7 +502,12 @@ function VelocityTracker() {
         mTime.clear();
     };
 
-    this.addMovement = function(event) {
+    /**
+     * Add a user's movement to the tracker.
+     * @method addMovement
+     * @param event The MotionEvent you received and would like to track.
+     */
+     this.addMovement = function(event) {
         if (mX.length >= mScope) {
             mX.removeAt(0);
         }
@@ -512,6 +522,18 @@ function VelocityTracker() {
         mTime.add(event.rawEv.timeStamp);
     };
 
+    /**
+     * Compute the current velocity based on the points that have been
+     * collected.  Only call this when you actually want to retrieve velocity
+     * information, as it is relatively expensive.  You can then retrieve
+     *
+     * @method computeCurrentVelocity
+     * @param units The units you would like the velocity in.  A value of 1
+     * provides pixels per millisecond, 1000 provides pixels per second, etc.
+     * @param maxVelocity The maximum velocity that can be computed by this method.
+     * This value must be declared in the same unit as the units parameter. This value
+     * must be positive.
+     */
     this.computeCurrentVelocity = function(unit) {
         if (mX.length < 2) {
             mVx = 0;
@@ -531,10 +553,20 @@ function VelocityTracker() {
         mVy = (mY[mX.length - 1] - mY[0]) / t * unit;
     };
 
+    /**
+     * Retrieve the last computed X velocity.  You must first call
+     * @method getXVelocity
+     * @return The previously computed X velocity.
+     */
     this.getXVelocity = function() {
         return mVx;
     };
 
+    /**
+     * Retrieve the last computed Y velocity.  You must first call
+     * @method getYVelocity
+     * @return The previously computed Y velocity.
+     */
     this.getYVelocity = function() {
         return mVy;
     }
