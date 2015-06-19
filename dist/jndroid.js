@@ -399,6 +399,29 @@ function Map() {
 
 var Utils = new _Utils();
 function _Utils() {
+    this.dumpTouchEvent = function(ev, tag) {
+        var touch;
+        switch (ev.getAction()) {
+            case 0:
+                touch = "down";
+                break;
+            case 1:
+                touch = "up";
+                break;
+            case 2:
+                touch = "move";
+                break;
+            case 3:
+                touch = "cancel";
+                break;
+        }
+        if (tag) {
+            console.log(tag + ":" + touch);
+        } else {
+            console.log(touch);
+        }
+    };
+
     this.toCssColor = function(color) {
         if (typeof color == "string") {
             return color;
@@ -471,12 +494,36 @@ function _Utils() {
     };
 }
 
+/**
+ * Rect holds four integer coordinates for a rectangle. The rectangle is
+ * represented by the coordinates of its 4 edges (left, top, right bottom).
+ * These fields can be accessed directly. Use width() and height() to retrieve
+ * the rectangle's width and height. Note: most methods do not check to see that
+ * the coordinates are sorted correctly (i.e. left <= right and top <= bottom).
+ * @class Rect
+ *
+ */
 function Rect(l, t, r, b) {
+    if (l == undefined || t == undefined || r == undefined || b == undefined) {
+        l = 0;
+        t = 0;
+        r = 0;
+        b = 0;
+    }
     this.left = l;
     this.top = t;
     this.right = r;
     this.bottom = b;
 
+    /**
+     * Set the rectangle's coordinates to the specified values.
+     *
+     * @method set
+     * @param left   The X coordinate of the left side of the rectangle
+     * @param top    The Y coordinate of the top of the rectangle
+     * @param right  The X coordinate of the right side of the rectangle
+     * @param bottom The Y coordinate of the bottom of the rectangle
+     */
     this.set = function(l, t, r, b) {
         this.left = l;
         this.top = t;
@@ -484,21 +531,53 @@ function Rect(l, t, r, b) {
         this.bottom = b;
     };
 
+    /**
+     * @method width
+     * @return the rectangle's width. This does not check for a valid rectangle
+     * (i.e. left <= right) so the result may be negative.
+     */
     this.width = function() {
         return (this.right - this.left);
     };
 
+    /**
+     * @method height
+     * @return the rectangle's height. This does not check for a valid rectangle
+     * (i.e. top <= bottom) so the result may be negative.
+     */
     this.height = function() {
         return (this.bottom - this.top);
     };
 
+    /**
+     * @method centerX
+     * @return the horizontal center of the rectangle.
+     */
     this.centerX = function() {
         return (this.left + this.right) / 2;
     };
 
+
+    /**
+     * @method centerY
+     * @return the vertical center of the rectangle.
+     */
     this.centerY = function() {
         return (this.top + this.bottom) / 2;
     };
+
+    /**
+     * Returns true if (x,y) is inside the rectangle.
+     *
+     * @method contains
+     * @param x The X coordinate of the point being tested for containment
+     * @param y The Y coordinate of the point being tested for containment
+     * @return true iff (x,y) are contained by the rectangle, where containment
+     *              means left <= x < right and top <= y < bottom
+     */
+    this.contains = function(x, y) {
+        return this.left < this.right && this.top < this.bottom && x >= this.left && x < this.right && y >= this.top && y < this.bottom;
+    }
 }
 
 /**
@@ -592,6 +671,23 @@ Object.defineProperty(MeasureSpec,"AT_MOST",{value:(0x2 << 30)});
  */
 function MotionEvent(rawEv) {
 
+    this.rawEv = rawEv;
+
+    var touch = getTouches();
+    var mX = touch.pageX;
+    var mY = touch.pageY;
+
+    var mAction = 3;
+    if (rawEv.type == "touchstart" || rawEv.type == "mousedown") {
+        mAction = 0;
+    } else if (rawEv.type == "touchmove" || rawEv.type == "mousemove") {
+        mAction = 2;
+    } else if (rawEv.type == "touchend" || rawEv.type == "mouseup") {
+        mAction = 1;
+    } else if (rawEv.type == "touchcancel") {
+        mAction = 3;
+    }
+
     /**
      * Returns the X coordinate of this event.
      *
@@ -599,9 +695,7 @@ function MotionEvent(rawEv) {
      * @return {float} X coordinate.
      */
     this.getX = function() {
-        var div = this.realView.getDiv();
-        var offset = Utils.getOffset(div);
-        return this.getTouches().pageX - offset.left;
+        return mX;
     };
 
     /**
@@ -611,9 +705,12 @@ function MotionEvent(rawEv) {
      * @return {float} Y coordinate.
      */
     this.getY = function() {
-        var div = this.realView.getDiv();
-        var offset = Utils.getOffset(div);
-        return this.getTouches().pageY - offset.top;
+        return mY;
+    };
+
+    this.setLocation = function(x, y) {
+        mX = x;
+        mY = y;
     };
 
     /**
@@ -626,7 +723,7 @@ function MotionEvent(rawEv) {
      * @return {float} original raw X coordinate.
      */
     this.getRawX = function() {
-        return this.getTouches().pageX;
+        return touch.pageX;
     };
 
     /**
@@ -639,19 +736,7 @@ function MotionEvent(rawEv) {
      * @return {float} original raw Y coordinate.
      */
     this.getRawY = function() {
-        return this.getTouches().pageY;
-    };
-
-    this.getTouches = function() {
-        if ("ontouchstart" in document.documentElement) {
-            if (rawEv.type == "touchstart" || rawEv.type == "touchmove") {
-                return rawEv.touches[0];
-            } else {
-                return rawEv.changedTouches[0];
-            }
-        } else {
-            return rawEv;
-        }
+        return touch.pageY;
     };
 
     /**
@@ -661,22 +746,22 @@ function MotionEvent(rawEv) {
      * @return {int} the action.
      */
     this.getAction = function() {
-        if (rawEv.type == "touchstart" || rawEv.type == "mousedown") {
-            return MotionEvent.ACTION_DOWN;
-        } else if (rawEv.type == "touchmove" || rawEv.type == "mousemove") {
-            return MotionEvent.ACTION_MOVE;
-        } else if (rawEv.type == "touchend" || rawEv.type == "mouseup") {
-            return MotionEvent.ACTION_UP;
-        } else if (rawEv.type == "touchcancel") {
-            return MotionEvent.ACTION_CANCEL;
-        } else if (rawEv.type == "mouseout") {
-            var div = this.realView.getDiv();
-            var offset = Utils.getOffset(div);
-            if (this.getRawX() < offset.left || this.getRawX() > (offset.left + offset.width) || this.getRawY() < offset.top || this.getRawY() > (offset.top + offset.height)) {
-                return MotionEvent.ACTION_CANCEL;
-            }
-        }
+        return mAction;
     };
+
+    this.setAction = function(action) {
+        mAction = action;
+    };
+
+    function getTouches() {
+        if (rawEv.type == "touchstart" || rawEv.type == "touchmove") {
+            return rawEv.touches[0];
+        } else if (rawEv.type == "touchend" || rawEv.type == "touchcancel") {
+            return rawEv.changedTouches[0];
+        } else {
+            return rawEv;
+        }
+    }
 }
 
 /**
@@ -726,6 +811,63 @@ Object.defineProperty(MotionEvent,"ACTION_MOVE",{value:2});
  * @final
  */
 Object.defineProperty(MotionEvent,"ACTION_CANCEL",{value:3});
+
+function VelocityTracker() {
+    var mScope = 10;
+    var mX = [];
+    var mY = [];
+    var mTime = [];
+    var mVx = 0;
+    var mVy = 0;
+
+    this.clear = function() {
+        mX.clear();
+        mY.clear();
+        mTime.clear();
+    };
+
+    this.addMovement = function(event) {
+        if (mX.length >= mScope) {
+            mX.removeAt(0);
+        }
+        mX.add(event.getRawX());
+        if (mY.length >= mScope) {
+            mY.removeAt(0);
+        }
+        mY.add(event.getRawY());
+        if (mTime.length >= mScope) {
+            mTime.removeAt(0);
+        }
+        mTime.add(event.rawEv.timeStamp);
+    };
+
+    this.computeCurrentVelocity = function(unit) {
+        if (mX.length < 2) {
+            mVx = 0;
+            mVy = 0;
+            return;
+        }
+        var t = mTime[mTime.length - 1] - mTime[0];
+        if (t == 0) {
+            mVx = 0;
+            mVy = 0;
+            return;
+        }
+        if (unit == undefined) {
+            unit = 1;
+        }
+        mVx = (mX[mX.length - 1] - mX[0]) / t * unit;
+        mVy = (mY[mX.length - 1] - mY[0]) / t * unit;
+    };
+
+    this.getXVelocity = function() {
+        return mVx;
+    };
+
+    this.getYVelocity = function() {
+        return mVy;
+    }
+}
 
 /**
  * The Color class defines methods for creating and converting color ints.
@@ -820,18 +962,18 @@ function _Color() {
         return (alpha << 24) | (red << 16) | (green << 8) | blue;
     };
 }
-Object.defineProperty(MotionEvent,"BLACK",{value:0xFF000000});
-Object.defineProperty(MotionEvent,"DKGRAY",{value:0xFF444444});
-Object.defineProperty(MotionEvent,"GRAY",{value:0xFF888888});
-Object.defineProperty(MotionEvent,"LTGRAY",{value:0xFFCCCCCC});
-Object.defineProperty(MotionEvent,"WHITE",{value:0xFFFFFFFF});
-Object.defineProperty(MotionEvent,"RED",{value:0xFFFF0000});
-Object.defineProperty(MotionEvent,"GREEN",{value:0xFF00FF00});
-Object.defineProperty(MotionEvent,"BLUE",{value:0xFF0000FF});
-Object.defineProperty(MotionEvent,"YELLOW",{value:0xFFFFFF00});
-Object.defineProperty(MotionEvent,"CYAN",{value:0xFF00FFFF});
-Object.defineProperty(MotionEvent,"MAGENTA",{value:0xFFFF00FF});
-Object.defineProperty(MotionEvent,"TRANSPARENT",{value:0});
+Object.defineProperty(Color,"BLACK",{value:0xFF000000});
+Object.defineProperty(Color,"DKGRAY",{value:0xFF444444});
+Object.defineProperty(Color,"GRAY",{value:0xFF888888});
+Object.defineProperty(Color,"LTGRAY",{value:0xFFCCCCCC});
+Object.defineProperty(Color,"WHITE",{value:0xFFFFFFFF});
+Object.defineProperty(Color,"RED",{value:0xFFFF0000});
+Object.defineProperty(Color,"GREEN",{value:0xFF00FF00});
+Object.defineProperty(Color,"BLUE",{value:0xFF0000FF});
+Object.defineProperty(Color,"YELLOW",{value:0xFFFFFF00});
+Object.defineProperty(Color,"CYAN",{value:0xFF00FFFF});
+Object.defineProperty(Color,"MAGENTA",{value:0xFFFF00FF});
+Object.defineProperty(Color,"TRANSPARENT",{value:0});
 
 /**
  * A structure describing general information about a display, such as its
@@ -1046,8 +1188,10 @@ function View() {
     mDiv.addEventListener("touchstart", function(){}, false);
 
     var mParent;
-    var mX = 0;
-    var mY = 0;
+    var mLeft = 0;
+    var mTop = 0;
+    var mRight = 0;
+    var mBottom = 0;
     var mWidth = 0;
     var mHeight = 0;
     var mWidthMS = 0;
@@ -1057,23 +1201,23 @@ function View() {
     var mPaddingTop = 0;
     var mPaddingRight = 0;
     var mPaddingBottom = 0;
+    var mScrollX = 0;
+    var mScrollY = 0;
     var mLayoutParams = null;
     var mWillNotDraw = true;
     var mVisibility = View.VISIBLE;
     var mClickable = false;
-    var mLongClickable = true;
+    var mLongClickable = false;
     var mClickListener = null;
     var mLongClickListener = null;
     var mTag = "View";
     var mID = View.NO_ID;
     var mHTMLCanvas = null;
     var canvas = null;
-    var mInTouch = false;
-    var mTouchCanceled = false;
+    var mPreventHtmlTouchEvent = true;
 
     var mDownX, mDownY;
     var mHasPerformedLongPress = false;
-
 
     var mRunQueue = new Map();
 
@@ -1233,7 +1377,11 @@ function View() {
 	* @return {int} Returns the left edge of this view, in pixels.
 	*/
     this.getLeft = function() {
-        return mX;
+        return mLeft;
+    };
+
+    this.getRight = function() {
+        return mLeft + this.getMeasuredWidth();
     };
 
 	/**
@@ -1243,7 +1391,11 @@ function View() {
 	* @return {int} Returns the top of this view, in pixels.
 	*/
     this.getTop = function() {
-        return mY;
+        return mTop;
+    };
+
+    this.getBottom = function() {
+        return mTop + this.getMeasuredHeight();
     };
 
 	/**
@@ -1286,24 +1438,44 @@ function View() {
         return mHeight;
     };
 
-	/**
-	* The visual x position of this view, in pixels.
-	*
-	* @method getX
-	* @return {int} Returns the visual x position of this view, in pixels.
-	*/
-    this.getX = function() {
-        return mX;
+    this.getScrollX = function() {
+        return mScrollX;
+    };
+
+    this.setScrollX = function(x) {
+        mScrollX = x;
+    };
+
+    this.getScrollY = function() {
+        return mScrollY;
+    };
+
+    this.setScrollY = function(y) {
+        mScrollY = y;
+    };
+
+    this.getHitRect = function(outRect) {
+        outRect.set(mLeft, mTop, mRight, mBottom);
     };
 
 	/**
-	* The visual y position of this view, in pixels.
+	* The visual left position of this view, in pixels.
 	*
-	* @method getY
+	* @method getLeft
+	* @return {int} Returns the visual x position of this view, in pixels.
+	*/
+    this.getLeft = function() {
+        return mLeft;
+    };
+
+	/**
+	* The visual top position of this view, in pixels.
+	*
+	* @method getTop
 	* @return {int} Returns the visual y position of this view, in pixels.
 	*/
-    this.getY = function() {
-        return mY;
+    this.getTop = function() {
+        return mTop;
     };
 
 	/**
@@ -1381,8 +1553,11 @@ function View() {
 	* @params {int} y Top position, relative to parent.
 	*/
     this.layout = function(x, y) {
-        mX = x;
-        mY = y;
+        mLeft = x;
+        mTop = y;
+        mRight = x + this.getMeasuredWidth();
+        mBottom = y + this.getMeasuredHeight();
+
         mDiv.style.left = x + "px";
         mDiv.style.top = y + "px";
         this.onLayout(x, y);
@@ -1551,38 +1726,8 @@ function View() {
 	*/
     this.setClickable = function(clickable) {
         mClickable = clickable;
-        if (clickable) {
+        if (mClickable) {
             this.setStyle("cursor", "pointer");
-            addTouchListener(this);
-            if ("ontouchstart" in document.documentElement) {
-                this.getDiv().addEventListener("touchstart", this.touch, false);
-                this.getDiv().addEventListener("touchmove", this.touch, false);
-                this.getDiv().addEventListener("touchend", this.touch, false);
-                this.getDiv().addEventListener("touchcancel", this.touch, false);
-            } else {
-                this.getDiv().addEventListener("mousedown", this.touch, false);
-                this.getDiv().addEventListener("mousemove", this.touch, false);
-                this.getDiv().addEventListener("mouseup", this.touch, false);
-                this.getDiv().addEventListener("mouseout", this.touch, false);
-            }
-
-            this.getDiv().style.pointerEvents = "auto";
-        } else {
-            this.setStyle("cursor", "auto");
-            removeTouchListener(this);
-            if ("ontouchstart" in document.documentElement) {
-                this.getDiv().removeEventListener("touchstart", this.touch, false);
-                this.getDiv().removeEventListener("touchmove", this.touch, false);
-                this.getDiv().removeEventListener("touchend", this.touch, false);
-                this.getDiv().removeEventListener("touchcancel", this.touch, false);
-            } else {
-                this.getDiv().removeEventListener("mousedown", this.touch, false);
-                this.getDiv().removeEventListener("mouseup", this.touch, false);
-                this.getDiv().removeEventListener("mousemove", this.touch, false);
-                this.getDiv().removeEventListener("mouseout", this.touch, false);
-            }
-
-            this.getDiv().style.pointerEvents = "none";
         }
     };
 
@@ -1609,7 +1754,7 @@ function View() {
         }
         if (mWidth !== 0 && mHeight !== 0) {
             this.measure(mWidthMS, mHeightMS);
-            this.layout(mX, mY);
+            this.layout(mLeft, mTop);
         } else {
             forceReLayout();
         }
@@ -1622,6 +1767,59 @@ function View() {
 	*/
     this.requestFocus = function() {
 
+    };
+
+    this.checkClick = function(ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mHasPerformedLongPress = false;
+                mDownX = ev.getRawX();
+                mDownY = ev.getRawY();
+                this.checkForLongClick();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                var x = ev.getX();
+                var y = ev.getY();
+                if (x < mLeft || x > mRight || y < mTop || y > mBottom) {
+                    this.removeCallbacks(this.checkLongPress);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (!mHasPerformedLongPress) {
+                    this.removeCallbacks(this.checkLongPress);
+
+                    var deltaX = Math.abs(mDownX - ev.getRawX());
+                    var deltaY = Math.abs(mDownY - ev.getRawY());
+                    if (deltaX < 30 && deltaY < 30) {
+                        this.performClick();
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                this.removeCallbacks(this.checkLongPress);
+                break;
+        }
+    };
+
+    this.setPreventHtmlTouchEvent = function(prevent) {
+        mPreventHtmlTouchEvent = prevent;
+    };
+
+    this._onTouchEvent = function(ev) {
+        if (mPreventHtmlTouchEvent) {
+            ev.rawEv.preventDefault();
+        }
+        if (mClickable || mLongClickable) {
+            this.checkClick(ev);
+        }
+        if (mPreventHtmlTouchEvent == false) {
+            return true;
+        }
+        var result = this.onTouchEvent(ev);
+        if (result == undefined) {
+            result = true;
+        }
+        return result;
     };
 
 	/**
@@ -1637,7 +1835,21 @@ function View() {
 	* @params {MotionEvent} ev The motion event.
 	*/
     this.onTouchEvent = function(ev) {
+        if (mClickable || mLongClickable) {
+            return true;
+        }
+        return false;
+    };
 
+    /**
+     * Pass the touch screen motion event down to the target view, or this
+     * view if it is the target.
+     *
+     * @param event The motion event to be dispatched.
+     * @return True if the event was handled by the view, false otherwise.
+     */
+    this.dispatchTouchEvent = function(ev) {
+        return this._onTouchEvent(ev);
     };
 
 	/**
@@ -1696,6 +1908,12 @@ function View() {
     this.startAnimation = function(animation) {
         animation.setView(this);
         animation.start();
+    };
+
+    this.clearAnimation = function() {
+        this.getDiv().style.webkitTransition = "";
+        this.getDiv().style.transition = "";
+        this.getDiv().style.opacity = 0;
     };
 
 	/**
@@ -1763,73 +1981,6 @@ function View() {
     this.checkLongPress = function() {
         if (this.perfermLongClick()) {
             mHasPerformedLongPress = true;
-        }
-    };
-
-	//TODO
-    this.touch = function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        if (e.type == "mousemove" && !mInTouch) {
-            return;
-        }
-
-        var view = findTouchObject(this);
-        if (mClickable) {
-            var ev = new MotionEvent(e);
-            ev.realView = view;
-
-            if (ev.getAction() == MotionEvent.ACTION_CANCEL && mTouchCanceled == true) {
-                return;
-            }
-            if (ev.getAction() == MotionEvent.ACTION_CANCEL && !mInTouch) {
-                return;
-            }
-            if (ev.getAction() == MotionEvent.ACTION_UP && !mInTouch) {
-                return;
-            }
-
-            view.onTouchEvent(ev);
-
-
-            switch (ev.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    mInTouch = true;
-                    mTouchCanceled = false;
-                    mHasPerformedLongPress = false;
-                    mDownX = ev.getRawX();
-                    mDownY = ev.getRawY();
-                    view.checkForLongClick();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    mInTouch = true;
-                    mTouchCanceled = false;
-                    var offset = Utils.getOffset(view.getDiv());
-                    var x = ev.getRawX();
-                    var y = ev.getRawY();
-                    if (x < offset.left || x > (offset.left + offset.width) || y < offset.top || y > (offset.top + offset.height)) {
-                        view.removeCallbacks(view.checkLongPress);
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                    mInTouch = false;
-                    if (!mHasPerformedLongPress) {
-                        view.removeCallbacks(view.checkLongPress);
-
-                        var deltaX = Math.abs(mDownX - ev.getRawX());
-                        var deltaY = Math.abs(mDownY - ev.getRawY());
-                        if (deltaX < 30 && deltaY < 30) {
-                            view.performClick();
-                        }
-                    }
-                    break;
-                case MotionEvent.ACTION_CANCEL:
-                    mInTouch = false;
-                    mTouchCanceled = true;
-                    view.removeCallbacks(view.checkLongPress);
-                    break;
-            }
         }
     };
 
@@ -1934,6 +2085,10 @@ function ViewGroup() {
     View.apply(this, []);
     var mChildren = [];
     var mTag = "ViewGroup";
+
+    var mMotionTarget = null;
+    var mTempRect = new Rect();
+    var mDisallowIntercept = false;
 
     /**
      * Returns the number of children in the group.
@@ -2049,6 +2204,106 @@ function ViewGroup() {
             }
         }
         return null;
+    };
+
+    /**
+     * Implement this method to intercept all touch screen motion events.  This
+     * allows you to watch events as they are dispatched to your children, and
+     * take ownership of the current gesture at any point.
+     *
+     * @method onInterceptTouchEvent
+     * @param ev The motion event being dispatched down the hierarchy.
+     * @return Return true to steal motion events from the children and have
+     * them dispatched to this ViewGroup through onTouchEvent().
+     * The current target will receive an ACTION_CANCEL event, and no further
+     * messages will be delivered here.
+     *
+     */
+    this.onInterceptTouchEvent = function(ev) {
+        return false;
+    };
+
+    /**
+     * Pass the touch screen motion event down to the target view, or this
+     * view if it is the target.
+     *
+     * @param event The motion event to be dispatched.
+     * @return True if the event was handled by the view, false otherwise.
+     */
+    this.dispatchTouchEvent = function(ev) {
+        var xf = ev.getX();
+        var yf = ev.getY();
+        var scrolledX = xf + this.getScrollX();
+        var scrolledY = yf + this.getScrollY();
+        var frame = mTempRect;
+
+        var action = ev.getAction();
+        if (action == MotionEvent.ACTION_DOWN) {
+            if (mMotionTarget != null) {
+                mMotionTarget = null;
+            }
+            if (mDisallowIntercept || !this.onInterceptTouchEvent(ev)) {
+                ev.setAction(MotionEvent.ACTION_DOWN);
+                var count = mChildren.length;
+                for (var i = count - 1; i >= 0; i--) {
+                    var child = mChildren[i];
+                    if (child.getVisibility() == View.VISIBLE) {
+                        child.getHitRect(frame);
+                        if (frame.contains(scrolledX, scrolledY)) {
+                            var xc = scrolledX - child.getLeft();
+                            var yc = scrolledY - child.getTop();
+                            ev.setLocation(xc, yc);
+                            if (child.dispatchTouchEvent(ev))  {
+                                mMotionTarget = child;
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        var isUpOrCancel = (action == MotionEvent.ACTION_UP) || (action == MotionEvent.ACTION_CANCEL);
+        if (isUpOrCancel) {
+            mDisallowIntercept = false;
+        }
+
+        var target = mMotionTarget;
+        if (target == null) {
+            ev.setLocation(xf, yf);
+            return this._onTouchEvent(ev);
+        }
+
+        if (!mDisallowIntercept && this.onInterceptTouchEvent(ev)) {
+            var xc = scrolledX - target.getLeft();
+            var yc = scrolledY - target.getTop();
+            ev.setAction(MotionEvent.ACTION_CANCEL);
+            ev.setLocation(xc, yc);
+            if (!target.dispatchTouchEvent(ev)) {
+            }
+            mMotionTarget = null;
+            return true;
+        }
+
+        if (isUpOrCancel) {
+            mMotionTarget = null;
+        }
+
+        var xc = scrolledX - target.getLeft();
+        var yc = scrolledY - target.getTop();
+        ev.setLocation(xc, yc);
+
+        return target.dispatchTouchEvent(ev);
+    };
+
+    this.requestDisallowInterceptTouchEvent = function(disallowIntercept) {
+        if (disallowIntercept == mDisallowIntercept) {
+            return;
+        }
+        mDisallowIntercept = disallowIntercept;
+        if (this.getParent() != null) {
+            this.getParent().requestDisallowInterceptTouchEvent(disallowIntercept);
+        }
     }
 }
 
@@ -2079,8 +2334,6 @@ var mRootView = null;
 
 
 var mHideDiv = null;
-
-var mTopMargin = 0;
 
 var meta = document.createElement("meta");
 meta.name = "viewport";
@@ -2128,11 +2381,45 @@ function setContentView(view, htmlnode) {
     mRootNode.appendChild(mDecorView.getDiv());
     mRootNode.style.overflow = "hidden";
 
+    document.body.style.pointerEvents = "auto";
+    var events = ["touchstart", "touchmove", "touchend", "touchcancel", "mousedown", "mousemove", "mouseup"];
+    for (var i = 0; i < events.length; i++) {
+        document.body.addEventListener(events[i], touch, false);
+    }
+
     forceReLayout();
 
     var css = document.createElement("style");
     css.innerHTML = "*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px; height: 0px} input{outline:none}";
     document.head.appendChild(css);
+}
+
+var _mInTouch = false;
+
+function touch(e) {
+    e.stopPropagation();
+
+    if (e.type == "mousemove" && _mInTouch == false) {
+        return;
+    }
+    if (e.type == "mouseout" && _mInTouch == false) {
+        return;
+    }
+    var ev = new MotionEvent(e);
+    ev.realDiv = this;
+
+    switch (ev.getAction()) {
+        case MotionEvent.ACTION_DOWN:
+            _mInTouch = true;
+            break;
+        case MotionEvent.ACTION_UP:
+            _mInTouch = false;
+            break;
+        case MotionEvent.ACTION_CANCEL:
+            _mInTouch = false;
+            break;
+    }
+    mDecorView.dispatchTouchEvent(ev);
 }
 
 /* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
@@ -2150,7 +2437,7 @@ function getRootView() {
 
 function forceReLayout() {
     if (mDecorView === null || mDecorView === undefined) {
-        log("gyy: mDecorView is null");
+        console.log("gyy: mDecorView is null");
         return;
     }
     if (mRootNode == document.body) {
@@ -2184,30 +2471,6 @@ function addOrientationListener(listener) {
 function throwException(msg) {
     log(msg);
 }
-
-// 为解决touch回调的临时方案
-var mTouchListerners = [];
-function addTouchListener(listener) {
-    mTouchListerners.push(listener);
-}
-
-function removeTouchListener(listener) {
-    mTouchListerners.remove(listener);
-}
-
-function findTouchObject(aDiv) {
-    for (var i = 0; i < mTouchListerners.length; i++) {
-        if (mTouchListerners[i].getDiv() == aDiv) {
-            return mTouchListerners[i];
-        }
-    }
-    return null;
-}
-
-function log(str) {
-    console.log(str);
-}
-
 function DialogButton() {
     ViewGroup.apply(this, []);
 
@@ -2639,6 +2902,8 @@ function calcOffsetYByGravity(parent, child) {
 function LinearLayout() {
     ViewGroup.apply(this, []);
 
+    this.setTag("LinearLayout");
+
     var mOrientation = LinearLayout.VERTICAL;
 
     /**
@@ -2917,45 +3182,50 @@ function Gallery() {
 
     this.setTag("Gallery");
 
-    var mCurScreen = 0;
-    var mCurX;
-    var mProcessor = new Processor();
-    var mDownX = 0;
-    var mListener;
+    var TouchState = new _TouchState();
+    function _TouchState() {
+        this.REST = 0;
+        this.SCROLLING = 1;
+    }
 
-    var content = new GalleryContent();
-    this.addView(content);
+    var MAX_SCROLL_DURATION = 200;
+    var SNAP_VELOCITY = 100;
+    var mSelf = this;
+    var mCurScreen = 0;
+    var mProcessor = new Processor();
+    var mListener;
+    var mTouchState = TouchState.REST;
+    var isXLocked = false;
+    var isLockETH = false;
+    var mLastMotionX = 0;
+    var mLastMotionY = 0;
+    var mDownMotionX = 0;
+    var mDownMotionY = 0;
+    var mTouchSlop = 3;
+    var mLeftEdge = 0;
+    var mRightEdge = 0;
+    var mTotalWidth;
+    var mScreenWidth;
+    var mRollPadding = 0.4;
+    var mVTracker = new VelocityTracker();
 
     this.setGalleryListener = function(l) {
         mListener = l;
     };
 
-    this.getPageCount = function() {
-        return content.getChildCount();
-    };
-
-    this.addPage = function(view) {
-        content.addView(view);
-    };
-
-    this.removeAllPages = function() {
-        content.removeAllViews();
-    };
-
     this.scrollTo = function(x) {
-        mCurX = x;
-        content.getDiv().style.webkitTransform="translate3d(-" + x + "px,0,0)";
+        this.setScrollX(x);
+        var transition = "translate3d(" + (-x) + "px,0,0)";
+        this.getDiv().style.msTransform = transition;
+        this.getDiv().style.webkitTransform = transition;
+        this.getDiv().style.mozTransform = transition;
         if (mListener != null && mListener.onXChanged) {
             mListener.onXChanged(x);
         }
     };
 
-    this.getCurX = function() {
-        return mCurX;
-    };
-
     this.checkBounds = function(whichScreen) {
-        return (whichScreen < 0 ? 0 : whichScreen > (content.getChildCount() - 1) ? (content.getChildCount() - 1)
+        return (whichScreen < 0 ? 0 : whichScreen > (this.getChildCount() - 1) ? (this.getChildCount() - 1)
             : whichScreen);
     };
 
@@ -2968,62 +3238,206 @@ function Gallery() {
 
     this.snapToScreen = function(index, duration) {
         index = this.checkBounds(index);
-        if (index == mCurScreen) {
+
+        if (this.getScrollX() == (this.getChildAt(index).getLeft())) {
             return;
         }
-        var startX = mCurScreen * this.getMeasuredWidth();
-        var endX = index * this.getMeasuredWidth();
-        if (duration == undefined) {
-            duration = Math.abs(endX - startX);
+
+        var delta = computeScrollDistance(index);
+        var during = duration;
+        if (during == undefined) {
+            during = Math.abs(delta);
         }
-        mProcessor.startProcess(startX, endX, duration);
-        this.invalidate();
+        during = this.controlScrollDuration(during);
+        mProcessor.startProcess(mSelf.getScrollX(), mSelf.getScrollX() + delta, during);
 
         mCurScreen = index;
-        setTimeout(function() {forceReLayout();fireScreenChanged();}, duration);
+        this.invalidate();
+
+        setTimeout(function() {fireScreenChanged();}, during);
+    };
+
+    this.snapToScreenWithVelocity = function(index, v) {
+        index = this.checkBounds(index);
+        var delta = computeScrollDistance(index);
+        var duration = Math.abs(delta * 1000 / v) / 3;
+        duration = Math.min(duration, MAX_SCROLL_DURATION);
+        this.snapToScreen(index, duration);
+    };
+
+    this.controlScrollDuration = function(duration) {
+        return duration;
+    };
+
+    this.lockX = function() {
+        isXLocked = true;
+        this.lockETH();
+    };
+
+    this.lockETH = function() {
+        isLockETH = true;
+    };
+
+    this.unlockX = function() {
+        isXLocked = false;
+        isLockETH = false;
+    };
+
+    this.isXLocked = function() {
+        return isXLocked;
+    };
+
+    this.onInterceptTouchEvent = function(ev) {
+        var action = ev.getAction();
+        if ((action == MotionEvent.ACTION_MOVE) && (mTouchState != TouchState.REST) && !isLockETH && !isXLocked) {
+            return true;
+        }
+
+        var x = ev.getX();
+
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                if (this.getParent() != null) {
+                    this.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                mLastMotionX = x;
+                mDownMotionY = ev.getY();
+                mTouchState = mProcessor.isFinished() ? TouchState.REST : TouchState.SCROLLING;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                var xDiff =  Math.abs(mLastMotionX - x);
+                if (xDiff > mTouchSlop) {
+                    mTouchState = TouchState.SCROLLING;
+                    mLastMotionX = x;
+                    if (xDiff < Math.abs(ev.getY() - mDownMotionY)) {
+                        this.lockX();
+                        if (this.getParent() != null) {
+                            this.getParent().requestDisallowInterceptTouchEvent(false);
+                        }
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                mTouchState = TouchState.REST;
+                isLockETH = isXLocked = false;
+                break;
+            default:
+                break;
+        }
+
+        if (isLockETH)
+            return false;
+
+        return mTouchState != TouchState.REST;
     };
 
     this.onTouchEvent = function(ev) {
+        mVTracker.addMovement(ev);
+        var action = ev.getAction();
+        var x = ev.getX();
+
         var w = this.getMeasuredWidth();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mDownX = ev.getX();
+                forceFinishProcessor();
+
+                mDownMotionX = x;
+                mLastMotionX = x;
+                mLastMotionY = ev.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                var x = mCurScreen * w - (ev.getX() - mDownX);
-                x = Math.max(0, x);
-                x = Math.min(x, (content.getChildCount() - 1) * w);
-                this.scrollTo(x);
+
+                if (isXLocked) {
+                    break;
+                }
+
+                var deltaX = mLastMotionX - x;
+                mLastMotionX = x;
+                mLastMotionY = ev.getY();
+
+                var dst = this.getScrollX() + deltaX;
+                if (dst < 0) {
+                    if (mLeftEdge == 0) {
+                        deltaX = -this.getScrollX();
+                    } else {
+                        deltaX = (deltaX * (mLeftEdge - this.getScrollX()) / mLeftEdge);
+                    }
+                } else if (dst > (mTotalWidth - mScreenWidth)) {
+                    if (mRightEdge == 0) {
+                        deltaX = mScreenWidth - this.getScrollX();
+                    } else {
+                        var maxExceed = mRightEdge - mTotalWidth;
+                        var realExceed = this.getScrollX() - (mTotalWidth - mScreenWidth);
+                        if (realExceed < 0) {
+                            deltaX = (-realExceed);
+                        } else if (maxExceed == 0){
+                            deltaX = (-realExceed);
+                        } else {
+                            deltaX = deltaX * (1 - realExceed / maxExceed);
+                        }
+                    }
+                }
+                this.scrollTo(this.getScrollX() + deltaX);
                 break;
             case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                var isNext = (this.getCurX() % w) > (w / 2);
-                mCurScreen = Math.floor(this.getCurX() / w);
-                if (isNext) {
-                    mCurScreen = mCurScreen + 1;
+                mVTracker.computeCurrentVelocity(1000);
+                var vX = mVTracker.getXVelocity();
+                if (vX > SNAP_VELOCITY && mCurScreen > 0) { // left
+                    touchEndSnap(mCurScreen - 1, vX);
+                } else if (vX < -SNAP_VELOCITY && mCurScreen < this.getChildCount() - 1) {
+                    touchEndSnap(mCurScreen + 1, vX);
+                } else {
+                    snapAccordCurrX();
                 }
-                var endX = mCurScreen * w;
-                var d = Math.abs(this.getCurX() - endX);
-                mProcessor.startProcess(this.getCurX(), endX, d);
-                this.invalidate();
-                setTimeout(function() {fireScreenChanged();}, d);
+                reset();
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                //console.log("cancel");
+                snapAccordCurrX();
+                reset();
                 break;
         }
+        return true;
     };
 
     this.onMeasure = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var height = MeasureSpec.getSize(heightMS);
+        var w = MeasureSpec.getSize(widthMS);
+        var h = MeasureSpec.getSize(heightMS);
 
-        content.measure(width, height);
+        mScreenWidth = w;
 
-        this.setMeasuredDimension(width, height);
+        var count = this.getChildCount();
+        mTotalWidth = 0;
+        for (var i = 0; i < count; i++) {
+            this.getChildAt(i).measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
+            var childWidth = this.getChildAt(i).getMeasuredWidth();
+            mTotalWidth += childWidth;
+        }
 
-        this.setToScreen(mCurScreen);
+        mLeftEdge = -mScreenWidth * mRollPadding;
+        mRightEdge = mTotalWidth + mRollPadding * mScreenWidth;
+
+        this.setMeasuredDimension(mTotalWidth, h);
+
+        this.scrollTo(mCurScreen * mScreenWidth, 0);
     };
 
     this.onLayout = function(x, y) {
-        content.layout(0, 0);
+        var offsetX = 0;
+        var childCount = this.getChildCount();
+
+        for (var i = 0; i < childCount; i++) {
+            var childView = this.getChildAt(i);
+            if (childView.getVisibility() == View.GONE) {
+                continue;
+            }
+
+            var childWidth = childView.getMeasuredWidth();
+            childView.layout(offsetX, 0, offsetX + childWidth, childView.getMeasuredHeight());
+            offsetX += childWidth;
+        }
     };
 
     this.computeScroll = function() {
@@ -3035,32 +3449,48 @@ function Gallery() {
         }
     };
 
-    function GalleryContent() {
-        ViewGroup.apply(this, []);
+    function touchEndSnap(index, v) {
+        mSelf.snapToScreenWithVelocity(index, v);
+    }
 
-        this.onMeasure = function(widthMS, heightMS) {
-            var width = MeasureSpec.getSize(widthMS);
-            var height = MeasureSpec.getSize(heightMS);
+    function computeScrollDistance(index) {
+        var delta = mSelf.getChildAt(index).getLeft() - mSelf.getScrollX();
+        var rightShift = mSelf.getChildAt(index).getLeft() + mScreenWidth - mTotalWidth;
+        if (rightShift > 0) {
+            delta -= rightShift;
+        }
+        return delta;
+    }
 
-            for (var i = 0; i < this.getChildCount(); i++) {
-                var c = this.getChildAt(i);
-                c.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+    function reset() {
+        mSelf.unlockX();
+        mTouchState = TouchState.REST;
+
+        mVTracker.clear();
+    }
+
+    function snapAccordCurrX() {
+        var destScreen = 0;
+        var currentWidth = 0;
+
+        for (destScreen = 0; destScreen < mSelf.getChildCount(); destScreen++) {
+            var childWidth = mSelf.getChildAt(destScreen).getMeasuredWidth();
+            if (currentWidth + childWidth > mSelf.getScrollX()) {
+                break;
             }
+            currentWidth += childWidth;
+        }
+        if (destScreen + 1 < mSelf.getChildCount()
+            && mSelf.getScrollX() - currentWidth > mSelf.getChildAt(destScreen).getMeasuredWidth() / 2) {
+            destScreen += 1;
+        }
+        mSelf.snapToScreen(destScreen);
+    }
 
-            this.setMeasuredDimension(width * this.getChildCount(), height);
-        };
-
-        this.onLayout = function(x, y) {
-            var offsetX = 0;
-            var offsetY = 0;
-
-            for (var i = 0; i < this.getChildCount(); i++) {
-                var c = this.getChildAt(i);
-                c.layout(offsetX, offsetY);
-                offsetX += c.getMeasuredWidth();
-            }
-        };
+    function forceFinishProcessor() {
+        if (!mProcessor.isFinished()) {
+            mProcessor.forceFinished(true);
+        }
     }
 
     function fireScreenChanged() {
@@ -3262,6 +3692,7 @@ function MButton() {
                 mBgDrawable.setState(View.VIEW_STATE_ENABLED);
                 break;
         }
+        return true;
     };
 
     this.onDraw = function(canvas) {
@@ -4162,7 +4593,7 @@ function MRadioButton() {
     };
 
     function onclick() {
-        mSelf.setChecked(!mChecked);
+        mSelf.setChecked(true);
         if (mCheckedListener != null) {
             mCheckedListener.call(mSelf, mChecked);
         }
@@ -4590,30 +5021,317 @@ function liteAjax(url, _callback, method, postBody, _error) {
  * @class ScrollView
  */
 function ScrollView() {
-    ViewGroup.apply(this, []);
+    FrameLayout.apply(this, []);
 
     this.setTag("ScrollView");
-    this.setStyle("overflow", "auto");
 
-    this.onMeasure = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var height = MeasureSpec.getSize(heightMS);
-        if (this.getChildCount() > 0) {
-            var child = this.getChildAt(0);
-            var contentWidth = width - this.getPaddingLeft() - this.getPaddingRight();
-            child.measure(contentWidth, height);
+    var mSelf = this;
+    var mIsBeingDragged = false;
+    var mLastMotionX = 0;
+    var mLastMotionY = 0;
+    var mVelocityTracker = null;
+    var mTouchSlop = 10;
+    var mProcessor = new FlingProcessor();
+    var mMaximumUpVelocity = 1000;
+    var mMaximumDownVelocity = 1000;
+    var mMinimumVelocity = 50;
+
+    this.getDiv().onmousewheel = function(e) {
+        if (!mProcessor.isFinished()) {
+            mProcessor.forceFinished(true);
         }
-        this.setMeasuredDimension(width, height);
+        var y = mSelf.getScrollY() + e.deltaY;
+        y = Math.max(y, 0);
+        y = Math.min(y, mSelf.getChildAt(0).getMeasuredHeight() - mSelf.getMeasuredHeight());
+        mSelf.scrollTo(y);
     };
 
-    this.onLayout = function(x, y) {
-        var offsetX = this.getPaddingLeft();
-        var offsetY = this.getPaddingTop();
+    this.scrollTo = function(y) {
+        this.setScrollY(y);
+        var transition = "translate3d(0," + (-y) + "px,0)";
         if (this.getChildCount() > 0) {
             var child = this.getChildAt(0);
-            child.layout(offsetX, offsetY);
+            child.getDiv().style.msTransform = transition;
+            child.getDiv().style.webkitTransform = transition;
+            child.getDiv().style.mozTransform = transition;
         }
     };
+
+    this.scrollBy = function(dy) {
+        var y = this.getScrollY() + dy;
+        this.scrollTo(y);
+    };
+
+    this.onInterceptTouchEvent = function(ev) {
+        var action = ev.getAction();
+        if ((action == MotionEvent.ACTION_MOVE) && (mIsBeingDragged)) {
+            return true;
+        }
+
+        switch (action) {
+            case MotionEvent.ACTION_DOWN: {
+                var x = ev.getX();
+                var y = ev.getY();
+
+                mLastMotionX = x;
+                mLastMotionY = y;
+
+                initOrResetVelocityTracker();
+                mVelocityTracker.addMovement(ev);
+
+                mIsBeingDragged = !mProcessor.isFinished();
+                break;
+            }
+            case MotionEvent.ACTION_MOVE: {
+                var x = ev.getX();
+                var y = ev.getY();
+                var xDiff = Math.abs(x - mLastMotionX);
+                var yDiff = Math.abs(y - mLastMotionY);
+
+                if (yDiff > xDiff && yDiff > mTouchSlop) {
+                    mIsBeingDragged = true;
+                    mLastMotionX = x;
+                    mLastMotionY = y;
+                    initVelocityTrackerIfNotExists();
+                    mVelocityTracker.addMovement(ev);
+                    var parent = this.getParent();
+                    if (parent != null) {
+                        parent.requestDisallowInterceptTouchEvent(true);
+                    }
+                }
+                break;
+            }
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                mIsBeingDragged = false;
+                break;
+        }
+        return mIsBeingDragged;
+    };
+
+    this.onTouchEvent = function(ev) {
+        initVelocityTrackerIfNotExists();
+        mVelocityTracker.addMovement(ev);
+
+        if (this.getChildCount() == 0) {
+            return false;
+        }
+
+        var action = ev.getAction();
+
+        switch (action) {
+            case MotionEvent.ACTION_DOWN: {
+                if ((mIsBeingDragged = !mProcessor.isFinished())) {
+                    var parent = this.getParent();
+                    if (parent != null) {
+                        parent.requestDisallowInterceptTouchEvent(true);
+                    }
+                }
+
+                if (!mProcessor.isFinished()) {
+                    mProcessor.forceFinished(true);
+                }
+
+                mLastMotionX = ev.getX();
+                mLastMotionY = ev.getY();
+                break;
+            }
+            case MotionEvent.ACTION_MOVE:
+                var x = ev.getX();
+                var y = ev.getY();
+                var deltaX = mLastMotionX - x;
+                var deltaY = mLastMotionY - y;
+                if (!mIsBeingDragged && Math.abs(deltaY) > mTouchSlop) {
+                    var parent = this.getParent();
+                    if (parent != null) {
+                        parent.requestDisallowInterceptTouchEvent(true);
+                    }
+                    mIsBeingDragged = true;
+                    if (deltaY > 0) {
+                        deltaY -= mTouchSlop;
+                    } else {
+                        deltaY += mTouchSlop;
+                    }
+                }
+                if (mIsBeingDragged) {
+                    mLastMotionX = x;
+                    mLastMotionY = y;
+
+                    var oldX = this.getScrollX();
+                    var oldY = this.getScrollY();
+                    var range = getScrollRange();
+
+                    myScrollBy(deltaY, this.getScrollY(), range);
+                    //onScrollChanged(getScrollX(), getScrollY(), oldX, oldY);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mIsBeingDragged) {
+                    mVelocityTracker.computeCurrentVelocity(1000);
+                    var initialVelocity = mVelocityTracker.getYVelocity();
+                    if (initialVelocity > 0) {
+                        initialVelocity = Math.min(initialVelocity, mMaximumUpVelocity);
+                    } else {
+                        initialVelocity = Math.max(initialVelocity, -mMaximumDownVelocity);
+                    }
+                    if ((Math.abs(initialVelocity) > mMinimumVelocity)) {
+                        this.fling(-initialVelocity);
+                    }
+                    endDrag();
+                }
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                if (mIsBeingDragged && this.getChildCount() > 0) {
+                    endDrag();
+                }
+                break;
+            default:
+                break;
+        }
+        return true;
+    };
+
+    this.computeScroll = function() {
+        if (mProcessor.computeProcessOffset()) {
+            var y = mProcessor.getCurrProcess();
+            this.scrollTo(y);
+
+            this.postInvalidate();
+        }
+    };
+
+    function myScrollBy(deltaY, scrollY, scrollRangeY) {
+        var newScrollY = scrollY + deltaY;
+
+        if (newScrollY > scrollRangeY) {
+            newScrollY = scrollRangeY;
+        } else if (newScrollY < 0) {
+            newScrollY = 0;
+        }
+        mSelf.scrollTo(newScrollY);
+    }
+
+    function getScrollRange() {
+        var scrollRange = 0;
+        if (mSelf.getChildCount() > 0) {
+            var child = mSelf.getChildAt(0);
+            scrollRange = Math.max(0,
+                child.getHeight() - (mSelf.getHeight() - mSelf.getPaddingBottom() - mSelf.getPaddingTop()));
+        }
+        return scrollRange;
+    }
+
+    function initOrResetVelocityTracker() {
+        if (mVelocityTracker == null) {
+            mVelocityTracker = new VelocityTracker();
+        } else {
+            mVelocityTracker.clear();
+        }
+    }
+
+    function initVelocityTrackerIfNotExists() {
+        if (mVelocityTracker == null) {
+            mVelocityTracker = new VelocityTracker();
+        }
+    }
+
+    this.fling = function(velocityY) {
+        if (mSelf.getChildCount() > 0) {
+            var height = mSelf.getHeight() - mSelf.getPaddingBottom() - mSelf.getPaddingTop();
+            var bottom = mSelf.getChildAt(0).getHeight() - height;
+
+            mProcessor.fling(mSelf.getScrollY(), velocityY / 500, 0, bottom);
+
+            mSelf.invalidate();
+        }
+    };
+
+    function endDrag() {
+        mIsBeingDragged = false;
+    }
+
+    function FlingProcessor() {
+        Processor.apply(this, []);
+
+        var mA = 0.001;
+        var mIsFinished = true;
+        var mStartTime = 0;
+        var mStart;
+        var mV = 0;
+        var mAbsV = 0;
+        var mAbsCurV = 0;
+        var mMaxTime = 0;
+        var mMin = 0;
+        var mMax = 0;
+        var mCurValue = 0;
+
+        var mListener = null;
+
+        this.fling = function(start, v, min, max) {
+            mIsFinished = false;
+            mStartTime = (new Date()).getTime();
+
+            mStart = start;
+            mV = v;
+            mAbsV = Math.abs(mV);
+            mMaxTime = mAbsV / mA;
+            mMin = min;
+            mMax = max;
+            mCurValue = start;
+        };
+
+        this.computeProcessOffset = function() {
+            if (mIsFinished) {
+                return false;
+            }
+
+            var t = (new Date()).getTime() - mStartTime;
+            t = Math.min(t, mMaxTime);
+            var d = mAbsV * t - mA * t * t / 2;
+            if (mV > 0) {
+                mCurValue = mStart + d;
+            } else {
+                mCurValue = mStart - d;
+            }
+            mAbsCurV = mAbsV - mA * t;
+            if (mAbsCurV < 0 || mCurValue > mMax || mCurValue < mMin) {
+                if (mCurValue > mMax) {
+                    mCurValue = mMax;
+                } else if (mCurValue < mMin) {
+                    mCurValue = mMin;
+                }
+                mIsFinished = true;
+                this.fireProcessEnd();
+            }
+            return true;
+        };
+
+        this.forceFinished = function(finished) {
+            mIsFinished = finished;
+        };
+
+        this.isFinished = function() {
+            return mIsFinished;
+        };
+
+        this.setProcessListener = function(l) {
+            mListener = l;
+        };
+
+        this.fireProcessEnd = function() {
+            if (mListener != null) {
+                if (mV > 0) {
+                    mListener.call(this, mAbsCurV);
+                } else {
+                    mListener.call(this, -mAbsCurV);
+                }
+            }
+        };
+
+        this.getCurrProcess = function() {
+            return mCurValue;
+        };
+    }
 }
 
 /**
@@ -4873,8 +5591,10 @@ function TextView() {
      */
     this.setTextIsSelectable = function(selectable) {
         if (selectable) {
+            this.setPreventHtmlTouchEvent(false);
             mContent.style["-webkit-user-select"] = "text";
         } else {
+            this.setPreventHtmlTouchEvent(true);
             mContent.style["-webkit-user-select"] = "none";
         }
     };
@@ -5064,6 +5784,8 @@ function EditText() {
     var mIsPassword = false;
     var mTextListener = null;
     var mIsFocused;
+
+    this.setPreventHtmlTouchEvent(false);
 
     this.setDisabled = function(disabled) {
         if (disabled) {
@@ -5304,6 +6026,7 @@ function EditText() {
 function WebView() {
     ViewGroup.apply(this, []);
 
+    this.setPreventHtmlTouchEvent(false);
     this.setBackgroundColor("#ffffff");
 
     var mFrame = document.createElement("iframe");
