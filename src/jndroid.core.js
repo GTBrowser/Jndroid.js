@@ -70,6 +70,29 @@ function Map() {
 
 var Utils = new _Utils();
 function _Utils() {
+    this.dumpTouchEvent = function(ev, tag) {
+        var touch;
+        switch (ev.getAction()) {
+            case 0:
+                touch = "down";
+                break;
+            case 1:
+                touch = "up";
+                break;
+            case 2:
+                touch = "move";
+                break;
+            case 3:
+                touch = "cancel";
+                break;
+        }
+        if (tag) {
+            console.log(tag + ":" + touch);
+        } else {
+            console.log(touch);
+        }
+    };
+
     this.toCssColor = function(color) {
         if (typeof color == "string") {
             return color;
@@ -142,12 +165,36 @@ function _Utils() {
     };
 }
 
+/**
+ * Rect holds four integer coordinates for a rectangle. The rectangle is
+ * represented by the coordinates of its 4 edges (left, top, right bottom).
+ * These fields can be accessed directly. Use width() and height() to retrieve
+ * the rectangle's width and height. Note: most methods do not check to see that
+ * the coordinates are sorted correctly (i.e. left <= right and top <= bottom).
+ * @class Rect
+ *
+ */
 function Rect(l, t, r, b) {
+    if (l == undefined || t == undefined || r == undefined || b == undefined) {
+        l = 0;
+        t = 0;
+        r = 0;
+        b = 0;
+    }
     this.left = l;
     this.top = t;
     this.right = r;
     this.bottom = b;
 
+    /**
+     * Set the rectangle's coordinates to the specified values.
+     *
+     * @method set
+     * @param left   The X coordinate of the left side of the rectangle
+     * @param top    The Y coordinate of the top of the rectangle
+     * @param right  The X coordinate of the right side of the rectangle
+     * @param bottom The Y coordinate of the bottom of the rectangle
+     */
     this.set = function(l, t, r, b) {
         this.left = l;
         this.top = t;
@@ -155,21 +202,53 @@ function Rect(l, t, r, b) {
         this.bottom = b;
     };
 
+    /**
+     * @method width
+     * @return the rectangle's width. This does not check for a valid rectangle
+     * (i.e. left <= right) so the result may be negative.
+     */
     this.width = function() {
         return (this.right - this.left);
     };
 
+    /**
+     * @method height
+     * @return the rectangle's height. This does not check for a valid rectangle
+     * (i.e. top <= bottom) so the result may be negative.
+     */
     this.height = function() {
         return (this.bottom - this.top);
     };
 
+    /**
+     * @method centerX
+     * @return the horizontal center of the rectangle.
+     */
     this.centerX = function() {
         return (this.left + this.right) / 2;
     };
 
+
+    /**
+     * @method centerY
+     * @return the vertical center of the rectangle.
+     */
     this.centerY = function() {
         return (this.top + this.bottom) / 2;
     };
+
+    /**
+     * Returns true if (x,y) is inside the rectangle.
+     *
+     * @method contains
+     * @param x The X coordinate of the point being tested for containment
+     * @param y The Y coordinate of the point being tested for containment
+     * @return true iff (x,y) are contained by the rectangle, where containment
+     *              means left <= x < right and top <= y < bottom
+     */
+    this.contains = function(x, y) {
+        return this.left < this.right && this.top < this.bottom && x >= this.left && x < this.right && y >= this.top && y < this.bottom;
+    }
 }
 
 /**
@@ -263,6 +342,23 @@ Object.defineProperty(MeasureSpec,"AT_MOST",{value:(0x2 << 30)});
  */
 function MotionEvent(rawEv) {
 
+    this.rawEv = rawEv;
+
+    var touch = getTouches();
+    var mX = touch.pageX;
+    var mY = touch.pageY;
+
+    var mAction = 3;
+    if (rawEv.type == "touchstart" || rawEv.type == "mousedown") {
+        mAction = 0;
+    } else if (rawEv.type == "touchmove" || rawEv.type == "mousemove") {
+        mAction = 2;
+    } else if (rawEv.type == "touchend" || rawEv.type == "mouseup") {
+        mAction = 1;
+    } else if (rawEv.type == "touchcancel") {
+        mAction = 3;
+    }
+
     /**
      * Returns the X coordinate of this event.
      *
@@ -270,9 +366,7 @@ function MotionEvent(rawEv) {
      * @return {float} X coordinate.
      */
     this.getX = function() {
-        var div = this.realView.getDiv();
-        var offset = Utils.getOffset(div);
-        return this.getTouches().pageX - offset.left;
+        return mX;
     };
 
     /**
@@ -282,9 +376,12 @@ function MotionEvent(rawEv) {
      * @return {float} Y coordinate.
      */
     this.getY = function() {
-        var div = this.realView.getDiv();
-        var offset = Utils.getOffset(div);
-        return this.getTouches().pageY - offset.top;
+        return mY;
+    };
+
+    this.setLocation = function(x, y) {
+        mX = x;
+        mY = y;
     };
 
     /**
@@ -297,7 +394,7 @@ function MotionEvent(rawEv) {
      * @return {float} original raw X coordinate.
      */
     this.getRawX = function() {
-        return this.getTouches().pageX;
+        return touch.pageX;
     };
 
     /**
@@ -310,19 +407,7 @@ function MotionEvent(rawEv) {
      * @return {float} original raw Y coordinate.
      */
     this.getRawY = function() {
-        return this.getTouches().pageY;
-    };
-
-    this.getTouches = function() {
-        if ("ontouchstart" in document.documentElement) {
-            if (rawEv.type == "touchstart" || rawEv.type == "touchmove") {
-                return rawEv.touches[0];
-            } else {
-                return rawEv.changedTouches[0];
-            }
-        } else {
-            return rawEv;
-        }
+        return touch.pageY;
     };
 
     /**
@@ -332,22 +417,22 @@ function MotionEvent(rawEv) {
      * @return {int} the action.
      */
     this.getAction = function() {
-        if (rawEv.type == "touchstart" || rawEv.type == "mousedown") {
-            return MotionEvent.ACTION_DOWN;
-        } else if (rawEv.type == "touchmove" || rawEv.type == "mousemove") {
-            return MotionEvent.ACTION_MOVE;
-        } else if (rawEv.type == "touchend" || rawEv.type == "mouseup") {
-            return MotionEvent.ACTION_UP;
-        } else if (rawEv.type == "touchcancel") {
-            return MotionEvent.ACTION_CANCEL;
-        } else if (rawEv.type == "mouseout") {
-            var div = this.realView.getDiv();
-            var offset = Utils.getOffset(div);
-            if (this.getRawX() < offset.left || this.getRawX() > (offset.left + offset.width) || this.getRawY() < offset.top || this.getRawY() > (offset.top + offset.height)) {
-                return MotionEvent.ACTION_CANCEL;
-            }
-        }
+        return mAction;
     };
+
+    this.setAction = function(action) {
+        mAction = action;
+    };
+
+    function getTouches() {
+        if (rawEv.type == "touchstart" || rawEv.type == "touchmove") {
+            return rawEv.touches[0];
+        } else if (rawEv.type == "touchend" || rawEv.type == "touchcancel") {
+            return rawEv.changedTouches[0];
+        } else {
+            return rawEv;
+        }
+    }
 }
 
 /**
@@ -397,6 +482,63 @@ Object.defineProperty(MotionEvent,"ACTION_MOVE",{value:2});
  * @final
  */
 Object.defineProperty(MotionEvent,"ACTION_CANCEL",{value:3});
+
+function VelocityTracker() {
+    var mScope = 10;
+    var mX = [];
+    var mY = [];
+    var mTime = [];
+    var mVx = 0;
+    var mVy = 0;
+
+    this.clear = function() {
+        mX.clear();
+        mY.clear();
+        mTime.clear();
+    };
+
+    this.addMovement = function(event) {
+        if (mX.length >= mScope) {
+            mX.removeAt(0);
+        }
+        mX.add(event.getRawX());
+        if (mY.length >= mScope) {
+            mY.removeAt(0);
+        }
+        mY.add(event.getRawY());
+        if (mTime.length >= mScope) {
+            mTime.removeAt(0);
+        }
+        mTime.add(event.rawEv.timeStamp);
+    };
+
+    this.computeCurrentVelocity = function(unit) {
+        if (mX.length < 2) {
+            mVx = 0;
+            mVy = 0;
+            return;
+        }
+        var t = mTime[mTime.length - 1] - mTime[0];
+        if (t == 0) {
+            mVx = 0;
+            mVy = 0;
+            return;
+        }
+        if (unit == undefined) {
+            unit = 1;
+        }
+        mVx = (mX[mX.length - 1] - mX[0]) / t * unit;
+        mVy = (mY[mX.length - 1] - mY[0]) / t * unit;
+    };
+
+    this.getXVelocity = function() {
+        return mVx;
+    };
+
+    this.getYVelocity = function() {
+        return mVy;
+    }
+}
 
 /**
  * The Color class defines methods for creating and converting color ints.
@@ -491,18 +633,18 @@ function _Color() {
         return (alpha << 24) | (red << 16) | (green << 8) | blue;
     };
 }
-Object.defineProperty(MotionEvent,"BLACK",{value:0xFF000000});
-Object.defineProperty(MotionEvent,"DKGRAY",{value:0xFF444444});
-Object.defineProperty(MotionEvent,"GRAY",{value:0xFF888888});
-Object.defineProperty(MotionEvent,"LTGRAY",{value:0xFFCCCCCC});
-Object.defineProperty(MotionEvent,"WHITE",{value:0xFFFFFFFF});
-Object.defineProperty(MotionEvent,"RED",{value:0xFFFF0000});
-Object.defineProperty(MotionEvent,"GREEN",{value:0xFF00FF00});
-Object.defineProperty(MotionEvent,"BLUE",{value:0xFF0000FF});
-Object.defineProperty(MotionEvent,"YELLOW",{value:0xFFFFFF00});
-Object.defineProperty(MotionEvent,"CYAN",{value:0xFF00FFFF});
-Object.defineProperty(MotionEvent,"MAGENTA",{value:0xFFFF00FF});
-Object.defineProperty(MotionEvent,"TRANSPARENT",{value:0});
+Object.defineProperty(Color,"BLACK",{value:0xFF000000});
+Object.defineProperty(Color,"DKGRAY",{value:0xFF444444});
+Object.defineProperty(Color,"GRAY",{value:0xFF888888});
+Object.defineProperty(Color,"LTGRAY",{value:0xFFCCCCCC});
+Object.defineProperty(Color,"WHITE",{value:0xFFFFFFFF});
+Object.defineProperty(Color,"RED",{value:0xFFFF0000});
+Object.defineProperty(Color,"GREEN",{value:0xFF00FF00});
+Object.defineProperty(Color,"BLUE",{value:0xFF0000FF});
+Object.defineProperty(Color,"YELLOW",{value:0xFFFFFF00});
+Object.defineProperty(Color,"CYAN",{value:0xFF00FFFF});
+Object.defineProperty(Color,"MAGENTA",{value:0xFFFF00FF});
+Object.defineProperty(Color,"TRANSPARENT",{value:0});
 
 /**
  * A structure describing general information about a display, such as its
@@ -717,8 +859,10 @@ function View() {
     mDiv.addEventListener("touchstart", function(){}, false);
 
     var mParent;
-    var mX = 0;
-    var mY = 0;
+    var mLeft = 0;
+    var mTop = 0;
+    var mRight = 0;
+    var mBottom = 0;
     var mWidth = 0;
     var mHeight = 0;
     var mWidthMS = 0;
@@ -728,23 +872,23 @@ function View() {
     var mPaddingTop = 0;
     var mPaddingRight = 0;
     var mPaddingBottom = 0;
+    var mScrollX = 0;
+    var mScrollY = 0;
     var mLayoutParams = null;
     var mWillNotDraw = true;
     var mVisibility = View.VISIBLE;
     var mClickable = false;
-    var mLongClickable = true;
+    var mLongClickable = false;
     var mClickListener = null;
     var mLongClickListener = null;
     var mTag = "View";
     var mID = View.NO_ID;
     var mHTMLCanvas = null;
     var canvas = null;
-    var mInTouch = false;
-    var mTouchCanceled = false;
+    var mPreventHtmlTouchEvent = true;
 
     var mDownX, mDownY;
     var mHasPerformedLongPress = false;
-
 
     var mRunQueue = new Map();
 
@@ -904,7 +1048,11 @@ function View() {
 	* @return {int} Returns the left edge of this view, in pixels.
 	*/
     this.getLeft = function() {
-        return mX;
+        return mLeft;
+    };
+
+    this.getRight = function() {
+        return mLeft + this.getMeasuredWidth();
     };
 
 	/**
@@ -914,7 +1062,11 @@ function View() {
 	* @return {int} Returns the top of this view, in pixels.
 	*/
     this.getTop = function() {
-        return mY;
+        return mTop;
+    };
+
+    this.getBottom = function() {
+        return mTop + this.getMeasuredHeight();
     };
 
 	/**
@@ -957,24 +1109,44 @@ function View() {
         return mHeight;
     };
 
-	/**
-	* The visual x position of this view, in pixels.
-	*
-	* @method getX
-	* @return {int} Returns the visual x position of this view, in pixels.
-	*/
-    this.getX = function() {
-        return mX;
+    this.getScrollX = function() {
+        return mScrollX;
+    };
+
+    this.setScrollX = function(x) {
+        mScrollX = x;
+    };
+
+    this.getScrollY = function() {
+        return mScrollY;
+    };
+
+    this.setScrollY = function(y) {
+        mScrollY = y;
+    };
+
+    this.getHitRect = function(outRect) {
+        outRect.set(mLeft, mTop, mRight, mBottom);
     };
 
 	/**
-	* The visual y position of this view, in pixels.
+	* The visual left position of this view, in pixels.
 	*
-	* @method getY
+	* @method getLeft
+	* @return {int} Returns the visual x position of this view, in pixels.
+	*/
+    this.getLeft = function() {
+        return mLeft;
+    };
+
+	/**
+	* The visual top position of this view, in pixels.
+	*
+	* @method getTop
 	* @return {int} Returns the visual y position of this view, in pixels.
 	*/
-    this.getY = function() {
-        return mY;
+    this.getTop = function() {
+        return mTop;
     };
 
 	/**
@@ -1052,8 +1224,11 @@ function View() {
 	* @params {int} y Top position, relative to parent.
 	*/
     this.layout = function(x, y) {
-        mX = x;
-        mY = y;
+        mLeft = x;
+        mTop = y;
+        mRight = x + this.getMeasuredWidth();
+        mBottom = y + this.getMeasuredHeight();
+
         mDiv.style.left = x + "px";
         mDiv.style.top = y + "px";
         this.onLayout(x, y);
@@ -1222,38 +1397,8 @@ function View() {
 	*/
     this.setClickable = function(clickable) {
         mClickable = clickable;
-        if (clickable) {
+        if (mClickable) {
             this.setStyle("cursor", "pointer");
-            addTouchListener(this);
-            if ("ontouchstart" in document.documentElement) {
-                this.getDiv().addEventListener("touchstart", this.touch, false);
-                this.getDiv().addEventListener("touchmove", this.touch, false);
-                this.getDiv().addEventListener("touchend", this.touch, false);
-                this.getDiv().addEventListener("touchcancel", this.touch, false);
-            } else {
-                this.getDiv().addEventListener("mousedown", this.touch, false);
-                this.getDiv().addEventListener("mousemove", this.touch, false);
-                this.getDiv().addEventListener("mouseup", this.touch, false);
-                this.getDiv().addEventListener("mouseout", this.touch, false);
-            }
-
-            this.getDiv().style.pointerEvents = "auto";
-        } else {
-            this.setStyle("cursor", "auto");
-            removeTouchListener(this);
-            if ("ontouchstart" in document.documentElement) {
-                this.getDiv().removeEventListener("touchstart", this.touch, false);
-                this.getDiv().removeEventListener("touchmove", this.touch, false);
-                this.getDiv().removeEventListener("touchend", this.touch, false);
-                this.getDiv().removeEventListener("touchcancel", this.touch, false);
-            } else {
-                this.getDiv().removeEventListener("mousedown", this.touch, false);
-                this.getDiv().removeEventListener("mouseup", this.touch, false);
-                this.getDiv().removeEventListener("mousemove", this.touch, false);
-                this.getDiv().removeEventListener("mouseout", this.touch, false);
-            }
-
-            this.getDiv().style.pointerEvents = "none";
         }
     };
 
@@ -1280,7 +1425,7 @@ function View() {
         }
         if (mWidth !== 0 && mHeight !== 0) {
             this.measure(mWidthMS, mHeightMS);
-            this.layout(mX, mY);
+            this.layout(mLeft, mTop);
         } else {
             forceReLayout();
         }
@@ -1293,6 +1438,59 @@ function View() {
 	*/
     this.requestFocus = function() {
 
+    };
+
+    this.checkClick = function(ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mHasPerformedLongPress = false;
+                mDownX = ev.getRawX();
+                mDownY = ev.getRawY();
+                this.checkForLongClick();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                var x = ev.getX();
+                var y = ev.getY();
+                if (x < mLeft || x > mRight || y < mTop || y > mBottom) {
+                    this.removeCallbacks(this.checkLongPress);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (!mHasPerformedLongPress) {
+                    this.removeCallbacks(this.checkLongPress);
+
+                    var deltaX = Math.abs(mDownX - ev.getRawX());
+                    var deltaY = Math.abs(mDownY - ev.getRawY());
+                    if (deltaX < 30 && deltaY < 30) {
+                        this.performClick();
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                this.removeCallbacks(this.checkLongPress);
+                break;
+        }
+    };
+
+    this.setPreventHtmlTouchEvent = function(prevent) {
+        mPreventHtmlTouchEvent = prevent;
+    };
+
+    this._onTouchEvent = function(ev) {
+        if (mPreventHtmlTouchEvent) {
+            ev.rawEv.preventDefault();
+        }
+        if (mClickable || mLongClickable) {
+            this.checkClick(ev);
+        }
+        if (mPreventHtmlTouchEvent == false) {
+            return true;
+        }
+        var result = this.onTouchEvent(ev);
+        if (result == undefined) {
+            result = true;
+        }
+        return result;
     };
 
 	/**
@@ -1308,7 +1506,21 @@ function View() {
 	* @params {MotionEvent} ev The motion event.
 	*/
     this.onTouchEvent = function(ev) {
+        if (mClickable || mLongClickable) {
+            return true;
+        }
+        return false;
+    };
 
+    /**
+     * Pass the touch screen motion event down to the target view, or this
+     * view if it is the target.
+     *
+     * @param event The motion event to be dispatched.
+     * @return True if the event was handled by the view, false otherwise.
+     */
+    this.dispatchTouchEvent = function(ev) {
+        return this._onTouchEvent(ev);
     };
 
 	/**
@@ -1367,6 +1579,12 @@ function View() {
     this.startAnimation = function(animation) {
         animation.setView(this);
         animation.start();
+    };
+
+    this.clearAnimation = function() {
+        this.getDiv().style.webkitTransition = "";
+        this.getDiv().style.transition = "";
+        this.getDiv().style.opacity = 0;
     };
 
 	/**
@@ -1434,73 +1652,6 @@ function View() {
     this.checkLongPress = function() {
         if (this.perfermLongClick()) {
             mHasPerformedLongPress = true;
-        }
-    };
-
-	//TODO
-    this.touch = function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        if (e.type == "mousemove" && !mInTouch) {
-            return;
-        }
-
-        var view = findTouchObject(this);
-        if (mClickable) {
-            var ev = new MotionEvent(e);
-            ev.realView = view;
-
-            if (ev.getAction() == MotionEvent.ACTION_CANCEL && mTouchCanceled == true) {
-                return;
-            }
-            if (ev.getAction() == MotionEvent.ACTION_CANCEL && !mInTouch) {
-                return;
-            }
-            if (ev.getAction() == MotionEvent.ACTION_UP && !mInTouch) {
-                return;
-            }
-
-            view.onTouchEvent(ev);
-
-
-            switch (ev.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    mInTouch = true;
-                    mTouchCanceled = false;
-                    mHasPerformedLongPress = false;
-                    mDownX = ev.getRawX();
-                    mDownY = ev.getRawY();
-                    view.checkForLongClick();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    mInTouch = true;
-                    mTouchCanceled = false;
-                    var offset = Utils.getOffset(view.getDiv());
-                    var x = ev.getRawX();
-                    var y = ev.getRawY();
-                    if (x < offset.left || x > (offset.left + offset.width) || y < offset.top || y > (offset.top + offset.height)) {
-                        view.removeCallbacks(view.checkLongPress);
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                    mInTouch = false;
-                    if (!mHasPerformedLongPress) {
-                        view.removeCallbacks(view.checkLongPress);
-
-                        var deltaX = Math.abs(mDownX - ev.getRawX());
-                        var deltaY = Math.abs(mDownY - ev.getRawY());
-                        if (deltaX < 30 && deltaY < 30) {
-                            view.performClick();
-                        }
-                    }
-                    break;
-                case MotionEvent.ACTION_CANCEL:
-                    mInTouch = false;
-                    mTouchCanceled = true;
-                    view.removeCallbacks(view.checkLongPress);
-                    break;
-            }
         }
     };
 
@@ -1605,6 +1756,10 @@ function ViewGroup() {
     View.apply(this, []);
     var mChildren = [];
     var mTag = "ViewGroup";
+
+    var mMotionTarget = null;
+    var mTempRect = new Rect();
+    var mDisallowIntercept = false;
 
     /**
      * Returns the number of children in the group.
@@ -1720,6 +1875,106 @@ function ViewGroup() {
             }
         }
         return null;
+    };
+
+    /**
+     * Implement this method to intercept all touch screen motion events.  This
+     * allows you to watch events as they are dispatched to your children, and
+     * take ownership of the current gesture at any point.
+     *
+     * @method onInterceptTouchEvent
+     * @param ev The motion event being dispatched down the hierarchy.
+     * @return Return true to steal motion events from the children and have
+     * them dispatched to this ViewGroup through onTouchEvent().
+     * The current target will receive an ACTION_CANCEL event, and no further
+     * messages will be delivered here.
+     *
+     */
+    this.onInterceptTouchEvent = function(ev) {
+        return false;
+    };
+
+    /**
+     * Pass the touch screen motion event down to the target view, or this
+     * view if it is the target.
+     *
+     * @param event The motion event to be dispatched.
+     * @return True if the event was handled by the view, false otherwise.
+     */
+    this.dispatchTouchEvent = function(ev) {
+        var xf = ev.getX();
+        var yf = ev.getY();
+        var scrolledX = xf + this.getScrollX();
+        var scrolledY = yf + this.getScrollY();
+        var frame = mTempRect;
+
+        var action = ev.getAction();
+        if (action == MotionEvent.ACTION_DOWN) {
+            if (mMotionTarget != null) {
+                mMotionTarget = null;
+            }
+            if (mDisallowIntercept || !this.onInterceptTouchEvent(ev)) {
+                ev.setAction(MotionEvent.ACTION_DOWN);
+                var count = mChildren.length;
+                for (var i = count - 1; i >= 0; i--) {
+                    var child = mChildren[i];
+                    if (child.getVisibility() == View.VISIBLE) {
+                        child.getHitRect(frame);
+                        if (frame.contains(scrolledX, scrolledY)) {
+                            var xc = scrolledX - child.getLeft();
+                            var yc = scrolledY - child.getTop();
+                            ev.setLocation(xc, yc);
+                            if (child.dispatchTouchEvent(ev))  {
+                                mMotionTarget = child;
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        var isUpOrCancel = (action == MotionEvent.ACTION_UP) || (action == MotionEvent.ACTION_CANCEL);
+        if (isUpOrCancel) {
+            mDisallowIntercept = false;
+        }
+
+        var target = mMotionTarget;
+        if (target == null) {
+            ev.setLocation(xf, yf);
+            return this._onTouchEvent(ev);
+        }
+
+        if (!mDisallowIntercept && this.onInterceptTouchEvent(ev)) {
+            var xc = scrolledX - target.getLeft();
+            var yc = scrolledY - target.getTop();
+            ev.setAction(MotionEvent.ACTION_CANCEL);
+            ev.setLocation(xc, yc);
+            if (!target.dispatchTouchEvent(ev)) {
+            }
+            mMotionTarget = null;
+            return true;
+        }
+
+        if (isUpOrCancel) {
+            mMotionTarget = null;
+        }
+
+        var xc = scrolledX - target.getLeft();
+        var yc = scrolledY - target.getTop();
+        ev.setLocation(xc, yc);
+
+        return target.dispatchTouchEvent(ev);
+    };
+
+    this.requestDisallowInterceptTouchEvent = function(disallowIntercept) {
+        if (disallowIntercept == mDisallowIntercept) {
+            return;
+        }
+        mDisallowIntercept = disallowIntercept;
+        if (this.getParent() != null) {
+            this.getParent().requestDisallowInterceptTouchEvent(disallowIntercept);
+        }
     }
 }
 
@@ -1750,8 +2005,6 @@ var mRootView = null;
 
 
 var mHideDiv = null;
-
-var mTopMargin = 0;
 
 var meta = document.createElement("meta");
 meta.name = "viewport";
@@ -1799,11 +2052,45 @@ function setContentView(view, htmlnode) {
     mRootNode.appendChild(mDecorView.getDiv());
     mRootNode.style.overflow = "hidden";
 
+    document.body.style.pointerEvents = "auto";
+    var events = ["touchstart", "touchmove", "touchend", "touchcancel", "mousedown", "mousemove", "mouseup"];
+    for (var i = 0; i < events.length; i++) {
+        document.body.addEventListener(events[i], touch, false);
+    }
+
     forceReLayout();
 
     var css = document.createElement("style");
     css.innerHTML = "*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px; height: 0px} input{outline:none}";
     document.head.appendChild(css);
+}
+
+var _mInTouch = false;
+
+function touch(e) {
+    e.stopPropagation();
+
+    if (e.type == "mousemove" && _mInTouch == false) {
+        return;
+    }
+    if (e.type == "mouseout" && _mInTouch == false) {
+        return;
+    }
+    var ev = new MotionEvent(e);
+    ev.realDiv = this;
+
+    switch (ev.getAction()) {
+        case MotionEvent.ACTION_DOWN:
+            _mInTouch = true;
+            break;
+        case MotionEvent.ACTION_UP:
+            _mInTouch = false;
+            break;
+        case MotionEvent.ACTION_CANCEL:
+            _mInTouch = false;
+            break;
+    }
+    mDecorView.dispatchTouchEvent(ev);
 }
 
 /* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
@@ -1821,7 +2108,7 @@ function getRootView() {
 
 function forceReLayout() {
     if (mDecorView === null || mDecorView === undefined) {
-        log("gyy: mDecorView is null");
+        console.log("gyy: mDecorView is null");
         return;
     }
     if (mRootNode == document.body) {
@@ -1854,27 +2141,4 @@ function addOrientationListener(listener) {
 
 function throwException(msg) {
     log(msg);
-}
-
-// 为解决touch回调的临时方案
-var mTouchListerners = [];
-function addTouchListener(listener) {
-    mTouchListerners.push(listener);
-}
-
-function removeTouchListener(listener) {
-    mTouchListerners.remove(listener);
-}
-
-function findTouchObject(aDiv) {
-    for (var i = 0; i < mTouchListerners.length; i++) {
-        if (mTouchListerners[i].getDiv() == aDiv) {
-            return mTouchListerners[i];
-        }
-    }
-    return null;
-}
-
-function log(str) {
-    console.log(str);
 }

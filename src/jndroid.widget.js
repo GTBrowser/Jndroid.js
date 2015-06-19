@@ -10,30 +10,317 @@
  * @class ScrollView
  */
 function ScrollView() {
-    ViewGroup.apply(this, []);
+    FrameLayout.apply(this, []);
 
     this.setTag("ScrollView");
-    this.setStyle("overflow", "auto");
 
-    this.onMeasure = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var height = MeasureSpec.getSize(heightMS);
-        if (this.getChildCount() > 0) {
-            var child = this.getChildAt(0);
-            var contentWidth = width - this.getPaddingLeft() - this.getPaddingRight();
-            child.measure(contentWidth, height);
+    var mSelf = this;
+    var mIsBeingDragged = false;
+    var mLastMotionX = 0;
+    var mLastMotionY = 0;
+    var mVelocityTracker = null;
+    var mTouchSlop = 10;
+    var mProcessor = new FlingProcessor();
+    var mMaximumUpVelocity = 1000;
+    var mMaximumDownVelocity = 1000;
+    var mMinimumVelocity = 50;
+
+    this.getDiv().onmousewheel = function(e) {
+        if (!mProcessor.isFinished()) {
+            mProcessor.forceFinished(true);
         }
-        this.setMeasuredDimension(width, height);
+        var y = mSelf.getScrollY() + e.deltaY;
+        y = Math.max(y, 0);
+        y = Math.min(y, mSelf.getChildAt(0).getMeasuredHeight() - mSelf.getMeasuredHeight());
+        mSelf.scrollTo(y);
     };
 
-    this.onLayout = function(x, y) {
-        var offsetX = this.getPaddingLeft();
-        var offsetY = this.getPaddingTop();
+    this.scrollTo = function(y) {
+        this.setScrollY(y);
+        var transition = "translate3d(0," + (-y) + "px,0)";
         if (this.getChildCount() > 0) {
             var child = this.getChildAt(0);
-            child.layout(offsetX, offsetY);
+            child.getDiv().style.msTransform = transition;
+            child.getDiv().style.webkitTransform = transition;
+            child.getDiv().style.mozTransform = transition;
         }
     };
+
+    this.scrollBy = function(dy) {
+        var y = this.getScrollY() + dy;
+        this.scrollTo(y);
+    };
+
+    this.onInterceptTouchEvent = function(ev) {
+        var action = ev.getAction();
+        if ((action == MotionEvent.ACTION_MOVE) && (mIsBeingDragged)) {
+            return true;
+        }
+
+        switch (action) {
+            case MotionEvent.ACTION_DOWN: {
+                var x = ev.getX();
+                var y = ev.getY();
+
+                mLastMotionX = x;
+                mLastMotionY = y;
+
+                initOrResetVelocityTracker();
+                mVelocityTracker.addMovement(ev);
+
+                mIsBeingDragged = !mProcessor.isFinished();
+                break;
+            }
+            case MotionEvent.ACTION_MOVE: {
+                var x = ev.getX();
+                var y = ev.getY();
+                var xDiff = Math.abs(x - mLastMotionX);
+                var yDiff = Math.abs(y - mLastMotionY);
+
+                if (yDiff > xDiff && yDiff > mTouchSlop) {
+                    mIsBeingDragged = true;
+                    mLastMotionX = x;
+                    mLastMotionY = y;
+                    initVelocityTrackerIfNotExists();
+                    mVelocityTracker.addMovement(ev);
+                    var parent = this.getParent();
+                    if (parent != null) {
+                        parent.requestDisallowInterceptTouchEvent(true);
+                    }
+                }
+                break;
+            }
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                mIsBeingDragged = false;
+                break;
+        }
+        return mIsBeingDragged;
+    };
+
+    this.onTouchEvent = function(ev) {
+        initVelocityTrackerIfNotExists();
+        mVelocityTracker.addMovement(ev);
+
+        if (this.getChildCount() == 0) {
+            return false;
+        }
+
+        var action = ev.getAction();
+
+        switch (action) {
+            case MotionEvent.ACTION_DOWN: {
+                if ((mIsBeingDragged = !mProcessor.isFinished())) {
+                    var parent = this.getParent();
+                    if (parent != null) {
+                        parent.requestDisallowInterceptTouchEvent(true);
+                    }
+                }
+
+                if (!mProcessor.isFinished()) {
+                    mProcessor.forceFinished(true);
+                }
+
+                mLastMotionX = ev.getX();
+                mLastMotionY = ev.getY();
+                break;
+            }
+            case MotionEvent.ACTION_MOVE:
+                var x = ev.getX();
+                var y = ev.getY();
+                var deltaX = mLastMotionX - x;
+                var deltaY = mLastMotionY - y;
+                if (!mIsBeingDragged && Math.abs(deltaY) > mTouchSlop) {
+                    var parent = this.getParent();
+                    if (parent != null) {
+                        parent.requestDisallowInterceptTouchEvent(true);
+                    }
+                    mIsBeingDragged = true;
+                    if (deltaY > 0) {
+                        deltaY -= mTouchSlop;
+                    } else {
+                        deltaY += mTouchSlop;
+                    }
+                }
+                if (mIsBeingDragged) {
+                    mLastMotionX = x;
+                    mLastMotionY = y;
+
+                    var oldX = this.getScrollX();
+                    var oldY = this.getScrollY();
+                    var range = getScrollRange();
+
+                    myScrollBy(deltaY, this.getScrollY(), range);
+                    //onScrollChanged(getScrollX(), getScrollY(), oldX, oldY);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mIsBeingDragged) {
+                    mVelocityTracker.computeCurrentVelocity(1000);
+                    var initialVelocity = mVelocityTracker.getYVelocity();
+                    if (initialVelocity > 0) {
+                        initialVelocity = Math.min(initialVelocity, mMaximumUpVelocity);
+                    } else {
+                        initialVelocity = Math.max(initialVelocity, -mMaximumDownVelocity);
+                    }
+                    if ((Math.abs(initialVelocity) > mMinimumVelocity)) {
+                        this.fling(-initialVelocity);
+                    }
+                    endDrag();
+                }
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                if (mIsBeingDragged && this.getChildCount() > 0) {
+                    endDrag();
+                }
+                break;
+            default:
+                break;
+        }
+        return true;
+    };
+
+    this.computeScroll = function() {
+        if (mProcessor.computeProcessOffset()) {
+            var y = mProcessor.getCurrProcess();
+            this.scrollTo(y);
+
+            this.postInvalidate();
+        }
+    };
+
+    function myScrollBy(deltaY, scrollY, scrollRangeY) {
+        var newScrollY = scrollY + deltaY;
+
+        if (newScrollY > scrollRangeY) {
+            newScrollY = scrollRangeY;
+        } else if (newScrollY < 0) {
+            newScrollY = 0;
+        }
+        mSelf.scrollTo(newScrollY);
+    }
+
+    function getScrollRange() {
+        var scrollRange = 0;
+        if (mSelf.getChildCount() > 0) {
+            var child = mSelf.getChildAt(0);
+            scrollRange = Math.max(0,
+                child.getHeight() - (mSelf.getHeight() - mSelf.getPaddingBottom() - mSelf.getPaddingTop()));
+        }
+        return scrollRange;
+    }
+
+    function initOrResetVelocityTracker() {
+        if (mVelocityTracker == null) {
+            mVelocityTracker = new VelocityTracker();
+        } else {
+            mVelocityTracker.clear();
+        }
+    }
+
+    function initVelocityTrackerIfNotExists() {
+        if (mVelocityTracker == null) {
+            mVelocityTracker = new VelocityTracker();
+        }
+    }
+
+    this.fling = function(velocityY) {
+        if (mSelf.getChildCount() > 0) {
+            var height = mSelf.getHeight() - mSelf.getPaddingBottom() - mSelf.getPaddingTop();
+            var bottom = mSelf.getChildAt(0).getHeight() - height;
+
+            mProcessor.fling(mSelf.getScrollY(), velocityY / 500, 0, bottom);
+
+            mSelf.invalidate();
+        }
+    };
+
+    function endDrag() {
+        mIsBeingDragged = false;
+    }
+
+    function FlingProcessor() {
+        Processor.apply(this, []);
+
+        var mA = 0.001;
+        var mIsFinished = true;
+        var mStartTime = 0;
+        var mStart;
+        var mV = 0;
+        var mAbsV = 0;
+        var mAbsCurV = 0;
+        var mMaxTime = 0;
+        var mMin = 0;
+        var mMax = 0;
+        var mCurValue = 0;
+
+        var mListener = null;
+
+        this.fling = function(start, v, min, max) {
+            mIsFinished = false;
+            mStartTime = (new Date()).getTime();
+
+            mStart = start;
+            mV = v;
+            mAbsV = Math.abs(mV);
+            mMaxTime = mAbsV / mA;
+            mMin = min;
+            mMax = max;
+            mCurValue = start;
+        };
+
+        this.computeProcessOffset = function() {
+            if (mIsFinished) {
+                return false;
+            }
+
+            var t = (new Date()).getTime() - mStartTime;
+            t = Math.min(t, mMaxTime);
+            var d = mAbsV * t - mA * t * t / 2;
+            if (mV > 0) {
+                mCurValue = mStart + d;
+            } else {
+                mCurValue = mStart - d;
+            }
+            mAbsCurV = mAbsV - mA * t;
+            if (mAbsCurV < 0 || mCurValue > mMax || mCurValue < mMin) {
+                if (mCurValue > mMax) {
+                    mCurValue = mMax;
+                } else if (mCurValue < mMin) {
+                    mCurValue = mMin;
+                }
+                mIsFinished = true;
+                this.fireProcessEnd();
+            }
+            return true;
+        };
+
+        this.forceFinished = function(finished) {
+            mIsFinished = finished;
+        };
+
+        this.isFinished = function() {
+            return mIsFinished;
+        };
+
+        this.setProcessListener = function(l) {
+            mListener = l;
+        };
+
+        this.fireProcessEnd = function() {
+            if (mListener != null) {
+                if (mV > 0) {
+                    mListener.call(this, mAbsCurV);
+                } else {
+                    mListener.call(this, -mAbsCurV);
+                }
+            }
+        };
+
+        this.getCurrProcess = function() {
+            return mCurValue;
+        };
+    }
 }
 
 /**
@@ -293,8 +580,10 @@ function TextView() {
      */
     this.setTextIsSelectable = function(selectable) {
         if (selectable) {
+            this.setPreventHtmlTouchEvent(false);
             mContent.style["-webkit-user-select"] = "text";
         } else {
+            this.setPreventHtmlTouchEvent(true);
             mContent.style["-webkit-user-select"] = "none";
         }
     };
@@ -484,6 +773,8 @@ function EditText() {
     var mIsPassword = false;
     var mTextListener = null;
     var mIsFocused;
+
+    this.setPreventHtmlTouchEvent(false);
 
     this.setDisabled = function(disabled) {
         if (disabled) {
@@ -724,6 +1015,7 @@ function EditText() {
 function WebView() {
     ViewGroup.apply(this, []);
 
+    this.setPreventHtmlTouchEvent(false);
     this.setBackgroundColor("#ffffff");
 
     var mFrame = document.createElement("iframe");

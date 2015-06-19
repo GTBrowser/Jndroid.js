@@ -187,6 +187,7 @@ function MButton() {
                 mBgDrawable.setState(View.VIEW_STATE_ENABLED);
                 break;
         }
+        return true;
     };
 
     this.onDraw = function(canvas) {
@@ -1087,7 +1088,7 @@ function MRadioButton() {
     };
 
     function onclick() {
-        mSelf.setChecked(!mChecked);
+        mSelf.setChecked(true);
         if (mCheckedListener != null) {
             mCheckedListener.call(mSelf, mChecked);
         }
