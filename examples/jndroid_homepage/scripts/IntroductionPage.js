@@ -212,7 +212,7 @@ var mHelloWorldCode = "<!DOCTYPE html>\n" +
     "<head>\n" +
     "\t<!-- you only need to import jndroid.js -->\n" +
     "\t<!-- 你仅需引入jndroid.js便可进行开发了 -->\n" +
-    "\t<script src=\"http://file.gtbrowser.cn/jndroid/jndroid.js\"></script>\n" +
+    "\t<script src=\"http://file.gtbrowser.cn/jndroid/0.9.0/jndroid.js\"></script>\n" +
     "</head>\n" +
     "<body>\n" +
     "<script>\n" +
@@ -320,8 +320,9 @@ var mDrawCode = "" +
     "\tthis.setWillNotDraw(false);\n\n" +
     "\tthis.onDraw = function(canvas) {\n" +
     "\t\t// here we use html canvas to draw\n" +
+    "\t\tvar density = DisplayMetrics.density;\n" +
     "\t\tcanvas.beginPath();\n" +
-    "\t\tcanvas.arc(100, 100, 50, 0, Math.PI * 2, true);\n" +
+    "\t\tcanvas.arc(100 * density, 100 * density, 50 * density, 0, Math.PI * 2, true);\n" +
     "\t\tcanvas.closePath();\n" +
     "\t\tcanvas.fillStyle = \"#673ab7\";\n" +
     "\t\tcanvas.fill();" +

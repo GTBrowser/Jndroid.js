@@ -212,9 +212,10 @@ var mTips = ["▪ 在Jndroid中，this的概念与Android中的this类似但不�
     "▪ 在Jndroid中，this一般指向调用它的那个东西",
     "▪ 在Jndroid中，定义一个变量并需要指明它的类型",
     "▪ 在Jndroid中，用var定义的变量和方法，在该类的代码中可以直接调用，外部不可调用",
-    "▪ 在Jndroid中，用this定义的变量和方法，在外部可以通过对象.变量和对象.方法的方式调用，在该类的代码中，通过this.变量和this.方法的方式调用",
+    "▪ 在Jndroid中，用this定义的变量和方法，在外部可以通过\"对象.变量\"和\"对象.方法\"的方式调用，在该类的代码中，通过this.变量和this.方法的方式调用",
     "▪ 在Jndroid中，没有Context",
-    "▪ 在Jndroid中，尺寸的密度都是1",
+    "▪ 在Jndroid中，尺寸的密度都是1，除了在onDraw方法中，onDraw方法中需要考虑密度，否则在高分辨率屏幕上会模糊",
+    "▪ 在Jndroid中，onDraw方法中的canvas其实是html canvas中的context",
     "▪ 在Jndroid中，目前还没有办法在一个方法中完美地调用父类的方法，使用组合方式吧",
     "▪ 在Jndroid中，图片与View大小一样时，图片会有锯齿，可以使用更大的图片，放缩后就没有锯齿了",
     "▪ 在Jndorid中，没有重载（overload），不过好在Jndroid中方法的参数个数是没有限制的"];
