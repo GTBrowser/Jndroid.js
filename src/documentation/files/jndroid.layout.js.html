@@ -58,8 +58,10 @@
                 <li><a class="type" href="../classes/MRadioButton.html">MRadioButton</a></li>
                 <li><a class="type" href="../classes/MRadioGroup.html">MRadioGroup</a></li>
                 <li><a class="type" href="../classes/MToggleButton.html">MToggleButton</a></li>
+                <li><a class="type" href="../classes/Rect.html">Rect</a></li>
                 <li><a class="type" href="../classes/ScrollView.html">ScrollView</a></li>
                 <li><a class="type" href="../classes/TextView.html">TextView</a></li>
+                <li><a class="type" href="../classes/VelocityTracker.html">VelocityTracker</a></li>
                 <li><a class="type" href="../classes/View.html">View</a></li>
                 <li><a class="type" href="../classes/ViewGroup.html">ViewGroup</a></li>
                 <li><a class="type" href="../classes/WebView.html">WebView</a></li>
@@ -219,6 +221,8 @@
              */
             function LinearLayout() {
                 ViewGroup.apply(this, []);
+            
+                this.setTag(&quot;LinearLayout&quot;);
             
                 var mOrientation = LinearLayout.VERTICAL;
             
@@ -498,45 +502,50 @@
             
                 this.setTag(&quot;Gallery&quot;);
             
-                var mCurScreen = 0;
-                var mCurX;
-                var mProcessor = new Processor();
-                var mDownX = 0;
-                var mListener;
+                var TouchState = new _TouchState();
+                function _TouchState() {
+                    this.REST = 0;
+                    this.SCROLLING = 1;
+                }
             
-                var content = new GalleryContent();
-                this.addView(content);
+                var MAX_SCROLL_DURATION = 200;
+                var SNAP_VELOCITY = 100;
+                var mSelf = this;
+                var mCurScreen = 0;
+                var mProcessor = new Processor();
+                var mListener;
+                var mTouchState = TouchState.REST;
+                var isXLocked = false;
+                var isLockETH = false;
+                var mLastMotionX = 0;
+                var mLastMotionY = 0;
+                var mDownMotionX = 0;
+                var mDownMotionY = 0;
+                var mTouchSlop = 3;
+                var mLeftEdge = 0;
+                var mRightEdge = 0;
+                var mTotalWidth;
+                var mScreenWidth;
+                var mRollPadding = 0.4;
+                var mVTracker = new VelocityTracker();
             
                 this.setGalleryListener = function(l) {
                     mListener = l;
                 };
             
-                this.getPageCount = function() {
-                    return content.getChildCount();
-                };
-            
-                this.addPage = function(view) {
-                    content.addView(view);
-                };
-            
-                this.removeAllPages = function() {
-                    content.removeAllViews();
-                };
-            
                 this.scrollTo = function(x) {
-                    mCurX = x;
-                    content.getDiv().style.webkitTransform=&quot;translate3d(-&quot; + x + &quot;px,0,0)&quot;;
+                    this.setScrollX(x);
+                    var transition = &quot;translate3d(&quot; + (-x) + &quot;px,0,0)&quot;;
+                    this.getDiv().style.msTransform = transition;
+                    this.getDiv().style.webkitTransform = transition;
+                    this.getDiv().style.mozTransform = transition;
                     if (mListener != null &amp;&amp; mListener.onXChanged) {
                         mListener.onXChanged(x);
                     }
                 };
             
-                this.getCurX = function() {
-                    return mCurX;
-                };
-            
                 this.checkBounds = function(whichScreen) {
-                    return (whichScreen &lt; 0 ? 0 : whichScreen &gt; (content.getChildCount() - 1) ? (content.getChildCount() - 1)
+                    return (whichScreen &lt; 0 ? 0 : whichScreen &gt; (this.getChildCount() - 1) ? (this.getChildCount() - 1)
                         : whichScreen);
                 };
             
@@ -549,62 +558,206 @@
             
                 this.snapToScreen = function(index, duration) {
                     index = this.checkBounds(index);
-                    if (index == mCurScreen) {
+            
+                    if (this.getScrollX() == (this.getChildAt(index).getLeft())) {
                         return;
                     }
-                    var startX = mCurScreen * this.getMeasuredWidth();
-                    var endX = index * this.getMeasuredWidth();
-                    if (duration == undefined) {
-                        duration = Math.abs(endX - startX);
+            
+                    var delta = computeScrollDistance(index);
+                    var during = duration;
+                    if (during == undefined) {
+                        during = Math.abs(delta);
                     }
-                    mProcessor.startProcess(startX, endX, duration);
-                    this.invalidate();
+                    during = this.controlScrollDuration(during);
+                    mProcessor.startProcess(mSelf.getScrollX(), mSelf.getScrollX() + delta, during);
             
                     mCurScreen = index;
-                    setTimeout(function() {forceReLayout();fireScreenChanged();}, duration);
+                    this.invalidate();
+            
+                    setTimeout(function() {fireScreenChanged();}, during);
+                };
+            
+                this.snapToScreenWithVelocity = function(index, v) {
+                    index = this.checkBounds(index);
+                    var delta = computeScrollDistance(index);
+                    var duration = Math.abs(delta * 1000 / v) / 3;
+                    duration = Math.min(duration, MAX_SCROLL_DURATION);
+                    this.snapToScreen(index, duration);
+                };
+            
+                this.controlScrollDuration = function(duration) {
+                    return duration;
+                };
+            
+                this.lockX = function() {
+                    isXLocked = true;
+                    this.lockETH();
+                };
+            
+                this.lockETH = function() {
+                    isLockETH = true;
+                };
+            
+                this.unlockX = function() {
+                    isXLocked = false;
+                    isLockETH = false;
+                };
+            
+                this.isXLocked = function() {
+                    return isXLocked;
+                };
+            
+                this.onInterceptTouchEvent = function(ev) {
+                    var action = ev.getAction();
+                    if ((action == MotionEvent.ACTION_MOVE) &amp;&amp; (mTouchState != TouchState.REST) &amp;&amp; !isLockETH &amp;&amp; !isXLocked) {
+                        return true;
+                    }
+            
+                    var x = ev.getX();
+            
+                    switch (action) {
+                        case MotionEvent.ACTION_DOWN:
+                            if (this.getParent() != null) {
+                                this.getParent().requestDisallowInterceptTouchEvent(true);
+                            }
+                            mLastMotionX = x;
+                            mDownMotionY = ev.getY();
+                            mTouchState = mProcessor.isFinished() ? TouchState.REST : TouchState.SCROLLING;
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            var xDiff =  Math.abs(mLastMotionX - x);
+                            if (xDiff &gt; mTouchSlop) {
+                                mTouchState = TouchState.SCROLLING;
+                                mLastMotionX = x;
+                                if (xDiff &lt; Math.abs(ev.getY() - mDownMotionY)) {
+                                    this.lockX();
+                                    if (this.getParent() != null) {
+                                        this.getParent().requestDisallowInterceptTouchEvent(false);
+                                    }
+                                }
+                            }
+                            break;
+                        case MotionEvent.ACTION_CANCEL:
+                        case MotionEvent.ACTION_UP:
+                            mTouchState = TouchState.REST;
+                            isLockETH = isXLocked = false;
+                            break;
+                        default:
+                            break;
+                    }
+            
+                    if (isLockETH)
+                        return false;
+            
+                    return mTouchState != TouchState.REST;
                 };
             
                 this.onTouchEvent = function(ev) {
+                    mVTracker.addMovement(ev);
+                    var action = ev.getAction();
+                    var x = ev.getX();
+            
                     var w = this.getMeasuredWidth();
                     switch (ev.getAction()) {
                         case MotionEvent.ACTION_DOWN:
-                            mDownX = ev.getX();
+                            forceFinishProcessor();
+            
+                            mDownMotionX = x;
+                            mLastMotionX = x;
+                            mLastMotionY = ev.getY();
                             break;
                         case MotionEvent.ACTION_MOVE:
-                            var x = mCurScreen * w - (ev.getX() - mDownX);
-                            x = Math.max(0, x);
-                            x = Math.min(x, (content.getChildCount() - 1) * w);
-                            this.scrollTo(x);
+            
+                            if (isXLocked) {
+                                break;
+                            }
+            
+                            var deltaX = mLastMotionX - x;
+                            mLastMotionX = x;
+                            mLastMotionY = ev.getY();
+            
+                            var dst = this.getScrollX() + deltaX;
+                            if (dst &lt; 0) {
+                                if (mLeftEdge == 0) {
+                                    deltaX = -this.getScrollX();
+                                } else {
+                                    deltaX = (deltaX * (mLeftEdge - this.getScrollX()) / mLeftEdge);
+                                }
+                            } else if (dst &gt; (mTotalWidth - mScreenWidth)) {
+                                if (mRightEdge == 0) {
+                                    deltaX = mScreenWidth - this.getScrollX();
+                                } else {
+                                    var maxExceed = mRightEdge - mTotalWidth;
+                                    var realExceed = this.getScrollX() - (mTotalWidth - mScreenWidth);
+                                    if (realExceed &lt; 0) {
+                                        deltaX = (-realExceed);
+                                    } else if (maxExceed == 0){
+                                        deltaX = (-realExceed);
+                                    } else {
+                                        deltaX = deltaX * (1 - realExceed / maxExceed);
+                                    }
+                                }
+                            }
+                            this.scrollTo(this.getScrollX() + deltaX);
                             break;
                         case MotionEvent.ACTION_UP:
-                        case MotionEvent.ACTION_CANCEL:
-                            var isNext = (this.getCurX() % w) &gt; (w / 2);
-                            mCurScreen = Math.floor(this.getCurX() / w);
-                            if (isNext) {
-                                mCurScreen = mCurScreen + 1;
+                            mVTracker.computeCurrentVelocity(1000);
+                            var vX = mVTracker.getXVelocity();
+                            if (vX &gt; SNAP_VELOCITY &amp;&amp; mCurScreen &gt; 0) { // left
+                                touchEndSnap(mCurScreen - 1, vX);
+                            } else if (vX &lt; -SNAP_VELOCITY &amp;&amp; mCurScreen &lt; this.getChildCount() - 1) {
+                                touchEndSnap(mCurScreen + 1, vX);
+                            } else {
+                                snapAccordCurrX();
                             }
-                            var endX = mCurScreen * w;
-                            var d = Math.abs(this.getCurX() - endX);
-                            mProcessor.startProcess(this.getCurX(), endX, d);
-                            this.invalidate();
-                            setTimeout(function() {fireScreenChanged();}, d);
+                            reset();
+                            break;
+                        case MotionEvent.ACTION_CANCEL:
+                            //console.log(&quot;cancel&quot;);
+                            snapAccordCurrX();
+                            reset();
                             break;
                     }
+                    return true;
                 };
             
                 this.onMeasure = function(widthMS, heightMS) {
-                    var width = MeasureSpec.getSize(widthMS);
-                    var height = MeasureSpec.getSize(heightMS);
+                    var w = MeasureSpec.getSize(widthMS);
+                    var h = MeasureSpec.getSize(heightMS);
             
-                    content.measure(width, height);
+                    mScreenWidth = w;
             
-                    this.setMeasuredDimension(width, height);
+                    var count = this.getChildCount();
+                    mTotalWidth = 0;
+                    for (var i = 0; i &lt; count; i++) {
+                        this.getChildAt(i).measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
+                            MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
+                        var childWidth = this.getChildAt(i).getMeasuredWidth();
+                        mTotalWidth += childWidth;
+                    }
             
-                    this.setToScreen(mCurScreen);
+                    mLeftEdge = -mScreenWidth * mRollPadding;
+                    mRightEdge = mTotalWidth + mRollPadding * mScreenWidth;
+            
+                    this.setMeasuredDimension(mTotalWidth, h);
+            
+                    this.scrollTo(mCurScreen * mScreenWidth, 0);
                 };
             
                 this.onLayout = function(x, y) {
-                    content.layout(0, 0);
+                    var offsetX = 0;
+                    var childCount = this.getChildCount();
+            
+                    for (var i = 0; i &lt; childCount; i++) {
+                        var childView = this.getChildAt(i);
+                        if (childView.getVisibility() == View.GONE) {
+                            continue;
+                        }
+            
+                        var childWidth = childView.getMeasuredWidth();
+                        childView.layout(offsetX, 0, offsetX + childWidth, childView.getMeasuredHeight());
+                        offsetX += childWidth;
+                    }
                 };
             
                 this.computeScroll = function() {
@@ -616,32 +769,48 @@
                     }
                 };
             
-                function GalleryContent() {
-                    ViewGroup.apply(this, []);
+                function touchEndSnap(index, v) {
+                    mSelf.snapToScreenWithVelocity(index, v);
+                }
             
-                    this.onMeasure = function(widthMS, heightMS) {
-                        var width = MeasureSpec.getSize(widthMS);
-                        var height = MeasureSpec.getSize(heightMS);
+                function computeScrollDistance(index) {
+                    var delta = mSelf.getChildAt(index).getLeft() - mSelf.getScrollX();
+                    var rightShift = mSelf.getChildAt(index).getLeft() + mScreenWidth - mTotalWidth;
+                    if (rightShift &gt; 0) {
+                        delta -= rightShift;
+                    }
+                    return delta;
+                }
             
-                        for (var i = 0; i &lt; this.getChildCount(); i++) {
-                            var c = this.getChildAt(i);
-                            c.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                                MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+                function reset() {
+                    mSelf.unlockX();
+                    mTouchState = TouchState.REST;
+            
+                    mVTracker.clear();
+                }
+            
+                function snapAccordCurrX() {
+                    var destScreen = 0;
+                    var currentWidth = 0;
+            
+                    for (destScreen = 0; destScreen &lt; mSelf.getChildCount(); destScreen++) {
+                        var childWidth = mSelf.getChildAt(destScreen).getMeasuredWidth();
+                        if (currentWidth + childWidth &gt; mSelf.getScrollX()) {
+                            break;
                         }
+                        currentWidth += childWidth;
+                    }
+                    if (destScreen + 1 &lt; mSelf.getChildCount()
+                        &amp;&amp; mSelf.getScrollX() - currentWidth &gt; mSelf.getChildAt(destScreen).getMeasuredWidth() / 2) {
+                        destScreen += 1;
+                    }
+                    mSelf.snapToScreen(destScreen);
+                }
             
-                        this.setMeasuredDimension(width * this.getChildCount(), height);
-                    };
-            
-                    this.onLayout = function(x, y) {
-                        var offsetX = 0;
-                        var offsetY = 0;
-            
-                        for (var i = 0; i &lt; this.getChildCount(); i++) {
-                            var c = this.getChildAt(i);
-                            c.layout(offsetX, offsetY);
-                            offsetX += c.getMeasuredWidth();
-                        }
-                    };
+                function forceFinishProcessor() {
+                    if (!mProcessor.isFinished()) {
+                        mProcessor.forceFinished(true);
+                    }
                 }
             
                 function fireScreenChanged() {

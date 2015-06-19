@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Color - Jndroid</title>
+    <title>VelocityTracker - Jndroid</title>
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -73,12 +73,12 @@
 
         <div id="docs-main" class="apidocs">
           <div class="content container">
-            <h1>Color Class</h1>
+            <h1>VelocityTracker Class</h1>
             <div class="box meta">
             
             
                     <div class="foundat">
-                        Defined in: <a href="../files/jndroid.core.js.html#l575"><code>jndroid.core.js:575</code></a>
+                        Defined in: <a href="../files/jndroid.core.js.html#l486"><code>jndroid.core.js:486</code></a>
                     </div>
             
                 <!--  -->
@@ -88,16 +88,8 @@
             <!--  -->
             
             <div class="box intro">
-                <p>The Color class defines methods for creating and converting color ints.
-            Colors are represented as packed ints, made up of 4 bytes: alpha, red,
-            green, blue. The values are unpremultiplied, meaning any transparency is
-            stored solely in the alpha component, and not in the color components. The
-            components are stored as follows (alpha &lt;&lt; 24) | (red &lt;&lt; 16) |
-            (green &lt;&lt; 8) | blue. Each component ranges between 0..255 with 0
-            meaning no contribution for that component, and 255 meaning 100%
-            contribution. Thus opaque-black would be 0xFF000000 (100% opaque but
-            no contributions from red, green, or blue), and opaque-white would be
-            0xFFFFFFFF</p>
+                <p>Helper for tracking the velocity of touch events, for implementing
+            flinging and other such gestures.</p>
             
             </div>
             
@@ -145,119 +137,74 @@
                         
                         <tr>
                           <td colspan="3" class="methods-return">
-                            Int
+                            void
                           </td>
                           <td colspan="9" class="methods-info">
-                            <nobr> <a href="#method_alpha">alpha()</a></nobr>
+                            <nobr> <a href="#method_addMovement">addMovement(<span class="index-param">event</span>)</a></nobr>
                            <div class="desc">
-                             <p>Return the alpha component of a color int. This is the same as saying
-            color &gt;&gt;&gt; 24</p>
+                             <p>Add a user's movement to the tracker.</p>
             
                            </div>
                           </td>
                         </tr>
                             <!-- <li class="index-item method"> -->
-                            <!--     <a href="#method_alpha">alpha</a> -->
+                            <!--     <a href="#method_addMovement">addMovement</a> -->
             
                             <!--      -->
                             <!--      -->
                             <!-- </li> -->
                         <tr>
                           <td colspan="3" class="methods-return">
-                            Int
+                            void
                           </td>
                           <td colspan="9" class="methods-info">
-                            <nobr> <a href="#method_argb">argb(<span class="index-param">alpha</span><span class="index-param">red</span><span class="index-param">green</span><span class="index-param">blue</span>)</a></nobr>
+                            <nobr> <a href="#method_computeCurrentVelocity">computeCurrentVelocity(<span class="index-param">units</span><span class="index-param">maxVelocity</span>)</a></nobr>
                            <div class="desc">
-                             <p>Return a color-int from alpha, red, green, blue components.
-            These component values should be [0..255], but there is no
-            range check performed, so if they are out of range, the
-            returned color is undefined.</p>
+                             <p>Compute the current velocity based on the points that have been
+            collected.  Only call this when you actually want to retrieve velocity
+            information, as it is relatively expensive.  You can then retrieve</p>
             
                            </div>
                           </td>
                         </tr>
                             <!-- <li class="index-item method"> -->
-                            <!--     <a href="#method_argb">argb</a> -->
+                            <!--     <a href="#method_computeCurrentVelocity">computeCurrentVelocity</a> -->
             
                             <!--      -->
                             <!--      -->
                             <!-- </li> -->
                         <tr>
                           <td colspan="3" class="methods-return">
-                            Int
+                            
                           </td>
                           <td colspan="9" class="methods-info">
-                            <nobr> <a href="#method_blue">blue()</a></nobr>
+                            <nobr> <a href="#method_getXVelocity">getXVelocity()</a></nobr>
                            <div class="desc">
-                             <p>Return the blue component of a color int. This is the same as saying
-            color &amp; 0xFF</p>
+                             <p>Retrieve the last computed X velocity.  You must first call</p>
             
                            </div>
                           </td>
                         </tr>
                             <!-- <li class="index-item method"> -->
-                            <!--     <a href="#method_blue">blue</a> -->
+                            <!--     <a href="#method_getXVelocity">getXVelocity</a> -->
             
                             <!--      -->
                             <!--      -->
                             <!-- </li> -->
                         <tr>
                           <td colspan="3" class="methods-return">
-                            Int
+                            
                           </td>
                           <td colspan="9" class="methods-info">
-                            <nobr> <a href="#method_green">green()</a></nobr>
+                            <nobr> <a href="#method_getYVelocity">getYVelocity()</a></nobr>
                            <div class="desc">
-                             <p>Return the green component of a color int. This is the same as saying
-            (color &gt;&gt; 8) &amp; 0xFF</p>
+                             <p>Retrieve the last computed Y velocity.  You must first call</p>
             
                            </div>
                           </td>
                         </tr>
                             <!-- <li class="index-item method"> -->
-                            <!--     <a href="#method_green">green</a> -->
-            
-                            <!--      -->
-                            <!--      -->
-                            <!-- </li> -->
-                        <tr>
-                          <td colspan="3" class="methods-return">
-                            Int
-                          </td>
-                          <td colspan="9" class="methods-info">
-                            <nobr> <a href="#method_red">red()</a></nobr>
-                           <div class="desc">
-                             <p>Return the red component of a color int. This is the same as saying
-            (color &gt;&gt; 16) &amp; 0xFF</p>
-            
-                           </div>
-                          </td>
-                        </tr>
-                            <!-- <li class="index-item method"> -->
-                            <!--     <a href="#method_red">red</a> -->
-            
-                            <!--      -->
-                            <!--      -->
-                            <!-- </li> -->
-                        <tr>
-                          <td colspan="3" class="methods-return">
-                            Int
-                          </td>
-                          <td colspan="9" class="methods-info">
-                            <nobr> <a href="#method_rgb">rgb(<span class="index-param">red</span><span class="index-param">green</span><span class="index-param">blue</span>)</a></nobr>
-                           <div class="desc">
-                             <p>Return a color-int from red, green, blue components.
-            The alpha component is implicity 255 (fully opaque).
-            These component values should be [0..255], but there is no
-            range check performed, so if they are out of range, the
-            returned color is undefined.</p>
-            
-                           </div>
-                          </td>
-                        </tr>
-                            <!-- <li class="index-item method"> -->
-                            <!--     <a href="#method_rgb">rgb</a> -->
+                            <!--     <a href="#method_getYVelocity">getYVelocity</a> -->
             
                             <!--      -->
                             <!--      -->
@@ -277,88 +224,18 @@
                 <div class="methods-detail">
                     <h2>Methods</h2>
             
-                        <a name="method_alpha" class="anchor-link"></a>
+                        <a name="method_addMovement" class="anchor-link"></a>
                         <div class="method item">
-                            <h3 class="name"><code>alpha</code>
-                        
-                                <span class="paren">()</span>
-                        
-                                <span class="returns-inline">
-                                    <span class="type">Int</span>
-                                </span>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                            </h3>
-                        
-                            <!-- <div class="meta"> -->
-                                <!--  -->
-                                <!--      -->
-                                <!--          -->
-                                <!--         <p> -->
-                                <!--          -->
-                                <!--         Defined in -->
-                                <!--          -->
-                                <!--      -->
-                                <!--  -->
-                                <!--  -->
-                                <!-- <a href="../files/jndroid.core.js.html#l591"><code>jndroid.core.js:591</code></a> -->
-                                <!--  -->
-                                <!-- </p> -->
-                        
-                        
-                                <!--  -->
-                        
-                                <!--  -->
-                            <!-- </div> -->
-                        
-                            <div class="extended-detail">
-                        
-                                <div class="description">
-                                    <p>Return the alpha component of a color int. This is the same as saying
-                        color &gt;&gt;&gt; 24</p>
-                        
-                                </div>
-                        
-                        
-                                    <div class="returns">
-                                        <h4>Returns:</h4>
-                        
-                                        <div class="returns-description">
-                                                    <span class="type">Int</span>:
-                                        </div>
-                                    </div>
-                        
-                            </div>
-                        </div>
-                        <a name="method_argb" class="anchor-link"></a>
-                        <div class="method item">
-                            <h3 class="name"><code>argb</code>
+                            <h3 class="name"><code>addMovement</code>
                         
                                 <div class="args">
                                     <span class="paren">(</span><ul class="args-list inline commas">
                                         <li class="arg">
-                                                <code>alpha</code>
-                                        </li>
-                                        <li class="arg">
-                                                <code>red</code>
-                                        </li>
-                                        <li class="arg">
-                                                <code>green</code>
-                                        </li>
-                                        <li class="arg">
-                                                <code>blue</code>
+                                                <code>event</code>
                                         </li>
                                     </ul><span class="paren">)</span>
                                 </div>
                         
-                                <span class="returns-inline">
-                                    <span class="type">Int</span>
-                                </span>
                         
                         
                         
@@ -379,7 +256,7 @@
                                 <!--      -->
                                 <!--  -->
                                 <!--  -->
-                                <!-- <a href="../files/jndroid.core.js.html#l652"><code>jndroid.core.js:652</code></a> -->
+                                <!-- <a href="../files/jndroid.core.js.html#l505"><code>jndroid.core.js:505</code></a> -->
                                 <!--  -->
                                 <!-- </p> -->
                         
@@ -392,10 +269,7 @@
                             <div class="extended-detail">
                         
                                 <div class="description">
-                                    <p>Return a color-int from alpha, red, green, blue components.
-                        These component values should be [0..255], but there is no
-                        range check performed, so if they are out of range, the
-                        returned color is undefined.</p>
+                                    <p>Add a user's movement to the tracker.</p>
                         
                                 </div>
                         
@@ -404,45 +278,12 @@
                         
                                         <ul class="params-list">
                                             <li class="param">
-                                                    <code class="param-name">alpha</code>
+                                                    <code class="param-name">event</code>
                                                     <span class="type">Object</span>
                         
                         
                                                 <div class="param-description">
-                                                    <p>Alpha component [0..255] of the color</p>
-                        
-                                                </div>
-                        
-                                            </li>
-                                            <li class="param">
-                                                    <code class="param-name">red</code>
-                                                    <span class="type">Object</span>
-                        
-                        
-                                                <div class="param-description">
-                                                    <p>Red component [0..255] of the color</p>
-                        
-                                                </div>
-                        
-                                            </li>
-                                            <li class="param">
-                                                    <code class="param-name">green</code>
-                                                    <span class="type">Object</span>
-                        
-                        
-                                                <div class="param-description">
-                                                    <p>Green component [0..255] of the color</p>
-                        
-                                                </div>
-                        
-                                            </li>
-                                            <li class="param">
-                                                    <code class="param-name">blue</code>
-                                                    <span class="type">Object</span>
-                        
-                        
-                                                <div class="param-description">
-                                                    <p>Blue component [0..255] of the color</p>
+                                                    <p>The MotionEvent you received and would like to track.</p>
                         
                                                 </div>
                         
@@ -450,211 +291,24 @@
                                         </ul>
                                     </div>
                         
-                                    <div class="returns">
-                                        <h4>Returns:</h4>
-                        
-                                        <div class="returns-description">
-                                                    <span class="type">Int</span>:
-                                        </div>
-                                    </div>
                         
                             </div>
                         </div>
-                        <a name="method_blue" class="anchor-link"></a>
+                        <a name="method_computeCurrentVelocity" class="anchor-link"></a>
                         <div class="method item">
-                            <h3 class="name"><code>blue</code>
-                        
-                                <span class="paren">()</span>
-                        
-                                <span class="returns-inline">
-                                    <span class="type">Int</span>
-                                </span>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                            </h3>
-                        
-                            <!-- <div class="meta"> -->
-                                <!--  -->
-                                <!--      -->
-                                <!--          -->
-                                <!--         <p> -->
-                                <!--          -->
-                                <!--         Defined in -->
-                                <!--          -->
-                                <!--      -->
-                                <!--  -->
-                                <!--  -->
-                                <!-- <a href="../files/jndroid.core.js.html#l624"><code>jndroid.core.js:624</code></a> -->
-                                <!--  -->
-                                <!-- </p> -->
-                        
-                        
-                                <!--  -->
-                        
-                                <!--  -->
-                            <!-- </div> -->
-                        
-                            <div class="extended-detail">
-                        
-                                <div class="description">
-                                    <p>Return the blue component of a color int. This is the same as saying
-                        color &amp; 0xFF</p>
-                        
-                                </div>
-                        
-                        
-                                    <div class="returns">
-                                        <h4>Returns:</h4>
-                        
-                                        <div class="returns-description">
-                                                    <span class="type">Int</span>:
-                                        </div>
-                                    </div>
-                        
-                            </div>
-                        </div>
-                        <a name="method_green" class="anchor-link"></a>
-                        <div class="method item">
-                            <h3 class="name"><code>green</code>
-                        
-                                <span class="paren">()</span>
-                        
-                                <span class="returns-inline">
-                                    <span class="type">Int</span>
-                                </span>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                            </h3>
-                        
-                            <!-- <div class="meta"> -->
-                                <!--  -->
-                                <!--      -->
-                                <!--          -->
-                                <!--         <p> -->
-                                <!--          -->
-                                <!--         Defined in -->
-                                <!--          -->
-                                <!--      -->
-                                <!--  -->
-                                <!--  -->
-                                <!-- <a href="../files/jndroid.core.js.html#l613"><code>jndroid.core.js:613</code></a> -->
-                                <!--  -->
-                                <!-- </p> -->
-                        
-                        
-                                <!--  -->
-                        
-                                <!--  -->
-                            <!-- </div> -->
-                        
-                            <div class="extended-detail">
-                        
-                                <div class="description">
-                                    <p>Return the green component of a color int. This is the same as saying
-                        (color &gt;&gt; 8) &amp; 0xFF</p>
-                        
-                                </div>
-                        
-                        
-                                    <div class="returns">
-                                        <h4>Returns:</h4>
-                        
-                                        <div class="returns-description">
-                                                    <span class="type">Int</span>:
-                                        </div>
-                                    </div>
-                        
-                            </div>
-                        </div>
-                        <a name="method_red" class="anchor-link"></a>
-                        <div class="method item">
-                            <h3 class="name"><code>red</code>
-                        
-                                <span class="paren">()</span>
-                        
-                                <span class="returns-inline">
-                                    <span class="type">Int</span>
-                                </span>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                            </h3>
-                        
-                            <!-- <div class="meta"> -->
-                                <!--  -->
-                                <!--      -->
-                                <!--          -->
-                                <!--         <p> -->
-                                <!--          -->
-                                <!--         Defined in -->
-                                <!--          -->
-                                <!--      -->
-                                <!--  -->
-                                <!--  -->
-                                <!-- <a href="../files/jndroid.core.js.html#l602"><code>jndroid.core.js:602</code></a> -->
-                                <!--  -->
-                                <!-- </p> -->
-                        
-                        
-                                <!--  -->
-                        
-                                <!--  -->
-                            <!-- </div> -->
-                        
-                            <div class="extended-detail">
-                        
-                                <div class="description">
-                                    <p>Return the red component of a color int. This is the same as saying
-                        (color &gt;&gt; 16) &amp; 0xFF</p>
-                        
-                                </div>
-                        
-                        
-                                    <div class="returns">
-                                        <h4>Returns:</h4>
-                        
-                                        <div class="returns-description">
-                                                    <span class="type">Int</span>:
-                                        </div>
-                                    </div>
-                        
-                            </div>
-                        </div>
-                        <a name="method_rgb" class="anchor-link"></a>
-                        <div class="method item">
-                            <h3 class="name"><code>rgb</code>
+                            <h3 class="name"><code>computeCurrentVelocity</code>
                         
                                 <div class="args">
                                     <span class="paren">(</span><ul class="args-list inline commas">
                                         <li class="arg">
-                                                <code>red</code>
+                                                <code>units</code>
                                         </li>
                                         <li class="arg">
-                                                <code>green</code>
-                                        </li>
-                                        <li class="arg">
-                                                <code>blue</code>
+                                                <code>maxVelocity</code>
                                         </li>
                                     </ul><span class="paren">)</span>
                                 </div>
                         
-                                <span class="returns-inline">
-                                    <span class="type">Int</span>
-                                </span>
                         
                         
                         
@@ -675,7 +329,7 @@
                                 <!--      -->
                                 <!--  -->
                                 <!--  -->
-                                <!-- <a href="../files/jndroid.core.js.html#l635"><code>jndroid.core.js:635</code></a> -->
+                                <!-- <a href="../files/jndroid.core.js.html#l525"><code>jndroid.core.js:525</code></a> -->
                                 <!--  -->
                                 <!-- </p> -->
                         
@@ -688,11 +342,9 @@
                             <div class="extended-detail">
                         
                                 <div class="description">
-                                    <p>Return a color-int from red, green, blue components.
-                        The alpha component is implicity 255 (fully opaque).
-                        These component values should be [0..255], but there is no
-                        range check performed, so if they are out of range, the
-                        returned color is undefined.</p>
+                                    <p>Compute the current velocity based on the points that have been
+                        collected.  Only call this when you actually want to retrieve velocity
+                        information, as it is relatively expensive.  You can then retrieve</p>
                         
                                 </div>
                         
@@ -701,34 +353,26 @@
                         
                                         <ul class="params-list">
                                             <li class="param">
-                                                    <code class="param-name">red</code>
+                                                    <code class="param-name">units</code>
                                                     <span class="type">Object</span>
                         
                         
                                                 <div class="param-description">
-                                                    <p>Red component [0..255] of the color</p>
+                                                    <p>The units you would like the velocity in.  A value of 1
+                        provides pixels per millisecond, 1000 provides pixels per second, etc.</p>
                         
                                                 </div>
                         
                                             </li>
                                             <li class="param">
-                                                    <code class="param-name">green</code>
+                                                    <code class="param-name">maxVelocity</code>
                                                     <span class="type">Object</span>
                         
                         
                                                 <div class="param-description">
-                                                    <p>Green component [0..255] of the color</p>
-                        
-                                                </div>
-                        
-                                            </li>
-                                            <li class="param">
-                                                    <code class="param-name">blue</code>
-                                                    <span class="type">Object</span>
-                        
-                        
-                                                <div class="param-description">
-                                                    <p>Blue component [0..255] of the color</p>
+                                                    <p>The maximum velocity that can be computed by this method.
+                        This value must be declared in the same unit as the units parameter. This value
+                        must be positive.</p>
                         
                                                 </div>
                         
@@ -736,11 +380,120 @@
                                         </ul>
                                     </div>
                         
+                        
+                            </div>
+                        </div>
+                        <a name="method_getXVelocity" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>getXVelocity</code>
+                        
+                                <span class="paren">()</span>
+                        
+                                <span class="returns-inline">
+                                    <span class="type"></span>
+                                </span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.core.js.html#l556"><code>jndroid.core.js:556</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Retrieve the last computed X velocity.  You must first call</p>
+                        
+                                </div>
+                        
+                        
                                     <div class="returns">
                                         <h4>Returns:</h4>
                         
                                         <div class="returns-description">
-                                                    <span class="type">Int</span>:
+                                                <p>The previously computed X velocity.</p>
+                        
+                                        </div>
+                                    </div>
+                        
+                            </div>
+                        </div>
+                        <a name="method_getYVelocity" class="anchor-link"></a>
+                        <div class="method item">
+                            <h3 class="name"><code>getYVelocity</code>
+                        
+                                <span class="paren">()</span>
+                        
+                                <span class="returns-inline">
+                                    <span class="type"></span>
+                                </span>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                            </h3>
+                        
+                            <!-- <div class="meta"> -->
+                                <!--  -->
+                                <!--      -->
+                                <!--          -->
+                                <!--         <p> -->
+                                <!--          -->
+                                <!--         Defined in -->
+                                <!--          -->
+                                <!--      -->
+                                <!--  -->
+                                <!--  -->
+                                <!-- <a href="../files/jndroid.core.js.html#l565"><code>jndroid.core.js:565</code></a> -->
+                                <!--  -->
+                                <!-- </p> -->
+                        
+                        
+                                <!--  -->
+                        
+                                <!--  -->
+                            <!-- </div> -->
+                        
+                            <div class="extended-detail">
+                        
+                                <div class="description">
+                                    <p>Retrieve the last computed Y velocity.  You must first call</p>
+                        
+                                </div>
+                        
+                        
+                                    <div class="returns">
+                                        <h4>Returns:</h4>
+                        
+                                        <div class="returns-description">
+                                                <p>The previously computed Y velocity.</p>
+                        
                                         </div>
                                     </div>
                         

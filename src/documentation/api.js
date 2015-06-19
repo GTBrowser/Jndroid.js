@@ -17,8 +17,10 @@ YUI.add("yuidoc-meta", function(Y) {
         "MToggleButton",
         "MeasureSpec",
         "MotionEvent",
+        "Rect",
         "ScrollView",
         "TextView",
+        "VelocityTracker",
         "View",
         "ViewGroup",
         "WebView"
