@@ -9,6 +9,7 @@ function Animation() {
     var mEndListener;
     var mStartState;
     var mEndState;
+    this.vendors = { Webkit: 'webkit', Moz: 'Moz', O: 'o', Ms:'ms'};
 
     this.getStartState = function() {
 
@@ -94,6 +95,10 @@ function TranslateAnimation(fromX, toX, fromY, toY) {
 
     var mSelf = this;
 
+    var mSelfPropertes = "-webkit-transform";
+
+    var mResetState = "translate3d(0px, 0px, 0)";
+
     this.getTag = function() {
         return "TranslateAnimation";
     };
@@ -107,8 +112,38 @@ function TranslateAnimation(fromX, toX, fromY, toY) {
     };
 
     this.getTransition = function() {
-        return "-webkit-transform " + mSelf.getDuration() + "ms " + mSelf.getInterpolator();
+        return  mSelf.getDuration() + "ms " + mSelf.getInterpolator();
     };
+
+    this.getSelfPropertes = function() {
+        return mSelfPropertes;
+    };
+
+    this.initState = function(_view) {
+        _view.getDiv().style.transform = mSelf.getStartState();
+        for (var i in mSelf.vendors) {
+            _view.getDiv().style[mSelf.vendors[i] + "Transform"] = mSelf.getStartState();
+        }
+    };
+
+    this.stopState = function(_view) {
+        _view.getDiv().style.transform = mSelf.getEndState();
+        for (var i in mSelf.vendors) {
+            _view.getDiv().style[mSelf.vendors[i] + "Transform"] = mSelf.getEndState();;
+        }
+    };
+
+    this.resetState = function(_view) {
+        // _view.getDiv().style.transform = mResetState;
+        for (var i in mSelf.vendors) {
+            _view.getDiv().style[mSelf.vendors[i] + "Transition"] = "";
+            _view.getDiv().style[mSelf.vendors[i] + "Transform"] = mResetState;
+        }
+    }
+
+    this.isTransform = function() {
+        return true;
+    }
 
     this.start = function() {
         if (this.getStartOffset() === 0) {
@@ -123,11 +158,30 @@ function TranslateAnimation(fromX, toX, fromY, toY) {
     };
 
     this.startInner = function() {
-        mSelf.getView().getDiv().style.webkitTransform = mSelf.getStartState();
+        mSelf.initState(mSelf.getView());
         setTimeout(function() {
-            mSelf.getView().getDiv().style.webkitTransition = mSelf.getTransition();
-            mSelf.getView().getDiv().style.webkitTransform = mSelf.getEndState();
+            mSelf.getView().getDiv().style.translation = "transform " + mSelf.getTransition();
+            for (var i in mSelf.vendors) {
+                mSelf.getView().getDiv().style[mSelf.vendors[i] + "Transition"] = "-" + mSelf.vendors[i] + "-transform " + mSelf.getTransition();
+                console.log(mSelf.getView().getDiv().style[mSelf.vendors[i] + "Transition"]);
+            }
+            mSelf.stopState(mSelf.getView());
+
+            // mSelf.getView().getDiv().style.webkitTransitionProperty = mSelf.getSelfPropertes();
+            // mSelf.getView().getDiv().style.webkitTransitionDuration =mSelf.getDuration() + "ms";
+            // mSelf.getView().getDiv().style.webkitTransitionDelay = mSelf.getStartOffset() + "ms";
+            // mSelf.getView().getDiv().style.webkitTransitionTimingFunction =mSelf.getInterpolator();
+
+            //   	mSelf.stopState(mSelf.getView());
+
         }, 1);
+        if (mSelf.getFillMode() == "backwards") {
+            setTimeout(function() {
+                console.log("start reset!!");
+                mSelf.resetState(mSelf.getView());
+                console.log("zyb reset!!");
+            }, mSelf.getDuration() + 1);
+        }
     };
 }
 
@@ -135,6 +189,10 @@ function AlphaAnimation(fromAlpha,toAlpha) {
     Animation.apply(this, []);
 
     var mSelf = this;
+
+    var mSelfPropertes = "opacity";
+
+    var mResetState = "";
 
     this.getTag = function() {
         return "AlphaAnimation";
@@ -152,14 +210,60 @@ function AlphaAnimation(fromAlpha,toAlpha) {
         return "opacity " + mSelf.getDuration() + "ms " + mSelf.getInterpolator();
     };
 
-    this.start = function() {
+    this.getSelfPropertes = function() {
+        return mSelfPropertes;
+    };
+
+    this.initState = function(_view) {
+        resetAlpha = _view.getDiv().style.opacity;
+        _view.getDiv().style.opacity = mSelf.getStartState();
+    };
+
+    this.stopState = function(_view) {
+        _view.getDiv().style.opacity = mSelf.getEndState();
+    };
+
+    this.resetState = function(_view) {
+        for (var i in mSelf.vendors) {
+            _view.getDiv().style[mSelf.vendors[i] + "Transition"] = "";
+            // console.log(mSelf.getView().getDiv().style[mSelf.vendors[i] + "Transition"]);
+        }
+        _view.getDiv().style.opacity = mResetState;
+        console.log(_view.getDiv().style.opacity);
+    };
+
+    this.isTransform = function() {
+        return false;
+    }
+
+    this.startInner = function() {
+        mSelf.initState(mSelf.getView());
         setTimeout(function(){
-            mSelf.getView().getDiv().style.opacity = mSelf.getStartState();
+            for (var i in mSelf.vendors) {
+                mSelf.getView().getDiv().style[mSelf.vendors[i] + "Transition"] = mSelf.getTransition();
+                // console.log(mSelf.getView().getDiv().style[mSelf.vendors[i] + "Transition"]);
+            }
+            // mSelf.getView().getDiv().style.webkitTransition = mSelf.getTransition();
+            mSelf.stopState(mSelf.getView());
+        }, 1);
+
+        if (mSelf.getFillMode() == "backwards") {
+            setTimeout(function() {
+                console.log("start reset!!");
+                mSelf.resetState(mSelf.getView());
+                console.log("zyb reset!!");
+            }, mSelf.getDuration() + 1);
+        }
+    };
+
+    this.start = function() {
+        if (this.getStartOffset() === 0) {
+            this.startInner();
+        } else {
             setTimeout(function(){
-                mSelf.getView().getDiv().style.webkitTransition = mSelf.getTransition();
-                mSelf.getView().getDiv().style.opacity = mSelf.getEndState();
-            }, 1);
-        }, this.getStartOffset());
+                mSelf.startInner();
+            }, this.getStartOffset());
+        }
 
         setTimeout(this.getEndListener(), this.getDuration() + this.getStartOffset() + 1);
     };
@@ -168,7 +272,11 @@ function AlphaAnimation(fromAlpha,toAlpha) {
 function RotateAnimation(fromDegrees, toDegrees) {
     Animation.apply(this, []);
 
+    var mSelfPropertes = "-webkit-transform";
+
     var mSelf = this;
+
+    var mResetState = "rotate(0deg)";
 
     this.getTag = function() {
         return "RotateAnimation";
@@ -183,16 +291,58 @@ function RotateAnimation(fromDegrees, toDegrees) {
     };
 
     this.getTransition = function() {
-        return "-webkit-transform " + mSelf.getDuration() + "ms " + mSelf.getInterpolator();
+        return mSelf.getDuration() + "ms " + mSelf.getInterpolator();
     };
+
+    this.getSelfPropertes = function() {
+        return mSelfPropertes;
+    };
+
+    this.resetState = function(_view) {
+        // _view.getDiv().style.transform = mResetState;
+        for (var i in mSelf.vendors) {
+            _view.getDiv().style[mSelf.vendors[i] + "Transition"] = "";
+            _view.getDiv().style[mSelf.vendors[i] + "Transform"] = mResetState;
+        }
+    }
+
+    this.initState = function(_view) {
+        _view.getDiv().style.transform = mSelf.getStartState();
+        for (var i in mSelf.vendors) {
+            _view.getDiv().style[mSelf.vendors[i] + "Transform"] = mSelf.getStartState();
+        }
+    }
+
+    this.stopState = function(_view) {
+        _view.getDiv().style.transform = mSelf.getEndState();
+        for (var i in mSelf.vendors) {
+            _view.getDiv().style[mSelf.vendors[i] + "Transform"] = mSelf.getEndState();;
+        }
+    }
+
+    this.isTransform = function() {
+        return true;
+    }
 
     this.start = function() {
         setTimeout(function(){
-            mSelf.getView().getDiv().style.webkitTransform = mSelf.getStartState();
+            mSelf.initState(mSelf.getView());
             setTimeout(function(){
-                mSelf.getView().getDiv().style.webkitTransition = mSelf.getTransition();
-                mSelf.getView().getDiv().style.webkitTransform = mSelf.getEndState();
+                // mSelf.getView().getDiv().style.webkitTransition = mSelf.getTransition();
+                for (var i in mSelf.vendors) {
+                    mSelf.getView().getDiv().style[mSelf.vendors[i] + "Transition"] = "-" + mSelf.vendors[i] + "-transform " + mSelf.getTransition();
+                    // console.log(mSelf.getView().getDiv().style[mSelf.vendors[i] + "Transition"]);
+                }
+                mSelf.stopState(mSelf.getView());
             }, 1);
+
+            if (mSelf.getFillMode() == "backwards") {
+                setTimeout(function() {
+                    console.log("start reset!!");
+                    mSelf.resetState(mSelf.getView());
+                    console.log("zyb reset!!");
+                }, mSelf.getDuration() + 1);
+            }
         }, this.getStartOffset());
 
         setTimeout(this.getEndListener(), this.getDuration() + this.getStartOffset() + 1);
@@ -202,7 +352,11 @@ function RotateAnimation(fromDegrees, toDegrees) {
 function ScaleAnimation(fromScale, toScale) {
     Animation.apply(this, []);
 
+    var mSelfPropertes = "-webkit-transform";
+
     var mSelf = this;
+
+    var mResetState = "scale(1)";
 
     this.getTag = function() {
         return "ScaleAnimation";
@@ -217,100 +371,186 @@ function ScaleAnimation(fromScale, toScale) {
     };
 
     this.getTransition = function() {
-        return "all " + mSelf.getDuration() + "ms " + mSelf.getInterpolator();
+        return mSelf.getDuration() + "ms " + mSelf.getInterpolator();
     };
 
+    this.getSelfPropertes = function() {
+        return mSelfPropertes;
+    };
+
+    this.resetState = function(_view) {
+        _view.getDiv().style.transform = mResetState;
+        for (var i in mSelf.vendors) {
+            _view.getDiv().style[mSelf.vendors[i] + "Transition"] = "";
+            _view.getDiv().style[mSelf.vendors[i] + "Transform"] = mResetState;
+        }
+
+    };
+
+    this.initState = function(_view) {
+        // _view.getDiv().style.transform = mSelf.getStartState();
+        for (var i in mSelf.vendors) {
+            _view.getDiv().style[mSelf.vendors[i] + "Transform"] = mSelf.getStartState();
+        }
+    }
+
+    this.stopState = function(_view) {
+        _view.getDiv().style.transform = mSelf.getEndState();
+        for (var i in mSelf.vendors) {
+            _view.getDiv().style[mSelf.vendors[i] + "Transform"] = mSelf.getEndState();;
+        }
+    }
+
+    this.isTransform = function() {
+        return true;
+    }
+
     this.start = function() {
-        mSelf.getView().getDiv().style.webkitTransition = "";
         setTimeout(function(){
-            mSelf.getView().getDiv().style.webkitTransform = mSelf.getStartState();
-            setTimeout(function(){
-                mSelf.getView().getDiv().style.webkitTransition = mSelf.getTransition();
-                mSelf.getView().getDiv().style.webkitTransform = mSelf.getEndState();
+            mSelf.initState(mSelf.getView());
+            // mSelf.initState(mSelf.getView());
+            setTimeout(function() {
+                // mSelf.getView().getDiv().style.webkitTransition = mSelf.getTransition();
+                for (var i in mSelf.vendors) {
+                    mSelf.getView().getDiv().style[mSelf.vendors[i] + "Transition"] = "-" + mSelf.vendors[i] + "-transform " + mSelf.getTransition();
+                    // console.log(mSelf.getView().getDiv().style[mSelf.vendors[i] + "Transition"]);
+                }
+                mSelf.stopState(mSelf.getView());
             }, 30);
+
+            if (mSelf.getFillMode() == "backwards") {
+                setTimeout(function() {
+                    console.log("start reset!!");
+                    mSelf.resetState(mSelf.getView());
+                    console.log("zyb reset!!");
+                }, mSelf.getDuration() + 100);
+            }
+
         }, this.getStartOffset());
 
         setTimeout(this.getEndListener(), this.getDuration() + this.getStartOffset() + 1);
     };
 }
 
-//function AnimationSet() {
-//    Animation.apply(this, new Array());
-//
-//    var mAnimationList = new Array();
-//    var mTotalTime = 0;
-//
-//    var mSelf = this;
-//
-//    this.getTag = function() {
-//        return "AnimationSet";
-//    }
-//
-//    this.addAnimation = function(animation) {
-//        mAnimationList.push(animation);
-//        if (animation.getDuration() > this.getDuration()) {
-//            this.setDuration(animation.getDuration());
-//        }
-//        if (animation.getDuration() + animation.getStartOffset() > mTotalTime) {
-//            mTotalTime = animation.getDuration() + animation.getStartOffset();
-//        }
-//    }
-//
-//    this.start = function() {
-//        setTimeout(function(){
-//            mSelf.getView().getDiv().style.webkitTransform = "";
-//            for (var i = 0; i < mAnimationList.length; i++) {
-//                var a = mAnimationList[i];
-//                var tag = a.getTag();
-//                if (tag == "AlphaAnimation") {
-//                    mSelf.getView().getDiv().style.opacity = a.getStartState();
-//                } else {
-//                    mSelf.getView().getDiv().style.webkitTransform += a.getStartState() + " ";
-//                }
-//            }
-//            log(mSelf.getView().getDiv().style.webkitTransform);
-//
-//            setTimeout(function(){
-//                var transition = "";
-//
-//                for (var i = 0; i < mAnimationList.length; i++) {
-//                    var a = mAnimationList[i];
-//                    transition += a.getTransition();
-//                    if (i < mAnimationList.length - 1) {
-//                        transition += ",";
-//                    }
-//                }
-//                log(transition);
-//
-//                mSelf.getView().getDiv().style.webkitTransition = transition;
-//                log(mSelf.getView().getDiv().style.webkitTransition);
-//
-//                mSelf.getView().getDiv().style.webkitTransform = "";
-//                for (var i = 0; i < mAnimationList.length; i++) {
-//                    var a = mAnimationList[i];
-//                    var tag = a.getTag();
-//                    if (tag == "AlphaAnimation") {
-//                        mSelf.getView().getDiv().style.opacity = a.getEndState();
-//                    } else {
-//                        mSelf.getView().getDiv().style.webkitTransform += a.getEndState();
-//                    }
-//                }
-//                log(mSelf.getView().getDiv().style.webkitTransform);
-//            }, 1);
-//        }, this.getStartOffset());
-//
-//        for (var i = 0; i < mAnimationList.length; i++) {
-//            var a = mAnimationList[i];
-//            var tag = a.getTag();
-//            if (tag == "AlphaAnimation") {
-//                a.setView(mSelf.getView());
-//                a.start();
-//            }
-//        }
-//
-//        setTimeout(this.getEndListener(), this.getDuration() + this.getStartOffset() + 1);
-//    }
-//}
+function AnimationSet() {
+
+    Animation.apply(this, []);
+
+    var mSelf = this;
+
+    var mTransform = "";
+
+    var mAnimationList = new Array();
+
+    var mMaxDuration = 0;
+
+    this.getTag = function() {
+        return "AnimationSet";
+    };
+
+    this.getStartState = function() {
+        return mSelf.startState;
+    };
+
+    this.getEndState = function() {
+        return mSelf.endState;
+    };
+
+    this.getTransition = function() {
+        return "";
+    };
+
+    this.start = function() {
+        if (this.getStartOffset() === 0) {
+            this.startInner();
+        } else {
+            setTimeout(function(){
+                mSelf.startInner();
+            }, 	this.getStartOffset());
+        }
+
+        setTimeout(this.getEndListener(), this.getDuration() + this.getStartOffset() + 1);
+    };
+
+    this.addAnimation = function (_animation) {
+        mAnimationList.push(_animation);
+    };
+
+    this.resetState = function(_view) {
+        var n = mAnimationList.length;
+        for (var i = 0; i < n; i++) {
+            var anim = mAnimationList[i];
+            anim.resetState(_view);
+        }
+        for (var i in mSelf.vendors) {
+            _view.getDiv().style[mSelf.vendors[i] + "Transform"] = "";
+        }
+    };
+
+    this.initState = function(_view) {
+        var n = mAnimationList.length;
+        var trans = "";
+        mMaxDuration = mSelf.getDuration();
+        for (var i = 0; i < n; i++) {
+            var anim = mAnimationList[i];
+            if (anim.isTransform()) {
+                if (trans == "") {
+                    trans = anim.getStartState();
+                } else {
+                    trans = trans + " " + anim.getStartState();
+                }
+            } else {
+                anim.initState(_view);
+            }
+            if (mSelf.getDuration() == 0) {
+                mMaxDuration = mMaxDuration < anim.getDuration() ? anim.getDuration() : mMaxDuration;
+            }
+        }
+        for (var i in mSelf.vendors) {
+            _view.getDiv().style[mSelf.vendors[i] + "Transform"] = trans;
+        }
+    }
+
+    this.stopState = function(_view) {
+        var n = mAnimationList.length;
+        var trans = "";
+        for (var i = 0; i < n; i++) {
+            var anim = mAnimationList[i];
+            if (anim.isTransform()) {
+                if (trans == "") {
+                    trans = anim.getEndState();
+                } else {
+                    trans = trans + " " + anim.getEndState();
+                }
+            } else {
+                anim.stopState(_view);
+            }
+        }
+        for (var i in mSelf.vendors) {
+            _view.getDiv().style[mSelf.vendors[i] + "Transform"] = trans;
+        }
+    }
+
+    this.startInner = function() {
+        mSelf.initState(mSelf.getView());
+        setTimeout(function() {
+            for (var i in mSelf.vendors) {
+
+                mSelf.getView().getDiv().style[mSelf.vendors[i] + "TransitionProperty"] = "all";
+                mSelf.getView().getDiv().style[mSelf.vendors[i] + "TransitionDuration"] = mMaxDuration + "ms";
+                mSelf.getView().getDiv().style[mSelf.vendors[i] + "TransitionTimingFunction"] = mSelf.getInterpolator();
+            }
+
+            mSelf.stopState(mSelf.getView());
+        }, 1);
+
+        if (mSelf.getFillMode() == "backwards") {
+            setTimeout(function() {
+                mSelf.resetState(mSelf.getView());
+            }, mMaxDuration + 30);
+        }
+    };
+};
 
 function Interpolator (){}
 Object.defineProperty(Interpolator,"LINEAR",{value:"linear"});
