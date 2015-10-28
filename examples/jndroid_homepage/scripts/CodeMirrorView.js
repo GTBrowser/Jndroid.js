@@ -19,36 +19,7 @@ function CodeMirrorView(isHtml) {
     var mCMEditor = null;
 
     this.div.appendChild(mTextArea);
-    this.postDelayed(function(){
-        if (isHtml) {
-            mode = "htmlmixed";
-        } else {
-            mode = "javascript";
-        }
-        var mixedMode = {
-            name: mode
-        };
-        mCMEditor = CodeMirror.fromTextArea(document.getElementById("code" + mTimeStamp), {
-            mode: mixedMode,
-            lineNumbers: true,
-            matchBrackets: true,
-            continueComments: "Enter",
-            lineWrapping:true,
-            tabSize:2
-        });
-        mCMEditor.on("focus", function() {
-            mFocused = true;
-            if (mFocusListener != null) {
-                mFocusListener.call(this, true);
-            }
-        });
-        mCMEditor.on("blur", function() {
-            mFocused = false;
-            if (mFocusListener != null) {
-                mFocusListener.call(this, false);
-            }
-        });
-    }, 50);
+
 
     this.isFocused = function() {
         return mFocused;

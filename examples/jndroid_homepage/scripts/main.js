@@ -1,65 +1,79 @@
 /**
  * Created by lency on 4/28/15.
  */
-
-var mIsPhone;
-var mTab;
-var mMainView;
-var mGallery;
-var mIntroPage;
-var mVSPage;
-var mDocPage;
-var mAppPage;
-var mQAPage;
-var mIntroView = null;
-var mVSView = null;
-var mDocView = null;
-var mAppView = null;
-var mQAView = null;
-var mPages = [];
-var mCurrentIndex = 0;
-
 function MainView() {
-    ViewGroup.apply(this, []);
+    ViewGroup.apply(this);
 
-    mPageContent = new FrameLayout();
-    this.addView(mPageContent);
+    var mIntroView = null;
+    var mVSView = null;
+    var mDocView = null;
+    var mAppView = null;
+    var mQAView = null;
 
-    mGallery = new Gallery();
-    //this.addView(mGallery);
+    var cnt = new FrameLayout();
+    this.addView(cnt);
 
-    mTitle = new Titlebar();
-    mTitle.setBackgroundColor(R.color.theme);
-    this.addView(mTitle);
+    var title = new Titlebar();
+    title.setBackgroundColor(R.color.theme);
+    this.addView(title);
 
-    mTab = new Tab();
-    this.addView(mTab);
+    var tab = new Tab();
+    tab.setBg(R.color.theme);
+    tab.addTabItem(createTabItem(R.string.intro));
+    tab.addTabItem(createTabItem(R.string.vs_android));
+    tab.addTabItem(createTabItem(R.string.documentation));
+    tab.addTabItem(createTabItem(R.string.application));
+    tab.addTabItem(createTabItem(R.string.about));
+    tab.setIndicatorColor(0x99ffffff);
+    tab.setOnSelectedListener(function(i) {
+        cnt.removeAllViews();
+        switch (i) {
+            case 0:
+                if (mIntroView == null) {
+                    mIntroView = new IntroductionView();
+                }
+                cnt.addView(mIntroView);
+                break;
+            case 1:
+                if (mVSView == null) {
+                    mVSView = new VSAndroidView();
+                }
+                cnt.addView(mVSView);
+                break;
+            case 2:
+                if (mDocView == null) {
+                    mDocView = new DocumentationView();
+                }
+                cnt.addView(mDocView);
+                break;
+            case 3:
+                if (mAppView == null) {
+                    mAppView = new ApplicationsView();
+                }
+                cnt.addView(mAppView);
+                break;
+            case 4:
+                if (mQAView == null) {
+                    mQAView = new AboutView();
+                }
+                cnt.addView(mQAView);
+                break;
+        }
+    });
+    tab.setSelectIndex(0);
+    this.addView(tab);
 
-    mIntroPage = new FrameLayout();
-    mVSPage = new FrameLayout();
-    mDocPage = new FrameLayout();
-    mAppPage = new FrameLayout();
-    mQAPage = new FrameLayout();
-    mPageContent.addView(mIntroPage);
-    mPageContent.addView(mVSPage);
-    mPageContent.addView(mDocPage);
-    mPageContent.addView(mAppPage);
-    mPageContent.addView(mQAPage);
-    mPages.add(mIntroPage);
-    mPages.add(mVSPage);
-    mPages.add(mDocPage);
-    mPages.add(mAppPage);
-    mPages.add(mQAPage);
 
-    mVSPage.setVisibility(View.GONE);
-    mDocPage.setVisibility(View.GONE);
-    mAppPage.setVisibility(View.GONE);
-    mQAPage.setVisibility(View.GONE);
-
-    mIntroView = new IntroductionView();
-
-    mIntroPage.addView(mIntroView);
-
+    function createTabItem(text) {
+        var btn = new MButton();
+        btn.setText(text);
+        btn.setTextColor(0xffffffff);
+        btn.setDimBg(false);
+        btn.setWaveColor(0x33ffffff);
+        btn.setBoxShadow(0, 0, 0, 0, 0);
+        btn.setTextSize(16);
+        return btn;
+    }
 
     this.postDelayed(function() {
         if (Manifest.isVersionUpgrade()) {
@@ -69,29 +83,28 @@ function MainView() {
         }
     }, 1000);
 
-    this.onMeasure = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var height = MeasureSpec.getSize(heightMS);
+    this.onMeasure = function(wMS, hMS) {
+        var w = MS.getSize(wMS);
+        var h = MS.getSize(hMS);
 
-        mTitle.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(48, MeasureSpec.EXACTLY));
-        mTab.measure(widthMS, 48);
+        Utils.measureExactly(title, w, 48);
+        tab.measure(wMS, 48);
 
-        var contentHeight = height - mTab.getMeasuredHeight() - mTitle.getMeasuredHeight();
-        mPageContent.measure(widthMS, contentHeight);
+        var cntH = h - tab.getMH() - title.getMH();
+        cnt.measure(wMS, cntH);
 
-        this.setMeasuredDimension(width, height);
+        this.setMeasuredDimension(w, h);
     };
 
-    this.onLayout = function(x, y) {
-        var offsetX = 0;
-        var offSetY = 0;
-        mTitle.layout(offsetX, offSetY);
+    this.onLayout = function() {
+        var x = 0;
+        var y = 0;
+        title.layout(x, y);
 
-        offSetY += mTitle.getMeasuredHeight();
-        mTab.layout(offsetX, offSetY);
+        y += title.getMH();
+        tab.layout(x, y);
 
-        offSetY += mTab.getMeasuredHeight();
-        mPageContent.layout(offsetX, offSetY);
+        y += tab.getMH();
+        cnt.layout(x, y);
     };
 }

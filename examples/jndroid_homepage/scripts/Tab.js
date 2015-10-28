@@ -1,149 +1,97 @@
-function Tab () {
-    ViewGroup.apply(this, []);
-    this.setBackgroundColor(R.color.theme);
-    this.setBoxShadow(0, 6, 6, 0, 0x42000000);
+function Tab() {
+    ViewGroup.apply(this);
 
-    var mScrollView = new ScrollView();
-    mScrollView.setPadding(0);
-    //this.postDelayed(function() {
-    //    mScrollView.scrollTo(100);
-    //}, 1000);
-    this.addView(mScrollView);
-    var mTabContent = new TabContent();
-    mScrollView.addView(mTabContent);
+    var self = this;
 
-    this.onMeasure = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var height = MeasureSpec.getSize(heightMS);
+    var maxItemW = 120;
+    var items = [];
+    var selectedIndex = 0;
+    var selectedListener = null;
+    var itemClickListener = null;
 
-        mScrollView.measure(widthMS, heightMS);
+    var indicator = new View();
+    this.addView(indicator);
 
-        this.setMeasuredDimension(width, height);
+    this.setOnSelectedListener = function(l) {
+        selectedListener = l;
     };
 
-    this.onLayout = function(x, y) {
-        var offSetY = 0;
-        mScrollView.layout(0, 0);
+    this.setOnItemClickListener = function(l) {
+        itemClickListener = l;
     };
 
-}
+    this.getItemCount = function() {
+        return items.length;
+    };
 
-function TabContent() {
-    ViewGroup.apply(this, []);
+    this.getTabItems = function() {
+        return items;
+    };
 
-    var mSelf = this;
-    var mItems = [];
-    var mSelectIndex = 0;
-    var mItemMaxWidth;
-    var mItemMinWidth;
-    if (Manifest.language.indexOf("zh") >= 0) {
-        mItemMaxWidth = 160;
-        mItemMinWidth = 60;
-    } else {
-        mItemMaxWidth = 160;
-        mItemMinWidth = 160;
-    }
-    var buttonWidth;
+    this.getSelectIndex = function() {
+        return selectedIndex;
+    };
 
-    addTabItem(R.string.intro, 0);
-    addTabItem(R.string.vs_android, 1, function() {
-        if (mVSView == null) {
-            mVSView = new VSAndroidView();
-            mVSPage.addView(mVSView);
+    this.setSelectIndex = function(i) {
+        moveIndicator(selectedIndex, i);
+        selectedIndex = i;
+        if (selectedListener) {
+            selectedListener.call(this, selectedIndex);
         }
-    });
-    addTabItem(R.string.documentation, 2, function() {
-        if (mDocView == null) {
-            mDocView = new DocumentationView();
-            mDocPage.addView(mDocView);
-        }
-    });
-    addTabItem(R.string.application, 3, function() {
-        if (mAppView == null) {
-            mAppView = new ApplicationsView();
-            mAppPage.addView(mAppView);
-        }
-    });
-    addTabItem(R.string.about, 4, function() {
-        if (mQAView == null) {
-            mQAView = new AboutView();
-            mQAPage.addView(mQAView);
-        }
-    });
+    };
 
-    var mIndicator = new Indicator();
-    mIndicator.setStyle(Indicator.Line);
-    mIndicator.setIndicatorCount(5);
-    mIndicator.setIndicatorColor(0xfff3ffa3);
-    mIndicator.GAP = 0;
-    this.addView(mIndicator);
+    this.setIndicatorColor = function(c) {
+        indicator.setBackgroundColor(c);
+    };
 
-    this.setSelectIndex = function(index) {
-        mSelectIndex = index;
-        mIndicator.onXChanged(index / 4);
-        for (var i = 0; i < mItems.length;i++) {
-            if (i == mSelectIndex) {
-                mItems[i].setTextColor(0xffffffff);
-            } else {
-                mItems[i].setTextColor(0x99ffffff);
+    this.addTabItem = function(btn) {
+        btn.setOnClickListener(function() {
+            var index = items.indexOf(this);
+            if (index == selectedIndex) {
+                return;
             }
-        }
-    };
-
-    this.setSelectIndex(0);
-
-    this.onMeasure = function(widthMS, heightMS) {
-        var height = MeasureSpec.getSize(heightMS);
-        buttonWidth = MeasureSpec.getSize(widthMS) / mItems.length;
-        buttonWidth = Math.min(buttonWidth, mItemMaxWidth);
-        buttonWidth = Math.max(buttonWidth, mItemMinWidth);
-        mIndicator.INDICATOR_SIZE = buttonWidth;
-
-        for (var i = 0; i < mItems.length; i++) {
-            mItems[i].measure(buttonWidth, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
-        }
-        var width = mItems[0].getMeasuredWidth() * mItems.length;
-        mIndicator.measure(width, 2);
-        this.setMeasuredDimension(width + R.dimen.padding * 2, height);
-    };
-
-    this.onLayout = function(x, y) {
-        var offsetX = 0;
-        var offsetY = 0;
-        for (var i = 0; i < mItems.length; i++) {
-            mItems[i].layout(offsetX, offsetY);
-            offsetX += mItems[i].getMeasuredWidth();
-        }
-        offsetX = 0;
-        offsetY = this.getMeasuredHeight() - mIndicator.getMeasuredHeight();
-        mIndicator.layout(offsetX, offsetY);
-    };
-
-    function addTabItem(text, index, action) {
-        var button = createButton(text);
-        button.setOnClickListener(function() {
-            mSelf.setSelectIndex(index);
-            var curPage = mPages[mCurrentIndex];
-            var newPage = mPages[index];
-            curPage.setVisibility(View.GONE);
-            newPage.setVisibility(View.VISIBLE);
-            if (action != undefined) {
-                action.call(this);
+            self.setSelectIndex(index);
+            if (itemClickListener) {
+                itemClickListener.call(self, index);
             }
-            mCurrentIndex = index;
         });
-        mItems.push(button);
-        mSelf.addView(button);
-    }
+        this.addView(btn);
+        items.push(btn);
+    };
 
-    function createButton(text) {
-        var button = new MButton();
-        button.setText(text);
-        button.setTextColor(0xffffffff);
-        button.setDimBg(false);
-        button.setWaveColor(0x33ffffff);
-        button.setBoxShadow(0, 0, 0, 0, 0);
-        button.setTextSize(16);
-        return button;
+    this.onMeasure = function(wMS, hMS) {
+        var w = MS.getSize(wMS);
+        var h = MS.getSize(hMS);
+        this.setMD(w, h);
+
+        var itemW = w / items.length;
+        itemW = Math.min(itemW, maxItemW);
+        for (var i = 0; i< items.length; i++) {
+            Utils.measureExactly(items[i], itemW, h);
+        }
+        Utils.measureExactly(indicator, itemW, 2);
+    };
+
+    this.onLayout = function() {
+        var x = 0;
+        var y = 0;
+        for (var i = 0; i< items.length; i++) {
+            items[i].layout(x, y);
+            x += items[i].getMW();
+        }
+        x = 0;
+        y = this.getMH() - indicator.getMH();
+        indicator.layout(x, y);
+    };
+
+    function moveIndicator(from, to) {
+        var itemW = items[from].getMW();
+        var fromX = itemW * from;
+        var toX = itemW * to;
+        var t = new TranslateAnimation(fromX, toX, 0, 0);
+        t.setFillAfter(true);
+        t.setDuration(200);
+        indicator.startAnimation(t);
     }
 }
+
