@@ -34,34 +34,98 @@
 </head>
 <body>
 <script>
-    if (window.innerWidth <= 400) {
-        mIsPhone = true;
-    } else {
-        mIsPhone = false;
-    }
-    var rootview = new FrameLayout();
-    setContentView(rootview);
+    function Splash() {
+        FrameLayout.apply(this);
+        this.setBg(0xfff3f3f3);
 
-    mMainView = new MainView();
-    try {
-        var lang = getLocale();
-        if (lang.indexOf("zh") >= 0) {
-            getRootView().setFontFamily("微软雅黑");
-        } else {
-            getRootView().setFontFamily("RobotoDraft, Roboto, sans-serif");
+        var group = new ViewGroup();
+        var track = new View();
+        track.setBg(0x33000000);
+        group.addView(track);
+        var bar = new View();
+        bar.setBg(0xff1499f7);
+        group.addView(bar);
+
+        var text = new View();
+        text.setText("0%");
+        text.setTextSize(14);
+        text.setTextColor(0xff1499f7);
+        text.setStyle("textAlign", "center");
+        group.addView(text);
+
+        group.onMeasure = function() {
+            track.measure(100, 2);
+            bar.measure(0, 2);
+            text.measure(100, 20);
+            this.setMeasuredDimension(100, 32);
+        };
+        group.onLayout = function() {
+            track.layout(0, 30);
+            bar.layout(0, 30);
+            text.layout(0, 0);
+        };
+
+        var lp = new LayoutParams(100, 32);
+        lp.gravity = Gravity.CENTER;
+        this.addView(group, lp);
+
+        this.setProgress = function(p) {
+            bar.measure(100 * p, 2);
+            text.setText(Math.floor(100 * p) + "%");
         }
-    } catch(e) {
-        console.log(e);
     }
-    rootview.addView(mMainView);
 
-//    loadJS("scripts/VSAndroidView.js");
-//    loadJS("scripts/DocumentationView.js");
-//    loadJS("scripts/ApplicationsView.js");
-//    loadJS("scripts/AboutView.js");
-//    loadJS("scripts/comment.js");
-//    loadJS("scripts/SettingView.js");
+    var mSplash = new Splash();
+    setContentView(mSplash);
+</script>
+<script>
+    includeJs("scripts/manifest.js");
+    includeJs("scripts/res.js");
+    includeJs("scripts/main.js");
+    includeJs("scripts/IntroductionPage.js");
+    includeJs("scripts/Titlebar.js");
+    includeJs("scripts/Indicator.js");
+    includeJs("scripts/playground.js");
+    includeJs("scripts/VSAndroidView.js");
+    includeJs("scripts/DocumentationView.js");
+    includeJs("scripts/AboutView.js");
+    includeJs("scripts/comment.js");
+    includeJs("scripts/CodeMirrorView.js");
+    includeJs("scripts/SettingView.js");
 
+
+    window.onJSProgressChanged = function(p) {
+        requestAnimationFrame(function() {
+            mSplash.setProgress(p);
+        });
+    };
+
+    window.onCreate = function() {
+        mSplash.setProgress(1);
+        setTimeout(function() {
+            if (window.innerWidth <= 400) {
+                mIsPhone = true;
+            } else {
+                mIsPhone = false;
+            }
+            var rootview = new FrameLayout();
+            setContentView(rootview);
+
+            mMainView = new MainView();
+            try {
+                var lang = getLocale();
+                if (lang.indexOf("zh") >= 0) {
+                    getRootView().setFontFamily("微软雅黑");
+                } else {
+                    getRootView().setFontFamily("RobotoDraft, Roboto, sans-serif");
+                }
+            } catch(e) {
+                console.log(e);
+            }
+            rootview.addView(mMainView);
+        }, 0);
+
+    };
 </script>
 </body>
 </html>
