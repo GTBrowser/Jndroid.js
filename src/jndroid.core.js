@@ -1,5 +1,21 @@
 /**
  * Jndroid core functions
+ *
+ * 缩写规则：
+ * MeasureSpec -> MS
+ * MeasuredWidth -> MW
+ * MeasuredHeight -> MH
+ * MeasuredDimension -> MD
+ * LayoutParam -> LP
+ * FillParent -> FP
+ * MatchParent -> MP
+ * WrapContent -> WC
+ * PaddingLeft -> PL
+ * PaddingTop -> PT
+ * PaddingRight -> PR
+ * PaddingBottom -> PB
+ * MotionEvent -> ME
+ *
  */
 Array.prototype.add = function(index, val) {
     if (val == undefined) {
@@ -7,6 +23,11 @@ Array.prototype.add = function(index, val) {
     } else {
         this.splice(index, 0, val);
     }
+};
+
+Array.prototype.set = function(index, val) {
+    this.removeAt(index);
+    this.add(index, val);
 };
 
 Array.prototype.size = function() {
@@ -47,6 +68,30 @@ Array.prototype.clear = function() {
     this.splice(0, this.length);
 };
 
+String.prototype.trim = function() {
+    return this.replace(/^[\s| ]*|[\s| ]*$/g, "");
+};
+
+String.prototype.startsWith = function(str) {
+    return (this.indexOf(str) == 0);
+};
+
+String.prototype.endsWith = function(str) {
+    return ((this.indexOf(str) + str.length) == this.length);
+};
+
+String.prototype.replaceAll = function(searchValue, replaceValue) {
+    return this.replace(new RegExp(searchValue,"gm"), replaceValue);
+};
+
+Math.numberFixed = function(num, fixedCount) {
+    if (fixedCount == undefined) {
+        fixedCount = 0;
+    }
+    var tmp = Math.pow(10, fixedCount);
+    return Math.floor(num * tmp) / tmp;
+};
+
 function Map() {
     this.keys = [];
     this.data = {};
@@ -70,6 +115,30 @@ function Map() {
 
 var Utils = new _Utils();
 function _Utils() {
+    this.getRequest = function() {
+        var url = location.search;
+        if (url.indexOf("/") == url.length - 1) {
+            url = url.substring(0, url.length - 1);
+        }
+        var request = {};
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            var strs = str.split("&");
+            for(var i = 0; i < strs.length; i ++) {
+                request[strs[i].split("=")[0]]=strs[i].split("=")[1];
+            }
+        }
+        return request;
+    };
+
+    this.isArray = function(v) {
+        return Object.prototype.toString.call(v) === '[object Array]';
+    };
+
+    this.measureExactly = function(v, w, h) {
+        v.measure(MS.makeMS(w, MS.EXACTLY), MS.makeMS(h, MS.EXACTLY));
+    };
+
     this.dumpTouchEvent = function(ev, tag) {
         var touch;
         switch (ev.getAction()) {
@@ -85,6 +154,12 @@ function _Utils() {
             case 3:
                 touch = "cancel";
                 break;
+            case 5:
+                touch = "pointer_down";
+                break;
+            case 6:
+                touch = "pointer_up";
+                break;
         }
         if (tag) {
             console.log(tag + ":" + touch);
@@ -93,31 +168,18 @@ function _Utils() {
         }
     };
 
-    this.toCssColor = function(color) {
-        if (typeof color == "string") {
-            return color;
+    this.toCssColor = function(c) {
+        if (typeof c == "string") {
+            return c;
         } else {
-            var a = (color >> 24) & 255;
-            var r = (color >> 16) & 255;
-            var g = (color >> 8) & 255;
-            var b = color & 255;
+            var a = (c >> 24) & 255;
+            var r = (c >> 16) & 255;
+            var g = (c >> 8) & 255;
+            var b = c & 255;
 
             return "rgba(" + r + "," + g + "," + b + "," + (a / 255.0) + ")";
         }
     };
-
-    this.contains = document.documentElement.contains ?
-        function(parent, node) {
-            return parent !== node && parent.contains(node);
-        } :
-        function(parent, node) {
-            while (node && (node = node.parentNode)) {
-                if (node === parent) {
-                    return true;
-                }
-            }
-            return false;
-        };
 
     this.getOffset = function(div){
         if (!div) {
@@ -146,22 +208,6 @@ function _Utils() {
             node = node.parentNode;
         }
         return fontFamily;
-    };
-
-    this.includeJs = function(path, callback) {
-        var sobj = document.createElement('script');
-        sobj.type = 'text/javascript';
-        sobj.src = path;
-        if (callback != undefined) {
-            sobj.onload = sobj.onreadystatechange = function () {
-                if (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete') {
-                    callback.call();
-                    sobj.onload = sobj.onreadystatechange = null;
-                }
-            };
-        }
-        var headobj = document.getElementsByTagName('head')[0];
-        headobj.appendChild(sobj)
     };
 }
 
@@ -251,6 +297,15 @@ function Rect(l, t, r, b) {
     }
 }
 
+function Gravity() {}
+Object.defineProperty(Gravity,"TOP",{value:1});
+Object.defineProperty(Gravity,"CENTER_VERTICAL",{value:2});
+Object.defineProperty(Gravity,"BOTTOM",{value:4});
+Object.defineProperty(Gravity,"LEFT",{value:8});
+Object.defineProperty(Gravity,"CENTER_HORIZONTAL",{value:16});
+Object.defineProperty(Gravity,"RIGHT",{value:32});
+Object.defineProperty(Gravity,"CENTER",{value:18});
+
 /**
  * A MeasureSpec encapsulates the layout requirements passed from parent to child.
  * Each MeasureSpec represents a requirement for either the width or the height.
@@ -260,6 +315,7 @@ function Rect(l, t, r, b) {
  * @static
  */
 var MeasureSpec = new _MeasureSpec();
+var MS = MeasureSpec;
 function _MeasureSpec() {
 
     /**
@@ -271,33 +327,37 @@ function _MeasureSpec() {
      * @return {int} the measure specification based on size and mode.
      */
     this.makeMeasureSpec = function(size, mode) {
-        return (size & ~MeasureSpec.MODE_MASK) | (mode & MeasureSpec.MODE_MASK);
+        return (size & ~MS.MODE_MASK) | (mode & MS.MODE_MASK);
+    };
+
+    this.makeMS = function(size, mode) {
+        return (size & ~MS.MODE_MASK) | (mode & MS.MODE_MASK);
     };
 
     /**
      * Extracts the mode from the supplied measure specification.
      *
      * @method getMode
-     * @param {int} measureSpec the measure specification to extract the mode from.
+     * @param {int} spec the measure specification to extract the mode from.
      * @return {int} MeasureSpec.UNSPECIFIED, MeasureSpec.AT_MOST or MeasureSpec.EXACTLY.
      */
-    this.getMode = function(measureSpec) {
-        return (measureSpec & MeasureSpec.MODE_MASK);
+    this.getMode = function(spec) {
+        return (spec & MS.MODE_MASK);
     };
 
     /**
      * Extracts the size from the supplied measure specification.
      *
      * @method getSize
-     * @param {int} measureSpec the measure specification to extract the size from.
+     * @param {int} spec the measure specification to extract the size from.
      * @return {int} the size in pixels defined in the supplied measure specification.
      */
-    this.getSize = function(measureSpec) {
-        return (measureSpec & ~MeasureSpec.MODE_MASK);
+    this.getSize = function(spec) {
+        return (spec & ~MS.MODE_MASK);
     };
 }
 
-Object.defineProperty(MeasureSpec,"MODE_MASK",{value:(0x3 << 30)});
+Object.defineProperty(MS,"MODE_MASK",{value:(0x3 << 30)});
 
 /**
  * Measure specification mode: The parent has not imposed any constraint
@@ -308,7 +368,7 @@ Object.defineProperty(MeasureSpec,"MODE_MASK",{value:(0x3 << 30)});
  * @static
  * @final
  */
-Object.defineProperty(MeasureSpec,"UNSPECIFIED",{value:(0x0 << 30)});
+Object.defineProperty(MS,"UNSPECIFIED",{value:(0x0 << 30)});
 
 /**
  * Measure specification mode: The parent has determined an exact size
@@ -320,7 +380,7 @@ Object.defineProperty(MeasureSpec,"UNSPECIFIED",{value:(0x0 << 30)});
  * @static
  * @final
  */
-Object.defineProperty(MeasureSpec,"EXACTLY",{value:(0x1 << 30)});
+Object.defineProperty(MS,"EXACTLY",{value:(0x1 << 30)});
 
 /**
  * Measure specification mode: The child can be as large as it wants up
@@ -331,7 +391,7 @@ Object.defineProperty(MeasureSpec,"EXACTLY",{value:(0x1 << 30)});
  * @static
  * @final
  */
-Object.defineProperty(MeasureSpec,"AT_MOST",{value:(0x2 << 30)});
+Object.defineProperty(MS,"AT_MOST",{value:(0x2 << 30)});
 
 /**
  * Object used to report movement (mouse, pen, finger, trackball) events.
@@ -340,24 +400,65 @@ Object.defineProperty(MeasureSpec,"AT_MOST",{value:(0x2 << 30)});
  *
  * @class MotionEvent
  */
+var ME = MotionEvent;
 function MotionEvent(rawEv) {
 
     this.rawEv = rawEv;
 
-    var touch = getTouches();
-    var mX = touch.pageX;
-    var mY = touch.pageY;
+    var pointerCount = 1;
 
-    var mAction = 3;
-    if (rawEv.type == "touchstart" || rawEv.type == "mousedown") {
-        mAction = 0;
-    } else if (rawEv.type == "touchmove" || rawEv.type == "mousemove") {
-        mAction = 2;
-    } else if (rawEv.type == "touchend" || rawEv.type == "mouseup") {
-        mAction = 1;
-    } else if (rawEv.type == "touchcancel") {
-        mAction = 3;
+    var touches = getTouches();
+    var xs = [];
+    var ys = [];
+    for (var i = 0; i < touches.length; i++) {
+        xs.push(touches[i].pageX);
+        ys.push(touches[i].pageY);
     }
+
+    var action = 3;
+
+    if ((rawEv.type == "touchstart" || rawEv.type == "mousedown")) {
+        if (pointerCount == 1) {
+            action = 0;
+        } else {
+            action = 5;
+        }
+    } else if (rawEv.type == "touchmove" || rawEv.type == "mousemove") {
+        action = 2;
+    } else if ((rawEv.type == "touchend" || rawEv.type == "mouseup")) {
+        if (pointerCount == 1) {
+            action = 1;
+        } else {
+            action = 6;
+        }
+    } else if (rawEv.type == "touchcancel") {
+        action = 3;
+    }
+
+    if (rawEv.type == "mouseout") {
+        if (rawEv.x <= 0 || rawEv.x >= window.innerWidth
+            || rawEv.y <= 0 || rawEv.y >= window.innerHeight) {
+            action = 3;
+        } else {
+            action = 2;
+        }
+    }
+
+    this.needCompleteActionUp = function() {
+        return (action == ME.ACTION_POINTER_UP);
+    };
+
+    this.setAction = function(a) {
+        action = a;
+    };
+
+    this.setPointerCount = function(c) {
+        pointerCount = c;
+    };
+
+    this.getPointerCount = function() {
+        return pointerCount;
+    };
 
     /**
      * Returns the X coordinate of this event.
@@ -365,8 +466,11 @@ function MotionEvent(rawEv) {
      * @method getX
      * @return {float} X coordinate.
      */
-    this.getX = function() {
-        return mX;
+    this.getX = function(index) {
+        if (index == undefined) {
+            index = 0;
+        }
+        return xs[index];
     };
 
     /**
@@ -375,13 +479,27 @@ function MotionEvent(rawEv) {
      * @method getY
      * @return {float} Y coordinate.
      */
-    this.getY = function() {
-        return mY;
+    this.getY = function(index) {
+        if (index == undefined) {
+            index = 0
+        }
+        return ys[index];
     };
 
     this.setLocation = function(x, y) {
-        mX = x;
-        mY = y;
+        var dX = x - xs[0];
+        var dY = y - ys[0];
+        for (var i = 0; i < xs.length; i++) {
+            xs[i] += dX;
+            ys[i] += dY;
+        }
+    };
+
+    this.getPointerId = function(index) {
+        if (index == undefined) {
+            index = 0;
+        }
+        return touches[index].identifier;
     };
 
     /**
@@ -393,8 +511,11 @@ function MotionEvent(rawEv) {
      * @method getRawX
      * @return {float} original raw X coordinate.
      */
-    this.getRawX = function() {
-        return touch.pageX;
+    this.getRawX = function(index) {
+        if (index == undefined) {
+            index = 0;
+        }
+        return touches[index].pageX;
     };
 
     /**
@@ -406,8 +527,11 @@ function MotionEvent(rawEv) {
      * @method getRawY
      * @return {float} original raw Y coordinate.
      */
-    this.getRawY = function() {
-        return touch.pageY;
+    this.getRawY = function(index) {
+        if (index == undefined) {
+            index = 0;
+        }
+        return touches[index].pageY;
     };
 
     /**
@@ -417,21 +541,32 @@ function MotionEvent(rawEv) {
      * @return {int} the action.
      */
     this.getAction = function() {
-        return mAction;
-    };
-
-    this.setAction = function(action) {
-        mAction = action;
+        return action;
     };
 
     function getTouches() {
-        if (rawEv.type == "touchstart" || rawEv.type == "touchmove") {
-            return rawEv.touches[0];
-        } else if (rawEv.type == "touchend" || rawEv.type == "touchcancel") {
-            return rawEv.changedTouches[0];
+        var touches = [];
+        if (rawEv.type.indexOf("touch") == 0) {
+            for (var i = 0; i < rawEv.touches.length; i++) {
+                addTouch(touches, rawEv.touches[i]);
+            }
+            for (var i = 0; i < rawEv.changedTouches.length; i++) {
+                addTouch(touches, rawEv.changedTouches[i]);
+            }
+            pointerCount = touches.length;
         } else {
-            return rawEv;
+            touches.push(rawEv);
         }
+        return touches;
+    }
+
+    function addTouch(touches, touch) {
+        for (var i = 0; i < touches.length; i++) {
+            if (touches[i].identifier == touch.identifier) {
+                return;
+            }
+        }
+        touches.push(touch);
     }
 }
 
@@ -444,7 +579,7 @@ function MotionEvent(rawEv) {
  * @static
  * @final
  */
-Object.defineProperty(MotionEvent,"ACTION_DOWN",{value:0});
+Object.defineProperty(ME,"ACTION_DOWN",{value:0});
 
 /**
  * Constant for : A pressed gesture has finished, the
@@ -456,7 +591,7 @@ Object.defineProperty(MotionEvent,"ACTION_DOWN",{value:0});
  * @static
  * @final
  */
-Object.defineProperty(MotionEvent,"ACTION_UP",{value:1});
+Object.defineProperty(ME,"ACTION_UP",{value:1});
 
 /**
  * Constant for : A change has happened during a
@@ -469,7 +604,7 @@ Object.defineProperty(MotionEvent,"ACTION_UP",{value:1});
  * @static
  * @final
  */
-Object.defineProperty(MotionEvent,"ACTION_MOVE",{value:2});
+Object.defineProperty(ME,"ACTION_MOVE",{value:2});
 
 /**
  * Constant for : The current gesture has been aborted.
@@ -481,7 +616,11 @@ Object.defineProperty(MotionEvent,"ACTION_MOVE",{value:2});
  * @static
  * @final
  */
-Object.defineProperty(MotionEvent,"ACTION_CANCEL",{value:3});
+Object.defineProperty(ME,"ACTION_CANCEL",{value:3});
+
+
+Object.defineProperty(ME,"ACTION_POINTER_DOWN",{value:5});
+Object.defineProperty(ME,"ACTION_POINTER_UP",{value:6});
 
 /**
  * Helper for tracking the velocity of touch events, for implementing
@@ -489,37 +628,46 @@ Object.defineProperty(MotionEvent,"ACTION_CANCEL",{value:3});
  * @class VelocityTracker
  */
 function VelocityTracker() {
-    var mScope = 10;
-    var mX = [];
-    var mY = [];
-    var mTime = [];
-    var mVx = 0;
-    var mVy = 0;
+    var scope = 10;
+    var x = [];
+    var y = [];
+    var t = [];
+    var vx = 0;
+    var vy = 0;
+    var id = -1;
 
     this.clear = function() {
-        mX.clear();
-        mY.clear();
-        mTime.clear();
+        x.clear();
+        y.clear();
+        t.clear();
+        id = -1;
     };
 
     /**
      * Add a user's movement to the tracker.
      * @method addMovement
-     * @param event The MotionEvent you received and would like to track.
+     * @param e The MotionEvent you received and would like to track.
      */
-     this.addMovement = function(event) {
-        if (mX.length >= mScope) {
-            mX.removeAt(0);
+    this.addMovement = function(e) {
+        var _id = e.getPointerId();
+        if (id == -1) {
+            id = _id;
         }
-        mX.add(event.getRawX());
-        if (mY.length >= mScope) {
-            mY.removeAt(0);
+        if (id != _id) {
+            return;
         }
-        mY.add(event.getRawY());
-        if (mTime.length >= mScope) {
-            mTime.removeAt(0);
+        if (x.length >= scope) {
+            x.shift();
         }
-        mTime.add(event.rawEv.timeStamp);
+        x.push(e.getRawX());
+        if (y.length >= scope) {
+            y.shift();
+        }
+        y.push(e.getRawY());
+        if (t.length >= scope) {
+            t.shift();
+        }
+        t.push(e.rawEv.timeStamp);
     };
 
     /**
@@ -528,29 +676,26 @@ function VelocityTracker() {
      * information, as it is relatively expensive.  You can then retrieve
      *
      * @method computeCurrentVelocity
-     * @param units The units you would like the velocity in.  A value of 1
+     * @param unit The units you would like the velocity in.  A value of 1
      * provides pixels per millisecond, 1000 provides pixels per second, etc.
-     * @param maxVelocity The maximum velocity that can be computed by this method.
-     * This value must be declared in the same unit as the units parameter. This value
-     * must be positive.
      */
     this.computeCurrentVelocity = function(unit) {
-        if (mX.length < 2) {
-            mVx = 0;
-            mVy = 0;
+        if (x.length < 2) {
+            vx = 0;
+            vy = 0;
             return;
         }
-        var t = mTime[mTime.length - 1] - mTime[0];
-        if (t == 0) {
-            mVx = 0;
-            mVy = 0;
+        var dt = t[t.length - 1] - t[0];
+        if (dt == 0) {
+            vx = 0;
+            vy = 0;
             return;
         }
         if (unit == undefined) {
             unit = 1;
         }
-        mVx = (mX[mX.length - 1] - mX[0]) / t * unit;
-        mVy = (mY[mX.length - 1] - mY[0]) / t * unit;
+        vx = (x[x.length - 1] - x[0]) / dt * unit;
+        vy = (y[x.length - 1] - y[0]) / dt * unit;
     };
 
     /**
@@ -559,7 +704,7 @@ function VelocityTracker() {
      * @return The previously computed X velocity.
      */
     this.getXVelocity = function() {
-        return mVx;
+        return vx;
     };
 
     /**
@@ -568,7 +713,7 @@ function VelocityTracker() {
      * @return The previously computed Y velocity.
      */
     this.getYVelocity = function() {
-        return mVy;
+        return vy;
     }
 }
 
@@ -595,8 +740,8 @@ function _Color() {
      * @method alpha
      * @return {int}
      */
-    this.alpha = function (color) {
-        return color >>> 24;
+    this.alpha = function (c) {
+        return c >>> 24;
     };
 
     /**
@@ -606,8 +751,8 @@ function _Color() {
      * @method red
      * @return {int}
      */
-    this.red = function (color) {
-        return (color >> 16) & 0xFF;
+    this.red = function (c) {
+        return (c >> 16) & 0xFF;
     };
 
     /**
@@ -617,8 +762,8 @@ function _Color() {
      * @method green
      * @return {int}
      */
-    this.green = function (color) {
-        return (color >> 8) & 0xFF;
+    this.green = function (c) {
+        return (c >> 8) & 0xFF;
     };
 
     /**
@@ -628,8 +773,8 @@ function _Color() {
      * @method blue
      * @return {int}
      */
-    this.blue = function (color) {
-        return color & 0xFF;
+    this.blue = function (c) {
+        return c & 0xFF;
     };
 
     /**
@@ -640,13 +785,13 @@ function _Color() {
      * returned color is undefined.
      *
      * @method rgb
-     * @param red  Red component [0..255] of the color
-     * @param green Green component [0..255] of the color
-     * @param blue  Blue component [0..255] of the color
+     * @param r  Red component [0..255] of the color
+     * @param g Green component [0..255] of the color
+     * @param b  Blue component [0..255] of the color
      * @return {int}
      */
-    this.rgb = function (red, green, blue) {
-        return (0xFF << 24) | (red << 16) | (green << 8) | blue;
+    this.rgb = function (r, g, b) {
+        return (0xFF << 24) | (r << 16) | (g << 8) | b;
     };
 
     /**
@@ -655,14 +800,14 @@ function _Color() {
      * range check performed, so if they are out of range, the
      * returned color is undefined.
      * @method argb
-     * @param alpha Alpha component [0..255] of the color
-     * @param red   Red component [0..255] of the color
-     * @param green Green component [0..255] of the color
-     * @param blue  Blue component [0..255] of the color
+     * @param a Alpha component [0..255] of the color
+     * @param r   Red component [0..255] of the color
+     * @param g Green component [0..255] of the color
+     * @param b  Blue component [0..255] of the color
      * @return {int}
      */
-    this.argb = function (alpha, red, green, blue) {
-        return (alpha << 24) | (red << 16) | (green << 8) | blue;
+    this.argb = function (a, r, g, b) {
+        return (a << 24) | (r << 16) | (g << 8) | b;
     };
 }
 Object.defineProperty(Color,"BLACK",{value:0xFF000000});
@@ -698,8 +843,8 @@ function _DisplayMetrics() {
  * @class Drawable
  */
 function Drawable() {
-    var mBounds = new Rect(0, 0, 0, 0);
-    var mCallback = null;
+    var bounds = new Rect(0, 0, 0, 0);
+    var callback = null;
 
     /**
      * Draw in its bounds (set via setBounds) respecting optional effects such
@@ -718,7 +863,7 @@ function Drawable() {
      * @return {Rect} The bounds of the drawable.
      */
     this.getBounds = function() {
-        return mBounds;
+        return bounds;
     };
 
     /**
@@ -728,8 +873,8 @@ function Drawable() {
      * @method setBounds
      */
     this.setBounds = function(l, t, r, b) {
-        if (mBounds.left != l || mBounds.top != t || mBounds.right != r || mBounds.bottom != b) {
-            mBounds.set(l, t, r, b);
+        if (bounds.left != l || bounds.top != t || bounds.right != r || bounds.bottom != b) {
+            bounds.set(l, t, r, b);
         }
     };
 
@@ -738,10 +883,10 @@ function Drawable() {
      * that want to support animated drawables.
      *
      * @method setCallback
-     * @param {Callback} cb The client's Callback implementation.
+     * @param {cb} cb The client's Callback implementation.
      */
     this.setCallback = function(cb) {
-        mCallback = cb;
+        callback = cb;
     };
 
     /**
@@ -752,8 +897,8 @@ function Drawable() {
      * @method invalidateSelf
      */
     this.invalidateSelf = function() {
-        if (mCallback != null) {
-            mCallback.invalidateDrawable(this);
+        if (callback != null) {
+            callback.invalidateDrawable(this);
         }
     };
 
@@ -762,10 +907,10 @@ function Drawable() {
      * so see the relevant documentation.
      *
      * @method setState
-     * @param {int[]} state The new set of states to be displayed.
+     * @param {int[]} s The new set of states to be displayed.
      */
-    this.setState = function(state) {
-        this.onStateChange(state);
+    this.setState = function(s) {
+        this.onStateChange(s);
     };
 
     /**
@@ -773,13 +918,13 @@ function Drawable() {
      * specified state.
      *
      * @method onStateChange
-     * @param {int[]} state The new set of states to be displayed.
+     * @param {int[]} s The new set of states to be displayed.
      * @return {boolean} Returns true if the state change has caused the appearance of
      * the Drawable to change (that is, it needs to be drawn), else false
      * if it looks the same and there is no need to redraw it since its
      * last state.
      */
-    this.onStateChange = function(state) {
+    this.onStateChange = function(s) {
     };
 
     /**
@@ -802,75 +947,75 @@ function Drawable() {
 }
 
 function Processor() {
-    var mStartProcess;
-    var mFinalProcess;
-    var mDeltaProcess;
+    var start;
+    var end;
+    var delta;
 
-    var mCurrProcess;
-    var mStartTime;
-    var mDuration;
-    var mDurationReciprocal;
-    var mIsFinished = true;
+    var cur;
+    var startTime;
+    var duration;
+    var durationReciprocal;
+    var isFinished = true;
 
-    var mListener;
+    var listener;
 
-    this.startProcess = function(startProcess, finalProcess, duration) {
-        mIsFinished = false;
-        mDuration = duration;
-        mStartTime = (new Date()).getTime();
-        mStartProcess = startProcess;
-        mFinalProcess = finalProcess;
-        mDeltaProcess = finalProcess - startProcess;
-        mDurationReciprocal = 1.0 / mDuration;
-        mCurrProcess = startProcess;
+    this.startProcess = function(_start, _end, _duration) {
+        isFinished = false;
+        duration = _duration;
+        startTime = (new Date()).getTime();
+        start = _start;
+        end = _end;
+        delta = _end - _start;
+        durationReciprocal = 1.0 / duration;
+        cur = _start;
     };
 
     this.computeProcessOffset = function() {
-        if (mIsFinished) {
+        if (isFinished) {
             return false;
         }
 
-        var  timePassed = (new Date()).getTime() - mStartTime;
+        var  timePassed = (new Date()).getTime() - startTime;
 
-        if (timePassed < mDuration - 10) {
-            var x = timePassed * mDurationReciprocal;
-            mCurrProcess = mStartProcess + x * mDeltaProcess;
+        if (timePassed < duration - 10) {
+            var x = timePassed * durationReciprocal;
+            cur = start + x * delta;
         } else {
-            mCurrProcess = mFinalProcess;
-            mIsFinished = true;
+            cur = end;
+            isFinished = true;
             this.fireProcessEnd();
         }
         return true;
     };
 
     this.isFinished = function() {
-        return mIsFinished;
+        return isFinished;
     };
 
-    this.forceFinished = function(finished) {
-        mIsFinished = finished;
+    this.forceFinished = function(f) {
+        isFinished = f;
         this.fireProcessEnd();
     };
 
     this.getDuration = function() {
-        return mDuration;
+        return duration;
     };
 
     this.getCurrProcess = function() {
-        return mCurrProcess;
+        return cur;
     };
 
-    this.setCurrProcess = function(process) {
-        mCurrProcess = process;
+    this.setCurrProcess = function(p) {
+        cur = p;
     };
 
-    this.setProcessListener = function(listener) {
-        mListener = listener;
+    this.setEndListener = function(l) {
+        listener = l;
     };
 
     this.fireProcessEnd = function() {
-        if (mListener != null) {
-            mListener.call(this);
+        if (listener != null) {
+            listener.call(this);
         }
     };
 }
@@ -882,47 +1027,48 @@ function Processor() {
 * @constructor
 */
 function View() {
-    var mSelf = this;
 
-    var mDiv = document.createElement("div");
-    mDiv.style.position = "absolute";
-    mDiv.style.boxSizing = "border-box";
-    mDiv.style.overflow = "hidden";
-    mDiv.addEventListener("touchstart", function(){}, false);
+    this.div = document.createElement("div");
 
-    var mParent;
-    var mLeft = 0;
-    var mTop = 0;
-    var mRight = 0;
-    var mBottom = 0;
-    var mWidth = 0;
-    var mHeight = 0;
-    var mWidthMS = 0;
-    var mHeightMS = 0;
-    var mBackground = 0;
-    var mPaddingLeft = 0;
-    var mPaddingTop = 0;
-    var mPaddingRight = 0;
-    var mPaddingBottom = 0;
-    var mScrollX = 0;
-    var mScrollY = 0;
-    var mLayoutParams = null;
-    var mWillNotDraw = true;
-    var mVisibility = View.VISIBLE;
-    var mClickable = false;
-    var mLongClickable = false;
-    var mClickListener = null;
-    var mLongClickListener = null;
-    var mTag = "View";
-    var mID = View.NO_ID;
-    var mHTMLCanvas = null;
+    var self = this;
+
+    var parent;
+    var left = 0;
+    var top = 0;
+    var right = 0;
+    var bottom = 0;
+    var width = 0;
+    var height = 0;
+    var wMS = 0x80000000;
+    var hMS = 0x80000000;
+    var bg = 0;
+    var pL = 0;
+    var pT = 0;
+    var pR = 0;
+    var pB = 0;
+    var scrollX = 0;
+    var scrollY = 0;
+    var lp = null;
+    var willNotDraw = true;
+    var visibility = View.VISIBLE;
+    var clickable = false;
+    var longClickable = false;
+    var clickListener = null;
+    var longClickListener = null;
+    var tag = "View";
+    var id = View.NO_ID;
+    var HTMLCanvas = null;
     var canvas = null;
-    var mPreventHtmlTouchEvent = true;
+    var preventHtmlTouchEvent = true;
+    var forceLayout = false;
+    var layoutRequired = false;
+    var isPressed = false;
+    var prePressed = false;
 
-    var mDownX, mDownY;
-    var mHasPerformedLongPress = false;
+    var downX, downY;
+    var hasPerformedLongPress = false;
 
-    var mRunQueue = new Map();
+    var runQueue = new Map();
 
     /**
      * Returns this view's identifier.
@@ -932,7 +1078,7 @@ function View() {
 
      */
     this.getId = function() {
-        return mID;
+        return id;
     };
 
     /**
@@ -940,10 +1086,10 @@ function View() {
      * unique in this view's hierarchy. The identifier should be a positive
      * number.
      *
-     * @param id a number used to identify the view
+     * @param _id a number used to identify the view
      */
-    this.setId = function(id) {
-        mID = id;
+    this.setId = function(_id) {
+        id = _id;
     };
 
 	/**
@@ -953,7 +1099,7 @@ function View() {
 	* @return {Object} Returns the object stored in this view as a tag, or null if not set.
 	*/
     this.getTag = function() {
-        return mTag;
+        return tag;
     };
 
 	/**
@@ -962,9 +1108,9 @@ function View() {
 	* @method setTag
 	* @params {Object} tag An Object to tag the view with
 	*/
-    this.setTag = function(tag) {
-        mTag = tag;
-        mDiv.setAttribute("Tag", mTag);
+    this.setTag = function(t) {
+        tag = t;
+        this.div.setAttribute("Tag", t);
     };
 
 	/**
@@ -974,7 +1120,7 @@ function View() {
 	* @return {} Returns the parent of this view.
 	*/
     this.getParent = function() {
-        return mParent;
+        return parent;
     };
 
 	/**
@@ -983,15 +1129,11 @@ function View() {
 	* @method setParent
 	* @params {View} parent The parent.
 	*/
-    this.setParent = function(parent) {
-        mParent = parent;
+    this.setParent = function(p) {
+        parent = p;
     };
 
-	//TODO
-    this.getDiv = function() {
-        return mDiv;
-    };
-	
+
 	/**
 	* Returns the left padding of this view. If there are inset and enabled scrollbars, this value may include the space required to display the scrollbars as well.
 	*
@@ -999,7 +1141,11 @@ function View() {
 	* @return {int} Returns the left padding in pixels.
 	*/
     this.getPaddingLeft = function() {
-        return mPaddingLeft;
+        return pL;
+    };
+
+    this.getPL = function() {
+        return pL;
     };
 
 	/**
@@ -1009,7 +1155,11 @@ function View() {
 	* @return {int} Returns the top padding in pixels.
 	*/
     this.getPaddingTop = function() {
-        return mPaddingTop;
+        return pT;
+    };
+
+    this.getPT = function() {
+        return pT;
     };
 
 	/**
@@ -1019,7 +1169,11 @@ function View() {
 	* @return {int} Returns the right padding in pixels.
 	*/
     this.getPaddingRight = function() {
-        return mPaddingRight;
+        return pR;
+    };
+
+    this.getPR = function() {
+        return pR;
     };
 
 	/**
@@ -1029,7 +1183,11 @@ function View() {
 	* @return {int} Returns the bottom padding in pixels.
 	*/
     this.getPaddingBottom = function() {
-        return mPaddingBottom;
+        return pB;
+    };
+
+    this.getPB = function() {
+        return pB;
     };
 
 	/**
@@ -1041,16 +1199,16 @@ function View() {
 	* @params {int} right The right padding in pixels
 	* @params {int} bottom The bottom padding in pixels
 	*/
-    this.setPadding = function(left, top, right, bottom) {
-        if (top === undefined && right === undefined && bottom === undefined) {
-            top = left;
-            right = left;
-            bottom = left;
+    this.setPadding = function(l, t, r, b) {
+        if (t == undefined && r == undefined && b == undefined) {
+            t = l;
+            r = l;
+            b = l;
         }
-        mPaddingLeft = left;
-        mPaddingTop = top;
-        mPaddingRight = right;
-        mPaddingBottom = bottom;
+        pL = l;
+        pT = t;
+        pR = r;
+        pB = b;
     };
 
 	/**
@@ -1060,7 +1218,11 @@ function View() {
 	* @return {LayoutParams} Returns the LayoutParams associated with this view, or null if no parameters have been set yet.
 	*/
     this.getLayoutParams = function() {
-        return mLayoutParams;
+        return lp;
+    };
+
+    this.setLP = function(_lp) {
+        lp = _lp;
     };
 
 	/**
@@ -1069,9 +1231,7 @@ function View() {
 	* @method setLayoutParams
 	* @params {LayoutParams}  lp The layout parameters for this view, cannot be null.
 	*/
-    this.setLayoutParams = function(lp) {
-        mLayoutParams = lp;
-    };
+    this.setLayoutParams = this.setLP;
 
 	/**
 	* Left position of this view relative to its parent.
@@ -1080,11 +1240,11 @@ function View() {
 	* @return {int} Returns the left edge of this view, in pixels.
 	*/
     this.getLeft = function() {
-        return mLeft;
+        return left;
     };
 
     this.getRight = function() {
-        return mLeft + this.getMeasuredWidth();
+        return left + this.getMW();
     };
 
 	/**
@@ -1094,11 +1254,11 @@ function View() {
 	* @return {int} Returns the top of this view, in pixels.
 	*/
     this.getTop = function() {
-        return mTop;
+        return top;
     };
 
     this.getBottom = function() {
-        return mTop + this.getMeasuredHeight();
+        return top + this.getMH();
     };
 
 	/**
@@ -1108,7 +1268,7 @@ function View() {
 	* @return {int} Returns the width of your view, in pixels.
 	*/
     this.getWidth = function() {
-        return mWidth;
+        return width;
     };
 
 	/**
@@ -1118,7 +1278,7 @@ function View() {
 	* @return {int} Returns the height of your view, in pixels.
 	*/
     this.getHeight = function() {
-        return mHeight;
+        return height;
     };
 
 	/**
@@ -1128,7 +1288,11 @@ function View() {
 	* @return {int} Returns the raw measured width of this view.
 	*/
     this.getMeasuredWidth = function() {
-        return mWidth;
+        return width;
+    };
+
+    this.getMW = function() {
+        return width;
     };
 
 	/**
@@ -1138,27 +1302,31 @@ function View() {
 	* @return {int} Returns the raw measured height of this view.
 	*/
     this.getMeasuredHeight = function() {
-        return mHeight;
+        return height;
+    };
+
+    this.getMH = function() {
+        return height;
     };
 
     this.getScrollX = function() {
-        return mScrollX;
+        return scrollX;
     };
 
     this.setScrollX = function(x) {
-        mScrollX = x;
+        scrollX = x;
     };
 
     this.getScrollY = function() {
-        return mScrollY;
+        return scrollY;
     };
 
     this.setScrollY = function(y) {
-        mScrollY = y;
+        scrollY = y;
     };
 
     this.getHitRect = function(outRect) {
-        outRect.set(mLeft, mTop, mRight, mBottom);
+        outRect.set(left, top, right, bottom);
     };
 
 	/**
@@ -1168,7 +1336,7 @@ function View() {
 	* @return {int} Returns the visual x position of this view, in pixels.
 	*/
     this.getLeft = function() {
-        return mLeft;
+        return left;
     };
 
 	/**
@@ -1178,7 +1346,7 @@ function View() {
 	* @return {int} Returns the visual y position of this view, in pixels.
 	*/
     this.getTop = function() {
-        return mTop;
+        return top;
     };
 
 	/**
@@ -1190,10 +1358,28 @@ function View() {
 	* @params {int} widthMS Horizontal space requirements as imposed by the parent.
 	* @params {int} heightMS Vertical space requirements as imposed by the parent.
 	*/
-    this.measure = function(widthMS, heightMS) {
-        mWidthMS = widthMS;
-        mHeightMS = heightMS;
-        this.onMeasure(widthMS, heightMS);
+    this.measure = function(_wMS, _hMS) {
+        if (forceLayout || _wMS != wMS || _hMS != hMS) {
+
+            //var replaceNode = document.createElement("div");
+            //var parentNode = this.div.parentNode;
+            //if (parentNode != null) {
+            //    parentNode.replaceChild(replaceNode, this.div);
+            //}
+
+            wMS = _wMS;
+            hMS = _hMS;
+
+            this.onBeforeMeasure(_wMS, _hMS);
+            this.onMeasure(_wMS, _hMS);
+            this.onAfterMeasure(_wMS, _hMS);
+
+            //if (parentNode != null) {
+            //    parentNode.replaceChild(this.div, replaceNode);
+            //}
+
+            layoutRequired = true;
+        }
     };
 
 	/**
@@ -1205,8 +1391,30 @@ function View() {
 	* @params {int} widthMS horizontal space requirements as imposed by the parent. The requirements are encoded with View.MeasureSpec.
 	* @params {int} vertical space requirements as imposed by the parent. The requirements are encoded with View.MeasureSpec.
 	*/
-    this.onMeasure = function(widthMS, heightMS) {
-        this.setMeasuredDimension(MeasureSpec.getSize(widthMS), MeasureSpec.getSize(heightMS));
+    this.onMeasure = function(wMS, hMS) {
+        this.setMD(MS.getSize(wMS), MS.getSize(hMS));
+    };
+
+    this.onBeforeMeasure = function(wMS, hMS) {
+
+    };
+
+    this.onAfterMeasure = function(wMS, hMS) {
+    };
+
+    this.setMD = function(w, h) {
+        if (width == w && height == h) {
+            return;
+        }
+        width = w;
+        height = h;
+        this.div.style.width = w + "px";
+        this.div.style.height = h + "px";
+        if (HTMLCanvas !== null) {
+            HTMLCanvas.width = w;
+            HTMLCanvas.height = h;
+            changeDensity(HTMLCanvas);
+        }
     };
 
 	/**
@@ -1216,33 +1424,35 @@ function View() {
 	* @params {int} width The measured width of this view.
 	* @params {int} height The measured height of this view.
 	*/
-    this.setMeasuredDimension = function(width, height) {
-        if (mWidth == width && mHeight == height) {
-            return;
-        }
-        mWidth = width;
-        mHeight = height;
-        mDiv.style.width = width + "px";
-        mDiv.style.height = height + "px";
-        if (mHTMLCanvas !== null) {
-            mHTMLCanvas.width = width;
-            mHTMLCanvas.height = height;
-            changeDensity(mHTMLCanvas);
-        }
+    this.setMeasuredDimension = this.setMD;
+
+    this.applyDimen = function(wMS, hMS) {
+        this.setMD(MS.getSize(wMS), MS.getSize(hMS));
     };
 
-    function changeDensity(canvas) {
-        if (!canvas.style.width)
-            canvas.style.width = canvas.width + 'px';
-        if (!canvas.style.height)
-            canvas.style.height = canvas.height + 'px';
+    function changeDensity(c) {
+        if (c.width == 0 || c.height == 0) {
+            return;
+        }
+        var wPx = c.width + 'px';
+        var hPx = c.height + 'px';
+        if (c.style.width != wPx) {
+            c.style.width = wPx;
+        }
+        if (c.style.height != hPx) {
+            c.style.height = hPx;
+        }
 
         var density = DisplayMetrics.density;
-        canvas.width = Math.ceil(canvas.width * density);
-        canvas.height = Math.ceil(canvas.height * density);
-        var ctx = canvas.getContext('2d');
+        c.width = Math.ceil(c.width * density);
+        c.height = Math.ceil(c.height * density);
+        var ctx = c.getContext('2d');
         ctx.scale(density, density);
     }
+
+    this.onAfterLayout = function() {
+
+    };
 
 	/**
 	* Assign a size and position to a view and all of its descendants
@@ -1256,25 +1466,67 @@ function View() {
 	* @params {int} y Top position, relative to parent.
 	*/
     this.layout = function(x, y) {
-        mLeft = x;
-        mTop = y;
-        mRight = x + this.getMeasuredWidth();
-        mBottom = y + this.getMeasuredHeight();
+        if (layoutRequired || left != x || top != y || right != (x + this.getMW()) || bottom != (y + this.getMH())) {
+            //var replaceNode = document.createElement("div");
+            //var parentNode = this.div.parentNode;
+            //if (parentNode != null) {
+            //    parentNode.replaceChild(replaceNode, this.div);
+            //}
 
-        mDiv.style.left = x + "px";
-        mDiv.style.top = y + "px";
-        this.onLayout(x, y);
-        this.invalidate();
+            left = x;
+            top = y;
+            right = x + width;
+            bottom = y + height;
+
+            this.div.style.left = x + "px";
+            this.div.style.top = y + "px";
+
+            this.onLayout(x, y);
+            this.onAfterLayout();
+            this.invalidate();
+            layoutRequired = false;
+
+            //if (parentNode != null) {
+            //    parentNode.replaceChild(this.div, replaceNode);
+            //}
+        }
+        forceLayout = false;
+    };
+
+    this.layoutByTransform = function(x, y) {
+        if (layoutRequired || left != x || top != y || right != (x + this.getMW()) || bottom != (y + this.getMH())) {
+            left = x;
+            top = y;
+            right = x + width;
+            bottom = y + height;
+
+            this.translate3d(x, y);
+
+            this.onLayout(x, y);
+            this.onAfterLayout();
+            this.invalidate();
+            layoutRequired = false;
+        }
+        forceLayout = false;
+    };
+
+    this.translate3d = function(x, y) {
+        var t = "translate3d(" + x + "px," + y + "px, 0)";
+        this.div.style.msTransform = t;
+        this.div.style.webkitTransform = t;
+        this.div.style.mozTransform = t;
     };
 
 	/**
 	* Called from layout when this view should assign a size and position to each of its children. Derived classes with children should override this method and call layout on each of their children.
 	*
 	* @method onLayout
-	* @params {int} x Left position, relative to parent.
-	* @params {int} y Top position, relative to parent.
 	*/
-    this.onLayout = function(x, y) {
+    this.onLayout = function() {
+
+    };
+
+    this.onAfterLayout = function() {
 
     };
 
@@ -1315,7 +1567,7 @@ function View() {
 	* method invalidate
 	*/
     this.invalidate = function() {
-        mSelf.draw();
+        self.draw();
     };
 
 	/**
@@ -1326,12 +1578,12 @@ function View() {
     this.draw = function() {
         this.computeScroll();
 
-        if (mWillNotDraw == false) {
-            if (mHTMLCanvas != null) {
-                mHTMLCanvas.width = mHTMLCanvas.width;
-                if (mHTMLCanvas.getContext) {
+        if (willNotDraw == false) {
+            if (HTMLCanvas != null) {
+                HTMLCanvas.width = HTMLCanvas.width;
+                if (HTMLCanvas.getContext) {
                     if (canvas == null) {
-                        canvas = mHTMLCanvas.getContext("2d");
+                        canvas = HTMLCanvas.getContext("2d");
                     }
                     this.onDraw(canvas);
                 }
@@ -1351,7 +1603,7 @@ function View() {
 	* @return {boolean} Returns whether or not this View draw on its own.
 	*/
     this.getWillNotDraw = function() {
-        return mWillNotDraw;
+        return willNotDraw;
     };
 
 	/**
@@ -1361,26 +1613,26 @@ function View() {
 	* @params {boolean} willnotdraw Whether or not this View draw on its own.
 	*/
     this.setWillNotDraw = function(willnotdraw) {
-        mWillNotDraw = willnotdraw;
-        if (mWillNotDraw === false) {
-            mHTMLCanvas = document.createElement("canvas");
-            mHTMLCanvas.style.position = "absolute";
-            mHTMLCanvas.style.left = 0;
-            mHTMLCanvas.style.top = 0;
-            mDiv.appendChild(mHTMLCanvas);
-            mDiv.style.overflow = "hidden";
-            if (this.getMeasuredWidth() != 0 || this.getMeasuredHeight() != 0) {
+        willNotDraw = willnotdraw;
+        if (willNotDraw === false) {
+            HTMLCanvas = document.createElement("canvas");
+            HTMLCanvas.style.position = "absolute";
+            HTMLCanvas.style.left = 0;
+            HTMLCanvas.style.top = 0;
+            this.div.appendChild(HTMLCanvas);
+            this.div.style.overflow = "hidden";
+            if (this.getMW() != 0 || this.getMH() != 0) {
                 this.requestLayout();
             }
         } else {
-            if (mHTMLCanvas !== null) {
-                mDiv.removeChild(mHTMLCanvas);
+            if (HTMLCanvas !== null) {
+                this.div.removeChild(HTMLCanvas);
             }
         }
     };
 
     this.getBackground = function() {
-        return mBackground;
+        return bg;
     };
 
 	/**
@@ -1389,9 +1641,14 @@ function View() {
 	* @method setBackgroundColor
 	* @params {int} color The color of the background.
 	*/
-    this.setBackgroundColor = function(color) {
-        mBackground = color;
-        mDiv.style.background = Utils.toCssColor(color);
+    this.setBackgroundColor = function(c) {
+        bg = c;
+        this.div.style.background = Utils.toCssColor(c);
+    };
+
+    this.setBg = function(c) {
+        bg = c;
+        this.div.style.background = Utils.toCssColor(c);
     };
 
 	/**
@@ -1401,10 +1658,22 @@ function View() {
 	* @params {View.OnClickListener} l The callback that will run.
 	*/
     this.setOnClickListener = function(l) {
-        if (!mClickable) {
+        if (!clickable) {
             this.setClickable(true);
         }
-        mClickListener = l;
+        clickListener = l;
+    };
+
+    this.setHoverEnterListener = function(l) {
+        this.div.onmouseover = function() {
+            l.call(self);
+        };
+    };
+
+    this.setHoverExitListener = function(l) {
+        this.div.onmouseout = function() {
+            l.call(self);
+        };
     };
 
 	/**
@@ -1415,10 +1684,10 @@ function View() {
 	*
 	*/
     this.setOnLongClickListener = function(l) {
-        if (!mLongClickable) {
+        if (!longClickable) {
             this.setLongClickable(true);
         }
-        mLongClickListener = l;
+        longClickListener = l;
     };
 
 	/**
@@ -1427,9 +1696,9 @@ function View() {
 	* @method setClickable
 	* @params {boolean} clickable True to make the view clickable, false otherwise.
 	*/
-    this.setClickable = function(clickable) {
-        mClickable = clickable;
-        if (mClickable) {
+    this.setClickable = function(c) {
+        clickable = c;
+        if (clickable) {
             this.setStyle("cursor", "pointer");
         }
     };
@@ -1441,7 +1710,7 @@ function View() {
 	* @params {boolean} longClickable True to make the view long clickable, false otherwise.
 	*/
     this.setLongClickable = function(longClickable) {
-        mLongClickable = longClickable;
+        longClickable = longClickable;
     };
 
 	/**
@@ -1452,15 +1721,14 @@ function View() {
 	* @method requestLayout
 	*/
     this.requestLayout = function() {
-        if (this.getParent() === null) {
-            return;
+        forceLayout = true;
+        if (this.getParent() != null && (!this.getParent().isLayoutRequested())) {
+            this.getParent().requestLayout();
         }
-        if (mWidth !== 0 && mHeight !== 0) {
-            this.measure(mWidthMS, mHeightMS);
-            this.layout(mLeft, mTop);
-        } else {
-            forceReLayout();
-        }
+    };
+
+    this.isLayoutRequested = function() {
+        return forceLayout;
     };
 
 	/**
@@ -1472,53 +1740,117 @@ function View() {
 
     };
 
-    this.checkClick = function(ev) {
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mHasPerformedLongPress = false;
-                mDownX = ev.getRawX();
-                mDownY = ev.getRawY();
+    this.isPressed = function() {
+        return isPressed;
+    };
+
+    this.setPressed = function(p) {
+        isPressed = p;
+        this.invalidate();
+    };
+
+    this.checkPressed = function(e) {
+        switch (e.getAction()) {
+            case ME.ACTION_DOWN:
+                var inScroll = this.isInScrollingContainer();
+                if (inScroll) {
+                    prePressed = true;
+                    this.postDelayed(this.checkForTap, 100);
+                } else {
+                    this.setPressed(true);
+                }
+                break;
+            case ME.ACTION_MOVE:
+                if (!this.pointInView(e.getX(), e.getY(), 5)) {
+                    this.removeCallbacks(this.checkForTap);
+                }
+                break;
+            case ME.ACTION_UP:
+                this.removeCallbacks(this.checkForTap);
+                if (prePressed) {
+                    this.setPressed(true);
+                    this.postDelayed(function() {
+                        this.setPressed(false);
+                    }, 50)
+                } else {
+                    this.setPressed(false);
+                }
+                break;
+            case ME.ACTION_CANCEL:
+                this.removeCallbacks(this.checkForTap);
+                this.setPressed(false);
+                break;
+        }
+    };
+
+    this.isInScrollingContainer = function() {
+        var p = this.getParent();
+        while (p != null) {
+            if (p.shouldDelayChildPressedState()) {
+                return true;
+            }
+            p = p.getParent();
+        }
+        return false;
+    };
+
+    this.shouldDelayChildPressedState = function() {
+        return false;
+    };
+
+    this.pointInView = function(x, y, slop) {
+        return x >= -slop && y >= -slop && x < ((right - left) + slop) &&
+            y < ((bottom - top) + slop);
+    };
+
+    this.checkClick = function(e) {
+        switch (e.getAction()) {
+            case ME.ACTION_DOWN:
+                hasPerformedLongPress = false;
+                downX = e.getRawX();
+                downY = e.getRawY();
                 this.checkForLongClick();
                 break;
-            case MotionEvent.ACTION_MOVE:
-                var x = ev.getX();
-                var y = ev.getY();
-                if (x < mLeft || x > mRight || y < mTop || y > mBottom) {
+            case ME.ACTION_MOVE:
+                var x = e.getX();
+                var y = e.getY();
+                if (x < left || x > right || y < top || y > bottom) {
                     this.removeCallbacks(this.checkLongPress);
                 }
                 break;
-            case MotionEvent.ACTION_UP:
-                if (!mHasPerformedLongPress) {
+            case ME.ACTION_UP:
+                if (!hasPerformedLongPress) {
                     this.removeCallbacks(this.checkLongPress);
 
-                    var deltaX = Math.abs(mDownX - ev.getRawX());
-                    var deltaY = Math.abs(mDownY - ev.getRawY());
+                    var deltaX = Math.abs(downX - e.getRawX());
+                    var deltaY = Math.abs(downY - e.getRawY());
                     if (deltaX < 30 && deltaY < 30) {
                         this.performClick();
                     }
                 }
                 break;
-            case MotionEvent.ACTION_CANCEL:
+            case ME.ACTION_CANCEL:
                 this.removeCallbacks(this.checkLongPress);
                 break;
         }
     };
 
     this.setPreventHtmlTouchEvent = function(prevent) {
-        mPreventHtmlTouchEvent = prevent;
+        preventHtmlTouchEvent = prevent;
     };
 
-    this._onTouchEvent = function(ev) {
-        if (mPreventHtmlTouchEvent) {
-            ev.rawEv.preventDefault();
+    this._onTouchEvent = function(e) {
+        if (preventHtmlTouchEvent) {
+            e.rawEv.preventDefault();
         }
-        if (mClickable || mLongClickable) {
-            this.checkClick(ev);
+        if (clickable || longClickable) {
+            this.checkPressed(e);
+            this.checkClick(e);
         }
-        if (mPreventHtmlTouchEvent == false) {
+        if (preventHtmlTouchEvent == false) {
             return true;
         }
-        var result = this.onTouchEvent(ev);
+        var result = this.onTouchEvent(e);
         if (result == undefined) {
             result = true;
         }
@@ -1535,13 +1867,10 @@ function View() {
 	handling ACTION_CLICK when accessibility features are enabled
 	*
 	* @method onTouchEvent
-	* @params {MotionEvent} ev The motion event.
+	* @params {MotionEvent} e The motion event.
 	*/
-    this.onTouchEvent = function(ev) {
-        if (mClickable || mLongClickable) {
-            return true;
-        }
-        return false;
+    this.onTouchEvent = function(e) {
+        return (clickable || longClickable);
     };
 
     /**
@@ -1551,8 +1880,8 @@ function View() {
      * @param event The motion event to be dispatched.
      * @return True if the event was handled by the view, false otherwise.
      */
-    this.dispatchTouchEvent = function(ev) {
-        return this._onTouchEvent(ev);
+    this.dispatchTouchEvent = function(e) {
+        return this._onTouchEvent(e);
     };
 
 	/**
@@ -1564,7 +1893,7 @@ function View() {
 	* @params {float} a The opacity of the view.
 	*/
     this.setAlpha = function(a) {
-        mDiv.style.opacity = a;
+        this.div.style.opacity = a;
     };
 
 	/**
@@ -1574,7 +1903,7 @@ function View() {
 	* @return {int} Return one of VISIBLE, INVISIBLE, or GONE.
 	*/
     this.getVisibility = function() {
-        return mVisibility;
+        return visibility;
     };
 
 	/**
@@ -1583,12 +1912,15 @@ function View() {
 	* @method setVisibility
 	* @params {int} visibility
 	*/
-    this.setVisibility = function(visibility) {
-        mVisibility = visibility;
-        if (mVisibility == View.VISIBLE) {
-            this.getDiv().style.display = "block";
+    this.setVisibility = function(v) {
+        if (visibility == v) {
+            return;
+        }
+        visibility = v;
+        if (visibility == View.VISIBLE) {
+            this.div.style.display = "block";
         } else {
-            this.getDiv().style.display = "none";
+            this.div.style.display = "none";
         }
     };
 
@@ -1598,8 +1930,8 @@ function View() {
 	* @method setAnimation
 	* @params {Animation} animation The next animation, or null.
 	*/
-    this.setAnimation = function(animation) {
-        animation.setView(this);
+    this.setAnimation = function(a) {
+        a.setView(this);
     };
 
 	/**
@@ -1608,15 +1940,15 @@ function View() {
 	* @method startAnimation
 	* @params {Animation} animation The animation to start now.
 	*/
-    this.startAnimation = function(animation) {
-        animation.setView(this);
-        animation.start();
+    this.startAnimation = function(a) {
+        a.setView(this);
+        a.start();
     };
 
     this.clearAnimation = function() {
-        this.getDiv().style.webkitTransition = "";
-        this.getDiv().style.transition = "";
-        this.getDiv().style.opacity = 0;
+        this.div.style.webkitTransition = "";
+        this.div.style.transition = "";
+        //this.div.style.opacity = 0;
     };
 
 	/**
@@ -1631,7 +1963,7 @@ function View() {
         var id = setTimeout(function() {
             r.call(mSelf);
         }, delay);
-        mRunQueue.put(r, id);
+        runQueue.put(r, id);
     };
 
 	/**
@@ -1641,8 +1973,8 @@ function View() {
 	* @params {Runnable} r The Runnable to remove from the message handling queue.
 	*/
     this.removeCallbacks = function(r) {
-        var id = mRunQueue.get(r);
-        mRunQueue.remove(r);
+        var id = runQueue.get(r);
+        runQueue.remove(r);
         if (id !== undefined) {
             clearTimeout(id);
         }
@@ -1654,8 +1986,8 @@ function View() {
 	* @method performClick
 	*/
     this.performClick = function() {
-        if (mClickListener !== null) {
-            mClickListener.call(this);
+        if (clickListener !== null) {
+            clickListener.call(this);
         }
     };
 
@@ -1665,16 +1997,16 @@ function View() {
 	* @method performLongClick
 	*/
     this.perfermLongClick = function() {
-        if (mLongClickListener !== null) {
-            mLongClickListener();
+        if (longClickListener !== null) {
+            longClickListener();
         }
         return true;
     };
 
 	//TODO
     this.checkForLongClick = function() {
-        if (mLongClickable) {
-            mHasPerformedLongPress = false;
+        if (longClickable) {
+            hasPerformedLongPress = false;
 
             this.postDelayed(this.checkLongPress, 500);
         }
@@ -1683,48 +2015,48 @@ function View() {
 	//TODO
     this.checkLongPress = function() {
         if (this.perfermLongClick()) {
-            mHasPerformedLongPress = true;
+            hasPerformedLongPress = true;
         }
     };
 
 	//TODO
-    this.setCornerSize = function(tlSize, trSize, brSize, blSize) {
-        if (trSize == undefined && brSize == undefined && blSize == undefined) {
-            trSize = tlSize;
-            brSize = tlSize;
-            blSize = tlSize;
+    this.setCornerSize = function(tl, tr, br, bl) {
+        if (tr == undefined && br == undefined && bl == undefined) {
+            tr = tl;
+            br = tl;
+            bl = tl;
         }
-        this.getDiv().style.borderRadius = tlSize + "px " + trSize + "px " + brSize + "px " + blSize + "px";
+        this.div.style.borderRadius = tl + "px " + tr + "px " + br + "px " + bl + "px";
     };
 
 	//TODO
-    this.setStyle = function(attr, cssString) {
-        this.getDiv().style[attr] = cssString;
+    this.setStyle = function(attr, css) {
+        this.div.style[attr] = css;
     };
 
 	//TODO
     this.setBorder = function(thick, color) {
-        this.getDiv().style.border = thick + "px solid " + Utils.toCssColor(color);
+        this.div.style.border = thick + "px solid " + Utils.toCssColor(color);
     };
 
 	//TODO
     this.setBorderLeft = function(thick, color) {
-        this.getDiv().style.borderLeft = thick + "px solid " + Utils.toCssColor(color);
+        this.div.style.borderLeft = thick + "px solid " + Utils.toCssColor(color);
     };
 
 	//TODO
     this.setBorderTop = function(thick, color) {
-        this.getDiv().style.borderTop = thick + "px solid " + Utils.toCssColor(color);
+        this.div.style.borderTop = thick + "px solid " + Utils.toCssColor(color);
     };
 
 	//TODO
     this.setBorderRight = function(thick, color) {
-        this.getDiv().style.borderRight = thick + "px solid " + Utils.toCssColor(color);
+        this.div.style.borderRight = thick + "px solid " + Utils.toCssColor(color);
     };
 
 	//TODO
     this.setBorderBottom = function(thick, color) {
-        this.getDiv().style.borderBottom = thick + "px solid " + Utils.toCssColor(color);
+        this.div.style.borderBottom = thick + "px solid " + Utils.toCssColor(color);
     };
 
 	//TODO
@@ -1741,11 +2073,24 @@ function View() {
             styleString = styleString + " " + Utils.toCssColor(color);
         }
 
-        this.getDiv().style.webkitBoxShadow =  styleString;
+        this.div.style.webkitBoxShadow =  styleString;
     };
 
     this.setFontFamily = function(fontFamily) {
-        this.getDiv().style.fontFamily = fontFamily;
+        this.div.style.fontFamily = fontFamily;
+    };
+
+    this.setText = function(t) {
+        this.div.innerHTML = t;
+        this.div.style.whiteSpace = "nowrap";
+    };
+
+    this.setTextColor = function(c) {
+        this.div.style.color = Utils.toCssColor(c);
+    };
+
+    this.setTextSize = function(ts) {
+        this.div.style.fontSize = ts + "px";
     };
 
     /**
@@ -1762,8 +2107,8 @@ function View() {
         return this.findViewTraversal(id);
     };
 
-    this.findViewTraversal = function(id) {
-        if (id == mID) {
+    this.findViewTraversal = function(_id) {
+        if (id == _id) {
             return this;
         }
         return null;
@@ -1786,12 +2131,11 @@ Object.defineProperty(View,"VIEW_STATE_PRESSED",{value:(1 << 4)});
  */
 function ViewGroup() {
     View.apply(this, []);
-    var mChildren = [];
-    var mTag = "ViewGroup";
+    var children = [];
 
-    var mMotionTarget = null;
-    var mTempRect = new Rect();
-    var mDisallowIntercept = false;
+    var motionTarget = null;
+    var tempRect = new Rect();
+    var disallowIntercept = false;
 
     /**
      * Returns the number of children in the group.
@@ -1801,78 +2145,68 @@ function ViewGroup() {
      *         the group
      */
     this.getChildCount = function() {
-        return mChildren.length;
+        return children.length;
     };
 
     /**
      * Returns the view at the specified position in the group.
      *
      * @method getChildAt
-     * @param {int} index the position at which to get the view from
+     * @param {int} i the position at which to get the view from
      * @return {int} the view at the specified position or null if the position
      *         does not exist within the group
      */
-    this.getChildAt = function(index) {
-        return mChildren[index];
+    this.getChildAt = function(i) {
+        return children[i];
     };
 
-    this.indexOfChild = function(child) {
-        return mChildren.indexOf(child);
-    };
-
-    this.onMeasure = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var height = MeasureSpec.getSize(heightMS);
-        this.setMeasuredDimension(width, height);
+    this.indexOfChild = function(c) {
+        return children.indexOf(c);
     };
 
     /**
      * Adds a child view with the specified layout parameters.
      *
      * @method addView
-     * @param {View} child the child view to add
+     * @param {View} v the child view to add
      * @param {int} index the position at which to add the child,
      *          or {LayoutParams} params the layout parameters to set on the child
      * @param {LayoutParams} params the layout parameters to set on the child
      */
-    this.addView = function(view, indexOrParams, params) {
-        if (view.getParent() != null) {
-            console.log("IllegalStateException: " + view.getTag() + " 只能拥有一个父节点");
+    this.addView = function(v, indexOrParams, params) {
+        if (v.getParent() != null) {
+            console.log("IllegalStateException: " + v.getTag() + " 只能拥有一个父节点");
             return;
         }
-        view.setParent(this);
+        v.setParent(this);
         if (indexOrParams == undefined) {
-            mChildren.add(view);
+            children.add(v);
         } else {
             if ((typeof indexOrParams) == "number") {
-                mChildren.add(indexOrParams, view);
+                children.add(indexOrParams, v);
                 if (params != undefined) {
-                    view.setLayoutParams(params);
+                    v.setLayoutParams(params);
                 }
             } else {
-                mChildren.add(view);
-                view.setLayoutParams(indexOrParams);
+                children.add(v);
+                v.setLayoutParams(indexOrParams);
             }
         }
-        this.getDiv().appendChild(view.getDiv());
-
-        if (this.getMeasuredWidth() != 0 && this.getMeasuredHeight() != 0) {
-            this.requestLayout();
-        }
+        this.div.appendChild(v.div);
+        this.requestLayout();
     };
 
     /**
      * Removes a view from the group.
      *
      * @method removeView
-     * @param {View} view the view to remove from the group.
+     * @param {View} v the view to remove from the group.
      */
-    this.removeView = function(view) {
-        if (view !== null && mChildren.contains(view)) {
-            view.setParent(null);
-            mChildren.remove(view);
-            this.getDiv().removeChild(view.getDiv());
-
+    this.removeView = function(v) {
+        if (v !== null && children.contains(v)) {
+            v.setParent(null);
+            children.remove(v);
+            this.div.removeChild(v.div);
             this.requestLayout();
         }
     };
@@ -1884,11 +2218,11 @@ function ViewGroup() {
      * @method removeAllViews
      */
     this.removeAllViews = function() {
-        for (var i = 0; i < mChildren.length; i++) {
-            mChildren[i].setParent(null);
+        for (var i = 0; i < children.length; i++) {
+            children[i].setParent(null);
         }
-        mChildren.clear();
-        this.getDiv().innerHTML = "";
+        children.clear();
+        this.div.innerHTML = "";
         if (this.getParent()) {
             this.getParent().requestLayout();
         }
@@ -1899,8 +2233,8 @@ function ViewGroup() {
             return this;
         }
 
-        for (var i = 0; i < mChildren.length; i++) {
-            var v = mChildren[i];
+        for (var i = 0; i < children.length; i++) {
+            var v = children[i];
             v = v.findViewById(id);
             if (v != null) {
                 return v;
@@ -1915,49 +2249,53 @@ function ViewGroup() {
      * take ownership of the current gesture at any point.
      *
      * @method onInterceptTouchEvent
-     * @param ev The motion event being dispatched down the hierarchy.
+     * @param e The motion event being dispatched down the hierarchy.
      * @return Return true to steal motion events from the children and have
      * them dispatched to this ViewGroup through onTouchEvent().
      * The current target will receive an ACTION_CANCEL event, and no further
      * messages will be delivered here.
      *
      */
-    this.onInterceptTouchEvent = function(ev) {
+    this.onInterceptTouchEvent = function(e) {
         return false;
+    };
+
+    this.onBeforeInterceptTouchEvent = function(e) {
+
     };
 
     /**
      * Pass the touch screen motion event down to the target view, or this
      * view if it is the target.
      *
-     * @param event The motion event to be dispatched.
+     * @param e The motion event to be dispatched.
      * @return True if the event was handled by the view, false otherwise.
      */
-    this.dispatchTouchEvent = function(ev) {
-        var xf = ev.getX();
-        var yf = ev.getY();
+    this.dispatchTouchEvent = function(e) {
+        var xf = e.getX();
+        var yf = e.getY();
         var scrolledX = xf + this.getScrollX();
         var scrolledY = yf + this.getScrollY();
-        var frame = mTempRect;
+        var frame = tempRect;
 
-        var action = ev.getAction();
-        if (action == MotionEvent.ACTION_DOWN) {
-            if (mMotionTarget != null) {
-                mMotionTarget = null;
+        var action = e.getAction();
+        if (action == ME.ACTION_DOWN) {
+            if (motionTarget != null) {
+                motionTarget = null;
             }
-            if (mDisallowIntercept || !this.onInterceptTouchEvent(ev)) {
-                ev.setAction(MotionEvent.ACTION_DOWN);
-                var count = mChildren.length;
+            if (disallowIntercept || !this.onInterceptTouchEvent(e)) {
+                e.setAction(ME.ACTION_DOWN);
+                var count = children.length;
                 for (var i = count - 1; i >= 0; i--) {
-                    var child = mChildren[i];
+                    var child = children[i];
                     if (child.getVisibility() == View.VISIBLE) {
                         child.getHitRect(frame);
                         if (frame.contains(scrolledX, scrolledY)) {
                             var xc = scrolledX - child.getLeft();
                             var yc = scrolledY - child.getTop();
-                            ev.setLocation(xc, yc);
-                            if (child.dispatchTouchEvent(ev))  {
-                                mMotionTarget = child;
+                            e.setLocation(xc, yc);
+                            if (child.dispatchTouchEvent(e))  {
+                                motionTarget = child;
                                 return true;
                             }
                         }
@@ -1966,67 +2304,49 @@ function ViewGroup() {
             }
         }
 
-        var isUpOrCancel = (action == MotionEvent.ACTION_UP) || (action == MotionEvent.ACTION_CANCEL);
+        var isUpOrCancel = (action == ME.ACTION_UP) || (action == ME.ACTION_CANCEL);
         if (isUpOrCancel) {
-            mDisallowIntercept = false;
+            disallowIntercept = false;
         }
 
-        var target = mMotionTarget;
+        var target = motionTarget;
         if (target == null) {
-            ev.setLocation(xf, yf);
-            return this._onTouchEvent(ev);
+            e.setLocation(xf, yf);
+            return this._onTouchEvent(e);
         }
 
-        if (!mDisallowIntercept && this.onInterceptTouchEvent(ev)) {
+        if (!disallowIntercept && this.onInterceptTouchEvent(e)) {
             var xc = scrolledX - target.getLeft();
             var yc = scrolledY - target.getTop();
-            ev.setAction(MotionEvent.ACTION_CANCEL);
-            ev.setLocation(xc, yc);
-            if (!target.dispatchTouchEvent(ev)) {
+            e.setAction(ME.ACTION_CANCEL);
+            e.setLocation(xc, yc);
+            if (!target.dispatchTouchEvent(e)) {
             }
-            mMotionTarget = null;
+            motionTarget = null;
             return true;
         }
 
         if (isUpOrCancel) {
-            mMotionTarget = null;
+            motionTarget = null;
         }
 
         var xc = scrolledX - target.getLeft();
         var yc = scrolledY - target.getTop();
-        ev.setLocation(xc, yc);
+        e.setLocation(xc, yc);
 
-        return target.dispatchTouchEvent(ev);
+        return target.dispatchTouchEvent(e);
     };
 
-    this.requestDisallowInterceptTouchEvent = function(disallowIntercept) {
-        if (disallowIntercept == mDisallowIntercept) {
+    this.requestDisallowInterceptTouchEvent = function(d) {
+        if (d == disallowIntercept) {
             return;
         }
-        mDisallowIntercept = disallowIntercept;
+        disallowIntercept = d;
         if (this.getParent() != null) {
-            this.getParent().requestDisallowInterceptTouchEvent(disallowIntercept);
+            this.getParent().requestDisallowInterceptTouchEvent(d);
         }
     }
 }
-
-// 以下为Canvas方法
-CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-    if (w < 2 * r) {
-		r = w / 2;
-	}
-    if (h < 2 * r) {
-		r = h / 2;
-	}
-    this.beginPath();
-    this.moveTo(x + r, y);
-    this.arcTo(x + w, y, x + w, y + h, r);
-    this.arcTo(x + w, y + h, x, y + h, r);
-    this.arcTo(x, y + h, x, y, r);
-    this.arcTo(x, y, x + w, y, r);
-    this.closePath();
-    return this;
-};
 
 // 以下为Activity方法
 var mRootNode;
@@ -2074,65 +2394,88 @@ function setContentView(view, htmlnode) {
     mRootNode.style.margin = "0";
     mRootNode.appendChild(mHideDiv);
 
-    mDecorView = new FrameLayout();
+    mDecorView = new DecorView();
     mDecorView.setTag("decorview");
 
     mRootView = view;
     mRootView.setTag("rootview");
     mDecorView.addView(mRootView);
 
-    mRootNode.appendChild(mDecorView.getDiv());
+    mRootNode.appendChild(mDecorView.div);
     mRootNode.style.overflow = "hidden";
 
     document.body.style.pointerEvents = "auto";
-    var events = ["touchstart", "touchmove", "touchend", "touchcancel", "mousedown", "mousemove", "mouseup"];
+    var events = ["touchstart", "touchmove", "touchend", "touchcancel", "mousedown", "mousemove", "mouseup", "mouseout"];
     for (var i = 0; i < events.length; i++) {
         document.body.addEventListener(events[i], touch, false);
     }
 
-    forceReLayout();
-
     var css = document.createElement("style");
-    css.innerHTML = "*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px; height: 0px} input{outline:none}";
+    var divCss = "position:absolute; box-sizing:border-box; overflow:hidden; text-overflow:ellipsis;";
+    css.innerHTML = "body > div[tag='decorview']{" + divCss + "} body > div[tag='decorview'] div{" + divCss + "} "
+    + "*{-webkit-user-select:none;} ::-webkit-scrollbar {width: 0px; height: 0px} input{outline:none}";
     document.head.appendChild(css);
 }
 
-var _mInTouch = false;
+function DecorView() {
+    FrameLayout.apply(this);
+
+    this.requestLayout = function() {
+        forceReLayout();
+    };
+
+    this.measure = function(wMS, hMS) {
+        this.onMeasure(wMS, hMS);
+    };
+
+    this.layout = function(x, y) {
+        this.onLayout(x, y);
+    }
+}
+
+var mInTouch = false;
 
 function touch(e) {
     e.stopPropagation();
 
-    if (e.type == "mousemove" && _mInTouch == false) {
+    if (e.type == "mousemove" && mInTouch == false) {
         return;
     }
-    if (e.type == "mouseout" && _mInTouch == false) {
+    if (e.type == "mouseout" && mInTouch == false) {
         return;
     }
-    var ev = new MotionEvent(e);
+    var ev = new ME(e);
     ev.realDiv = this;
 
     switch (ev.getAction()) {
-        case MotionEvent.ACTION_DOWN:
-            _mInTouch = true;
+        case ME.ACTION_DOWN:
+            mInTouch = true;
             break;
-        case MotionEvent.ACTION_UP:
-            _mInTouch = false;
+        case ME.ACTION_UP:
+            mInTouch = false;
             break;
-        case MotionEvent.ACTION_CANCEL:
-            _mInTouch = false;
+        case ME.ACTION_CANCEL:
+            mInTouch = false;
             break;
     }
     mDecorView.dispatchTouchEvent(ev);
-}
 
-/* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
-var c = document.createElement('script');
-c.type = 'text/javascript';
-c.async = true;
-c.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'www.clicki.cn/boot/52027';
-var h = document.getElementsByTagName('script')[0];
-h.parentNode.insertBefore(c, h);
-/* statistics code end */
+    if (ev.needCompleteActionUp()) {
+        var actionUpEv = new ME(e);
+        actionUpEv.setAction(1);
+        actionUpEv.setPointerCount(1);
+        mDecorView.dispatchTouchEvent(actionUpEv);
+    }
+}
+//
+///* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
+//var c = document.createElement('script');
+//c.type = 'text/javascript';
+//c.async = true;
+//c.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'www.clicki.cn/boot/52027';
+//var h = document.getElementsByTagName('script')[0];
+//h.parentNode.insertBefore(c, h);
+///* statistics code end */
 
 function getRootView() {
     return mRootView;
@@ -2164,13 +2507,81 @@ function onOrientationChanged() {
     forceReLayout();
 }
 
-var supportsOrientationChange = "onorientationchange" in window,
-    orientationEvent = supportsOrientationChange ? "orientationchange" : "resize";
-
 function addOrientationListener(listener) {
     window.addEventListener("resize", listener);
 }
 
-function throwException(msg) {
-    log(msg);
+
+var mJSTotal = 0;
+var mJSCount = 0;
+function includeJs(path) {
+    mJSTotal++;
+    loadJS(path, function() {
+        mJSCount++;
+        if (window.onJSProgressChanged) {
+            window.onJSProgressChanged.call(this, mJSCount / mJSTotal);
+        }
+        if (mJSCount == mJSTotal) {
+            if (window.onCreate) {
+                window.onCreate.call(this);
+            }
+            mJSTotal = 0;
+            mJSCount = 0;
+        }
+    });
+}
+
+function loadJS(path, callback) {
+    var s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.src = path;
+    s.onload = s.onreadystatechange = function () {
+        if (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete') {
+            if (callback) {
+                callback.call();
+            }
+            s.onload = s.onreadystatechange = null;
+        }
+    };
+    var h = document.getElementsByTagName('head')[0];
+    h.appendChild(s)
+}
+
+function liteAjax(url, callback, method, postBody, _error) {
+
+    method = method ? method.toUpperCase() : "GET";
+
+    var rqst = getRequestObj();
+    if (rqst) {
+        rqst.onreadystatechange = function() {
+            if (rqst.readyState == 4) {
+                callback(rqst.responseText);
+            }
+        };
+        rqst.ontimeout = function() {
+            console.log('timeout');
+        };
+        rqst.onerror = function() {
+            console.log('error');
+        };
+        rqst.onabort = function() {
+            console.log('abort')
+        };
+
+        rqst.open(method, url, true);
+        if (method == "POST") {
+            rqst.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            rqst.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            rqst.setRequestHeader('Connection', 'close');
+        }
+        rqst.send(postBody);
+    }
+
+    function getRequestObj() {
+        if (window.ActiveXObject) {
+            return new ActiveXObject('Microsoft.XMLHTTP');
+        } else if (window.XMLHttpRequest) {
+            return new XMLHttpRequest();
+        }
+    }
 }

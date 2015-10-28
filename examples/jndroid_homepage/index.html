@@ -5,14 +5,12 @@
     <title>Jndroid</title>
 
     <!-- Jndroid libraries -->
-    <!--<script src="../../src/jndroid.core.js"></script>-->
-    <!--<script src="../../src/jndroid.animation.js"></script>-->
-    <!--<script src="../../src/jndroid.dialog.js"></script>-->
-    <!--<script src="../../src/jndroid.widget.js"></script>-->
-    <!--<script src="../../src/jndroid.layout.js"></script>-->
-    <!--<script src="../../src/jndroid.mwidget.js"></script>-->
-    <!--<script src="../../src/jndroid.net.js"></script>-->
-    <script src="http://file.gtbrowser.cn/jndroid/jndroid.min.js"></script>
+    <script src="../../src/jndroid.core.js"></script>
+    <script src="../../src/jndroid.animation.js"></script>
+    <script src="../../src/jndroid.widget.js"></script>
+    <script src="../../src/jndroid.layout.js"></script>
+    <script src="../../src/jndroid.mwidget.js"></script>
+    <!--<script src="http://file.gtbrowser.cn/jndroid/jndroid.min.js"></script>-->
 
 
     <!-- Source files -->
@@ -25,8 +23,14 @@
     <script src="scripts/Indicator.js"></script>
     <script src="scripts/playground.js"></script>
 
-    <!-- Code Editor -->
-    <link rel="stylesheet" href="codemirror/codemirror.css">
+    <script src="scripts/VSAndroidView.js"></script>
+    <script src="scripts/DocumentationView.js"></script>
+    <script src="scripts/ApplicationsView.js"></script>
+    <script src="scripts/AboutView.js"></script>
+    <script src="scripts/comment.js"></script>
+    <script src="scripts/CodeMirrorView.js"></script>
+    <script src="scripts/SettingView.js"></script>
+
 </head>
 <body>
 <script>
@@ -51,12 +55,13 @@
     }
     rootview.addView(mMainView);
 
-    Utils.includeJs("scripts/VSAndroidView.js");
-    Utils.includeJs("scripts/DocumentationView.js");
-    Utils.includeJs("scripts/ApplicationsView.js");
-    Utils.includeJs("scripts/AboutView.js");
-    Utils.includeJs("scripts/comment.js");
-    Utils.includeJs("scripts/SettingView.js");
+//    loadJS("scripts/VSAndroidView.js");
+//    loadJS("scripts/DocumentationView.js");
+//    loadJS("scripts/ApplicationsView.js");
+//    loadJS("scripts/AboutView.js");
+//    loadJS("scripts/comment.js");
+//    loadJS("scripts/SettingView.js");
+
 </script>
 </body>
 </html>

@@ -3,7 +3,7 @@ function Tab () {
     this.setBackgroundColor(R.color.theme);
     this.setBoxShadow(0, 6, 6, 0, 0x42000000);
 
-    var mScrollView = new HorizontalScrollView();
+    var mScrollView = new ScrollView();
     mScrollView.setPadding(0);
     //this.postDelayed(function() {
     //    mScrollView.scrollTo(100);

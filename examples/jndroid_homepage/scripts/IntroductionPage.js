@@ -5,7 +5,7 @@ function IntroductionView() {
     ScrollView.apply(this, []);
 
     this.setBackgroundColor(R.color.card_bg);
-    
+
     var mPadding = R.dimen.padding;
     var mParaPaddingTop = R.dimen.paragraph_padding_top;
 
@@ -32,15 +32,7 @@ function IntroductionView() {
 
     loadGitCafeView();
 
-    Utils.includeJs("codemirror/codemirror.js", function() {
-        Utils.includeJs("codemirror/htmlmixed.js");
-        Utils.includeJs("codemirror/javascript.js");
-        Utils.includeJs("codemirror/matchbrackets.js");
-        Utils.includeJs("codemirror/xml.js");
-        Utils.includeJs("scripts/CodeMirrorView.js", function() {
-            loadPlaygrounds();
-        });
-    });
+    loadPlaygrounds();
 
     function loadSlogan(text) {
         var slogan = new TextView();

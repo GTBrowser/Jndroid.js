@@ -31,12 +31,8 @@ function Playground(title, initCode, isHtml) {
 
     var mEditView;
 
-    if (mIsPhone) {
         mEditView = new EditText();
         mEditView.setSingleLine(false);
-    } else {
-        mEditView = new CodeMirrorView(isHtml);
-    }
     mEditView.setOnFocusChangeListener(function() {
         resetBorder();
     });
@@ -157,7 +153,7 @@ function HtmlPreviewer() {
     this.setPadding(10);
 
     this.applyCode = function(code){
-        mDisplayArea.loadData(code);
+        mDisplayArea.loadDataWithBaseURL(code);
     };
 }
 

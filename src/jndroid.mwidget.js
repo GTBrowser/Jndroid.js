@@ -1,38 +1,43 @@
 function MProgressBar() {
-    View.apply(this, []);
+    View.apply(this);
 
-    var HORIZONTAL_HEIGHT = 3;
-    var SMALL_SIZE = 30;
-    var LARGE_SIZE = 45;
+    var horizontalH = 3;
+    var smallSize = 30;
+    var largeSize = 45;
 
-    var mSelf = this;
-    var mStyle = MProgressBar.Horizontal;
-    var mColor = 0xff4688f5;
-    var mSecondaryColor = 0xffb3d3ea;
-    var mBeginDegree = 0;
-    var mEndDegree = Math.PI * 2;
-    var mOffsetDegree = 0;
-    var mFinish = false;
-    var mDensity = DisplayMetrics.density;
+    var self = this;
+    var style = MProgressBar.Horizontal;
+    var color = 0xff4688f5;
+    var secondaryColor = 0xffb3d3ea;
+    var beginDegree = 0;
+    var endDegree = Math.PI * 2;
+    var offsetDegree = 0;
+    var finish = false;
+    var density = DisplayMetrics.density;
+    var duration = 2000;
 
     var mProcessor = new Processor();
-    mProcessor.startProcess(0, 1, 2000);
-    mProcessor.setProcessListener(function() {
-        if (mFinish == false) {
-            mOffsetDegree += Math.PI;
-            mProcessor.startProcess(0, 1, 2000);
+    mProcessor.startProcess(0, 1, duration);
+    mProcessor.setEndListener(function() {
+        if (finish == false) {
+            offsetDegree += Math.PI;
+            mProcessor.startProcess(0, 1, duration);
         }
     });
 
     this.setWillNotDraw(false);
 
-    this.setStyle = function(style) {
-        mStyle = style;
+    this.setCycleDuration = function(d) {
+        duration = d;
+    };
+
+    this.setStyle = function(s) {
+        style = s;
         this.requestLayout();
     };
 
     this.setProgressColor = function(c) {
-        mColor = c;
+        color = c;
     };
 
     this.setSecondaryProgressColor = function(c) {
@@ -40,36 +45,36 @@ function MProgressBar() {
     };
 
     this.stopAnimation = function() {
-        mFinish = true;
+        finish = true;
         mProcessor.forceFinished(true);
     };
 
-    this.onMeasure = function (widthMS, heightMS) {
-        var width, height;
-        if (mStyle == MProgressBar.Horizontal) {
-            width = MeasureSpec.getSize(widthMS);
-            height = HORIZONTAL_HEIGHT;
-        } else if (mStyle == MProgressBar.Small) {
-            width = SMALL_SIZE;
-            height = SMALL_SIZE;
-        } else if (mStyle == MProgressBar.Large) {
-            width = LARGE_SIZE;
-            height = LARGE_SIZE;
+    this.onMeasure = function (wMS) {
+        var w, h;
+        if (style == MProgressBar.Horizontal) {
+            w = MS.getSize(wMS);
+            h = horizontalH;
+        } else if (style == MProgressBar.Small) {
+            w = smallSize;
+            h = smallSize;
+        } else if (style == MProgressBar.Large) {
+            w = largeSize;
+            h = largeSize;
         }
-        this.setMeasuredDimension(width, height);
+        this.setMD(w, h);
     };
 
-    this.onDraw = function(canvas) {
-        if (mStyle == MProgressBar.Horizontal) {
-            drawLine(canvas);
+    this.onDraw = function(c) {
+        if (style == MProgressBar.Horizontal) {
+            drawLine(c);
         } else {
-            drawCircle(canvas);
+            drawCircle(c);
         }
     };
 
-    function drawLine(canvas) {
-        var w = mSelf.getMeasuredWidth() * mDensity;
-        var h = mSelf.getMeasuredHeight() * mDensity;
+    function drawLine(c) {
+        var w = self.getMW() * density;
+        var h = self.getMH() * density;
         var distance = w * 1.1;
         var p = mProcessor.getCurrProcess();
         var p1 = f2(p);
@@ -77,41 +82,41 @@ function MProgressBar() {
         var begin = distance * p1;
         var end = distance * p2;
 
-        canvas.lineWidth = h;
-        canvas.beginPath();
-        canvas.moveTo(0, h / 2);
-        canvas.lineTo(w, h / 2);
-        canvas.closePath();
-        canvas.strokeStyle = Utils.toCssColor(mSecondaryColor);
-        canvas.stroke();
+        c.lineWidth = h;
+        c.beginPath();
+        c.moveTo(0, h / 2);
+        c.lineTo(w, h / 2);
+        c.closePath();
+        c.strokeStyle = Utils.toCssColor(secondaryColor);
+        c.stroke();
 
-        canvas.beginPath();
-        canvas.moveTo(begin - 0.05 * w, h / 2);
-        canvas.lineTo(end, h / 2);
-        canvas.closePath();
-        canvas.strokeStyle = Utils.toCssColor(mColor);
-        canvas.stroke();
+        c.beginPath();
+        c.moveTo(begin - 0.05 * w, h / 2);
+        c.lineTo(end, h / 2);
+        c.closePath();
+        c.strokeStyle = Utils.toCssColor(color);
+        c.stroke();
 
-        computeProcessOffset();
+        calcOffset();
     }
 
-    function drawCircle(canvas) {
-        var x = mSelf.getMeasuredWidth() / 2 * mDensity;
-        var y = mSelf.getMeasuredHeight() / 2 * mDensity;
+    function drawCircle(c) {
+        var x = self.getMW() / 2 * density;
+        var y = self.getMH() / 2 * density;
         var lineWidth = x / 5;
-        var radius = mSelf.getMeasuredWidth() / 2 * mDensity;
+        var radius = self.getMW() / 2 * density;
         var distance = Math.PI * 3;
         var p = mProcessor.getCurrProcess();
         var p1 = f1(p);
         var p2 = f2(p);
-        mBeginDegree = mOffsetDegree + distance * p2;
-        mEndDegree = mOffsetDegree + Math.PI * 0.1 + distance * p1;
-        canvas.arc(x, y, radius - lineWidth / 2, mBeginDegree, mEndDegree);
-        canvas.lineWidth = lineWidth;
-        canvas.strokeStyle = Utils.toCssColor(mColor);
-        canvas.stroke();
+        beginDegree = offsetDegree + distance * p2;
+        endDegree = offsetDegree + Math.PI * 0.1 + distance * p1;
+        c.arc(x, y, radius - lineWidth / 2, beginDegree, endDegree);
+        c.lineWidth = lineWidth;
+        c.strokeStyle = Utils.toCssColor(color);
+        c.stroke();
 
-        computeProcessOffset();
+        calcOffset();
     }
 
     function f1(x) {
@@ -134,9 +139,9 @@ function MProgressBar() {
         }
     }
 
-    function computeProcessOffset() {
+    function calcOffset() {
         if (mProcessor.computeProcessOffset()) {
-            mSelf.postInvalidate();
+            self.postInvalidate();
         }
     }
 }
@@ -145,12 +150,12 @@ Object.defineProperty(MProgressBar,"Small",{value:1});
 Object.defineProperty(MProgressBar,"Large",{value:2});
 
 function MButton() {
-    TextView.apply(this, []);
-    var mId;
+    TextView.apply(this);
+    var id;
 
-    var mDensity = DisplayMetrics.density;
-    var mBgDrawable = new WaveDrawable();
-    mBgDrawable.setCallback(this);
+    var density = DisplayMetrics.density;
+    var bg = new WaveDrawable();
+    bg.setCallback(this);
 
     this.setWillNotDraw(false);
     this.setTextSize(16);
@@ -160,188 +165,212 @@ function MButton() {
     this.setBoxShadow(0, 0, 2, 0, 0x33000000);
 
     this.getId = function() {
-        return mId;
+        return id;
     };
 
     this.setId = function(i) {
-        mId = i;
+        id = i;
     };
 
-    this.setDimBg = function(dimBg) {
-        mBgDrawable.setDimBg(dimBg);
+    this.setDimBg = function(dim) {
+        bg.setDimBg(dim);
     };
 
-    this.setWaveColor = function(color) {
-        mBgDrawable.setWaveColor(color);
+    this.setWaveColor = function(c) {
+        bg.setWaveColor(c);
     };
 
-    this.onTouchEvent = function(ev) {
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mBgDrawable.setState(View.VIEW_STATE_PRESSED);
-                mBgDrawable.setX(ev.getX() * mDensity);
-                mBgDrawable.setY(ev.getY() * mDensity);
+    this.onTouchEvent = function(e) {
+        switch (e.getAction()) {
+            case ME.ACTION_DOWN:
+                bg.setState(View.VIEW_STATE_PRESSED);
+                bg.setX(e.getX() * density);
+                bg.setY(e.getY() * density);
                 break;
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                mBgDrawable.setState(View.VIEW_STATE_ENABLED);
+            case ME.ACTION_CANCEL:
+            case ME.ACTION_UP:
+                bg.setState(View.VIEW_STATE_ENABLED);
                 break;
         }
         return true;
     };
 
     this.onDraw = function(canvas) {
-        mBgDrawable.setBounds(0, 0, this.getMeasuredWidth() * mDensity, this.getMeasuredHeight() * mDensity);
-        mBgDrawable.draw(canvas);
+        bg.setBounds(0, 0, this.getMW() * density, this.getMH() * density);
+        bg.draw(canvas);
     };
 }
 
 function MImageButton() {
-    ImageButton.apply(this, []);
-    var mId;
+    ImageButton.apply(this);
 
-    var mDenisty = DisplayMetrics.density;
-    var mBgDrawable = new WaveDrawable();
-    mBgDrawable.setCallback(this);
+    var denisty = DisplayMetrics.density;
+    var bg = new WaveDrawable();
+    bg.setCallback(this);
 
     this.setWillNotDraw(false);
 
-    this.setDimBg = function(dimBg) {
-        mBgDrawable.setDimBg(dimBg);
+    this.setDimBg = function(dim) {
+        bg.setDimBg(dim);
     };
 
-    this.setWaveColor = function(color) {
-        mBgDrawable.setWaveColor(color);
+    this.setWaveColor = function(c) {
+        bg.setWaveColor(c);
     };
 
-    this.onTouchEvent = function(ev) {
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mBgDrawable.setState(View.VIEW_STATE_PRESSED);
-                mBgDrawable.setX(ev.getX() * mDenisty);
-                mBgDrawable.setY(ev.getY() * mDenisty);
+    this.onTouchEvent = function(e) {
+        switch (e.getAction()) {
+            case ME.ACTION_DOWN:
+                bg.setState(View.VIEW_STATE_PRESSED);
+                bg.setX(e.getX() * denisty);
+                bg.setY(e.getY() * denisty);
                 break;
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                mBgDrawable.setState(View.VIEW_STATE_ENABLED);
+            case ME.ACTION_CANCEL:
+            case ME.ACTION_UP:
+                bg.setState(View.VIEW_STATE_ENABLED);
                 break;
         }
     };
 
-    this.onDraw = function(canvas) {
-        mBgDrawable.setBounds(0, 0, this.getMeasuredWidth() * mDenisty, this.getMeasuredHeight() * mDenisty);
-        mBgDrawable.draw(canvas);
+    this.onDraw = function(c) {
+        bg.setBounds(0, 0, this.getMW() * denisty, this.getMH() * denisty);
+        bg.draw(c);
     };
 }
 
 var MDialog = new _MDialog();
 function _MDialog() {
-    LinearLayout.apply(this, []);
+    LinearLayout.apply(this);
 
     this.setTag("MDialog");
-    this.setBackgroundColor(0xffffffff);
+    this.setBg(0xffffffff);
     this.setCornerSize(2);
     this.setBoxShadow(0, 4, 16, 8, 0x33000000);
     this.setPadding(24);
 
-    var mSelf = this;
-    var mOkAction = null;
-    var mCancelAction = null;
+    var self = this;
+    var okAction = null;
+    var cancelAction = null;
 
-    var mMask = new View();
-    mMask.setBackgroundColor(0x66000000);
+    var lp = new LP(336, LP.WC);
+    lp.gravity = Gravity.CENTER;
+    this.setLP(lp);
 
-    var mTitle = new TextView();
-    mTitle.setTextColor(0xff212121);
-    mTitle.setTextSize(24);
-    var titleLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    var mask = new View();
+    mask.setBg(0x66000000);
+    mask.setOnClickListener(function() {
+        self.hide();
+    });
+    mask.setClickable(true);
+
+    var title = new TextView();
+    title.setTextColor(0xff212121);
+    title.setTextSize(24);
+    var titleLp = new LP(LP.FP, LP.WC);
     titleLp.bottomMargin = 20;
 
-    var mMsg = new TextView();
-    mMsg.setTextColor(0xff424242);
-    mMsg.setTextSize(14);
-    this.addView(mMsg);
+    var msg = new TextView();
+    msg.setTextIsSelectable(true);
+    msg.setTextColor(0xff424242);
+    msg.setTextSize(14);
+    msg.setLineHeight(24);
+    msg.setText("this is a dialog");
+    var mMsgLp = new LP(LP.FP, LP.WC);
+    this.addView(msg, mMsgLp);
 
-    var mButtonarea = new LinearLayout();
-    mButtonarea.setOrientation(LinearLayout.HORIZONTAL);
-    var buttonareaLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    buttonareaLp.setMargins(0, 24, -16, -16);
-    this.addView(mButtonarea, buttonareaLp);
+    var btnArea = new LinearLayout();
+    btnArea.setOrientation(LinearLayout.HORIZONTAL);
+    var btnAreaLp = new LP(LP.FP, LP.WC);
+    btnAreaLp.setMargins(0, 24, -16, -16);
+    this.addView(btnArea, btnAreaLp);
 
     var paddingView = new View();
-    var paddingLp = new LayoutParams(0, 36);
+    var paddingLp = new LP(0, 36);
     paddingLp.weight = 1;
-    mButtonarea.addView(paddingView, paddingLp);
+    btnArea.addView(paddingView, paddingLp);
 
-    var btnLp = new LayoutParams(80, 36);
+    var btnLp = new LP(80, 36);
 
-    var mCancel = new MButton();
-    mCancel.setText("cancel");
-    mCancel.setBoxShadow(0, 0, 0, 0, 0);
-    mCancel.setDimBg(false);
-    mCancel.setOnClickListener(function() {
-        mSelf.hide();
-        if (mCancelAction) {
-            mCancelAction.call(this);
+    var cancel = new MButton();
+    cancel.setText("cancel");
+    cancel.setBoxShadow(0, 0, 0, 0, 0);
+    cancel.setDimBg(false);
+    cancel.setOnClickListener(function() {
+        self.hide();
+        if (cancelAction) {
+            cancelAction.call(this);
         }
     });
-    mButtonarea.addView(mCancel, btnLp);
+    btnArea.addView(cancel, btnLp);
 
-    var mOk = new MButton();
-    mOk.setBoxShadow(0, 0, 0, 0, 0);
-    mOk.setText("ok");
-    mOk.setDimBg(false);
-    mOk.setOnClickListener(function() {
-        mSelf.hide();
-        if (mOkAction) {
-            mOkAction.call(this);
+    var ok = new MButton();
+    ok.setBoxShadow(0, 0, 0, 0, 0);
+    ok.setText("ok");
+    ok.setDimBg(false);
+    ok.setOnClickListener(function() {
+        self.hide();
+        if (okAction) {
+            okAction.call(this);
         }
     });
-    mButtonarea.addView(mOk, btnLp);
+    btnArea.addView(ok, btnLp);
 
     this.setOkText = function(t) {
-        mOk.setText(t);
+        ok.setText(t);
+        return this;
+    };
+
+    this.setOkColor = function(c) {
+        ok.setTextColor(c);
         return this;
     };
 
     this.setCancelText = function(t) {
-        mCancel.setText(t);
+        cancel.setText(t);
+        return this;
+    };
+
+    this.setCancelColor = function(c) {
+        cancel.setTextColor(c);
+        return this;
+    };
+
+    this.setMaskColor = function(c) {
+        mask.setBg(c);
         return this;
     };
 
     this.setTitle = function(t) {
-        mTitle.setText(t);
-        this.addView(mTitle, 0, titleLp);
+        title.setText(t);
+        this.addView(title, 0, titleLp);
         return this;
     };
 
     this.setMsg = function(msg) {
-        mMsg.setText(msg);
+        msg.setText(msg);
         return this;
     };
 
-    this.setOkAction = function(action) {
-        mOkAction = action;
+    this.setOkAction = function(a) {
+        okAction = a;
         return this;
     };
 
-    this.setCancelAction = function(action) {
-        mCancelAction = action;
+    this.setCancelAction = function(a) {
+        cancelAction = a;
         return this;
     };
 
     this.show = function() {
-        var maskLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-        mRootView.addView(mMask, maskLp);
+        var maskLp = new LP(LP.FP, LP.FP);
+        mRootView.addView(mask, maskLp);
 
-        var lp = new LayoutParams(336, LayoutParams.WRAP_CONTENT);
-        lp.gravity = Gravity.CENTER;
-        mRootView.addView(this, lp);
+        mRootView.addView(this);
 
-        mMask.setAlpha(0);
+        mask.setAlpha(0);
         var a = new AlphaAnimation(0, 1);
         a.setDuration(200);
-        mMask.startAnimation(a);
+        mask.startAnimation(a);
 
         this.setAlpha(0);
         var a2 = new AlphaAnimation(0, 1);
@@ -352,36 +381,35 @@ function _MDialog() {
     this.hide = function() {
         var a = new AlphaAnimation(1, 0);
         a.setDuration(200);
-        mMask.startAnimation(a);
+        mask.startAnimation(a);
 
         var a2 = new AlphaAnimation(1, 0);
         a2.setDuration(200);
         a2.setAnimationEndListener(function() {
-            mRootView.removeView(mMask);
-            mRootView.removeView(mSelf);
-            mSelf.removeView(mTitle);
-            mOkAction = null;
-            mCancelAction = null;
+            mRootView.removeView(mask);
+            mRootView.removeView(self);
+            self.removeView(title);
+            okAction = null;
+            cancelAction = null;
         });
         this.startAnimation(a2);
     };
 }
 
 function MEditText() {
-    ViewGroup.apply(this, []);
+    ViewGroup.apply(this);
 
-    this.LABEL_SIZE = 12;
-    this.TEXT_SIZE = 16;
-    this.PADDING = 16;
-    this.ERROR_SIZE = 12;
-    this.GAP = 8;
-    this.TEXT_AREA_HEIGHT = 100;
+    var labelSize = 12;
+    var textSize = 14;
+    var padding = 16;
+    var errSize = 12;
+    var gap = 8;
+    var textAreaH = 100;
 
     var self = this;
     var hint = "";
     var focused;
     var disabled = false;
-    var textsize = this.TEXT_SIZE;
     var isError = false;
     var isSingleLine = true;
     var focusListener = null;
@@ -393,13 +421,13 @@ function MEditText() {
     this.setTag("MEditText");
 
     var makeEditText = function() {
-        edittext.setHintText(hint);
-        edittext.setTextSize(textsize);
-        edittext.setHintColor(0xffbcbcbc);
+        editText.setHintText(hint);
+        editText.setTextSize(textSize);
+        editText.setHintColor(0xffbcbcbc);
     };
 
     var updateCountView = function() {
-        var curCount = edittext.getText().length;
+        var curCount = editText.getText().length;
         countView.setText(curCount + "/" + maxCount);
         if (maxCount > 0 && curCount > maxCount) {
             self.setError(true);
@@ -426,7 +454,7 @@ function MEditText() {
             countView.setTextColor(0xffdd3226);
         } else if (disabled) {
             label.setTextColor(0xffbcbcbc);
-            edittext.setTextColor(0xffbcbcbc);
+            editText.setTextColor(0xffbcbcbc);
             countView.setTextColor(0xffbcbcbc);
         } else if (focused) {
             label.setTextColor(highlightColor);
@@ -434,7 +462,7 @@ function MEditText() {
         } else {
             label.setTextColor(0xff757575);
             countView.setTextColor(0xff757575);
-            edittext.setTextColor(textColor);
+            editText.setTextColor(textColor);
         }
     };
 
@@ -456,14 +484,16 @@ function MEditText() {
 
     this.setDisabled = function(d) {
         disabled = d;
-        edittext.setDisabled(d);
+        editText.setDisabled(d);
         updateLine();
         updateTextColor();
     };
 
     this.setText = function(t) {
-        edittext.setText(t);
-        label.setText(hint);
+        editText.setText(t);
+        if (t != "") {
+            label.setText(hint);
+        }
         updateCountView();
     };
 
@@ -476,12 +506,16 @@ function MEditText() {
     };
 
     this.setPassword = function(isPassword) {
-        edittext.setPassword(isPassword);
+        editText.setPassword(isPassword);
     };
 
     this.setTextSize = function(ts) {
-        textsize = ts;
-        edittext.setTextSize(ts);
+        textSize = ts;
+        editText.setTextSize(ts);
+    };
+
+    this.getHint = function() {
+        return hint;
     };
 
     this.setHint = function(t) {
@@ -490,7 +524,7 @@ function MEditText() {
 
     this.setHintText = function(t) {
         hint = t;
-        edittext.setHintText(t);
+        editText.setHintText(t);
     };
 
     this.setError = function(iserror, msg) {
@@ -510,8 +544,8 @@ function MEditText() {
 
     this.setSingleLine = function(s) {
         isSingleLine  = s;
-        edittext.setSingleLine(s);
-        edittext.setText("");
+        editText.setSingleLine(s);
+        editText.setText("");
         makeEditText();
     };
 
@@ -521,16 +555,16 @@ function MEditText() {
 
     var t = null;
 
-    var edittext = new EditText();
+    var editText = new EditText();
     makeEditText();
-    edittext.setOnFocusChangeListener(function(f) {
+    editText.setOnFocusChangeListener(function(f) {
         if (focusListener != null) {
             focusListener.call(this, f);
         }
         focused = f;
         if (f) {
-            if (edittext.getText() == "") {
-                edittext.setHintText("");
+            if (editText.getText() == "") {
+                editText.setHintText("");
                 label.setText(hint);
                 t = new TranslateAnimation(0, 0, 8, 0);
                 t.setDuration(100);
@@ -541,11 +575,11 @@ function MEditText() {
                 label.startAnimation(t);
             }
         } else {
-            if (edittext.getText() == "") {
+            if (editText.getText() == "") {
                 t = new TranslateAnimation(0, 0, 0, 8);
                 t.setDuration(100);
                 t.setAnimationEndListener(function(){
-                    edittext.setHintText(hint);
+                    editText.setHintText(hint);
                     label.setText("");
                 });
                 label.startAnimation(t);
@@ -555,13 +589,13 @@ function MEditText() {
         updateTextColor();
         self.requestLayout();
     });
-    edittext.setTextChangedListener(function() {
+    editText.setTextChangedListener(function() {
         updateCountView();
         if (textChangeListener != null) {
-            textChangeListener.call(this);
+            textChangeListener.call(self);
         }
     });
-    this.addView(edittext);
+    this.addView(editText);
 
     var errorMsg = new TextView();
     errorMsg.setTextSize(12);
@@ -581,68 +615,64 @@ function MEditText() {
     updateTextColor();
 
     this.getText = function() {
-        return edittext.getText();
+        return editText.getText();
     };
 
-    this.onMeasure = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var contentWidth = width;
+    this.onMeasure = function(wMS) {
+        var w = MS.getSize(wMS);
+        var cntW = w;
 
-        measureTextView(label, contentWidth, this.LABEL_SIZE);
-        measureTextView(errorMsg, contentWidth, this.LABEL_SIZE);
-        measureTextView(countView, contentWidth, this.LABEL_SIZE);
+        measureTextView(label, cntW, labelSize);
+        measureTextView(errorMsg, cntW, labelSize);
+        measureTextView(countView, cntW, labelSize);
 
-        var height = 0;
+        var h = 0;
         if (isSingleLine) {
-            height = this.PADDING * 2 + this.GAP * 2 + this.ERROR_SIZE + this.LABEL_SIZE + 2 + textsize + 2;
-            edittext.measure(MeasureSpec.makeMeasureSpec(contentWidth, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+            h = padding * 2 + gap * 2 + errSize + labelSize + 2 + textSize + 2;
+            Utils.measureExactly(editText, cntW, h);
         } else {
-            height = this.PADDING * 2 + this.GAP * 2 + this.ERROR_SIZE + this.LABEL_SIZE + 2 + this.TEXT_AREA_HEIGHT + 2;
-            edittext.measure(MeasureSpec.makeMeasureSpec(contentWidth, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(this.TEXT_AREA_HEIGHT, MeasureSpec.EXACTLY));
+            h = padding * 2 + gap * 2 + errSize + labelSize + 2 + textAreaH + 2;
+            Utils.measureExactly(editText, cntW, textAreaH);
         }
 
-        line.measure(contentWidth, 2);
+        line.measure(cntW, 2);
 
-        this.setMeasuredDimension(width, height);
+        this.setMD(w, h);
     };
 
-    this.onLayout = function(x, y) {
-        var offsetX = 0;
-        var offsetY = this.PADDING;
-        label.layout(offsetX, offsetY - 2);
+    this.onLayout = function() {
+        var x = 0;
+        var y = padding;
+        label.layout(x, y - 2);
 
-        offsetY = this.PADDING + 10 + this.GAP;
+        y = padding + 10 + gap;
         if (isSingleLine) {
-            edittext.layout(offsetX, 0);
+            editText.layout(x, 0);
         } else {
-            edittext.layout(offsetX, offsetY);
+            editText.layout(x, y);
         }
-        offsetY = this.getMeasuredHeight() - this.ERROR_SIZE - this.GAP;
-        errorMsg.layout(offsetX, offsetY - 2);
-        countView.layout(offsetX, offsetY - 2);
+        y = this.getMH() - errSize - gap;
+        errorMsg.layout(x, y - 2);
+        countView.layout(x, y - 2);
 
-        offsetY = this.getMeasuredHeight() - this.ERROR_SIZE - this.GAP * 2 - line.getMeasuredHeight();
-        line.layout(offsetX, offsetY);
+        y = this.getMH() - errSize - gap * 2 - line.getMH();
+        line.layout(x, y);
     };
 
-    function measureTextView(view, width, height) {
-        view.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST));
+    function measureTextView(v, w, h) {
+        v.measure(MS.makeMS(w, MS.EXACTLY), MS.makeMS(h, MS.AT_MOST));
     }
 }
 
 function MSelectionButton() {
-    LinearLayout.apply(this, []);
+    LinearLayout.apply(this);
 
     this.setTag("MSelectionButton");
 
-    this.WIDTH = 160;
-    this.HEIGHT = 48;
+    var width = 160;
+    var height = 48;
 
     var self = this;
-    var width = this.WIDTH;
     var isMenuShow = false;
     var mask = new View();
     var menuPanel = new MenuPanel();
@@ -656,7 +686,7 @@ function MSelectionButton() {
     this.addView(selectedItem);
 
     var line = new View();
-    line.setBackgroundColor(0xffbcbcbc);
+    line.setBg(0xffbcbcbc);
     this.addView(line);
 
     this.addMenuItem = function(text) {
@@ -682,11 +712,11 @@ function MSelectionButton() {
         mask.setOnClickListener(function(){
             self.hideMenu();
         });
-        var maskLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        var maskLp = new LP(LP.FP, LP.FP);
         mRootView.addView(mask, maskLp);
 
-        var lp = new LayoutParams(width, LayoutParams.WRAP_CONTENT);
-        var offset = Utils.getOffset(this.getDiv());
+        var lp = new LP(width, LP.WC);
+        var offset = Utils.getOffset(this.div);
         menuPanel.makeMenu();
         menuPanel.setAlpha(0);
         lp.leftMargin = offset.left;
@@ -710,75 +740,68 @@ function MSelectionButton() {
         menuPanel.startAnimation(a);
     };
 
-    this.onMeasure = function(widthMS, heightMS) {
-        selectedItem.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(this.HEIGHT, MeasureSpec.EXACTLY));
-        line.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(1, MeasureSpec.EXACTLY));
-        this.setMeasuredDimension(width, this.HEIGHT);
+    this.onMeasure = function() {
+        Utils.measureExactly(selectedItem, width, height);
+        line.measure(width, 1);
+        this.setMD(width, height);
     };
 
     this.onLayout = function() {
-        var offsetX = 0;
-        var offsetY = 0;
-        selectedItem.layout(offsetX, offsetY);
+        var x = 0;
+        var y = 0;
+        selectedItem.layout(x, y);
 
-        offsetY = this.getMeasuredHeight() - line.getMeasuredHeight();
-        line.layout(offsetX, offsetY);
+        y = this.getMH() - line.getMH();
+        line.layout(x, y);
     };
 
     function SelectedItem() {
-        LinearLayout.apply(this, []);
+        LinearLayout.apply(this);
 
         this.setWillNotDraw(false);
 
-        var content = new LinearLayout();
-        content.setOrientation(LinearLayout.HORIZONTAL);
-        var contentLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-        this.addView(content, contentLp);
+        var cnt = new LinearLayout();
+        cnt.setOrientation(LinearLayout.HORIZONTAL);
+        var cntLp = new LP(LP.FP, LP.FP);
+        this.addView(cnt, cntLp);
 
         var textView = new TextView();
-        textView.setTextSize(textSize);
-        textView.setTextColor(textColor);
-        textView.setPadding(padding, 0, 0, 0);
         textView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-        var textLp = new LayoutParams(0, LayoutParams.FILL_PARENT);
+        var textLp = new LP(0, LP.FP);
         textLp.weight = 1;
-        content.addView(textView, textLp);
+        cnt.addView(textView, textLp);
 
-        this.setText = function(text) {
-            textView.setText(text);
+        this.setText = function(t) {
+            textView.setText(t);
         };
 
-        this.onDraw = function(canvas) {
-            var w = this.getMeasuredWidth() * DisplayMetrics.density;
-            var h = this.getMeasuredHeight() * DisplayMetrics.density;
+        this.onDraw = function(c) {
+            var w = this.getMW() * DisplayMetrics.density;
+            var h = this.getMH() * DisplayMetrics.density;
             var s = 6;
             var x = (w - h) + (h / 2) - 10;
             var y = (h - s) / 2;
-            canvas.fillStyle = "#bcbcbc";
-            canvas.beginPath();
-            canvas.moveTo(x, y);
-            canvas.lineTo(x + s * 2, y);
-            canvas.lineTo(x + s, y + s);
-            canvas.closePath();
-            canvas.fill();
+            c.fillStyle = "#bcbcbc";
+            c.beginPath();
+            c.moveTo(x, y);
+            c.lineTo(x + s * 2, y);
+            c.lineTo(x + s, y + s);
+            c.closePath();
+            c.fill();
         };
     }
 
     function MenuPanel() {
-        LinearLayout.apply(this, []);
+        LinearLayout.apply(this);
 
-        this.setBackgroundColor(0xffffffff);
+        this.setBg(0xffffffff);
         this.setBoxShadow(0, 1, 2, 1, 0x33000000);
         this.setPadding(0, 8, 0, 8);
 
         var buttonView = new LinearLayout();
         buttonView.setOrientation(LinearLayout.VERTICAL);
-        var buttonViewLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        var buttonViewLp = new LP(LP.FP, LP.WC);
         this.addView(buttonView, buttonViewLp);
-
-        var buttonLp = new LayoutParams(LayoutParams.FILL_PARENT, buttonHeight);
 
         this.makeMenu = function() {
             buttonView.removeAllViews();
@@ -791,7 +814,7 @@ function MSelectionButton() {
         };
 
         this.addMenuItem = function(index) {
-            var buttonLp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
+            var buttonLp = new LP(LP.FP, 48);
             var button = createButton(items[index]);
             button.setId(index);
             button.setOnClickListener(function () {
@@ -809,7 +832,7 @@ function MSelectionButton() {
             b.setBoxShadow(0,0,0,0);
             b.setPadding(padding, 0, 0, 0);
             b.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-            b.setBackgroundColor(0x00000000);
+            b.setBg(0x00000000);
             b.setCornerSize(0);
             return b;
         };
@@ -817,81 +840,89 @@ function MSelectionButton() {
 }
 
 function WaveDrawable() {
-    Drawable.apply(this, []);
+    Drawable.apply(this);
 
-    this.waveDuration = 500;
+    var self = this;
+    var waveDuration = 500;
 
-    var mWaveProcessor = new Processor();
+    var processor = new Processor();
 
-    var mCurrentState = View.VIEW_STATE_ENABLED;
-    var mX = 0;
-    var mY = 0;
-    var mDimBg = true;
+    var curState = View.VIEW_STATE_ENABLED;
+    var x = 0;
+    var y = 0;
+    var dimBg = true;
     var maxRadius = 9999;
-    var mWaveColor = 0x25191919;
-    var mBgColor = 0x33191919;
+    var waveColor = 0x25191919;
 
-    this.onStateChange = function(state) {
-        if (mCurrentState != View.VIEW_STATE_PRESSED && state == View.VIEW_STATE_PRESSED) {
-            mWaveProcessor.startProcess(0, 1, this.waveDuration);
+    this.onStateChange = function(s) {
+        if (curState != View.VIEW_STATE_PRESSED && s == View.VIEW_STATE_PRESSED) {
+            processor.startProcess(0, 1, waveDuration);
+            processor.setEndListener(function() {
+                curState = View.VIEW_STATE_ENABLED;
+                self.invalidateSelf();
+            });
         }
-        mCurrentState = state;
-        this.invalidateSelf();
+        if (s == View.VIEW_STATE_PRESSED) {
+            curState = s;
+            this.invalidateSelf();
+        }
     };
 
-    this.setX = function(x) {
-        mX = x;
+    this.setX = function(_x) {
+        x = _x;
     };
 
-    this.setY = function(y) {
-        mY = y;
+    this.setY = function(_y) {
+        y = _y;
     };
 
-    this.setDimBg = function(isDimBg) {
-        mDimBg = isDimBg;
+    this.setDimBg = function(dim) {
+        dimBg = dim;
     };
 
-    this.setWaveColor = function(color) {
-        mWaveColor = color;
+    this.setWaveColor = function(c) {
+        waveColor = c;
     };
 
     this.setMaxRadius = function(r) {
         maxRadius = r;
     };
 
-    this.draw = function(canvas) {
-        if (mCurrentState == View.VIEW_STATE_PRESSED) {
-            this.drawPress(canvas);
-        } else if (mCurrentState == View.VIEW_STATE_ENABLED) {
-            this.drawEnable(canvas);
+    this.draw = function(c) {
+        if (curState == View.VIEW_STATE_PRESSED) {
+            this.drawPress(c);
+        } else if (curState == View.VIEW_STATE_ENABLED) {
+            this.drawEnable(c);
         }
         this.computeAnimation();
     };
 
     this.computeAnimation = function() {
-        if (mWaveProcessor.computeProcessOffset()) {
+        if (processor.computeProcessOffset()) {
             this.invalidateSelf();
         }
     };
 
-    this.drawPress = function(canvas) {
+    this.drawPress = function(c) {
         var b = this.getBounds();
 
-        if (mDimBg) {
-            canvas.fillStyle = Utils.toCssColor(mWaveColor);
-            canvas.fillRect(b.left, b.top, b.width(), b.height());
+        if (dimBg) {
+            c.fillStyle = Utils.toCssColor(waveColor);
+            c.fillRect(b.left, b.top, b.width(), b.height());
         }
 
-        var offsetX = b.left + mX;
-        var offsetY = b.top + mY;
-        var radius = b.height() / 2 + b.width() * mWaveProcessor.getCurrProcess() * 2;
+        var offsetX = b.left + x;
+        var offsetY = b.top + y;
+        var p = processor.getCurrProcess();
+        var radius = b.height() / 2 + b.width() * p * 2;
         radius = radius / 2;
         radius = Math.min(radius, maxRadius);
-        canvas.beginPath();
-        canvas.arc(offsetX, offsetY, radius, 0, Math.PI * 2, true);
-        canvas.closePath();
-        canvas.fillStyle = Utils.toCssColor(mWaveColor);
-        canvas.fill();
+        c.beginPath();
+        c.arc(offsetX, offsetY, radius, 0, Math.PI * 2, true);
+        c.closePath();
+        var color = Color.argb((1 - p) * 50, Color.red(waveColor), Color.green(waveColor), Color.blue(waveColor));
+        c.fillStyle = Utils.toCssColor(color);
+        c.fill();
     };
 
     this.drawEnable = function(canvas) {
@@ -916,21 +947,21 @@ function WaveDrawable() {
  * @extends LinearLayout
  */
 function MRadioGroup() {
-    LinearLayout.apply(this, []);
+    LinearLayout.apply(this);
 
-    var mSelf = this;
-    var mCheckedId = -1;
-    var mOnCheckedChangeListener = null;
+    var self = this;
+    var checkedId = -1;
+    var onCheckedChangeListener = null;
 
     this.addChild = function(child, indexOrParams, params) {
         if (child.isChecked()) {
-            if (mCheckedId != -1) {
-                setCheckedStateForView(mCheckedId, false);
+            if (checkedId != -1) {
+                setCheckedStateForView(checkedId, false);
             }
             setCheckedId(child.getId());
         }
         child.setCheckedListener(function() {
-            mSelf.check(child.getId());
+            self.check(child.getId());
         });
         this.addView(child, indexOrParams, params);
     };
@@ -942,7 +973,7 @@ function MRadioGroup() {
      * @method setOnCheckedChangeListener
      */
     this.setOnCheckedChangeListener = function(l) {
-        mOnCheckedChangeListener = l;
+        onCheckedChangeListener = l;
     };
 
     /**
@@ -954,11 +985,11 @@ function MRadioGroup() {
      */
     this.check = function(id) {
         // don't even bother
-        if (id != -1 && (id == mCheckedId)) {
+        if (id != -1 && (id == checkedId)) {
             return;
         }
-        if (mCheckedId != -1) {
-            setCheckedStateForView(mCheckedId, false);
+        if (checkedId != -1) {
+            setCheckedStateForView(checkedId, false);
         }
         if (id != -1) {
             setCheckedStateForView(id, true);
@@ -975,7 +1006,7 @@ function MRadioGroup() {
      *
      */
     this.getCheckedRadioButtonId = function() {
-        return mCheckedId;
+        return checkedId;
     };
 
     /**
@@ -990,14 +1021,14 @@ function MRadioGroup() {
     };
 
     function setCheckedId(id) {
-        mCheckedId = id;
-        if (mOnCheckedChangeListener != null) {
-            mOnCheckedChangeListener.call(this, mCheckedId);
+        checkedId = id;
+        if (onCheckedChangeListener) {
+            onCheckedChangeListener.call(this, checkedId);
         }
     }
 
     function setCheckedStateForView(viewId, checked) {
-        var checkedView = mSelf.findViewById(viewId);
+        var checkedView = self.findViewById(viewId);
         if (checkedView != null) {
             checkedView.setChecked(checked);
         }
@@ -1019,141 +1050,140 @@ function MRadioGroup() {
  * @extends ViewGroup
  */
 function MRadioButton() {
-    ViewGroup.apply(this, []);
+    ViewGroup.apply(this);
 
-    this.HEIGHT = 48;
+    var height = 48;
 
-    var mSelf = this;
-    var mColor = 0xff009688;
-    var mChecked = false;
+    var self = this;
+    var color = 0xff009688;
+    var checked = false;
 
-    var mCheckedListener = null;
+    var checkedListener = null;
 
-    var mRadioCheck = new LRadioCheck();
-    mRadioCheck.setOnClickListener(onclick);
-    this.addView(mRadioCheck);
+    var radioCheck = new MRadioCheck();
+    radioCheck.setOnClickListener(onclick);
+    this.addView(radioCheck);
 
-    var mText = new TextView();
-    mText.setTextSize(16);
-    mText.setTextColor(0xff212121);
-    mText.setPadding(4);
-    mText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-    this.addView(mText);
+    var text = new TextView();
+    text.setTextSize(16);
+    text.setTextColor(0xff212121);
+    text.setPadding(4);
+    text.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+    this.addView(text);
 
     this.setOnClickListener(onclick);
 
     this.setColor = function(c) {
-        mColor = c;
+        color = c;
     };
 
-    this.setText = function(text) {
-        mText.setText(text);
+    this.setText = function(t) {
+        text.setText(t);
     };
 
     this.isChecked = function() {
-        return mChecked;
+        return checked;
     };
 
-    this.setChecked = function(checked) {
-        mChecked = checked;
-        mRadioCheck.setChecked(checked);
+    this.setChecked = function(c) {
+        checked = c;
+        radioCheck.setChecked(c);
     };
 
     this.setCheckedListener = function(l) {
-        mCheckedListener = l;
+        checkedListener = l;
     };
 
-    this.onTouchEvent = function(ev) {
-        mRadioCheck.onTouchEvent(ev);
-        mRadioCheck.getBgDrawable().setX(48 * DisplayMetrics.density);
+    this.onTouchEvent = function(e) {
+        radioCheck.onTouchEvent(e);
+        radioCheck.getBgDrawable().setX(48 * DisplayMetrics.density);
     };
 
-    this.onMeasure = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var height = this.HEIGHT;
+    this.onMeasure = function(wMS) {
+        var w = MS.getSize(wMS);
 
-        mRadioCheck.measure(50, 48);
-        mText.measure(width - 50, MeasureSpec.makeMeasureSpec(48, MeasureSpec.EXACTLY));
+        radioCheck.measure(50, 48);
+        text.measure(w - 50, MS.makeMS(48, MS.EXACTLY));
 
-        this.setMeasuredDimension(width, height);
+        this.setMD(w, height);
     };
 
-    this.onLayout = function(x, y) {
-        var offsetX = 0;
-        var offsetY = 0;
-        mRadioCheck.layout(offsetX, offsetY);
+    this.onLayout = function() {
+        var x = 0;
+        var y = 0;
+        radioCheck.layout(x, y);
 
-        offsetX += 50;
-        mText.layout(offsetX, offsetY);
+        x += 50;
+        text.layout(x, y);
     };
 
     function onclick() {
-        mSelf.setChecked(true);
-        if (mCheckedListener != null) {
-            mCheckedListener.call(mSelf, mChecked);
+        self.setChecked(true);
+        if (checkedListener) {
+            checkedListener.call(self, checked);
         }
     }
 
-    function LRadioCheck() {
-        View.apply(this, []);
+    function MRadioCheck() {
+        View.apply(this);
 
-        var mDensity = DisplayMetrics.density;
+        var density = DisplayMetrics.density;
 
-        var mBgDrawable = new WaveDrawable();
-        mBgDrawable.setCallback(this);
+        var bg = new WaveDrawable();
+        bg.setCallback(this);
 
         this.setWillNotDraw(false);
         this.setCornerSize(24);
 
         this.getBgDrawable = function() {
-            return mBgDrawable;
+            return bg;
         };
 
-        this.setChecked = function(check) {
-            var r = Color.red(mColor);
-            var g = Color.green(mColor);
-            var b = Color.blue(mColor);
-            mBgDrawable.setWaveColor(Color.argb(25, r, g, b));
+        this.setChecked = function() {
+            var r = Color.red(color);
+            var g = Color.green(color);
+            var b = Color.blue(color);
+            bg.setWaveColor(Color.argb(25, r, g, b));
             this.postInvalidate();
         };
 
-        this.onTouchEvent = function(ev) {
-            switch (ev.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    mBgDrawable.setState(View.VIEW_STATE_PRESSED);
-                    mBgDrawable.setX(ev.getX() * mDensity);
-                    mBgDrawable.setY(ev.getY() * mDensity);
+        this.onTouchEvent = function(e) {
+            switch (e.getAction()) {
+                case ME.ACTION_DOWN:
+                    bg.setState(View.VIEW_STATE_PRESSED);
+                    bg.setX(e.getX() * density);
+                    bg.setY(e.getY() * density);
                     break;
-                case MotionEvent.ACTION_CANCEL:
-                case MotionEvent.ACTION_UP:
-                    mBgDrawable.setState(View.VIEW_STATE_ENABLED);
+                case ME.ACTION_CANCEL:
+                case ME.ACTION_UP:
+                    bg.setState(View.VIEW_STATE_ENABLED);
                     break;
             }
         };
 
-        this.onDraw = function(canvas) {
-            if (mChecked) {
-                canvas.strokeStyle = Utils.toCssColor(mColor);
-                canvas.fillStyle = Utils.toCssColor(mColor);
+        this.onDraw = function(c) {
+            if (checked) {
+                c.strokeStyle = Utils.toCssColor(color);
+                c.fillStyle = Utils.toCssColor(color);
             } else {
-                canvas.strokeStyle = Utils.toCssColor(0x88000000);
-                canvas.fillStyle = Utils.toCssColor(0x88000000);
+                c.strokeStyle = Utils.toCssColor(0x88000000);
+                c.fillStyle = Utils.toCssColor(0x88000000);
             }
-            var x = 24 * mDensity;
-            var y = 24 * mDensity;
-            canvas.lineWidth = 2 * mDensity;
-            canvas.beginPath();
-            canvas.arc(x, y, 9 * mDensity, 0, Math.PI * 2, false);
-            canvas.closePath();
-            canvas.stroke();
+            var x = 24 * density;
+            var y = 24 * density;
+            c.lineWidth = 2 * density;
+            c.beginPath();
+            c.arc(x, y, 9 * density, 0, Math.PI * 2, false);
+            c.closePath();
+            c.stroke();
 
-            canvas.beginPath();
-            canvas.arc(x, y, 5 * mDensity, 0, Math.PI * 2, false);
-            canvas.closePath();
-            canvas.fill();
+            c.beginPath();
+            c.arc(x, y, 5 * density, 0, Math.PI * 2, false);
+            c.closePath();
+            c.fill();
 
-            mBgDrawable.setBounds(0, 0, this.getMeasuredWidth() * mDensity, this.getMeasuredHeight() * mDensity);
-            mBgDrawable.draw(canvas);
+            bg.setBounds(0, 0, this.getMW() * density, this.getMH() * density);
+            bg.draw(c);
         };
     }
 }
@@ -1167,62 +1197,62 @@ function MRadioButton() {
  * @extends View
  */
 function MToggleButton() {
-    View.apply(this, []);
+    View.apply(this);
 
-    var mDensity = DisplayMetrics.density;
-    var mPaddingX = 24;
-    var mTrackRadius = 8;
-    var mSelf = this;
-    var mChecked;
-    var mOnCheckedChangeListener;
-    var mDownX;
-    var mColor = 0xff009688;
-    var mThumbColor;
-    var mTrackColor;
-    var mProcessor = new Processor();
-    var mDistance;
-    var mRadius;
+    var density = DisplayMetrics.density;
+    var paddingX = 24;
+    var trackRadius = 8;
+    var self = this;
+    var checked;
+    var onCheckedChangeListener;
+    var downX;
+    var color = 0xff009688;
+    var thumbColor;
+    var trackColor;
+    var processor = new Processor();
+    var distance;
+    var radius;
 
-    var mWaveDrawable = new WaveDrawable();
-    mWaveDrawable.setDimBg(false);
-    mWaveDrawable.setX(24 * mDensity);
-    mWaveDrawable.setY(24 * mDensity);
-    mWaveDrawable.setMaxRadius(24 * mDensity);
-    mWaveDrawable.setCallback(this);
+    var wave = new WaveDrawable();
+    wave.setDimBg(false);
+    wave.setX(24 * density);
+    wave.setY(24 * density);
+    wave.setMaxRadius(24 * density);
+    wave.setCallback(this);
 
     this.setClickable(true);
     this.setWillNotDraw(false);
-    this.setBackgroundColor(0x00000000);
+    this.setBg(0x00000000);
 
-    mProcessor.setProcessListener(function() {
-        if (mProcessor.getCurrProcess() < 0.5) {
-            mChecked = false
+    processor.setEndListener(function() {
+        if (processor.getCurrProcess() < 0.5) {
+            checked = false
         } else {
-            mChecked = true;
+            checked = true;
         }
 
-        if (mOnCheckedChangeListener != null) {
-            mOnCheckedChangeListener.call(mSelf, mChecked);
+        if (onCheckedChangeListener != null) {
+            onCheckedChangeListener.call(self, checked);
         }
     });
 
     function refreshColors() {
-        if (mProcessor.getCurrProcess() == 0) {
-            mThumbColor = 0xfffafafa;
-            mTrackColor = 0x42000000;
-            mWaveDrawable.setWaveColor(0x1a000000);
+        if (processor.getCurrProcess() == 0) {
+            thumbColor = 0xfffafafa;
+            trackColor = 0x42000000;
+            wave.setWaveColor(0x1a000000);
         } else {
-            mThumbColor = mColor;
-            var r = Color.red(mThumbColor);
-            var g = Color.green(mThumbColor);
-            var b = Color.blue(mThumbColor);
-            mTrackColor = Color.argb(128, r, g, b);
-            mWaveDrawable.setWaveColor(Color.argb(50, r, g, b));
+            thumbColor = color;
+            var r = Color.red(thumbColor);
+            var g = Color.green(thumbColor);
+            var b = Color.blue(thumbColor);
+            trackColor = Color.argb(128, r, g, b);
+            wave.setWaveColor(Color.argb(50, r, g, b));
         }
     }
 
     this.setColor = function(c) {
-        mColor = c;
+        color = c;
     };
 
     /**
@@ -1230,10 +1260,10 @@ function MToggleButton() {
      * changes.
      *
      * @method setOnCheckedChangeListener
-     * @param listener the callback to call on checked state change
+     * @param l the callback to call on checked state change
      */
-    this.setOnCheckedChangeListener = function (listener) {
-        mOnCheckedChangeListener = listener;
+    this.setOnCheckedChangeListener = function (l) {
+        onCheckedChangeListener = l;
     };
 
     /**
@@ -1243,131 +1273,125 @@ function MToggleButton() {
      * @return {boolean} the checked state of this button.
      */
     this.isChecked = function() {
-        return mChecked;
+        return checked;
     };
 
-    function setCurrProcess(process) {
-        mProcessor.setCurrProcess(process);
-        mSelf.postInvalidate();
+    function setCurrProcess(p) {
+        processor.setCurrProcess(p);
+        self.postInvalidate();
     }
 
-    function isClick(ev) {
-        var deltaX = Math.abs(mDownX - ev.getX());
-        if (deltaX < 3) {
-            return true;
-        }
-        return false;
+    function isClick(e) {
+        return (Math.abs(downX - e.getX()) < 5);
     }
 
     /**
      * Changes the checked state of this button.The default state is true.
      *
      * @method setChecked
-     * @param {boolean} checked true to check the button, false to uncheck it
+     * @param {boolean} c true to check the button, false to uncheck it
      */
-    this.setChecked = function (checked) {
-        mChecked = checked;
-        if (checked) {
-            mProcessor.setCurrProcess(1);
+    this.setChecked = function (c) {
+        checked = c;
+        if (c) {
+            processor.setCurrProcess(1);
         } else {
-            mProcessor.setCurrProcess(0);
+            processor.setCurrProcess(0);
         }
-        mSelf.postInvalidate();
+        self.postInvalidate();
         refreshColors();
     };
 
     this.setChecked(false);
 
-    this.onMeasure = function(widthMS, heightMS) {
-        var trackWidth = 24 - mTrackRadius;
-        var width = trackWidth + 48;
-        var height = 48;
-        this.setMeasuredDimension(width, height);
+    this.onMeasure = function() {
+        var trackW = 24 - trackRadius;
+        var w = trackW + 48;
+        var h = 48;
+        this.setMD(w, h);
     };
 
-    this.onDraw = function(canvas) {
-        var w = mSelf.getMeasuredWidth() * mDensity;
-        var h = mSelf.getMeasuredHeight() * mDensity;
-        var p = mProcessor.getCurrProcess();
-        var r = 24 * mDensity;
+    this.onDraw = function(c) {
+        var w = self.getMW() * density;
+        var h = self.getMH() * density;
+        var p = processor.getCurrProcess();
+        var r = 24 * density;
         var offsetX;
         var offsetY;
-        mRadius = 10 * mDensity;
-        mDistance = w - mPaddingX * 2 * mDensity;
+        radius = 10 * density;
+        distance = w - paddingX * 2 * density;
 
         refreshColors();
 
-        canvas.beginPath();
-        canvas.lineWidth = mTrackRadius * 2 * mDensity;
-        canvas.lineCap = 'round';
-        canvas.moveTo(r, h / 2);
-        canvas.lineTo(w - r, h / 2);
-        canvas.strokeStyle = Utils.toCssColor(mTrackColor);
-        canvas.stroke();
+        c.beginPath();
+        c.lineWidth = trackRadius * 2 * density;
+        c.lineCap = 'round';
+        c.moveTo(r, h / 2);
+        c.lineTo(w - r, h / 2);
+        c.strokeStyle = Utils.toCssColor(trackColor);
+        c.stroke();
 
 
-        offsetX = mPaddingX * mDensity + mDistance *  p;
+        offsetX = paddingX * density + distance *  p;
         offsetY = h / 2;
-        canvas.shadowOffsetX = 0;
-        canvas.shadowOffsetY = 2;
-        canvas.shadowBlur = 5 * mDensity;
-        canvas.shadowColor = Utils.toCssColor(0x66000000);
-        canvas.beginPath();
-        canvas.arc(offsetX, offsetY, mRadius, 0, Math.PI * 2, true);
-        canvas.closePath();
-        canvas.fillStyle = Utils.toCssColor(mThumbColor);
-        canvas.fill();
+        c.shadowOffsetX = 0;
+        c.shadowOffsetY = 2;
+        c.shadowBlur = 5 * density;
+        c.shadowColor = Utils.toCssColor(0x66000000);
+        c.beginPath();
+        c.arc(offsetX, offsetY, radius, 0, Math.PI * 2, true);
+        c.closePath();
+        c.fillStyle = Utils.toCssColor(thumbColor);
+        c.fill();
 
-        mWaveDrawable.setBounds(offsetX - r, offsetY - r, offsetX + r, offsetY + r);
-        mWaveDrawable.draw(canvas);
+        wave.setBounds(offsetX - r, offsetY - r, offsetX + r, offsetY + r);
+        wave.draw(c);
 
-        if (mProcessor.computeProcessOffset()) {
-            mSelf.postInvalidate();
+        if (processor.computeProcessOffset()) {
+            self.postInvalidate();
         }
     };
 
-    this.onTouchEvent = function(ev) {
-        var w = mSelf.getMeasuredWidth();
-
-        var process = 0;
-        if (mChecked) {
-            process = 1 - (mDownX - ev.getX()) / (mDistance / mDensity);
+    this.onTouchEvent = function(e) {
+        var p = 0;
+        if (checked) {
+            p = 1 - (downX - e.getX()) / (distance / density);
         } else {
-            process = (ev.getX() - mDownX) / (mDistance / mDensity);
+            p = (e.getX() - downX) / (distance / density);
         }
-        process = Math.max(0, process);
-        process = Math.min(1, process);
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mWaveDrawable.setState(View.VIEW_STATE_PRESSED);
-                mDownX = ev.getX();
+        p = Math.max(0, p);
+        p = Math.min(1, p);
+        switch (e.getAction()) {
+            case ME.ACTION_DOWN:
+                wave.setState(View.VIEW_STATE_PRESSED);
+                downX = e.getX();
                 break;
-            case MotionEvent.ACTION_MOVE:
+            case ME.ACTION_MOVE:
 
-                if (!isClick(ev)) {
-                    setCurrProcess(process);
+                if (!isClick(e)) {
+                    setCurrProcess(p);
                 }
                 break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                mWaveDrawable.setState(View.VIEW_STATE_ENABLED);
-                if (isClick(ev)) {
-                    if (mChecked) {
-                        mProcessor.startProcess(1, 0, 100);
+            case ME.ACTION_UP:
+            case ME.ACTION_CANCEL:
+                wave.setState(View.VIEW_STATE_ENABLED);
+                if (isClick(e)) {
+                    if (checked) {
+                        processor.startProcess(1, 0, 100);
                     } else {
-                        mProcessor.startProcess(0, 1, 100);
+                        processor.startProcess(0, 1, 100);
                     }
                 } else {
-                    if (process > 0.5) {
-                        mChecked = true;
-                        mProcessor.startProcess(process, 1.0, (1 - process) * 100);
+                    if (p > 0.5) {
+                        checked = true;
+                        processor.startProcess(p, 1.0, (1 - p) * 100);
                     } else {
-                        mChecked = false;
-                        mProcessor.startProcess(process, 0, process * 100);
+                        checked = false;
+                        processor.startProcess(p, 0, p * 100);
                     }
                 }
-                if (mProcessor.computeProcessOffset()) {
-                    mSelf.postInvalidate();
+                if (processor.computeProcessOffset()) {
+                    self.postInvalidate();
                 }
                 break;
             default:
@@ -1376,50 +1400,49 @@ function MToggleButton() {
     };
 }
 
-var LSnackBar = new _LSnackbar();
-function _LSnackbar() {
-    ViewGroup.apply(this, []);
-    var MAX_WIDTH = 568;
-    var MIN_WIDTH = 288;
-    var HEIGHT = 48;
-    var TEXT_SIZE = 14;
+var MSnackBar = new _MSnackbar();
+function _MSnackbar() {
+    ViewGroup.apply(this);
+    var maxWidth = 568;
+    var height = 48;
+    var textSize = 14;
     var mSelf = this;
-    var mShowing = false;
+    var showing = false;
 
     var hide = function() {
         console.log("hide snackbar");
-        var t = new TranslateAnimation(0, 0, 0, HEIGHT);
+        var t = new TranslateAnimation(0, 0, 0, height);
         t.setDuration(200);
         t.setAnimationEndListener(function() {
             mRootView.removeView(mSelf);
-            mShowing = false;
+            showing = false;
         });
         mSelf.startAnimation(t);
     };
 
     this.setTag("SnackBar");
     this.setCornerSize(2);
-    this.setBackgroundColor(0xff323232);
+    this.setBg(0xff323232);
 
-    var content = new TextView();
-    content.setSingleLine(true);
-    content.setTextSize(TEXT_SIZE);
-    content.setTextColor(0xffffffff);
-    content.setPadding(24, 0, 0, 0);
-    content.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-    this.addView(content);
+    var cnt = new TextView();
+    cnt.setSingleLine(true);
+    cnt.setTextSize(textSize);
+    cnt.setTextColor(0xffffffff);
+    cnt.setPadding(24, 0, 0, 0);
+    cnt.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+    this.addView(cnt);
 
     this.show = function(text, time) {
-        if (mShowing == true) {
+        if (showing == true) {
             return;
         }
         console.log("show snackbar");
-        mShowing = true;
-        content.setText(text);
-        var lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        showing = true;
+        cnt.setText(text);
+        var lp = new LP(LP.WC, LP.WC);
         lp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
         mRootView.addView(this, lp);
-        var t = new TranslateAnimation(0, 0, HEIGHT, 0);
+        var t = new TranslateAnimation(0, 0, height, 0);
         t.setDuration(200);
         this.startAnimation(t);
 
@@ -1432,19 +1455,17 @@ function _LSnackbar() {
         }, duration);
     };
 
-    this.onMeasure = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        width = Math.min(width, MAX_WIDTH);
+    this.onMeasure = function(wMS) {
+        var w = MS.getSize(wMS);
+        w = Math.min(w, maxWidth);
 
-        content.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.UNSPECIFIED),
-            MeasureSpec.makeMeasureSpec(HEIGHT, MeasureSpec.EXACTLY));
+        cnt.measure(MS.makeMS(w, MS.UNSPECIFIED), MS.makeMS(height, MS.EXACTLY));
 
-
-        this.setMeasuredDimension(content.getMeasuredWidth(), HEIGHT);
+        this.setMD(cnt.getMW(), height);
     };
 
     this.onLayout = function(x, y) {
-        content.layout(0, 0);
+        cnt.layout(0, 0);
     };
 }
 

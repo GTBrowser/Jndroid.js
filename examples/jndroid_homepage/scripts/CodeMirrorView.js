@@ -18,7 +18,7 @@ function CodeMirrorView(isHtml) {
 
     var mCMEditor = null;
 
-    this.getDiv().appendChild(mTextArea);
+    this.div.appendChild(mTextArea);
     this.postDelayed(function(){
         if (isHtml) {
             mode = "htmlmixed";

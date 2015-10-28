@@ -4,13 +4,14 @@
  *
  * @class LayoutParams
  */
-function LayoutParams(widthOrParams, height) {
-    if ((typeof widthOrParams) == "number") {
-        this.width = widthOrParams;
-        this.height = height;
+var LP = LayoutParams;
+function LayoutParams(wOrParams, h) {
+    if ((typeof wOrParams) == "number") {
+        this.width = wOrParams;
+        this.height = h;
     } else {
-        this.width = widthOrParams.width;
-        this.height = widthOrParams.height;
+        this.width = wOrParams.width;
+        this.height = wOrParams.height;
     }
     this.leftMargin = 0;
     this.topMargin = 0;
@@ -51,8 +52,8 @@ function LayoutParams(widthOrParams, height) {
  * @static
  * @final
  */
-Object.defineProperty(LayoutParams,"FILL_PARENT",{value:-1});
-
+Object.defineProperty(LP,"FILL_PARENT",{value:-1});
+Object.defineProperty(LP,"FP",{value:-1});
 /**
  * Special value for the height or width requested by a View.
  * MATCH_PARENT means that the view wants to be as big as its parent,
@@ -63,8 +64,8 @@ Object.defineProperty(LayoutParams,"FILL_PARENT",{value:-1});
  * @static
  * @final
  */
-Object.defineProperty(LayoutParams,"MATCH_PARENT",{value:-1});
-
+Object.defineProperty(LP,"MATCH_PARENT",{value:-1});
+Object.defineProperty(LP,"MP",{value:-1});
 /**
  * Special value for the height or width requested by a View.
  * WRAP_CONTENT means that the view wants to be just large enough to fit
@@ -75,62 +76,63 @@ Object.defineProperty(LayoutParams,"MATCH_PARENT",{value:-1});
  * @static
  * @final
  */
-Object.defineProperty(LayoutParams,"WRAP_CONTENT",{value:-2});
+Object.defineProperty(LP,"WRAP_CONTENT",{value:-2});
+Object.defineProperty(LP,"WC",{value:-2});
 
-function getDefaultLayoutParams() {
-    return new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+function getDefaultLP() {
+    return new LP(LP.WC, LP.WC);
 }
 
-function getLayoutParams(view) {
+function getLp(view) {
     var lp = view.getLayoutParams();
     if (lp == null) {
-        lp = getDefaultLayoutParams();
+        lp = getDefaultLP();
     }
     return lp;
 }
 
-function makeSpec(childDimen, lpDimen) {
+function makeSpec(cDimen, lpDimen) {
     var spec;
-    if (lpDimen == LayoutParams.FILL_PARENT) {
-        spec = MeasureSpec.makeMeasureSpec(childDimen, MeasureSpec.EXACTLY);
-    } else if (lpDimen == LayoutParams.WRAP_CONTENT) {
-        spec = MeasureSpec.makeMeasureSpec(childDimen, MeasureSpec.UNSPECIFIED);
+    if (lpDimen == LP.FP) {
+        spec = MS.makeMS(cDimen, MS.EXACTLY);
+    } else if (lpDimen == LP.WC) {
+        spec = MS.makeMS(cDimen, MS.UNSPECIFIED);
     } else {
-        spec = MeasureSpec.makeMeasureSpec(lpDimen, MeasureSpec.EXACTLY);
+        spec = MS.makeMS(lpDimen, MS.EXACTLY);
     }
     return spec;
 }
 
-function calcOffsetXByGravity(parent, child) {
-    var lp = getLayoutParams(child);
-    var pl = parent.getPaddingLeft();
-    var pr = parent.getPaddingRight();
-    var offsetX = pl + lp.leftMargin;
+function calcX(p, c) {
+    var lp = getLp(c);
+    var pl = p.getPL();
+    var pr = p.getPR();
+    var x = pl + lp.leftMargin;
     if (lp.gravity != -1) {
         if (lp.gravity & Gravity.CENTER_HORIZONTAL) {
-            var contentWidth = parent.getMeasuredWidth() - pl - pr - lp.leftMargin - lp.rightMargin;
-            offsetX = pl + lp.leftMargin + (contentWidth - child.getMeasuredWidth()) / 2;
+            var cntW = p.getMW() - pl - pr - lp.leftMargin - lp.rightMargin;
+            x = pl + lp.leftMargin + (cntW - c.getMW()) / 2;
         } else if (lp.gravity & Gravity.RIGHT) {
-            offsetX = parent.getMeasuredWidth() - pr - lp.rightMargin - child.getMeasuredWidth();
+            x = p.getMW() - pr - lp.rightMargin - c.getMW();
         }
     }
-    return offsetX;
+    return x;
 }
 
-function calcOffsetYByGravity(parent, child) {
-    var lp = getLayoutParams(child);
-    var pt = parent.getPaddingTop();
-    var pb = parent.getPaddingBottom();
-    var offsetY = pt + lp.topMargin;
+function calcY(p, c) {
+    var lp = getLp(c);
+    var pt = p.getPT();
+    var pb = p.getPB();
+    var y = pt + lp.topMargin;
     if (lp.gravity != -1) {
         if (lp.gravity & Gravity.CENTER_VERTICAL) {
-            var contentHeight = parent.getMeasuredHeight() - pt - pb - lp.topMargin - lp.bottomMargin;
-            offsetY = pt + lp.topMargin + (contentHeight - child.getMeasuredHeight()) / 2;
+            var cntH = p.getMH() - pt - pb - lp.topMargin - lp.bottomMargin;
+            y = pt + lp.topMargin + (cntH - c.getMH()) / 2;
         } else if (lp.gravity & Gravity.BOTTOM) {
-            offsetY = parent.getMeasuredHeight() - pb - lp.bottomMargin - child.getMeasuredHeight();
+            y = p.getMH() - pb - lp.bottomMargin - c.getMH();
         }
     }
-    return offsetY;
+    return y;
 }
 
 /**
@@ -141,11 +143,11 @@ function calcOffsetYByGravity(parent, child) {
  * @extends ViewGroup
  */
 function LinearLayout() {
-    ViewGroup.apply(this, []);
+    ViewGroup.apply(this);
 
     this.setTag("LinearLayout");
 
-    var mOrientation = LinearLayout.VERTICAL;
+    var orientation = LinearLayout.VERTICAL;
 
     /**
      * Should the layout be a column or a row.
@@ -154,195 +156,195 @@ function LinearLayout() {
      * value is VERTICAL.
      */
     this.setOrientation = function(o) {
-        mOrientation = o;
+        orientation = o;
         this.requestLayout();
     };
 
     this.getTotalWeight = function() {
-        var totalWeight = 0;
+        var w = 0;
         for (var i = 0; i < this.getChildCount(); i++) {
-            var child = this.getChildAt(i);
-            var clp = getLayoutParams(child);
-            totalWeight += clp.weight;
+            var c = this.getChildAt(i);
+            var clp = getLp(c);
+            w += clp.weight;
         }
-        return totalWeight;
+        return w;
     };
 
     this.getAvailableWidth = function(totalWidth) {
-        var width = totalWidth - this.getPaddingLeft() - this.getPaddingRight();
+        var w = totalWidth - this.getPL() - this.getPR();
         for (var i = 0; i < this.getChildCount(); i++) {
-            var child = this.getChildAt(i);
-            if (child.getVisibility() == View.GONE) {
+            var c = this.getChildAt(i);
+            if (c.getVisibility() == View.GONE) {
                 continue;
             }
-            var lp = getLayoutParams(child);
-            width -= (lp.leftMargin + lp.rightMargin);
+            var lp = getLp(c);
+            w -= (lp.leftMargin + lp.rightMargin);
             if (lp.width > 0) {
-                width -= lp.width;
-            } else if (lp.width == LayoutParams.WRAP_CONTENT) {
-                if (child.getMeasuredWidth() == 0 && child.getMeasuredHeight() == 0) {
-                    child.measure(0, 0);
+                w -= lp.width;
+            } else if (lp.width == LP.WC) {
+                if (c.getMW() == 0 && c.getMH() == 0) {
+                    c.measure(0, 0);
                 }
-                width -= child.getMeasuredWidth();
+                w -= c.getMW();
             }
         }
-        return width;
+        return w;
     };
 
     this.getAvailableHeight = function(totalHeight) {
-        var height = totalHeight - this.getPaddingTop() - this.getPaddingBottom();
+        var h = totalHeight - this.getPT() - this.getPB();
         for (var i = 0; i < this.getChildCount(); i++) {
-            var child = this.getChildAt(i);
-            if (child.getVisibility() == View.GONE) {
+            var c = this.getChildAt(i);
+            if (c.getVisibility() == View.GONE) {
                 continue;
             }
-            var lp = getLayoutParams(child);
-            height -= (lp.topMargin + lp.bottomMargin);
+            var lp = getLp(c);
+            h -= (lp.topMargin + lp.bottomMargin);
             if (lp.height > 0) {
-                height -= lp.height;
-            } else if (lp.height == LayoutParams.WRAP_CONTENT) {
-                if (child.getMeasuredWidth() == 0 && child.getMeasuredHeight() == 0) {
-                    child.measure(0, 0);
+                h -= lp.height;
+            } else if (lp.height == LP.WC) {
+                if (c.getMW() == 0 && c.getMH() == 0) {
+                    c.measure(0, 0);
                 }
-                height -= child.getMeasuredHeight();
+                h -= c.getMH();
             }
         }
-        return height;
+        return h;
     };
 
-    this.onMeasure = function(widthMS, heightMS) {
-        if (mOrientation == LinearLayout.VERTICAL) {
-            this.measureVertical(widthMS, heightMS);
+    this.onMeasure = function(wMS, hMS) {
+        if (orientation == LinearLayout.VERTICAL) {
+            this.measureVertical(wMS, hMS);
         } else {
-            this.measureHorizontal(widthMS, heightMS);
+            this.measureHorizontal(wMS, hMS);
         }
     };
 
-    this.measureVertical = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var height = MeasureSpec.getSize(heightMS);
-        var pl = this.getPaddingLeft();
-        var pt = this.getPaddingTop();
-        var pr = this.getPaddingRight();
-        var pb = this.getPaddingBottom();
-        var contentHeight = pt + pb;
+    this.measureVertical = function(wMS, hMS) {
+        var w = MS.getSize(wMS);
+        var h = MS.getSize(hMS);
+        var pl = this.getPL();
+        var pt = this.getPT();
+        var pr = this.getPR();
+        var pb = this.getPB();
+        var cntH = pt + pb;
         var totalWeight = this.getTotalWeight();
-        var lp = getLayoutParams(this);
+        var lp = getLp(this);
         for (var i = 0; i < this.getChildCount(); i++) {
-            var child = this.getChildAt(i);
-            if (child.getVisibility() == View.GONE) {
+            var c = this.getChildAt(i);
+            if (c.getVisibility() == View.GONE) {
                 continue;
             }
-            var clp = getLayoutParams(child);
-            var childWidth = width - pl - pr - clp.leftMargin - clp.rightMargin;
-            var childHeight = height - pt - pb - clp.topMargin - clp.bottomMargin;
-            var cWidthSpec = makeSpec(childWidth, clp.width);
-            var cHeightSpec = makeSpec(childHeight, clp.height);
+            var clp = getLp(c);
+            var cW = w - pl - pr - clp.leftMargin - clp.rightMargin;
+            var cH = h - pt - pb - clp.topMargin - clp.bottomMargin;
+            var cWS = makeSpec(cW, clp.width);
+            var cHS = makeSpec(cH, clp.height);
             if (totalWeight != 0 && !(clp.weight == 0 && clp.height > 0)) {
-                var cHeight = this.getAvailableHeight(height) * clp.weight / totalWeight;
-                cHeightSpec = MeasureSpec.makeMeasureSpec(cHeight, MeasureSpec.EXACTLY);
+                var ch = this.getAvailableHeight(h) * clp.weight / totalWeight;
+                cHS = MS.makeMeasureSpec(ch, MS.EXACTLY);
             }
-            child.measure(cWidthSpec, cHeightSpec);
-            contentHeight += child.getMeasuredHeight() + clp.topMargin + clp.bottomMargin;
+            c.measure(cWS, cHS);
+            cntH += c.getMH() + clp.topMargin + clp.bottomMargin;
         }
-        var hMode = MeasureSpec.getMode(heightMS);
-        if (hMode != MeasureSpec.EXACTLY) {
-            if (lp.height == LayoutParams.WRAP_CONTENT) {
-                height = contentHeight;
+        var hMode = MS.getMode(hMS);
+        if (hMode != MS.EXACTLY) {
+            if (lp.height == LP.WC) {
+                h = cntH;
             }
         }
 
-        this.setMeasuredDimension(width, height);
+        this.setMD(w, h);
     };
 
-    this.measureHorizontal = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var height = MeasureSpec.getSize(heightMS);
-        var hMode = MeasureSpec.getMode(heightMS);
-        var pl = this.getPaddingLeft();
-        var pt = this.getPaddingTop();
-        var pr = this.getPaddingRight();
-        var pb = this.getPaddingBottom();
-        var contentWidth = pl + pr;
+    this.measureHorizontal = function(wMS, hMS) {
+        var w = MS.getSize(wMS);
+        var h = MS.getSize(hMS);
+        var hMode = MS.getMode(hMS);
+        var pl = this.getPL();
+        var pt = this.getPT();
+        var pr = this.getPR();
+        var pb = this.getPB();
+        var cntW = pl + pr;
         var totalWeight = this.getTotalWeight();
-        var lp = getLayoutParams(this);
-        if (hMode != MeasureSpec.EXACTLY && lp.height == LayoutParams.WRAP_CONTENT) {
-            height = pt + pb;
+        var lp = getLp(this);
+        if (hMode != MS.EXACTLY && lp.height == LP.WC) {
+            h = pt + pb;
         }
         for (var i = 0; i < this.getChildCount(); i++) {
-            var child = this.getChildAt(i);
-            if (child.getVisibility() == View.GONE) {
+            var c = this.getChildAt(i);
+            if (c.getVisibility() == View.GONE) {
                 continue;
             }
-            var clp = getLayoutParams(child);
-            var childWidth = width - pl - pr - clp.leftMargin - clp.rightMargin;
-            var childHeight = height - pt - pb - clp.topMargin - clp.bottomMargin;
-            var cWidthSpec = makeSpec(childWidth, clp.width);
-            var cHeightSpec = makeSpec(childHeight, clp.height);
+            var clp = getLp(c);
+            var cW = w - pl - pr - clp.leftMargin - clp.rightMargin;
+            var cH = h - pt - pb - clp.topMargin - clp.bottomMargin;
+            var cWS = makeSpec(cW, clp.width);
+            var cHS = makeSpec(cH, clp.height);
             if (totalWeight != 0 && !(clp.weight == 0 && clp.width > 0)) {
-                var cWidth = this.getAvailableWidth(width) * clp.weight / totalWeight;
-                cWidthSpec = MeasureSpec.makeMeasureSpec(cWidth, MeasureSpec.EXACTLY);
+                var cWidth = this.getAvailableWidth(w) * clp.weight / totalWeight;
+                cWS = MS.makeMeasureSpec(cWidth, MS.EXACTLY);
             }
-            child.measure(cWidthSpec, cHeightSpec);
-            contentWidth += child.getMeasuredWidth() + clp.leftMargin + clp.rightMargin;
+            c.measure(cWS, cHS);
+            cntW += c.getMW() + clp.leftMargin + clp.rightMargin;
 
-            if (hMode != MeasureSpec.EXACTLY && lp.height == LayoutParams.WRAP_CONTENT) {
-                var ch = pt + pb + clp.topMargin + clp.bottomMargin + child.getMeasuredHeight();
-                if (ch > height) {
-                    height = ch;
+            if (hMode != MS.EXACTLY && lp.height == LP.WC) {
+                var ch = pt + pb + clp.topMargin + clp.bottomMargin + c.getMH();
+                if (ch > h) {
+                    h = ch;
                 }
             }
         }
 
-        var wMode = MeasureSpec.getMode(widthMS);
-        if (wMode != MeasureSpec.EXACTLY) {
-            if (lp.width == LayoutParams.WRAP_CONTENT) {
-                width = contentWidth;
+        var wMode = MS.getMode(wMS);
+        if (wMode != MS.EXACTLY) {
+            if (lp.width == LP.WC) {
+                w = cntW;
             }
         }
 
-        this.setMeasuredDimension(width, height);
+        this.setMD(w, h);
     };
 
-    this.onLayout = function(x, y) {
-        if (mOrientation == LinearLayout.VERTICAL) {
-            this.layoutVertical(x, y);
+    this.onLayout = function() {
+        if (orientation == LinearLayout.VERTICAL) {
+            this.layoutVertical();
         } else {
-            this.layoutHorizontal(x, y);
+            this.layoutHorizontal();
         }
     };
 
-    this.layoutVertical = function(x, y) {
-        var offsetX = this.getPaddingLeft();
-        var offsetY = this.getPaddingTop();
+    this.layoutVertical = function() {
+        var x = this.getPL();
+        var y = this.getPT();
+        for (var i = 0; i < this.getChildCount(); i++) {
+            var c = this.getChildAt(i);
+            if (c.getVisibility() == View.GONE) {
+                continue;
+            }
+            var clp = getLp(c);
+            x = calcX(this, c);
+            y += clp.topMargin;
+            c.layout(x, y);
+            y += c.getMH();
+            y += clp.bottomMargin;
+        }
+    };
+
+    this.layoutHorizontal = function() {
+        var x = this.getPL();
+        var y = this.getPT();
         for (var i = 0; i < this.getChildCount(); i++) {
             var child = this.getChildAt(i);
             if (child.getVisibility() == View.GONE) {
                 continue;
             }
-            var clp = getLayoutParams(child);
-            offsetX = calcOffsetXByGravity(this, child);
-            offsetY += clp.topMargin;
-            child.layout(offsetX, offsetY);
-            offsetY += child.getMeasuredHeight();
-            offsetY += clp.bottomMargin;
-        }
-    };
-
-    this.layoutHorizontal = function(x, y) {
-        var offsetX = this.getPaddingLeft();
-        var offsetY = this.getPaddingTop();
-        for (var i = 0; i < this.getChildCount(); i++) {
-            var child = this.getChildAt(i);
-            if (child.getVisibility() == View.GONE) {
-                continue;
-            }
-            var clp = getLayoutParams(child);
-            offsetX += clp.leftMargin;
-            offsetY = calcOffsetYByGravity(this, child);
-            child.layout(offsetX, offsetY);
-            offsetX += child.getMeasuredWidth();
-            offsetX += clp.rightMargin;
+            var clp = getLp(child);
+            x += clp.leftMargin;
+            y = calcY(this, child);
+            child.layout(x, y);
+            x += child.getMW();
+            x += clp.rightMargin;
         }
     };
 }
@@ -377,37 +379,35 @@ Object.defineProperty(LinearLayout,"VERTICAL",{value:1});
  * @extends ViewGroup
  */
 function FrameLayout() {
-    ViewGroup.apply(this, []);
+    ViewGroup.apply(this);
 
-    this.onMeasure = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var height = MeasureSpec.getSize(heightMS);
-        var childWidth = width - this.getPaddingLeft() - this.getPaddingRight();
-        var childHeight = height - this.getPaddingTop() - this.getPaddingBottom();
+    this.onMeasure = function(wMS, hMS) {
+        var w = MS.getSize(wMS);
+        var h = MS.getSize(hMS);
+        var cW = w - this.getPL() - this.getPR();
+        var cH = h - this.getPT() - this.getPB();
         for (var i = 0; i < this.getChildCount(); i++) {
-            var child = this.getChildAt(i);
-            if (child.getVisibility() != View.VISIBLE) {
+            var c = this.getChildAt(i);
+            if (c.getVisibility() != View.VISIBLE) {
                 continue;
             }
-            var lp = getLayoutParams(child);
-            var cw = childWidth - lp.leftMargin - lp.rightMargin;
-            var ch = childHeight - lp.topMargin - lp.bottomMargin;
-            var cWidthSpec = makeSpec(cw, lp.width);
-            var cHeightSpec = makeSpec(ch, lp.height);
-            child.measure(cWidthSpec, cHeightSpec);
+            var lp = getLp(c);
+            var cw = cW - lp.leftMargin - lp.rightMargin;
+            var ch = cH - lp.topMargin - lp.bottomMargin;
+            c.measure(makeSpec(cw, lp.width), makeSpec(ch, lp.height));
         }
-        this.setMeasuredDimension(width, height);
+        this.setMD(w, h);
     };
 
-    this.onLayout = function(x, y) {
+    this.onLayout = function() {
         for (var i = 0; i < this.getChildCount(); i++) {
-            var child = this.getChildAt(i);
-            if (child.getVisibility() != View.VISIBLE) {
+            var c = this.getChildAt(i);
+            if (c.getVisibility() != View.VISIBLE) {
                 continue;
             }
-            var offsetX = calcOffsetXByGravity(this, child);
-            var offsetY = calcOffsetYByGravity(this, child);
-            child.layout(offsetX, offsetY);
+            var x = calcX(this, c);
+            var y = calcY(this, c);
+            c.layout(x, y);
         }
     };
 }
@@ -419,61 +419,63 @@ function FrameLayout() {
  * @extends ViewGroup
  */
 function Gallery() {
-    ViewGroup.apply(this, []);
+    ViewGroup.apply(this);
 
     this.setTag("Gallery");
 
-    var TouchState = new _TouchState();
-    function _TouchState() {
-        this.REST = 0;
-        this.SCROLLING = 1;
-    }
-
-    var MAX_SCROLL_DURATION = 200;
-    var SNAP_VELOCITY = 100;
-    var mSelf = this;
-    var mCurScreen = 0;
-    var mProcessor = new Processor();
-    var mListener;
-    var mTouchState = TouchState.REST;
+    var maxDuration = 200;
+    var snapV = 100;
+    var self = this;
+    var curScreen = 0;
+    var processor = new Processor();
+    var inScrolling = false;
     var isXLocked = false;
-    var isLockETH = false;
-    var mLastMotionX = 0;
-    var mLastMotionY = 0;
-    var mDownMotionX = 0;
-    var mDownMotionY = 0;
-    var mTouchSlop = 3;
-    var mLeftEdge = 0;
-    var mRightEdge = 0;
-    var mTotalWidth;
-    var mScreenWidth;
-    var mRollPadding = 0.4;
-    var mVTracker = new VelocityTracker();
+    var lastX = 0;
+    var lastY = 0;
+    var downX = 0;
+    var downY = 0;
+    var touchSlop = 10;
+    var leftEdge = 0;
+    var rightEdge = 0;
+    var totalWidth;
+    var screenWidth;
+    var rollPadding = 0.4;
+    var vTracker = new VelocityTracker();
+    var xChangedListener = null;
+    var screenChangedListener = null;
 
-    this.setGalleryListener = function(l) {
-        mListener = l;
+    this.setOnXChangedListener = function(l) {
+        xChangedListener = l;
     };
 
+    this.setOnScreenChangedListener = function(l) {
+        screenChangedListener = l;
+    };
+
+    processor.setEndListener(function() {
+        setTimeout(fireScreenChanged, 10);
+    });
+
     this.scrollTo = function(x) {
+        x = Math.floor(x);
+        if (x == this.getScrollX()) {
+            return;
+        }
         this.setScrollX(x);
-        var transition = "translate3d(" + (-x) + "px,0,0)";
-        this.getDiv().style.msTransform = transition;
-        this.getDiv().style.webkitTransform = transition;
-        this.getDiv().style.mozTransform = transition;
-        if (mListener != null && mListener.onXChanged) {
-            mListener.onXChanged(x);
+        this.translate3d(-x, 0);
+        if (xChangedListener) {
+            xChangedListener.call(this, x);
         }
     };
 
-    this.checkBounds = function(whichScreen) {
-        return (whichScreen < 0 ? 0 : whichScreen > (this.getChildCount() - 1) ? (this.getChildCount() - 1)
-            : whichScreen);
+    this.checkBounds = function(i) {
+        return (i < 0 ? 0 : i > (this.getChildCount() - 1) ? (this.getChildCount() - 1) : i);
     };
 
-    this.setToScreen = function(index) {
-        index = this.checkBounds(index);
-        mCurScreen = index;
-        this.scrollTo(index * this.getMeasuredWidth());
+    this.setToScreen = function(i) {
+        i = this.checkBounds(i);
+        curScreen = i;
+        this.scrollTo(i * this.getMW());
         fireScreenChanged();
     };
 
@@ -484,108 +486,91 @@ function Gallery() {
             return;
         }
 
-        var delta = computeScrollDistance(index);
+        var delta = calcDist(index);
         var during = duration;
         if (during == undefined) {
             during = Math.abs(delta);
         }
         during = this.controlScrollDuration(during);
-        mProcessor.startProcess(mSelf.getScrollX(), mSelf.getScrollX() + delta, during);
+        processor.startProcess(self.getScrollX(), self.getScrollX() + delta, during);
 
-        mCurScreen = index;
+        curScreen = index;
+
         this.invalidate();
-
-        setTimeout(function() {fireScreenChanged();}, during);
     };
 
-    this.snapToScreenWithVelocity = function(index, v) {
+    this.snapByV = function(index, v) {
         index = this.checkBounds(index);
-        var delta = computeScrollDistance(index);
+        var delta = calcDist(index);
         var duration = Math.abs(delta * 1000 / v) / 3;
-        duration = Math.min(duration, MAX_SCROLL_DURATION);
+        duration = Math.min(duration, maxDuration);
         this.snapToScreen(index, duration);
     };
 
-    this.controlScrollDuration = function(duration) {
-        return duration;
+    this.controlScrollDuration = function(d) {
+        return d;
     };
 
     this.lockX = function() {
         isXLocked = true;
-        this.lockETH();
-    };
-
-    this.lockETH = function() {
-        isLockETH = true;
     };
 
     this.unlockX = function() {
         isXLocked = false;
-        isLockETH = false;
     };
 
     this.isXLocked = function() {
         return isXLocked;
     };
 
-    this.onInterceptTouchEvent = function(ev) {
-        var action = ev.getAction();
-        if ((action == MotionEvent.ACTION_MOVE) && (mTouchState != TouchState.REST) && !isLockETH && !isXLocked) {
+    this.onInterceptTouchEvent = function(e) {
+        var action = e.getAction();
+        if ((action == MotionEvent.ACTION_MOVE) && inScrolling && !isXLocked) {
             return true;
         }
 
-        var x = ev.getX();
+        var x = e.getX();
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                if (this.getParent() != null) {
-                    this.getParent().requestDisallowInterceptTouchEvent(true);
-                }
-                mLastMotionX = x;
-                mDownMotionY = ev.getY();
-                mTouchState = mProcessor.isFinished() ? TouchState.REST : TouchState.SCROLLING;
+                this.getParent().requestDisallowInterceptTouchEvent(true);
+                lastX = x;
+                downY = e.getY();
+                inScrolling = !processor.isFinished();
                 break;
             case MotionEvent.ACTION_MOVE:
-                var xDiff =  Math.abs(mLastMotionX - x);
-                if (xDiff > mTouchSlop) {
-                    mTouchState = TouchState.SCROLLING;
-                    mLastMotionX = x;
-                    if (xDiff < Math.abs(ev.getY() - mDownMotionY)) {
+                var xDiff =  Math.abs(lastX - x);
+                if (xDiff > touchSlop) {
+                    inScrolling = true;
+                    lastX = x;
+                    if (xDiff < Math.abs(e.getY() - downY)) {
                         this.lockX();
-                        if (this.getParent() != null) {
-                            this.getParent().requestDisallowInterceptTouchEvent(false);
-                        }
+                        this.getParent().requestDisallowInterceptTouchEvent(false);
                     }
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                mTouchState = TouchState.REST;
-                isLockETH = isXLocked = false;
+                inScrolling = false;
+                isXLocked = false;
                 break;
             default:
                 break;
         }
-
-        if (isLockETH)
-            return false;
-
-        return mTouchState != TouchState.REST;
+        return inScrolling;
     };
 
     this.onTouchEvent = function(ev) {
-        mVTracker.addMovement(ev);
-        var action = ev.getAction();
+        vTracker.addMovement(ev);
         var x = ev.getX();
 
-        var w = this.getMeasuredWidth();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                forceFinishProcessor();
+                forceEnd();
 
-                mDownMotionX = x;
-                mLastMotionX = x;
-                mLastMotionY = ev.getY();
+                downX = x;
+                lastX = x;
+                lastY = ev.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
 
@@ -593,150 +578,148 @@ function Gallery() {
                     break;
                 }
 
-                var deltaX = mLastMotionX - x;
-                mLastMotionX = x;
-                mLastMotionY = ev.getY();
+                var dX = lastX - x;
+                lastX = x;
+                lastY = ev.getY();
 
-                var dst = this.getScrollX() + deltaX;
+                var dst = this.getScrollX() + dX;
                 if (dst < 0) {
-                    if (mLeftEdge == 0) {
-                        deltaX = -this.getScrollX();
+                    if (leftEdge == 0) {
+                        dX = -this.getScrollX();
                     } else {
-                        deltaX = (deltaX * (mLeftEdge - this.getScrollX()) / mLeftEdge);
+                        dX = (dX * (leftEdge - this.getScrollX()) / leftEdge);
                     }
-                } else if (dst > (mTotalWidth - mScreenWidth)) {
-                    if (mRightEdge == 0) {
-                        deltaX = mScreenWidth - this.getScrollX();
+                } else if (dst > (totalWidth - screenWidth)) {
+                    if (rightEdge == 0) {
+                        dX = screenWidth - this.getScrollX();
                     } else {
-                        var maxExceed = mRightEdge - mTotalWidth;
-                        var realExceed = this.getScrollX() - (mTotalWidth - mScreenWidth);
+                        var maxExceed = rightEdge - totalWidth;
+                        var realExceed = this.getScrollX() - (totalWidth - screenWidth);
                         if (realExceed < 0) {
-                            deltaX = (-realExceed);
+                            dX = (-realExceed);
                         } else if (maxExceed == 0){
-                            deltaX = (-realExceed);
+                            dX = (-realExceed);
                         } else {
-                            deltaX = deltaX * (1 - realExceed / maxExceed);
+                            dX = dX * (1 - realExceed / maxExceed);
                         }
                     }
                 }
-                this.scrollTo(this.getScrollX() + deltaX);
+                this.scrollTo(this.getScrollX() + dX);
                 break;
             case MotionEvent.ACTION_UP:
-                mVTracker.computeCurrentVelocity(1000);
-                var vX = mVTracker.getXVelocity();
-                if (vX > SNAP_VELOCITY && mCurScreen > 0) { // left
-                    touchEndSnap(mCurScreen - 1, vX);
-                } else if (vX < -SNAP_VELOCITY && mCurScreen < this.getChildCount() - 1) {
-                    touchEndSnap(mCurScreen + 1, vX);
+                vTracker.computeCurrentVelocity(1000);
+                var vX = vTracker.getXVelocity();
+                if (vX > snapV && curScreen > 0) { // left
+                    touchEnd(curScreen - 1, vX);
+                } else if (vX < -snapV && curScreen < this.getChildCount() - 1) {
+                    touchEnd(curScreen + 1, vX);
                 } else {
-                    snapAccordCurrX();
+                    snap();
                 }
                 reset();
                 break;
             case MotionEvent.ACTION_CANCEL:
-                //console.log("cancel");
-                snapAccordCurrX();
+                snap();
                 reset();
                 break;
         }
         return true;
     };
 
-    this.onMeasure = function(widthMS, heightMS) {
-        var w = MeasureSpec.getSize(widthMS);
-        var h = MeasureSpec.getSize(heightMS);
+    this.onMeasure = function(wMS, hMS) {
+        var w = MS.getSize(wMS);
+        var h = MS.getSize(hMS);
 
-        mScreenWidth = w;
+        screenWidth = w;
 
         var count = this.getChildCount();
-        mTotalWidth = 0;
+        totalWidth = 0;
         for (var i = 0; i < count; i++) {
-            this.getChildAt(i).measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
-            var childWidth = this.getChildAt(i).getMeasuredWidth();
-            mTotalWidth += childWidth;
+            this.getChildAt(i).measure(MS.makeMS(w, MS.EXACTLY),
+                MS.makeMS(h, MS.EXACTLY));
+            totalWidth += this.getChildAt(i).getMW();
         }
 
-        mLeftEdge = -mScreenWidth * mRollPadding;
-        mRightEdge = mTotalWidth + mRollPadding * mScreenWidth;
+        leftEdge = -screenWidth * rollPadding;
+        rightEdge = totalWidth + rollPadding * screenWidth;
 
-        this.setMeasuredDimension(mTotalWidth, h);
+        this.setMD(totalWidth, h);
 
-        this.scrollTo(mCurScreen * mScreenWidth, 0);
+        this.scrollTo(curScreen * screenWidth, 0);
     };
 
-    this.onLayout = function(x, y) {
-        var offsetX = 0;
-        var childCount = this.getChildCount();
 
-        for (var i = 0; i < childCount; i++) {
-            var childView = this.getChildAt(i);
-            if (childView.getVisibility() == View.GONE) {
+    this.onLayout = function() {
+        var x = 0;
+        for (var i = 0; i < this.getChildCount(); i++) {
+            var c = this.getChildAt(i);
+            if (c.getVisibility() == View.GONE) {
                 continue;
             }
 
-            var childWidth = childView.getMeasuredWidth();
-            childView.layout(offsetX, 0, offsetX + childWidth, childView.getMeasuredHeight());
-            offsetX += childWidth;
+            var cWidth = c.getMW();
+            c.layout(x, 0);
+            x += cWidth;
         }
     };
 
     this.computeScroll = function() {
-        if (mProcessor.computeProcessOffset()) {
-            var x = mProcessor.getCurrProcess();
+        if (processor.computeProcessOffset()) {
+            var x = processor.getCurrProcess();
             this.scrollTo(x);
 
             this.postInvalidate();
+        } else {
+            var x = this.getScrollX();
+            this.translate3d(-x, 0);
         }
     };
 
-    function touchEndSnap(index, v) {
-        mSelf.snapToScreenWithVelocity(index, v);
+    function touchEnd(index, v) {
+        self.snapByV(index, v);
     }
 
-    function computeScrollDistance(index) {
-        var delta = mSelf.getChildAt(index).getLeft() - mSelf.getScrollX();
-        var rightShift = mSelf.getChildAt(index).getLeft() + mScreenWidth - mTotalWidth;
+    function calcDist(index) {
+        var d = self.getChildAt(index).getLeft() - self.getScrollX();
+        var rightShift = self.getChildAt(index).getLeft() + screenWidth - totalWidth;
         if (rightShift > 0) {
-            delta -= rightShift;
+            d -= rightShift;
         }
-        return delta;
+        return d;
     }
 
     function reset() {
-        mSelf.unlockX();
-        mTouchState = TouchState.REST;
-
-        mVTracker.clear();
+        self.unlockX();
+        inScrolling = false;
+        vTracker.clear();
     }
 
-    function snapAccordCurrX() {
-        var destScreen = 0;
+    function snap() {
+        var index;
         var currentWidth = 0;
 
-        for (destScreen = 0; destScreen < mSelf.getChildCount(); destScreen++) {
-            var childWidth = mSelf.getChildAt(destScreen).getMeasuredWidth();
-            if (currentWidth + childWidth > mSelf.getScrollX()) {
+        for (index = 0; index < self.getChildCount(); index++) {
+            var cWidth = self.getChildAt(index).getMW();
+            if (currentWidth + cWidth > self.getScrollX()) {
                 break;
             }
-            currentWidth += childWidth;
+            currentWidth += cWidth;
         }
-        if (destScreen + 1 < mSelf.getChildCount()
-            && mSelf.getScrollX() - currentWidth > mSelf.getChildAt(destScreen).getMeasuredWidth() / 2) {
-            destScreen += 1;
+        if (index + 1 < self.getChildCount() && self.getScrollX() - currentWidth > self.getChildAt(index).getMW() / 2) {
+            index += 1;
         }
-        mSelf.snapToScreen(destScreen);
+        self.snapToScreen(index);
     }
 
-    function forceFinishProcessor() {
-        if (!mProcessor.isFinished()) {
-            mProcessor.forceFinished(true);
+    function forceEnd() {
+        if (!processor.isFinished()) {
+            processor.forceFinished(true);
         }
     }
 
     function fireScreenChanged() {
-        if (mListener != null && mListener.onGalleryScreenChanged) {
-            mListener.onGalleryScreenChanged(mCurScreen);
+        if (screenChangedListener) {
+            screenChangedListener.call(this, curScreen);
         }
     }
 }

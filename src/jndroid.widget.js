@@ -10,97 +10,168 @@
  * @class ScrollView
  */
 function ScrollView() {
-    FrameLayout.apply(this, []);
+    FrameLayout.apply(this);
 
     this.setTag("ScrollView");
 
-    var mSelf = this;
-    var mIsBeingDragged = false;
-    var mLastMotionX = 0;
-    var mLastMotionY = 0;
-    var mVelocityTracker = null;
-    var mTouchSlop = 10;
-    var mProcessor = new FlingProcessor();
-    var mMaximumUpVelocity = 1000;
-    var mMaximumDownVelocity = 1000;
-    var mMinimumVelocity = 50;
+    var self = this;
+    var inDragging = false;
+    var lastX = 0;
+    var lastY = 0;
+    var vTracker = null;
+    var touchSlop = 5;
+    var yProcessor = new FlingProcessor();
+    var xProcessor = new FlingProcessor();
+    var maxV = 1000;
+    var minV = 50;
+    var listeners = [];
+    var xScrollEnd = true;
+    var yScrollEnd = true;
+    var scrollEndListener = null;
+    var yScrollable = false;
+    var xScrollable = false;
+    var rollPadding = 0.6;
 
-    this.getDiv().onmousewheel = function(e) {
-        if (!mProcessor.isFinished()) {
-            mProcessor.forceFinished(true);
+    this.checkScrollable = function() {
+        if (this.getChildCount() == 0) {
+            yScrollable = true;
+            xScrollable = true;
+            return;
         }
-        var y = mSelf.getScrollY() + e.deltaY;
-        y = Math.max(y, 0);
-        y = Math.min(y, mSelf.getChildAt(0).getMeasuredHeight() - mSelf.getMeasuredHeight());
-        mSelf.scrollTo(y);
+        yScrollable = true;
+        xScrollable = (this.getChildAt(0).getMW() > this.getMW());
     };
 
-    this.scrollTo = function(y) {
+    this.setScrollEndListener = function(l) {
+        scrollEndListener = l;
+    };
+
+    this.addScrollChangedListener = function(l) {
+        listeners.push(l);
+    };
+
+    this.div.onmousewheel = function(e) {
+        self.checkScrollable();
+
+        if (!xProcessor.isFinished()) {
+            xProcessor.forceFinished(true);
+        }
+        if (!yProcessor.isFinished()) {
+            yProcessor.forceFinished(true);
+        }
+        if (yScrollable) {
+            var y = self.getScrollY() + e.deltaY;
+            y = Math.max(y, 0);
+            y = Math.min(y, self.getChildAt(0).getMH() - self.getMH());
+            self.scrollTo(self.getScrollX(), y);
+        } else {
+            var x = self.getScrollX() + e.deltaX;
+            x = Math.max(x, 0);
+            x = Math.min(x, self.getChildAt(0).getMW() - self.getMW());
+            self.scrollTo(x, self.getScrollY());
+        }
+    };
+
+    this.scrollToWidthRange = function(x, y) {
+        var rangeV = getYRange();
+        var rangeH = getXRange();
+        x = Math.max(0, x);
+        x = Math.min(x, rangeV);
+        y = Math.max(0, y);
+        y = Math.min(y, rangeH);
+        this.scrollTo(x, y);
+    };
+
+    this.scrollTo = function(x, y) {
+        x = Math.round(x);
+        if (y == undefined) {
+            y = 0;
+        }
+        y = Math.round(y);
+        var oldX, oldY;
+        oldX = this.getScrollX();
+        oldY = this.getScrollY();
+        if (x == oldX && y == oldY) {
+            return;
+        }
+        this.setScrollX(x);
         this.setScrollY(y);
-        var transition = "translate3d(0," + (-y) + "px,0)";
-        if (this.getChildCount() > 0) {
-            var child = this.getChildAt(0);
-            child.getDiv().style.msTransform = transition;
-            child.getDiv().style.webkitTransform = transition;
-            child.getDiv().style.mozTransform = transition;
+        if (self.getChildCount() > 0) {
+            self.getChildAt(0).translate3d(-x, -y);
+        }
+        for (var i = 0; i < listeners.length; i++) {
+            listeners[i].call(self, x, oldX, y, oldY);
         }
     };
 
-    this.scrollBy = function(dy) {
-        var y = this.getScrollY() + dy;
-        this.scrollTo(y);
+    this.scrollBy = function(dx, dy) {
+        if (dy == undefined) {
+            dy = 0;
+        }
+        this.scrollTo(this.getScrollX() + dx, this.getScrollY() + dy);
     };
 
-    this.onInterceptTouchEvent = function(ev) {
-        var action = ev.getAction();
-        if ((action == MotionEvent.ACTION_MOVE) && (mIsBeingDragged)) {
+    this.onInterceptTouchEvent = function(e) {
+        this.onBeforeInterceptTouchEvent(e);
+
+        this.checkScrollable();
+
+        var action = e.getAction();
+        if ((action == ME.ACTION_MOVE) && (inDragging)) {
             return true;
         }
 
         switch (action) {
-            case MotionEvent.ACTION_DOWN: {
-                var x = ev.getX();
-                var y = ev.getY();
+            case ME.ACTION_DOWN: {
+                this.getParent().requestDisallowInterceptTouchEvent(true);
 
-                mLastMotionX = x;
-                mLastMotionY = y;
+                lastX = e.getX();
+                lastY = e.getY();
 
-                initOrResetVelocityTracker();
-                mVelocityTracker.addMovement(ev);
+                clearVTracker();
+                vTracker.addMovement(e);
 
-                mIsBeingDragged = !mProcessor.isFinished();
+                inDragging = (!xProcessor.isFinished()) || (!yProcessor.isFinished());
                 break;
             }
-            case MotionEvent.ACTION_MOVE: {
-                var x = ev.getX();
-                var y = ev.getY();
-                var xDiff = Math.abs(x - mLastMotionX);
-                var yDiff = Math.abs(y - mLastMotionY);
+            case ME.ACTION_MOVE: {
+                var x = e.getX();
+                var y = e.getY();
+                var xDiff = Math.abs(x - lastX);
+                var yDiff = Math.abs(y - lastY);
 
-                if (yDiff > xDiff && yDiff > mTouchSlop) {
-                    mIsBeingDragged = true;
-                    mLastMotionX = x;
-                    mLastMotionY = y;
-                    initVelocityTrackerIfNotExists();
-                    mVelocityTracker.addMovement(ev);
-                    var parent = this.getParent();
-                    if (parent != null) {
-                        parent.requestDisallowInterceptTouchEvent(true);
+                if (((yDiff > xDiff && yDiff > touchSlop) && yScrollable)
+                    || ((xDiff > yDiff && xDiff > touchSlop) && xScrollable)) {
+                    inDragging = true;
+
+                    initVTracker();
+                    vTracker.addMovement(e);
+                    var p = this.getParent();
+                    p.requestDisallowInterceptTouchEvent(true);
+
+                    if (this.getScrollX() >= getXRange() && x < lastX) {
+                        p.requestDisallowInterceptTouchEvent(false);
                     }
+                    if (this.getScrollX() <= 0 && x > lastX) {
+                        p.requestDisallowInterceptTouchEvent(false);
+                    }
+                    lastX = x;
+                    lastY = y;
                 }
+
                 break;
             }
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                mIsBeingDragged = false;
+            case ME.ACTION_CANCEL:
+            case ME.ACTION_UP:
+                inDragging = false;
                 break;
         }
-        return mIsBeingDragged;
+        return inDragging;
     };
 
     this.onTouchEvent = function(ev) {
-        initVelocityTrackerIfNotExists();
-        mVelocityTracker.addMovement(ev);
+        initVTracker();
+        vTracker.addMovement(ev);
 
         if (this.getChildCount() == 0) {
             return false;
@@ -109,68 +180,88 @@ function ScrollView() {
         var action = ev.getAction();
 
         switch (action) {
-            case MotionEvent.ACTION_DOWN: {
-                if ((mIsBeingDragged = !mProcessor.isFinished())) {
-                    var parent = this.getParent();
-                    if (parent != null) {
-                        parent.requestDisallowInterceptTouchEvent(true);
-                    }
+            case ME.ACTION_DOWN: {
+                inDragging = (!xProcessor.isFinished()) || (!yProcessor.isFinished());
+                if (inDragging) {
+                    this.getParent().requestDisallowInterceptTouchEvent(true);
                 }
 
-                if (!mProcessor.isFinished()) {
-                    mProcessor.forceFinished(true);
+                if (!xProcessor.isFinished()) {
+                    xProcessor.forceFinished(true);
+                }
+                if (!yProcessor.isFinished()) {
+                    yProcessor.forceFinished(true);
                 }
 
-                mLastMotionX = ev.getX();
-                mLastMotionY = ev.getY();
+                lastX = ev.getX();
+                lastY = ev.getY();
                 break;
             }
-            case MotionEvent.ACTION_MOVE:
+            case ME.ACTION_MOVE:
                 var x = ev.getX();
                 var y = ev.getY();
-                var deltaX = mLastMotionX - x;
-                var deltaY = mLastMotionY - y;
-                if (!mIsBeingDragged && Math.abs(deltaY) > mTouchSlop) {
-                    var parent = this.getParent();
-                    if (parent != null) {
-                        parent.requestDisallowInterceptTouchEvent(true);
+                var deltaX = lastX - x;
+                var deltaY = lastY - y;
+
+                if (xScrollable) {
+                    if (!inDragging && Math.abs(deltaX) > touchSlop) {
+                        this.getParent().requestDisallowInterceptTouchEvent(true);
+                        inDragging = true;
+                        if (deltaX > 0) {
+                            deltaX -= touchSlop;
+                        } else {
+                            deltaX += touchSlop;
+                        }
                     }
-                    mIsBeingDragged = true;
-                    if (deltaY > 0) {
-                        deltaY -= mTouchSlop;
-                    } else {
-                        deltaY += mTouchSlop;
-                    }
+                } else {
+                    deltaX = 0;
                 }
-                if (mIsBeingDragged) {
-                    mLastMotionX = x;
-                    mLastMotionY = y;
 
-                    var oldX = this.getScrollX();
-                    var oldY = this.getScrollY();
-                    var range = getScrollRange();
+                if (yScrollable) {
+                    if (!inDragging && Math.abs(deltaY) > touchSlop) {
+                        this.getParent().requestDisallowInterceptTouchEvent(true);
+                        inDragging = true;
+                        if (deltaY > 0) {
+                            deltaY -= touchSlop;
+                        } else {
+                            deltaY += touchSlop;
+                        }
+                    }
+                } else {
+                    deltaY = 0;
+                }
 
-                    myScrollBy(deltaY, this.getScrollY(), range);
-                    //onScrollChanged(getScrollX(), getScrollY(), oldX, oldY);
+
+                if (inDragging) {
+                    lastX = x;
+                    lastY = y;
+
+                    myScrollBy(deltaX, deltaY);
                 }
                 break;
-            case MotionEvent.ACTION_UP:
-                if (mIsBeingDragged) {
-                    mVelocityTracker.computeCurrentVelocity(1000);
-                    var initialVelocity = mVelocityTracker.getYVelocity();
-                    if (initialVelocity > 0) {
-                        initialVelocity = Math.min(initialVelocity, mMaximumUpVelocity);
-                    } else {
-                        initialVelocity = Math.max(initialVelocity, -mMaximumDownVelocity);
+            case ME.ACTION_UP:
+                if (inDragging) {
+                    vTracker.computeCurrentVelocity(1000);
+
+                    var vX = 0;
+                    var vY = 0;
+                    if (xScrollable) {
+                        vX = getVelocityRange(vTracker.getXVelocity());
+                        if (this.getScrollX() > 0 && this.getScrollX() < getXRange()) {
+                            this.flingX(-vX);
+                        }
                     }
-                    if ((Math.abs(initialVelocity) > mMinimumVelocity)) {
-                        this.fling(-initialVelocity);
+                    if (yScrollable) {
+                        vY = getVelocityRange(vTracker.getYVelocity());
+                        if (this.getScrollY() > 0 && this.getScrollY() < getYRange()) {
+                            this.flingY(-vY);
+                        }
                     }
                     endDrag();
                 }
                 break;
-            case MotionEvent.ACTION_CANCEL:
-                if (mIsBeingDragged && this.getChildCount() > 0) {
+            case ME.ACTION_CANCEL:
+                if (inDragging && this.getChildCount() > 0) {
                     endDrag();
                 }
                 break;
@@ -178,191 +269,368 @@ function ScrollView() {
                 break;
         }
         return true;
+
+        function getVelocityRange(v) {
+            v = Math.min(v, maxV);
+            v = Math.max(v, -maxV);
+            if (Math.abs(v) <= minV) {
+                v = 0;
+            }
+            return v;
+        }
+    };
+
+    this.onAfterMeasure = function() {
+        if (this.getChildCount() > 0) {
+            var c = this.getChildAt(0);
+            var h = this.getMH();
+            var chMS = MS.makeMS(c.getMH(), MS.EXACTLY);
+            var cwMS = MS.makeMS(c.getMW(), MS.EXACTLY);
+            if (c.getMH() < h) {
+                h -= this.getPT();
+                h -= this.getPB();
+                chMS = MS.makeMS(h, MS.EXACTLY);
+            }
+            var w = this.getMW();
+            if (c.getMW() < w) {
+                w -= this.getPL();
+                w -= this.getPR();
+                cwMS = MS.makeMS(w, MS.EXACTLY);
+            }
+            c.measure(cwMS, chMS);
+        }
     };
 
     this.computeScroll = function() {
-        if (mProcessor.computeProcessOffset()) {
-            var y = mProcessor.getCurrProcess();
-            this.scrollTo(y);
-
+        var xResult = xProcessor.computeProcessOffset();
+        var yResult = yProcessor.computeProcessOffset();
+        var x = this.getScrollX();
+        var y = this.getScrollY();
+        if (yResult || xResult) {
+            if (xResult) {
+                x = xProcessor.getCurrProcess();
+            }
+            if (yResult) {
+                y = yProcessor.getCurrProcess();
+            }
+            this.scrollTo(x, y);
             this.postInvalidate();
         }
     };
 
-    function myScrollBy(deltaY, scrollY, scrollRangeY) {
-        var newScrollY = scrollY + deltaY;
-
-        if (newScrollY > scrollRangeY) {
-            newScrollY = scrollRangeY;
-        } else if (newScrollY < 0) {
-            newScrollY = 0;
+    function myScrollBy(dx, dy) {
+        var xRange = getXRange();
+        if (self.getScrollX() < 0 || self.getScrollX() > xRange) {
+            dx = dx * rollPadding;
         }
-        mSelf.scrollTo(newScrollY);
+        var yRange = getYRange();
+        if (self.getScrollY() < 0 || self.getScrollY() > yRange) {
+            dy = dy * rollPadding;
+        }
+
+        var x = self.getScrollX() + dx;
+        var xRollPadding = self.getMW() * rollPadding;
+        x = Math.min(x, xRange + xRollPadding);
+        x = Math.max(x, -xRollPadding);
+
+        var y = self.getScrollY() + dy;
+        var yRollPadding = self.getMH() * rollPadding;
+        y = Math.min(y, yRange + yRollPadding);
+        y = Math.max(y, -yRollPadding);
+
+        self.scrollTo(x, y);
     }
 
-    function getScrollRange() {
-        var scrollRange = 0;
-        if (mSelf.getChildCount() > 0) {
-            var child = mSelf.getChildAt(0);
-            scrollRange = Math.max(0,
-                child.getHeight() - (mSelf.getHeight() - mSelf.getPaddingBottom() - mSelf.getPaddingTop()));
+    function getYRange() {
+        var range = 0;
+        if (self.getChildCount() > 0) {
+            range = Math.max(0, self.getChildAt(0).getHeight() - (self.getHeight() - self.getPB() - self.getPT()));
         }
-        return scrollRange;
+        return range;
     }
 
-    function initOrResetVelocityTracker() {
-        if (mVelocityTracker == null) {
-            mVelocityTracker = new VelocityTracker();
-        } else {
-            mVelocityTracker.clear();
+    function getXRange() {
+        var range = 0;
+        if (self.getChildCount() > 0) {
+            range = Math.max(0, self.getChildAt(0).getWidth() - (self.getWidth() - self.getPL() - self.getPR()));
         }
+        return range;
     }
 
-    function initVelocityTrackerIfNotExists() {
-        if (mVelocityTracker == null) {
-            mVelocityTracker = new VelocityTracker();
+    function initVTracker() {
+        if (vTracker == null) {
+            vTracker = new VelocityTracker();
         }
     }
 
-    this.fling = function(velocityY) {
-        if (mSelf.getChildCount() > 0) {
-            var height = mSelf.getHeight() - mSelf.getPaddingBottom() - mSelf.getPaddingTop();
-            var bottom = mSelf.getChildAt(0).getHeight() - height;
+    function clearVTracker() {
+        initVTracker();
+        vTracker.clear();
+    }
 
-            mProcessor.fling(mSelf.getScrollY(), velocityY / 500, 0, bottom);
+    this.flingX = function(vX) {
+        if (self.getChildCount() > 0) {
+            if (xScrollable && vX != 0) {
+                var w = self.getWidth() - self.getPR() - self.getPL();
+                var right = self.getChildAt(0).getWidth() - w;
 
-            mSelf.invalidate();
+                xProcessor.fling(self.getScrollX(), vX / 500, 0, right);
+                xScrollEnd = false;
+                xProcessor.setEndListener(function() {
+                    xScrollEnd = true;
+                    endScroll();
+                });
+            }
+            self.postInvalidate();
         }
     };
 
+    this.flingY = function(vY) {
+        if (self.getChildCount() > 0) {
+            if (yScrollable && vY != 0) {
+                var height = self.getHeight() - self.getPaddingBottom() - self.getPT();
+                var bottom = self.getChildAt(0).getHeight() - height;
+
+                yProcessor.fling(self.getScrollY(), vY / 500, 0, bottom);
+                yScrollEnd = false;
+                yProcessor.setEndListener(function() {
+                    yScrollEnd = true;
+                    endScroll();
+                });
+            }
+            self.postInvalidate();
+        }
+    };
+
+    function endScroll() {
+        if (scrollEndListener) {
+            if (xScrollEnd && yScrollEnd) {
+                scrollEndListener.call(self);
+            }
+        }
+    }
+
     function endDrag() {
-        mIsBeingDragged = false;
+        inDragging = false;
+
+        var scrollEnd = true;
+        var maxScroll = Math.min(self.getMW(), self.getMH()) * rollPadding;
+        if (xScrollable) {
+            var xRange = getXRange();
+            var scrollX = self.getScrollX();
+            if (scrollX < 0) {
+                xProcessor.flingDistance(scrollX, scrollX, -maxScroll, 0);
+                xScrollEnd = false;
+                xProcessor.setEndListener(function() {
+                    xScrollEnd = true;
+                    endScroll();
+                });
+                scrollEnd = false;
+            } else if (scrollX > xRange) {
+                xProcessor.flingDistance(scrollX, (scrollX - xRange), xRange, xRange + maxScroll);
+                xScrollEnd = false;
+                xProcessor.setEndListener(function() {
+                    xScrollEnd = true;
+                    endScroll();
+                });
+                scrollEnd = false;
+            }
+        }
+
+        if (yScrollable) {
+            var yRange = getYRange();
+            var scrollY = self.getScrollY();
+            if (scrollY < 0) {
+                yProcessor.flingDistance(scrollY, scrollY, -maxScroll, 0);
+                yScrollEnd = false;
+                yProcessor.setEndListener(function() {
+                    yScrollEnd = true;
+                    endScroll();
+                });
+                scrollEnd = false;
+            } else if (scrollY > yRange) {
+                yProcessor.flingDistance(scrollY, (scrollY - yRange), yRange, yRange + maxScroll);
+                yScrollEnd = false;
+                yProcessor.setEndListener(function() {
+                    yScrollEnd = true;
+                    endScroll();
+                });
+                scrollEnd = false;
+            }
+        }
+        if (scrollEnd) {
+            if (xProcessor.isFinished() && yProcessor.isFinished()) {
+                xScrollEnd = true;
+                yScrollEnd = true;
+                endScroll();
+            }
+        } else {
+            self.postInvalidate();
+        }
     }
 
     function FlingProcessor() {
-        Processor.apply(this, []);
+        Processor.apply(this);
 
-        var mA = 0.001;
-        var mIsFinished = true;
-        var mStartTime = 0;
-        var mStart;
-        var mV = 0;
-        var mAbsV = 0;
-        var mAbsCurV = 0;
-        var mMaxTime = 0;
-        var mMin = 0;
-        var mMax = 0;
-        var mCurValue = 0;
+        var a = 0.002;
+        var isFinished = true;
+        var startTime = 0;
+        var start;
+        var v = 0;
+        var absV = 0;
+        var absCurV = 0;
+        var maxTime = 0;
+        var min = 0;
+        var max = 0;
+        var cur = 0;
 
-        var mListener = null;
+        var listener = null;
 
-        this.fling = function(start, v, min, max) {
-            mIsFinished = false;
-            mStartTime = (new Date()).getTime();
+        this.flingDistance = function(start, distance, min, max) {
+            var v = 0;
+            if (distance < 0) {
+                v = Math.sqrt(2 * -distance * a);
+            } else {
+                v = -Math.sqrt(2 * distance * a);
+            }
+            this.fling(start, v, min, max);
+        };
 
-            mStart = start;
-            mV = v;
-            mAbsV = Math.abs(mV);
-            mMaxTime = mAbsV / mA;
-            mMin = min;
-            mMax = max;
-            mCurValue = start;
+        this.fling = function(_start, _v, _min, _max) {
+            isFinished = false;
+            startTime = (new Date()).getTime();
+
+            start = _start;
+            v = _v;
+            absV = Math.abs(v);
+            maxTime = absV / a;
+            min = _min;
+            max = _max;
+            cur = _start;
         };
 
         this.computeProcessOffset = function() {
-            if (mIsFinished) {
+            if (isFinished) {
                 return false;
             }
 
-            var t = (new Date()).getTime() - mStartTime;
-            t = Math.min(t, mMaxTime);
-            var d = mAbsV * t - mA * t * t / 2;
-            if (mV > 0) {
-                mCurValue = mStart + d;
+            var t = (new Date()).getTime() - startTime;
+            t = Math.min(t, maxTime);
+            t = Math.max(t, 1);
+            var d = absV * t - a * t * t / 2;
+            if (v > 0) {
+                cur = start + d;
             } else {
-                mCurValue = mStart - d;
+                cur = start - d;
             }
-            mAbsCurV = mAbsV - mA * t;
-            if (mAbsCurV < 0 || mCurValue > mMax || mCurValue < mMin) {
-                if (mCurValue > mMax) {
-                    mCurValue = mMax;
-                } else if (mCurValue < mMin) {
-                    mCurValue = mMin;
+            absCurV = absV - a * t;
+            if (absCurV <= 0 || cur >= max || cur <= min) {
+                if (cur > max) {
+                    cur = max;
+                } else if (cur < min) {
+                    cur = min;
                 }
-                mIsFinished = true;
+                isFinished = true;
                 this.fireProcessEnd();
             }
             return true;
         };
 
         this.forceFinished = function(finished) {
-            mIsFinished = finished;
+            isFinished = finished;
         };
 
         this.isFinished = function() {
-            return mIsFinished;
+            return isFinished;
         };
 
-        this.setProcessListener = function(l) {
-            mListener = l;
+        this.setEndListener = function(l) {
+            listener = l;
         };
 
         this.fireProcessEnd = function() {
-            if (mListener != null) {
-                if (mV > 0) {
-                    mListener.call(this, mAbsCurV);
+            if (listener != null) {
+                if (v > 0) {
+                    listener.call(this, absCurV);
                 } else {
-                    mListener.call(this, -mAbsCurV);
+                    listener.call(this, -absCurV);
                 }
             }
         };
 
         this.getCurrProcess = function() {
-            return mCurValue;
+            return cur;
         };
     }
 }
 
-/**
- * Layout container for a view hierarchy that can be scrolled by the user,
- * allowing it to be larger than the physical display.  A child that is often used
- * is a LinearLayout in a horizontal orientation, presenting a horizontal
- * array of top-level items that the user can scroll through.
- *
- * HorizontalScrollView only supports horizontal scrolling. For vertical scrolling,
- * use ScrollView.
- *
- * @class HorizontalScrollView
- */
-function HorizontalScrollView() {
-    ViewGroup.apply(this, []);
+function ScrollBar(scrollView) {
+    ViewGroup.apply(this);
 
-    this.setStyle("overflow", "auto");
+    var width = 16;
 
-        this.scrollTo = function(x) {
-        this.getDiv().scrollLeft = x;
-        console.log("this.getDiv().scrollLeft:" + this.getDiv().scrollLeft);
-    };
+    var self = this;
 
-    this.onMeasure = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var height = MeasureSpec.getSize(heightMS);
-        if (this.getChildCount() > 0) {
-            var child = this.getChildAt(0);
-            var contentHeight = height - this.getPaddingTop() - this.getPaddingBottom();
-            child.measure(width, contentHeight);
+    var thumbH = 0;
+
+    var scrollChild = scrollView.getChildAt(0);
+
+    var thumb = new View();
+    thumb.setBg(0x45000000);
+    thumb.setCornerSize(2);
+    thumb.setBorder(1, 0x99ffffff);
+    this.addView(thumb);
+
+    this.setBg(0x10000000);
+
+    scrollView.addScrollChangedListener(function(t, oldt) {
+        var h = this.getMH();
+
+        this.postDelayed(updateThumbSize, 1000);
+        updateThumbSize();
+
+        var process = t / (scrollChild.getMH() - h);
+        var y = process * (h - thumbH);
+        thumb.layout(0, y);
+    });
+
+    this.onTouchEvent = function(e) {
+        var trackLength = this.getMH() - thumbH;
+        var y = e.getY() - thumbH / 2;
+        y = Math.max(y, 0);
+        y = Math.min(y, trackLength);
+        thumb.layout(0, y);
+
+        var processor = scrollView.getProcessor();
+        if (!processor.isFinished()) {
+            processor.forceFinished(true);
         }
-        this.setMeasuredDimension(width, height);
+
+        var p = y / trackLength;
+        var t = (scrollChild.getMH() - this.getMH()) * p;
+        scrollView.scrollTo(t);
     };
 
-    this.onLayout = function(x, y) {
-        var offsetX = this.getPaddingLeft();
-        var offsetY = this.getPaddingTop();
-        if (this.getChildCount() > 0) {
-            var child = this.getChildAt(0);
-            child.layout(offsetX, offsetY);
-        }
+    this.onMeasure = function(wMS, hMS) {
+        this.setMD(width, MS.getSize(hMS));
     };
+
+    this.onLayout = function() {
+        thumb.layout(0, 0);
+    };
+
+    function updateThumbSize() {
+        var h = self.getMH();
+        thumbH = h / scrollChild.getMH() * h;
+        thumbH = Math.max(32, thumbH);
+        thumb.measure(width, thumbH);
+
+        if (thumbH >= h) {
+            self.setVisibility(View.INVISIBLE);
+        } else {
+            self.setVisibility(View.VISIBLE);
+        }
+    }
 }
 
 /**
@@ -371,15 +639,20 @@ function HorizontalScrollView() {
  * @class ImageView
  */
 function ImageView() {
-    ViewGroup.apply(this, []);
+    ViewGroup.apply(this);
 
-    var mSelf = this;
-    var mSrc = null;
-    var mImg = null;
-    var mScaleType = ScaleType.CENTER;
-    var mCustomWidth = 0;
-    var mCustomHeight = 0;
+    var self = this;
+    var src = null;
+    var img = null;
+    var scaleType = ScaleType.CENTER;
+    var customWidth = 0;
+    var customHeight = 0;
     var scaleTimeout = 0;
+    var loadedListener = null;
+
+    this.setLoadedListener = function(l) {
+        loadedListener = l;
+    };
 
     /**
      * Set the scale type of image.
@@ -388,7 +661,7 @@ function ImageView() {
      * @param {int} ScaleType.CENTER,ScaleType.FIT_XY,ScaleType.CENTER_INSIDE,ScaleType.FIT_CENTER or ScaleType.CENTER_CROP.
      */
     this.setScaleType = function(st) {
-        mScaleType = st;
+        scaleType = st;
     };
 
     /**
@@ -397,101 +670,105 @@ function ImageView() {
      * @method setImageUri
      * @param {string} The Uri of an image
      */
-    this.setImageUri = function(src) {
-        this.setImgSrc(src);
+    this.setImageUri = function(uri) {
+        this.setImgSrc(uri);
     };
 
-    this.setImgSrc = function(src) {
+    this.setImgSrc = function(_src) {
         this.setVisibility(View.VISIBLE);
-        mSrc = src;
+        src = _src;
 
-        if (mImg == null) {
-            mImg = document.createElement("img");
+        if (img == null) {
+            img = document.createElement("img");
         }
-        mImg.src = src;
-        mImg.style.verticalAlign = "middle";
-        mImg.style.position = "absolute";
-        mImg.style.top = 0;
-        mImg.style.left = 0;
-        mImg.onerror = function() {
-            mSelf.setVisibility(View.INVISIBLE);
+        img.src = src;
+        img.style.verticalAlign = "middle";
+        img.style.position = "absolute";
+        img.style.top = 0;
+        img.style.left = 0;
+        img.onerror = function() {
+            self.setVisibility(View.INVISIBLE);
         };
-        this.getDiv().appendChild(mImg);
-        this.requestLayout();
+        this.div.appendChild(img);
+        if (this.getMW() != 0 && this.getMH() != 0) {
+            this.requestLayout();
+        }
     };
 
     this.setStyleWidth = function(w) {
-        mImg.style.width = w + "px";
-        mImg.style.left = (this.getMeasuredWidth() - w) / 2 + "px";
+        img.style.width = w + "px";
+        img.style.left = (this.getMW() - w) / 2 + "px";
     };
 
     this.setStyleHeight = function(h) {
-        mImg.style.height = h + "px";
-        mImg.style.top = (this.getMeasuredHeight() - h) / 2 + "px";
+        img.style.height = h + "px";
+        img.style.top = (this.getMH() - h) / 2 + "px";
     };
 
-    this.setImgWidth = function(width) {
-        this.setStyleWidth(width);
-        mCustomWidth = width;
+    this.setImgWidth = function(w) {
+        this.setStyleWidth(w);
+        customWidth = w;
     };
 
-    this.setImgHeight = function(height) {
-        this.setStyleHeight(height);
-        mCustomHeight = height;
+    this.setImgHeight = function(h) {
+        this.setStyleHeight(h);
+        customHeight = h;
     };
 
-    this.onMeasure = function (widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var height = MeasureSpec.getSize(heightMS);
-        this.getDiv().style.lineHeight = height + "px";
+    this.onMeasure = function (wMS, hMS) {
+        this.div.style.lineHeight = MS.getSize(hMS) + "px";
 
-        this.setMeasuredDimension(width, height);
+        this.applyDimen(wMS, hMS);
 
         this.scale();
     };
 
     this.scale = function() {
-        if (mImg != null) {
-            var nw = mImg.naturalWidth;
-            var nh = mImg.naturalHeight;
+        if (img != null) {
+            var nw = img.naturalWidth;
+            var nh = img.naturalHeight;
             if (nw == 0 || nh == 0) {
                 scaleTimeout = setTimeout(this.scale, 200);
-                mImg.onload = mSelf.scaleInner;
-                mSelf.setStyleWidth(mSelf.getMeasuredWidth());
+                img.onload = self.scaleInner;
+                self.setStyleWidth(self.getMW());
             } else {
                 clearTimeout(scaleTimeout);
-                mSelf.scaleInner();
+                self.scaleInner();
             }
         }
     };
 
     this.scaleInner = function() {
-        var nw = mImg.naturalWidth;
-        var nh = mImg.naturalHeight;
-        var width = mSelf.getWidth();
-        var height = mSelf.getHeight();
-        if (mCustomWidth != 0) {
-            var h = mCustomWidth * nh / nw;
-            mSelf.setStyleWidth(mCustomWidth);
-            mSelf.setStyleHeight(h);
-        } else if (mCustomHeight != 0) {
-            var w = mCustomHeight * nw / nh;
-            mSelf.setStyleWidth(w);
-            mSelf.setStyleHeight(mCustomHeight);
-        } else if (mScaleType == ScaleType.CENTER) {
-            mSelf.setStyleWidth(nw);
-            mSelf.setStyleHeight(nh);
-        } else if (mScaleType == ScaleType.FIT_XY) {
-            mSelf.setStyleWidth(width);
-            mSelf.setStyleHeight(height);
-        } else if (mScaleType == ScaleType.CENTER_INSIDE) {
+        var nw = img.naturalWidth;
+        var nh = img.naturalHeight;
+        var width = self.getWidth();
+        var height = self.getHeight();
+        if (customWidth != 0) {
+            var h = customWidth * nh / nw;
+            self.setStyleWidth(customWidth);
+            self.setStyleHeight(h);
+        } else if (customHeight != 0) {
+            var w = customHeight * nw / nh;
+            self.setStyleWidth(w);
+            self.setStyleHeight(customHeight);
+        } else if (scaleType == ScaleType.CENTER) {
+            self.setStyleWidth(nw);
+            self.setStyleHeight(nh);
+        } else if (scaleType == ScaleType.FIT_XY) {
+            self.setStyleWidth(width);
+            self.setStyleHeight(height);
+        } else if (scaleType == ScaleType.CENTER_INSIDE) {
             if (nw > width || nh > height) {
-                mSelf.fitCenter(nw, nh, width, height);
+                self.fitCenter(nw, nh, width, height);
             }
-        } else if (mScaleType == ScaleType.FIT_CENTER) {
-            mSelf.fitCenter(nw, nh, width, height);
-        } else if (mScaleType == ScaleType.CENTER_CROP) {
-            mSelf.cropCenter(nw, nh, width, height);
+        } else if (scaleType == ScaleType.FIT_CENTER) {
+            self.fitCenter(nw, nh, width, height);
+        } else if (scaleType == ScaleType.CENTER_CROP) {
+            self.cropCenter(nw, nh, width, height);
+        }
+
+        if (loadedListener) {
+            loadedListener.call(this);
         }
     };
 
@@ -523,6 +800,41 @@ Object.defineProperty(ScaleType,"CENTER",{value:5});
 Object.defineProperty(ScaleType,"CENTER_CROP",{value:6});
 Object.defineProperty(ScaleType,"CENTER_INSIDE",{value:7});
 
+function LiteImageView() {
+    View.apply(this);
+
+    this.div = document.createElement("img");
+    this.div.style.verticalAlign = "middle";
+    this.div.style.position = "absolute";
+
+    var self = this;
+    var src = null;
+
+    this.setImageUri = function(src) {
+        this.setImgSrc(src);
+    };
+
+    this.setImgSrc = function(_src) {
+        this.setVisibility(View.VISIBLE);
+        src = _src;
+
+        this.div.src = src;
+        this.div.onerror = function() {
+            self.setVisibility(View.INVISIBLE);
+        };
+    };
+
+    this.onMeasure = function(wMS, hMS) {
+        var w = MS.getSize(wMS);
+        var h = MS.getSize(hMS);
+
+        this.div.style.width = w + "px";
+        this.div.style.height = h + "px";
+
+        this.setMD(w, h);
+    };
+}
+
 /**
  * Displays a button with an image (instead of text) that can be pressed
  * or clicked by the user.
@@ -530,7 +842,7 @@ Object.defineProperty(ScaleType,"CENTER_INSIDE",{value:7});
  * @class ImageButton
  */
 function ImageButton() {
-    ImageView.apply(this, []);
+    ImageView.apply(this);
 }
 
 /**
@@ -539,15 +851,16 @@ function ImageButton() {
  * @class TextView
  */
 function TextView() {
-    ViewGroup.apply(this, []);
+    ViewGroup.apply(this);
 
-    var mGravity = 0;
-    var mTextSize = 12;
-    var mSingleLine = false;
-    var mContent = document.createElement("div");
-    mContent.style.overflow = "auto";
-    mContent.style.whiteSpace = "normal";
-    this.getDiv().appendChild(mContent);
+    var gravity = 0;
+    var textSize = 12;
+    var singleLine = false;
+    var cnt = document.createElement("div");
+    cnt.style.overflow = "auto";
+    cnt.style.whiteSpace = "normal";
+    cnt.style.position = "absolute";
+    this.div.appendChild(cnt);
 
     /**
      * Return the text that TextView is displaying.
@@ -556,35 +869,32 @@ function TextView() {
      * @return {string} The text in the TextView.
      */
     this.getText = function() {
-        return mContent.innerHTML;
+        return cnt.innerHTML;
     };
 
     /**
      * Sets the string value of the TextView.
      *
      * @method setText
-     * @param {string} text Sets the string value.
+     * @param {string} t Sets the string value.
      */
-    this.setText = function(text) {
-        mContent.innerHTML = text;
-
-        this.requestLayout();
-        this.getDiv().scrollTop = "100px";
+    this.setText = function(t) {
+        cnt.innerHTML = t;
     };
 
     /**
      * Sets whether the content of this view is selectable by the user.
      *
      * @method setTextIsSelectable
-     * @param {boolean} selectable Whether the content of this TextView should be selectable.
+     * @param {boolean} s Whether the content of this TextView should be selectable.
      */
-    this.setTextIsSelectable = function(selectable) {
-        if (selectable) {
+    this.setTextIsSelectable = function(s) {
+        if (s) {
             this.setPreventHtmlTouchEvent(false);
-            mContent.style["-webkit-user-select"] = "text";
+            cnt.style["-webkit-user-select"] = "text";
         } else {
             this.setPreventHtmlTouchEvent(true);
-            mContent.style["-webkit-user-select"] = "none";
+            cnt.style["-webkit-user-select"] = "none";
         }
     };
 
@@ -592,21 +902,21 @@ function TextView() {
      * Sets the text color.
      *
      * @method setTextColor
-     * @param {int} color The text color.
+     * @param {int} c The text color.
      */
-    this.setTextColor = function(color) {
-        mContent.style.color = Utils.toCssColor(color);
+    this.setTextColor = function(c) {
+        cnt.style.color = Utils.toCssColor(c);
     };
 
     /**
      * Set the default text size to the given value.
      *
      * @method setTextSize
-     * @param {int} textsize The default text size.
+     * @param {int} ts The default text size.
      */
-    this.setTextSize = function(textsize) {
-        mTextSize = textsize;
-        mContent.style.fontSize = textsize + "px";
+    this.setTextSize = function(ts) {
+        textSize = ts;
+        cnt.style.fontSize = ts + "px";
     };
 
     /**
@@ -620,72 +930,91 @@ function TextView() {
      * @param {int} color Specified color.
      */
     this.setShadowLayer = function(radius, dx, dy, color) {
-        mContent.style.textShadow = dx + "px " + dy + "px " + radius + "px " + Utils.toCssColor(color);
+        cnt.style.textShadow = dx + "px " + dy + "px " + radius + "px " + Utils.toCssColor(color);
     };
 
     /**
      * Set the line height.
      *
      * @method setLineHeight
-     * @param {int} lineHeight the line height.
+     * @param {int} h the line height.
      */
-    this.setLineHeight = function(lineHeight) {
-        mContent.style.lineHeight = lineHeight + "px";
+    this.setLineHeight = function(h) {
+        cnt.style.lineHeight = h + "px";
     };
 
     /**
      * Sets whether the line is single.
      *
      * @method setSingleLine
-     * @param {boolean} singleLine Whether the line is single.
+     * @param {boolean} s Whether the line is single.
      */
-    this.setSingleLine = function(singleLine) {
-        mSingleLine = singleLine;
-        if (mSingleLine) {
-            mContent.style.whiteSpace = "nowrap";
-        } else {
-            mContent.style.whiteSpace = "normal";
+    this.setSingleLine = function(s) {
+        if (singleLine != s) {
+            singleLine = s;
+            if (singleLine) {
+                cnt.style.whiteSpace = "nowrap";
+            } else {
+                cnt.style.whiteSpace = "normal";
+            }
+            if (this.getMW() != 0 && this.getMH() != 0) {
+                this.requestLayout();
+            }
         }
-        this.requestLayout();
     };
 
-    this.onMeasure = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var height = MeasureSpec.getSize(heightMS);
-        var mode = MeasureSpec.getMode(heightMS);
+    this.onMeasure = function(wMS, hMS) {
+        var w = MS.getSize(wMS);
+        var h = MS.getSize(hMS);
+        var hMode = MS.getMode(hMS);
+        var wMode = MS.getMode(wMS);
 
-        mContent.style.width = (width - this.getPaddingLeft() - this.getPaddingRight()) + "px";
-        mContent.style.height = "100%";
-        mContent.style.left = this.getPaddingLeft() + "px";
+        cnt.style.width = (w - this.getPL() - this.getPR()) + "px";
+        cnt.style.height = "100%";
+        cnt.style.left = this.getPL() + "px";
 
         var measureDiv = document.createElement("div");
-        measureDiv.style.width = mContent.style.width;
+        if (wMode == MS.UNSPECIFIED) {
+            measureDiv.style.width = "auto";
+            measureDiv.style.display = "inline-block";
+        } else {
+            measureDiv.style.width = cnt.style.width;
+        }
         measureDiv.style.height = "100%";
-        measureDiv.style.fontFamily = Utils.findFontFamily(mContent);
-        measureDiv.style.lineHeight = mContent.style.lineHeight;
-        measureDiv.style.fontSize = mContent.style.fontSize;
-        measureDiv.style.whiteSpace = mContent.style.whiteSpace;
-        measureDiv.innerHTML = mContent.innerHTML;
+        measureDiv.style.fontFamily = Utils.findFontFamily(cnt);
+        measureDiv.style.lineHeight = cnt.style.lineHeight;
+        measureDiv.style.fontSize = cnt.style.fontSize;
+        measureDiv.style.whiteSpace = cnt.style.whiteSpace;
+        if (cnt.innerHTML != "") {
+            measureDiv.innerHTML = cnt.innerHTML;
+        } else {
+            measureDiv.innerHTML = "　";
+        }
         mHideDiv.appendChild(measureDiv);
 
         if (measureDiv.clientHeight !== 0) {
-            var measureHeight = measureDiv.clientHeight;
-            if (mode == MeasureSpec.UNSPECIFIED) {
-                height = measureHeight;
+            var measureH = measureDiv.clientHeight;
+            var measureW = measureDiv.clientWidth;
+            if (wMode == MS.UNSPECIFIED) {
+                w = measureW + this.getPL() + this.getPR();
+                cnt.style.width = w + "px";
+            }
+            if (hMode == MS.UNSPECIFIED) {
+                h = measureH;
             } else {
-                if (mode != MeasureSpec.EXACTLY && height < measureHeight) {
-                    height = measureHeight;
+                if (hMode != MS.EXACTLY && h < measureH) {
+                    h = measureH;
                 } else {
-                    if (height > measureHeight) {
-                        mContent.style.clientHeight = measureHeight + "px";
-                        mContent.style.height = "auto";
-                        mContent.style.position = "absolute";
-                        if (mGravity & Gravity.CENTER_VERTICAL) {
-                            mContent.style.top = (height - measureHeight) / 2 + "px";
-                        } else if (mGravity & Gravity.BOTTOM) {
-                            mContent.style.top = (height - measureHeight) + "px";
+                    if (h > measureH) {
+                        cnt.style.clientHeight = measureH + "px";
+                        cnt.style.height = "auto";
+                        cnt.style.position = "absolute";
+                        if (gravity & Gravity.CENTER_VERTICAL) {
+                            cnt.style.top = (h - measureH) / 2 + "px";
+                        } else if (gravity & Gravity.BOTTOM) {
+                            cnt.style.top = (h - measureH) + "px";
                         } else {
-                            mContent.style.top = 0 + "px";
+                            cnt.style.top = 0 + "px";
                         }
                     }
                 }
@@ -696,7 +1025,7 @@ function TextView() {
         mHideDiv.style.width = "auto";
         mHideDiv.style.height = "auto";
 
-        this.setMeasuredDimension(width, height);
+        this.setMD(w, h);
 
     };
 
@@ -706,17 +1035,17 @@ function TextView() {
      * in the TextView beyond what is required for the text itself.
      *
      * @method setGravity
-     * @param {int} gravity
+     * @param {int} g
      */
-    this.setGravity = function(gravity) {
-        mGravity = gravity;
+    this.setGravity = function(g) {
+        gravity = g;
 
-        if (gravity & Gravity.CENTER_HORIZONTAL) {
-            this.getDiv().style.textAlign = "center";
-        } else if (gravity & Gravity.RIGHT) {
-            this.getDiv().style.textAlign = "right";
+        if (g & Gravity.CENTER_HORIZONTAL) {
+            this.div.style.textAlign = "center";
+        } else if (g & Gravity.RIGHT) {
+            this.div.style.textAlign = "right";
         } else {
-            this.getDiv().style.textAlign = "left";
+            this.div.style.textAlign = "left";
         }
 
     };
@@ -729,58 +1058,94 @@ function TextView() {
  * @class Button
  */
 function Button() {
-    TextView.apply(this, []);
+    View.apply(this);
 
-    var mPressBg = 0x1a000000;
-    var mNormalBg = 0;
+    var bg = 0x00ffffff;
+    var pressBg = 0x1a000000;
 
-    this.setGravity(Gravity.CENTER);
+    var textColor = 0xff333333;
+    var pressTextColor = 0xffffffff;
+
+    var borderT = 0;
+    var borderB = 0;
+
+    this.div.style.textAlign = "center";
     this.setBorder(1, 0x1a000000);
 
-    this.setPressBg = function(c) {
-        mPressBg = c;
+    this.setNormalBg = function(c) {
+        bg = c;
     };
 
-    this.onTouchEvent = function(e) {
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mNormalBg = this.setBackgroundColor();
-                this.setBackgroundColor(mPressBg);
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                this.setBackgroundColor(mNormalBg);
-                break;
+    this.setPressBg = function(c) {
+        pressBg = c;
+    };
+
+    this.setNormalTextColor = function(c) {
+        textColor = c;
+    };
+
+    this.setPressTextColor = function(c) {
+        pressTextColor = c;
+    };
+
+    this.onDraw = function() {
+        if (this.isPressed()) {
+            this.setBg(pressBg);
+            this.setTextColor(pressTextColor);
+        } else {
+            this.setBg(bg);
+            this.setTextColor(textColor);
         }
     };
+
+    this.onAfterMeasure = function() {
+        this.div.style.lineHeight = (this.getMH() - borderT - borderB) + "px";
+    };
+
+    this.setBorder = function(t, c) {
+        borderT = borderB = t;
+        this.div.style.border = borderCss(t, c);
+    };
+
+    this.setBorderTop = function(t, c) {
+        borderT = t;
+        this.div.style.borderTop = borderCss(t, c);
+    };
+
+    this.setBorderBottom = function(t, c) {
+        borderB = t;
+        this.div.style.borderBottom = borderCss(t, c);
+    };
+
+    function borderCss(t, c) {
+        return t + "px solid " + Utils.toCssColor(c);
+    }
 }
 
 /**
- * EditText is a thin veneer over TextView that configures itself
- * to be editable.
  *
  * @class EditText
  */
 function EditText() {
-    ViewGroup.apply(this, []);
+    ViewGroup.apply(this);
 
-    var mTag = "EditText" + (new Date()).getTime();
+    var tag = "EditText" + (new Date()).getTime();
 
-    var mSelf = this;
-    var mFocusListener = null;
-    var mInput;
-    var mTextSize = 12;
-    var mIsPassword = false;
-    var mTextListener = null;
-    var mIsFocused;
+    var self = this;
+    var focusListener = null;
+    var input;
+    var textSize = 12;
+    var isPassword = false;
+    var textListener = null;
+    var isFocused;
 
     this.setPreventHtmlTouchEvent(false);
 
-    this.setDisabled = function(disabled) {
-        if (disabled) {
-            mInput.disabled = "disabled";
+    this.setDisabled = function(bool) {
+        if (bool) {
+            input.disabled = "disabled";
         } else {
-            mInput.disabled = "";
+            input.disabled = "";
         }
     };
 
@@ -788,44 +1153,44 @@ function EditText() {
      * Sets whether the text of this EditText is password.
      *
      * @method setPassword
-     * @param {boolean} isPassword
+     * @param {boolean} bool
      */
-    this.setPassword = function(isPassword) {
-        mIsPassword = isPassword;
-        mInput.type = "password";
+    this.setPassword = function(bool) {
+        isPassword = bool;
+        input.type = "password";
     };
 
     this.getInput = function() {
-        return mInput;
+        return input;
     };
 
     this.addInput = function() {
-        this.getDiv().innerHTML = "";
-        mInput = document.createElement("input");
-        initInput();
-        this.getDiv().appendChild(mInput);
+        this.div.innerHTML = "";
+        input = document.createElement("input");
+        init();
+        this.div.appendChild(input);
     };
     this.addInput();
 
     this.addTextArea = function() {
-        this.getDiv().innerHTML = "";
-        mInput = document.createElement("textarea");
-        initInput();
-        this.getDiv().appendChild(mInput);
+        this.div.innerHTML = "";
+        input = document.createElement("textarea");
+        init();
+        this.div.appendChild(input);
     };
 
     this.isFocused = function() {
-        return mIsFocused;
+        return isFocused;
     };
 
     this.setOnFocusChangeListener = function(l) {
-        mFocusListener = l;
+        focusListener = l;
     };
 
-    this.onFocusChanged = function(focused) {
-        mIsFocused = focused;
-        if (mFocusListener != null) {
-            mFocusListener.call(this, focused);
+    this.onFocusChanged = function(bool) {
+        isFocused = bool;
+        if (focusListener != null) {
+            focusListener.call(this, bool);
         }
     };
 
@@ -845,11 +1210,11 @@ function EditText() {
      * @param {int} end Selection anchor to end.
      */
     this.setSelection = function(start, end) {
-        mInput.selectionStart = start;
+        input.selectionStart = start;
         if (end == undefined) {
-            mInput.selectionEnd = start;
+            input.selectionEnd = start;
         } else {
-            mInput.selectionEnd = end;
+            input.selectionEnd = end;
         }
     };
 
@@ -860,7 +1225,7 @@ function EditText() {
      * @return {int} The offset.
      */
     this.getSelectionStart = function() {
-        return mInput.selectionStart;
+        return input.selectionStart;
     };
 
     /**
@@ -870,18 +1235,18 @@ function EditText() {
      * @return {int} The offset.
      */
     this.getSelectionEnd = function() {
-        return mInput.selectionEnd;
+        return input.selectionEnd;
     };
 
     /**
      * set a listener to whose methods are called whenever this EditText's text changes.
      *
      * @method setTextChangedListener
-     * @param listener.
+     * @param l.
      */
-    this.setTextChangedListener = function(listener) {
-        mTextListener = listener;
-        mInput.oninput = listener;
+    this.setTextChangedListener = function(l) {
+        textListener = l;
+        input.oninput = l;
     };
 
     /**
@@ -891,65 +1256,65 @@ function EditText() {
      * @return {string} The text in the EditText.
      */
     this.getText = function() {
-        return mInput.value;
+        return input.value;
     };
 
     /**
      * Sets the string value of the EditText.
      *
      * @method setText
-     * @param {string} text Sets the string value.
+     * @param {string} t Sets the string value.
      */
-    this.setText = function(text) {
-        mInput.value = text;
+    this.setText = function(t) {
+        input.value = t;
     };
 
     /**
      * Sets the text size of the EditText.
      *
      * @method setTextSize
-     * @param {int} size Sets the text size.
+     * @param {int} s Sets the text size.
      */
-    this.setTextSize = function(size) {
-        mTextSize = size;
-        mInput.style.fontSize = size + "px";
+    this.setTextSize = function(s) {
+        textSize = s;
+        input.style.fontSize = s + "px";
     };
 
     /**
      * Sets the text color of the EditText.
      *
      * @method setTextColor
-     * @param {int} color Sets the text color.
+     * @param {int} c Sets the text color.
      */
-    this.setTextColor = function(color) {
-        mInput.style.color = Utils.toCssColor(color);
+    this.setTextColor = function(c) {
+        input.style.color = Utils.toCssColor(c);
     };
 
     /**
      * Sets the text to be displayed when the text of the EditText is empty.
      *
      * @method setHint
-     * @param {string} text Sets the hint text.
+     * @param {string} t Sets the hint text.
      */
-    this.setHint = function(text) {
-        this.setHintText(text);
+    this.setHint = function(t) {
+        input.placeholder = t;
     };
 
-    this.setHintText = function(text) {
-        mInput.placeholder = text;
+    this.setHintText = function(t) {
+        input.placeholder = t;
     };
 
     /**
      * Sets the color of the hint text for this EditText.
      *
      * @method setHintColor
-     * @param {int} color Sets the hint text's color.
+     * @param {int} c Sets the hint text's color.
      */
-    this.setHintColor = function(color) {
+    this.setHintColor = function(c) {
         var css = document.createElement("style");
-        css.innerHTML = "." + mTag + "::-webkit-input-placeholder{ color:" + Utils.toCssColor(color) + "}";
+        css.innerHTML = "." + tag + "::-webkit-input-placeholder{ color:" + Utils.toCssColor(c) + "}";
         document.head.appendChild(css);
-        mInput.className += mTag + " ";
+        input.className += tag + " ";
     };
 
     /**
@@ -958,53 +1323,56 @@ function EditText() {
      * @method requestFocus
      */
     this.requestFocus = function() {
-        mInput.focus();
+        input.focus();
     };
 
-    this.onMeasure = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var height = MeasureSpec.getSize(heightMS);
-        var hMode = MeasureSpec.getMode(heightMS);
+    this.onMeasure = function(wMS, hMS) {
+        var w = MS.getSize(wMS);
+        var h = MS.getSize(hMS);
+        var hMode = MS.getMode(hMS);
 
-        var contentWidth = width - this.getPaddingLeft() - this.getPaddingRight();
-        var contentHeight = height - this.getPaddingTop() - this.getPaddingBottom();
-        if (hMode != MeasureSpec.EXACTLY) {
-            contentHeight = mTextSize * 1.5;
-            height = contentHeight + this.getPaddingTop() + this.getPaddingBottom();
+        var border = parseFloat(this.div.style.border.replace(/^(.*)px.*$/, '$1')) * 2 || 0;
+
+        var cntW = w - this.getPL() - this.getPR();
+        var cntH = h - this.getPT() - this.getPB() - border;
+        if (hMode != MS.EXACTLY) {
+            cntH = textSize * 1.5;
+            h = cntH + this.getPT() + this.getPB();
         }
-        mInput.style.fontFamily = Utils.findFontFamily(mInput);
-        mInput.style.width = contentWidth + "px";
-        mInput.style.height = contentHeight + "px";
+        input.style.fontFamily = Utils.findFontFamily(input);
+        input.style.width = cntW + "px";
+        input.style.height = cntH + "px";
 
-        this.setMeasuredDimension(width, height);
+        this.setMD(w, h);
     };
 
-    this.onLayout = function(x, y) {
-        mInput.style.top = this.getPaddingTop() + "px";
-        mInput.style.left = this.getPaddingLeft() + "px";
+    this.onLayout = function() {
+        input.style.top = this.getPT() + "px";
+        input.style.left = this.getPL() + "px";
     };
 
-    function initInput() {
-        if (mIsPassword) {
-            mInput.type = "password";
+    function init() {
+        if (isPassword) {
+            input.type = "password";
         } else {
-            mInput.type = "text";
+            input.type = "text";
         }
-        mInput.style.boxSizing = "border-box";
-        mInput.style.position = "absolute";
-        mInput.style.background = "none";
-        mInput.style.border = "0";
-        mInput.style.outline = "none";
-        mInput.style.padding = 0;
-        mInput.style.fontSize = mTextSize;
-        mInput.onfocus = function() {
-            mSelf.onFocusChanged(true);
+        input.style["-webkit-user-select"] = "text";
+        input.style.boxSizing = "border-box";
+        input.style.position = "absolute";
+        input.style.background = "none";
+        input.style.border = "0";
+        input.style.outline = "none";
+        input.style.padding = 0;
+        input.style.fontSize = textSize;
+        input.onfocus = function() {
+            self.onFocusChanged(true);
         };
-        mInput.onblur = function() {
-            mSelf.onFocusChanged(false);
+        input.onblur = function() {
+            self.onFocusChanged(false);
         };
-        if (mTextListener != null) {
-            mInput.oninput = mTextListener;
+        if (textListener != null) {
+            input.oninput = textListener;
         }
     }
 }
@@ -1013,44 +1381,78 @@ function EditText() {
  * @class WebView
  */
 function WebView() {
-    ViewGroup.apply(this, []);
+    ViewGroup.apply(this);
 
-    this.setPreventHtmlTouchEvent(false);
-    this.setBackgroundColor("#ffffff");
+    this.setPreventHtmlTouchEvent(true);
+    this.setBg("#ffffff");
 
-    var mFrame = document.createElement("iframe");
-    mFrame.style.border = "none";
-    this.getDiv().appendChild(mFrame);
+    var frame = document.createElement("iframe");
+    frame.style.border = "none";
+    this.div.appendChild(frame);
 
-    this.loadUrl = function(url) {
-        mFrame.src = url;
+    var finishListener;
+    var outTimeId = 0;
+
+    this.getWindow = function() {
+        return frame.contentWindow;
     };
 
-    this.loadData = function(data) {
-        mFrame.srcdoc = data;
+    this.getDom = function() {
+        return frame.contentWindow.document;
+    };
+
+    this.setOnPageFinishListener = function(l, outTime) {
+        //mFrame.onload = l;
+
+        finishListener = l;
+        frame.onload = function() {
+            if (finishListener) {
+                finishListener.call(this);
+                if (outTime) {
+                    finishListener = null;
+                    clearTimeout(outTimeId);
+                }
+            }
+        };
+        if (outTime) {
+            outTimeId = setTimeout(function() {
+                if (finishListener) {
+                    finishListener.call(this);
+                    finishListener = null;
+                }
+            }, outTime)
+        }
+    };
+
+    this.loadUrl = function(url) {
+        frame.src = url;
+    };
+
+    this.loadService = function(data) {
+        frame.srcdoc = data;
     };
 
     this.loadDataWithBaseURL = function(data) {
-        mFrame.srcdoc = data;
+        frame.srcdoc = data;
     };
 
     this.setSrc = function(src){
-        mFrame.src = src;
+        this.loadUrl(src);
     };
 
     this.setSrcDoc = function(srcdoc) {
-        mFrame.srcdoc = srcdoc;
+        frame.srcdoc = srcdoc;
     };
 
     this.getFrame = function() {
-        return mFrame;
+        return frame;
     };
 
-    this.onMeasure = function(widthMS, heightMS) {
-        var width = MeasureSpec.getSize(widthMS);
-        var height = MeasureSpec.getSize(heightMS);
-        mFrame.style.width = width + "px";
-        mFrame.style.height = height + "px";
-        this.setMeasuredDimension(width, height);
+    this.onMeasure = function(wMS, hMS) {
+        var w = MS.getSize(wMS);
+        var h = MS.getSize(hMS);
+        frame.style.width = w + "px";
+        frame.style.height = h + "px";
+        this.setMD(w, h);
     };
 }
