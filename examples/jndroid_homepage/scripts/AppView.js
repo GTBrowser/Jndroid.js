@@ -1,8 +1,8 @@
 /**
  * Created by lency on 5/18/15.
  */
-function ApplicationsView() {
-    ScrollView.apply(this, []);
+function AppView() {
+    ScrollView.apply(this);
 
     this.setBackgroundColor(R.color.card_bg);
 

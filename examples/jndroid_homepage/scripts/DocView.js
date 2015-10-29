@@ -1,7 +1,7 @@
 /**
  * Created by lency on 5/18/15.
  */
-function DocumentationView() {
+function DocView() {
     FrameLayout.apply(this, []);
 
     var webView = new WebView();

@@ -42,13 +42,13 @@ function MainView() {
                 break;
             case 2:
                 if (mDocView == null) {
-                    mDocView = new DocumentationView();
+                    mDocView = new DocView();
                 }
                 cnt.addView(mDocView);
                 break;
             case 3:
                 if (mAppView == null) {
-                    mAppView = new ApplicationsView();
+                    mAppView = new AppView();
                 }
                 cnt.addView(mAppView);
                 break;
