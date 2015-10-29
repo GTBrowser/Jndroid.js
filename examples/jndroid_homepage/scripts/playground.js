@@ -1,7 +1,7 @@
 /**
  * Created by lency on 5/20/15.
  */
-function Playground(name, code, isHtml) {
+function Playground(name, preCode, code, appendCode, isHtml) {
     ViewGroup.apply(this);
 
     this.uuid = Math.floor(Math.random() * 100000);
@@ -12,7 +12,6 @@ function Playground(name, code, isHtml) {
 
     var self = this;
     var padding = R.dimen.padding;
-    var mAppendCode = "";
 
     this.setBackgroundColor(0xffffffff);
     this.setCornerSize(2);
@@ -25,10 +24,10 @@ function Playground(name, code, isHtml) {
     title.setText(name);
     this.addView(title);
 
-    var editView;
-    editView = new EditText();
-    editView.setPadding(8);
+    var editView = new EditText();
     editView.setSingleLine(false);
+    editView.setPadding(8);
+    editView.setTextColor(0xff006600);
     editView.setText(code);
     editView.setHoverEnterListener(function() {
         this.setBorder(1, 0x661499f7);
@@ -39,6 +38,7 @@ function Playground(name, code, isHtml) {
     editView.setOnFocusChangeListener(function() {
         resetBorder();
     });
+
     this.addView(editView);
 
     var previewer;
@@ -65,10 +65,6 @@ function Playground(name, code, isHtml) {
     this.setEditHeight = function(h) {
         editH = h;
         this.requestLayout();
-    };
-
-    this.setAppendCode = function(code) {
-        mAppendCode = code;
     };
 
     this.onMeasure = function(wMS){
@@ -138,44 +134,41 @@ function Playground(name, code, isHtml) {
     }
 
     function update(){
-        var code = editView.getText() + " " + mAppendCode;
+        var code = preCode + " " + editView.getText() + " " + appendCode;
         previewer.applyCode(code);
     }
 }
 
 function HtmlPreviewer() {
-    FrameLayout.apply(this, []);
+    FrameLayout.apply(this);
 
-    var mDisplayArea = new WebView();
-    this.addView(mDisplayArea);
+    var display = new WebView();
+    this.addView(display);
 
     this.setPadding(10);
 
     this.applyCode = function(code){
-        mDisplayArea.loadDataWithBaseURL(code);
+        display.loadDataWithBaseURL(code);
     };
 }
 
 function CodePreviewer(uuid) {
-    FrameLayout.apply(this, []);
+    FrameLayout.apply(this);
 
-    var mDemoView;
+    var demoView;
 
-    var mDisplayArea = new FrameLayout();
-    this.addView(mDisplayArea);
+    var display = new FrameLayout();
+    this.addView(display);
 
     this.setPadding(10);
 
     this.applyCode = function(code){
         var scriptElem = document.createElement("script");
-
-        var codeWrapper = "function DemoView" + uuid + "(){FrameLayout.apply(this, []);" + code + "}";
-
-        scriptElem.innerHTML = codeWrapper;
+        scriptElem.innerHTML = "function DemoView" + uuid + "(){FrameLayout.apply(this);" + code + "}";
         document.head.appendChild(scriptElem);
 
-        mDisplayArea.removeView(mDemoView);
-        mDemoView = eval("new DemoView" + uuid + "()");
-        mDisplayArea.addView(mDemoView);
+        display.removeView(demoView);
+        demoView = eval("new DemoView" + uuid + "()");
+        display.addView(demoView);
     };
 }

@@ -150,8 +150,8 @@ function IntroView() {
         getstartLp.setMargins(padding, paraPaddingTop, padding, padding);
         cnt.addView(getstart, getstartLp);
 
-        var playground = new Playground("Hello World", mHelloWorldCode, true);
-        playground.setEditHeight(400);
+        var playground = new Playground("Hello World", "", helloWorldCode, "", true);
+        playground.setEditHeight(450);
         var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         lp.setMargins(16);
         cnt.addView(playground, lp);
@@ -164,8 +164,8 @@ function IntroView() {
         androidLLp.setMargins(padding, paraPaddingTop, padding, padding);
         cnt.addView(androidL, androidLLp);
 
-        playground = new Playground("Widgets", mMaterialDesignCode);
-        playground.setEditHeight(480);
+        playground = new Playground("Widgets", materitalDesignPreCode, materialDesignCode, "");
+        playground.setEditHeight(540);
         cnt.addView(playground, lp);
 
         var apidemos = new TextView();
@@ -176,30 +176,29 @@ function IntroView() {
         apidemosLp.setMargins(padding, paraPaddingTop, padding, padding);
         cnt.addView(apidemos, apidemosLp);
 
-        playground = new Playground("Widgets", mWidgetCode);
-        playground.setEditHeight(450);
-        cnt.addView(playground, lp);
-
-        playground = new Playground("onMeasure & onLayout", mMeausreCode);
+        playground = new Playground("Widgets", widgetPreCode, widgetCode, "");
         playground.setEditHeight(400);
         cnt.addView(playground, lp);
 
-        playground = new Playground("onDraw", mDrawCode);
-        playground.setEditHeight(300);
+        playground = new Playground("onMeasure & onLayout", measurePreCode, meausreCode, "");
+        playground.setEditHeight(360);
         cnt.addView(playground, lp);
 
-        playground = new Playground("onTouchEvent", mTouchCode);
+        playground = new Playground("onDraw", drawPreCode, drawCode, "");
+        playground.setEditHeight(320);
+        cnt.addView(playground, lp);
+
+        playground = new Playground("onTouchEvent", touchPreCode, touchCode, touchAppendCode);
         playground.setEditHeight(480);
         cnt.addView(playground, lp);
 
-        playground = new Playground("Animation", mAnimationCode);
-        playground.setAppendCode(mAnimatonAppendCode);
-        playground.setEditHeight(500);
+        playground = new Playground("Animation", animPreCode, animCode, animAppendCode);
+        playground.setEditHeight(480);
         cnt.addView(playground, lp);
     }
 }
 
-var mHelloWorldCode = "<!DOCTYPE html>\n" +
+var helloWorldCode = "<!DOCTYPE html>\n" +
     "<html>\n" +
     "<head>\n" +
     "\t<!-- you only need to import jndroid.js -->\n" +
@@ -210,160 +209,167 @@ var mHelloWorldCode = "<!DOCTYPE html>\n" +
     "<script>\n" +
     "\t/* your code here */\n" +
     "\t/* 在这里编写你的代码 */\n" +
-    "\tvar mLayout = new FrameLayout();\n" +
-    "\tmLayout.setBackgroundColor(0x1a000000);\n\n" +
-    "\t/* no activity here, setContentView will show your view fullscreen */\n" +
-    "\t/* 没有Activity，直接setContentView就可以得到一个全屏的视图 */\n" +
-    "\tsetContentView(mLayout);\n\n" +
-    "\tvar mTextView = new TextView();\n" +
-    "\tmTextView.setText(\"helle world\");\n" +
-    "\tmLayout.addView(mTextView);\n\n" +
+    "\tvar layout = new FrameLayout();\n\n" +
+    "\t/* no activity here, setContentView is enough */\n" +
+    "\t/* 没有Activity，直接setContentView就可以了 */\n" +
+    "\tsetContentView(layout);\n\n" +
+    "\tvar textView = new TextView();\n" +
+    "\ttextView.setText(\"helle world\");\n" +
+    "\tlayout.addView(textView);\n" +
     "</script>\n" +
     "</body>\n" +
     "</html>";
 
-var mMaterialDesignCode = "" +
-    "var mLayout = new LinearLayout();\n" +
-    "this.addView(mLayout);\n\n" +
+var materitalDesignPreCode = "" +
+    "var layout = new LinearLayout();\n" +
+    "this.addView(layout);\n\n" +
     "var lp = new LayoutParams(LayoutParams.FILL_PARENT, 48);\n" +
-    "lp.gravity = Gravity.LEFT;\n" +
-    "lp.setMargins(8);\n\n" +
-    "var mButton = new MButton();\n" +
-    "mButton.setBackgroundColor(0xff673ab7);\n" +
-    "mButton.setTextColor(0xffffffff);\n" +
-    "mButton.setText(\"button\");\n" +
-    "mButton.setOnClickListener(function() {\n" +
+    "lp.setMargins(8);\n\n";
+
+var materialDesignCode = "" +
+    "var btn = new MButton();\n" +
+    "btn.setText(\"button\");\n" +
+    "btn.setOnClickListener(function() {\n" +
     "\twindow.alert(\"Material Design\");\n" +
     "});\n" +
-    "mLayout.addView(mButton, lp);\n\n" +
+    "layout.addView(btn, lp);\n\n" +
     "var group = new MRadioGroup();\n" +
     "for (var i = 0; i < 3; i++) {\n" +
-    "\tvar radioButton = new MRadioButton();\n" +
-    "\tradioButton.setId(i);\n" +
-    "\tradioButton.setColor(0xff673ab7);\n" +
-    "\tradioButton.setText(\"RadioButton \" + i);\n" +
-    "\tgroup.addChild(radioButton);\n" +
+    "\tvar item = new MRadioButton();\n" +
+    "\titem.setId(i);\n" +
+    "\titem.setColor(0xff673ab7);\n" +
+    "\titem.setText(\"RadioButton \" + i);\n" +
+    "\tgroup.addChild(item);\n" +
     "}\n" +
-    "mLayout.addView(group);\n\n" +
-    "var mEditText = new MEditText();\n" +
-    "mEditText.setHint(\"input text here\");\n" +
-    "mEditText.setHighlightColor(0xff673ab7);\n" +
-    "mLayout.addView(mEditText, lp);\n\n" +
+    "layout.addView(group);\n\n" +
+    "var editText = new MEditText();\n" +
+    "editText.setHint(\"input text here\");\n" +
+    "editText.setHighlightColor(0xff673ab7);\n" +
+    "layout.addView(editText, lp);\n\n" +
     "var progress = new MProgressBar();\n" +
     "progress.setProgressColor(0xff673ab7);\n" +
     "progress.setStyle(MProgressBar.Small);\n" +
-    "mLayout.addView(progress, lp);\n\n" +
+    "layout.addView(progress, lp);\n\n" +
     "var toggleButton = new MToggleButton();\n" +
-    "toggleButton.setColor(0xff673ab7);" +
-    "mLayout.addView(toggleButton, lp);\n" +
+    "toggleButton.setColor(0xff673ab7);\n" +
+    "layout.addView(toggleButton, lp);\n" +
     "";
 
-
-var mWidgetCode = "" +
-    "var mLayout = new LinearLayout();\n" +
-    "this.addView(mLayout);\n\n" +
+var widgetPreCode = "" +
+    "var layout = new LinearLayout();\n" +
+    "this.addView(layout);\n\n" +
     "var lp = new LayoutParams(LayoutParams.FILL_PARENT, 48);\n" +
-    "lp.setMargins(8);\n\n" +
-    "var mButton = new Button();\n" +
-    "mButton.setText(\"button\");\n" +
-    "mButton.setOnClickListener(function() {\n" +
+    "lp.setMargins(8);\n\n";
+
+var widgetCode = "" +
+    "var btn = new Button();\n" +
+    "btn.setText(\"button\");\n" +
+    "btn.setOnClickListener(function() {\n" +
     "\twindow.alert(\"button click\");\n" +
     "});\n" +
-    "mLayout.addView(mButton, lp);\n\n" +
-    "var mTextView = new TextView();\n" +
-    "mTextView.setText(\"textview\");\n" +
-    "mLayout.addView(mTextView, lp);\n\n" +
-    "var mEditText = new EditText();\n" +
-    "mEditText.setHintText(\"edittext\");\n" +
-    "mLayout.addView(mEditText, lp);\n\n" +
-    "var mImageView = new ImageView();\n" +
-    "mImageView.setImageUri(\"images/ic_launcher.png\")\n" +
-    "mImageView.setScaleType(ScaleType.FIT_CENTER);\n" +
-    "var imgLp = new LayoutParams(LayoutParams.FILL_PARENT, 108);\n" +
-    "mLayout.addView(mImageView, imgLp);";
+    "layout.addView(btn, lp);\n\n" +
+    "var text = new TextView();\n" +
+    "text.setText(\"textview\");\n" +
+    "layout.addView(text, lp);\n\n" +
+    "var editText = new EditText();\n" +
+    "editText.setHintText(\"edittext\");\n" +
+    "layout.addView(editText, lp);\n\n" +
+    "var image = new ImageView();\n" +
+    "image.setImageUri(\"images/ic_launcher.png\")\n" +
+    "image.setScaleType(ScaleType.FIT_CENTER);\n" +
+    "var imgLp = new LayoutParams(108, 108);\n" +
+    "layout.addView(image, imgLp);";
 
-var mMeausreCode = "" +
-    "var mView = new MyView();\n" +
-    "this.addView(mView);\n\n" +
+var measurePreCode = "" +
+    "var view = new MyView();\n" +
+    "this.addView(view);\n\n";
+
+var meausreCode = "" +
     "function MyView() {\n" +
-    "\tViewGroup.apply(this, []);\n" +
-    "\tthis.setBackgroundColor(0x1a000000);\n\n" +
-    "\tvar mChild = new View();\n" +
-    "\tmChild.setBackgroundColor(0xff673ab7);\n" +
-    "\tthis.addView(mChild);\n\n" +
-    "\tthis.onMeasure = function(widthMS, heightMS) {\n" +
-    "\t\tvar width = MeasureSpec.getSize(widthMS);\n" +
-    "\t\tvar height = MeasureSpec.getSize(heightMS);\n" +
-    "\t\tmChild.measure(MeasureSpec.makeMeasureSpec(width / 4, MeasureSpec.Exactly), \n" +
-    "\t\t\tMeasureSpec.makeMeasureSpec(height / 4, MeasureSpec.Exactly));\n" +
-    "\t\tthis.setMeasuredDimension(width, height);\n" +
+    "\tViewGroup.apply(this);\n\n" +
+    "\tvar child = new View();\n" +
+    "\tchild.setBackgroundColor(0xff673ab7);\n" +
+    "\tthis.addView(child);\n\n" +
+    "\tthis.onMeasure = function(wMS, hMS) {\n" +
+    "\t\tvar w = MeasureSpec.getSize(wMS);\n" +
+    "\t\tvar h = MeasureSpec.getSize(hMS);\n" +
+    "\t\tchild.measure(w / 4, h / 4);\n" +
+    "\t\tthis.setMeasuredDimension(w, h);\n" +
     "\t}\n\n" +
-    "\tthis.onLayout = function(x, y) {\n" +
-    "\t\tmChild.layout(50, 100);\n" +
+    "\tthis.onLayout = function() {\n" +
+    "\t\tchild.layout(50, 100);\n" +
     "\t}\n" +
     "}";
 
-var mDrawCode = "" +
+var drawPreCode = "" +
     "var mView = new MyView();\n" +
-    "this.addView(mView);\n\n" +
+    "this.addView(mView);\n\n";
+
+
+var drawCode = "" +
     "function MyView() {\n" +
-    "\tView.apply(this, []);\n" +
-    "\tthis.setBackgroundColor(0x1a000000);\n" +
+    "\tView.apply(this);\n" +
     "\tthis.setWillNotDraw(false);\n\n" +
     "\tthis.onDraw = function(canvas) {\n" +
-    "\t\t// here we use html canvas to draw\n" +
     "\t\tvar density = DisplayMetrics.density;\n" +
+    "\t\tvar x = 100 * density;\n" +
+    "\t\tvar y = 100 * density;\n" +
+    "\t\tvar r = 50 * density;\n" +
     "\t\tcanvas.beginPath();\n" +
-    "\t\tcanvas.arc(100 * density, 100 * density, 50 * density, 0, Math.PI * 2, true);\n" +
+    "\t\tcanvas.arc(x, y, r, 0, Math.PI * 2, true);\n" +
     "\t\tcanvas.closePath();\n" +
     "\t\tcanvas.fillStyle = \"#673ab7\";\n" +
-    "\t\tcanvas.fill();" +
+    "\t\tcanvas.fill();\n" +
     "\t}\n" +
     "}";
 
-var mTouchCode = "" +
+var touchPreCode = "" +
     "var mView = new MyView();\n" +
     "var lp = new LayoutParams(200, 100);" +
     "this.addView(mView, lp);\n\n" +
     "function MyView() {\n" +
-    "\tTextView.apply(this, []);\n\n" +
+    "\tTextView.apply(this);\n\n" +
     "\tthis.setText(\"Drag Me\");\n" +
     "\tthis.setTextColor(0xffffffff);\n" +
     "\tthis.setGravity(Gravity.CENTER);\n" +
     "\tthis.setBackgroundColor(0xff673ab7);\n" +
-    "\tthis.setClickable(true);\n\n" +
-    "\tvar mLastX = 0;\n" +
-    "\tvar mLastY = 0;\n" +
-    "\tthis.onTouchEvent = function(e) {\n" +
-    "\t\tswitch (e.getAction()) {\n" +
-    "\t\t\tcase MotionEvent.ACTION_DOWN:\n" +
-    "\t\t\t\tthis.getParent().requestDisallowInterceptTouchEvent(true);\n" +
-    "\t\t\t\tmLastX = e.getRawX();\n" +
-    "\t\t\t\tmLastY = e.getRawY();\n" +
-    "\t\t\t\tthis.setBackgroundColor(0xcc673ab7);\n" +
-    "\t\t\tbreak;\n" +
-    "\t\t\tcase MotionEvent.ACTION_MOVE:\n" +
-    "\t\t\t\tvar dx = e.getRawX() - mLastX;\n" +
-    "\t\t\t\tvar dy = e.getRawY() - mLastY;\n" +
-    "\t\t\t\tthis.layout(this.getLeft() + dx, this.getTop() + dy);\n" +
-    "\t\t\t\tmLastX = e.getRawX();\n" +
-    "\t\t\t\tmLastY = e.getRawY();\n" +
-    "\t\t\tbreak;\n" +
-    "\t\t\tcase MotionEvent.ACTION_UP:\n" +
-    "\t\t\tcase MotionEvent.ACTION_CANCEL:\n" +
-    "\t\t\t\tthis.setBackgroundColor(0xff673ab7);\n" +
-    "\t\t\tbreak;\n" +
-    "\t\t}\n" +
-    "\t}" +
-    "}";
+    "\tthis.setClickable(true);\n\n";
 
-var mAnimationCode = "" +
+var touchCode = "" +
+    "var lastX = 0;\n" +
+    "var lastY = 0;\n\n" +
+    "this.onTouchEvent = function(e) {\n" +
+    "\tswitch (e.getAction()) {\n" +
+    "\tcase MotionEvent.ACTION_DOWN:\n" +
+    "\t\tthis.getParent().requestDisallowInterceptTouchEvent(true);\n" +
+    "\t\tlastX = e.getRawX();\n" +
+    "\t\tlastY = e.getRawY();\n" +
+    "\t\tthis.setBackgroundColor(0xcc673ab7);\n" +
+    "\tbreak;\n" +
+    "\tcase MotionEvent.ACTION_MOVE:\n" +
+    "\t\tvar dx = e.getRawX() - lastX;\n" +
+    "\t\tvar dy = e.getRawY() - lastY;\n" +
+    "\t\tthis.layout(this.getLeft() + dx, this.getTop() + dy);\n" +
+    "\t\tlastX = e.getRawX();\n" +
+    "\t\tlastY = e.getRawY();\n" +
+    "\tbreak;\n" +
+    "\tcase MotionEvent.ACTION_UP:\n" +
+    "\tcase MotionEvent.ACTION_CANCEL:\n" +
+    "\t\tthis.setBackgroundColor(0xff673ab7);\n" +
+    "\tbreak;\n" +
+    "\t}\n" +
+    "}\n";
+var touchAppendCode = "}";
+
+var animPreCode = "" +
     "var target = new View();\n" +
     "target.setBackgroundColor(0xff673ab7);\n" +
     "var targetlp = new LayoutParams(100, 50);\n" +
     "targetlp.gravity = Gravity.CENTER;\n" +
     "this.addView(target, targetlp);\n\n" +
-    "" +
+    "";
+
+var animCode = "" +
     "var duration = 500;\n\n" +
     "" +
     "function translate() {\n" +
@@ -391,28 +397,28 @@ var mAnimationCode = "" +
     "}\n\n" +
     "";
 
-var mAnimatonAppendCode = "" +
-    "var controlBar = new LinearLayout();\n" +
-    "controlBar.setOrientation(LinearLayout.Horizontal);\n" +
+var animAppendCode = "" +
+    "var bar = new LinearLayout();\n" +
+    "bar.setOrientation(LinearLayout.Horizontal);\n" +
     "var barlp = new LayoutParams(LayoutParams.FILL_PARENT, 56);\n" +
-    "this.addView(controlBar, barlp);\n" +
+    "this.addView(bar, barlp);\n" +
     "var btnlp = new LayoutParams(0, 48);\n" +
     "btnlp.setMargins(4);\n" +
     "btnlp.weight = 1;\n" +
     "var translateBtn = new Button();\n" +
     "translateBtn.setText(\"translate\");\n" +
     "translateBtn.setOnClickListener(function() {translate();});" +
-    "controlBar.addView(translateBtn, btnlp);\n" +
+    "bar.addView(translateBtn, btnlp);\n" +
     "var alphaBtn = new Button();\n" +
     "alphaBtn.setText(\"alpha\");\n" +
     "alphaBtn.setOnClickListener(function() {alpha();});" +
-    "controlBar.addView(alphaBtn, btnlp);\n" +
+    "bar.addView(alphaBtn, btnlp);\n" +
     "var rotateBtn = new Button();\n" +
     "rotateBtn.setOnClickListener(function() {rotate();});" +
     "rotateBtn.setText(\"rotate\");\n" +
-    "controlBar.addView(rotateBtn, btnlp);\n" +
+    "bar.addView(rotateBtn, btnlp);\n" +
     "var scaleBtn = new Button();" +
     "scaleBtn.setText(\"scale\");\n" +
     "scaleBtn.setOnClickListener(function() {scale();});" +
-    "controlBar.addView(scaleBtn, btnlp);" +
+    "bar.addView(scaleBtn, btnlp);" +
     "";
