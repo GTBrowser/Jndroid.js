@@ -18,10 +18,7 @@ function Playground(name, preCode, code, appendCode, isHtml) {
     this.setBoxShadow(0, 1, 2, 0, 0x66000000);
     this.setPadding(16);
 
-    var title = new TextView();
-    title.setTextSize(R.dimen.title);
-    title.setTextColor(R.color.text);
-    title.setText(name);
+    var title = Theme.createTitle(name);
     this.addView(title);
 
     var editView = new EditText();

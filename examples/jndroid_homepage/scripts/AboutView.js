@@ -10,28 +10,23 @@ function AboutView() {
     cnt.setPadding(0, 0, 0, R.dimen.content_padding_bottom);
     this.addView(cnt);
 
-    var titlelp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    titlelp.topMargin = R.dimen.paragraph_padding_top;
-    titlelp.leftMargin = R.dimen.padding;
-    titlelp.bottomMargin = R.dimen.padding;
-
     var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    lp.setMargins(8);
+    lp.setMargins(R.dimen.padding);
 
     var logoTitle = Theme.createThemeTitle(R.string.about);
-    cnt.addView(logoTitle, titlelp);
+    cnt.addView(logoTitle);
 
     var logoView = new LogoView();
     cnt.addView(logoView, lp);
 
     var commentTitle = Theme.createThemeTitle(R.string.comments);
-    cnt.addView(commentTitle, titlelp);
+    cnt.addView(commentTitle);
 
     var commentView = new CommentView();
     cnt.addView(commentView, lp);
 
     var question = Theme.createThemeTitle(R.string.qa);
-    cnt.addView(question, titlelp);
+    cnt.addView(question);
 
     var questionView = new QuestionView();
     cnt.addView(questionView, lp);

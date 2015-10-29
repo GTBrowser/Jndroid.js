@@ -24,7 +24,7 @@ function AppView() {
     function addItem(title, url, isPc) {
         var appItemLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         appItemLp.gravity = Gravity.CENTER;
-        appItemLp.setMargins(padding);
+        appItemLp.setMargins(padding)
 
         var appItem = new AppItem(title, url, isPc);
         cnt.addView(appItem, appItemLp);
@@ -36,22 +36,14 @@ function AppView() {
         this.setBackgroundColor(0xffffffff);
         this.setCornerSize(R.dimen.corner);
         this.setBoxShadow(0, 1, 2, 0, R.color.shadow);
-        this.setPadding(16);
+        this.setPadding(padding);
 
-        var maxWidth = 800;
+        var maxWidth = 1024;
 
-        var titleView = new TextView();
-        titleView.setText(title);
-        titleView.setTextSize(R.dimen.title);
-        titleView.setTextColor(R.color.text);
-        titleView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        var titleView = Theme.createTitle(title);
         this.addView(titleView);
 
-        var urlView = new TextView();
-        urlView.setText(url);
-        urlView.setTextSize(R.dimen.sub_text);
-        urlView.setTextColor(R.color.sub_text);
-        urlView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        var urlView = Theme.createSubText(url);
         urlView.setTextIsSelectable(true);
         this.addView(urlView);
 
@@ -65,6 +57,7 @@ function AppView() {
             if (w > maxWidth) {
                 w = maxWidth;
             }
+            w = w - 32;
             titleView.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), 0);
             urlView.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), 0);
 

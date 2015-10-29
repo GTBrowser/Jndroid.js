@@ -11,13 +11,8 @@ function VSAndroidView() {
     cnt.setPadding(0, 0, 0, R.dimen.paragraph_padding_top);
     this.addView(cnt);
 
-    var codeTitle = new TextView();
-    codeTitle.setTextSize(R.dimen.title);
-    codeTitle.setTextColor(R.color.theme);
-    codeTitle.setText(R.string.to_android_develop);
-    var codeTitleLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    codeTitleLp.setMargins(padding, R.dimen.paragraph_padding_top, padding, 0);
-    cnt.addView(codeTitle, codeTitleLp);
+    var codeTitle = Theme.createThemeTitle(R.string.to_android_develop);
+    cnt.addView(codeTitle);
 
     var codeArea = new FrameLayout();
     var codeAreaLp = new LayoutParams(LayoutParams.FILL_PARENT, CODE_HEIGHT);
@@ -38,21 +33,13 @@ function VSAndroidView() {
     var androidView = new CodeView("Android", androidCode);
     linearLayout.addView(androidView, codeViewLp);
 
-    var moreTip = new TextView();
-    moreTip.setTextSize(R.dimen.title);
-    moreTip.setTextColor(R.color.theme);
-    moreTip.setText(R.string.more_tips);
-    var moreTipLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    moreTipLp.setMargins(padding, R.dimen.paragraph_padding_top - 32, padding, 0);
-    cnt.addView(moreTip, moreTipLp);
+    var moreTip = Theme.createThemeTitle(R.string.more_tips);
+    cnt.addView(moreTip);
 
-    var tipLp = new LayoutParams(moreTipLp);
+    var tipLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     tipLp.setMargins(padding, padding, padding, 0);
     for (var i = 0; i < tips.length; i++) {
-        var tip = new TextView();
-        tip.setText(tips[i]);
-        tip.setTextSize(R.dimen.text);
-        tip.setTextColor(R.color.text);
+        var tip = Theme.createText(tips[i]);
         cnt.addView(tip, tipLp);
     }
 

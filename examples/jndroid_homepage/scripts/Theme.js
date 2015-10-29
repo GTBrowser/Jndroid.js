@@ -7,6 +7,11 @@ function _Theme() {
         v.setTextColor(R.color.theme);
         v.setTextSize(R.dimen.title);
         v.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+
+        var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        lp.setMargins(R.dimen.padding);
+        lp.topMargin = R.dimen.paragraph_padding_top;
+        v.setLayoutParams(lp);
         return v;
     };
 

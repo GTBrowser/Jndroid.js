@@ -7,7 +7,6 @@ function IntroView() {
     this.setBg(R.color.card_bg);
 
     var padding = R.dimen.padding;
-    var paraPaddingTop = R.dimen.paragraph_padding_top;
 
     var cnt = new LinearLayout();
     cnt.setPadding(0, 0, 0, R.dimen.title_padding_top);
@@ -15,13 +14,8 @@ function IntroView() {
 
     loadMasterpiece();
 
-    var mIntro = new TextView();
-    mIntro.setTextSize(R.dimen.title);
-    mIntro.setTextColor(R.color.theme);
-    mIntro.setText(R.string.intro);
-    var introLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    introLp.setMargins(padding, paraPaddingTop, padding, 0);
-    cnt.addView(mIntro, introLp);
+    var intro = Theme.createThemeTitle(R.string.intro);
+    cnt.addView(intro);
 
     loadSlogan(R.string.intro_content);
 
@@ -32,14 +26,9 @@ function IntroView() {
     loadPlaygrounds();
 
     function loadSlogan(text) {
-        var slogan = new TextView();
-        slogan.setTextSize(R.dimen.text);
-        slogan.setTextColor(R.color.text);
-        slogan.setText(text);
-
+        var slogan = Theme.createText(text);
         var sloganLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         sloganLp.setMargins(padding, padding, padding, 0);
-
         cnt.addView(slogan, sloganLp);
     }
 
@@ -53,13 +42,8 @@ function IntroView() {
     }
 
     function loadGitCafeView() {
-        var gitcafe = new TextView();
-        gitcafe.setTextSize(R.dimen.title);
-        gitcafe.setTextColor(R.color.theme);
-        gitcafe.setText("GitCafé");
-        var gitcafeLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        gitcafeLp.setMargins(padding, paraPaddingTop, padding, padding);
-        cnt.addView(gitcafe, gitcafeLp);
+        var gitcafe = Theme.createThemeTitle("GitCafé");
+        cnt.addView(gitcafe);
 
         var gitcafeLayoutlp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
         var cafeLayout = new LinearLayout();
@@ -72,32 +56,26 @@ function IntroView() {
         var imgLp = new LayoutParams(64, 24);
         imgLp.gravity = Gravity.CENTER;
         imgLp.leftMargin = padding;
-        var urlLp = new LayoutParams(0, LayoutParams.FILL_PARENT);
-        urlLp.weight = 1;
-        urlLp.leftMargin = padding;
+
         var cafeImg = new ImageView();
         cafeImg.setImgSrc("images/gitcafe.png");
         cafeImg.setCornerSize(3);
         cafeImg.setBoxShadow(0, 1, 2, 0, R.color.shadow);
         cafeImg.setImgHeight(24);
         cafeLayout.addView(cafeImg, imgLp);
-        var cafeLink = new TextView();
-        cafeLink.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-        cafeLink.setText("https://gitcafe.com/GTBrowser/Jndroid.js");
-        cafeLink.setTextSize(R.dimen.sub_text);
-        cafeLink.setTextColor(R.color.sub_text);
+
+        var urlLp = new LayoutParams(0, LayoutParams.FILL_PARENT);
+        urlLp.weight = 1;
+        urlLp.leftMargin = padding;
+
+        var cafeLink = Theme.createSubText("https://gitcafe.com/GTBrowser/Jndroid.js");
         cafeLayout.addView(cafeLink, urlLp);
 
     }
 
     function loadGithubView() {
-        var github = new TextView();
-        github.setTextSize(R.dimen.title);
-        github.setTextColor(R.color.theme);
-        github.setText("Github");
-        var githubLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        githubLp.setMargins(padding, paraPaddingTop, padding, padding);
-        cnt.addView(github, githubLp);
+        var github = Theme.createThemeTitle("Github");
+        cnt.addView(github);
 
         var githubLayoutlp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
         var starLayout = new LinearLayout();
@@ -114,11 +92,8 @@ function IntroView() {
         starImg.setImgSrc("https://img.shields.io/github/stars/GTBrowser/Jndroid.js.svg");
         starImg.setImgHeight(24);
         starLayout.addView(starImg, imgLp);
-        var starLink = new TextView();
-        starLink.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-        starLink.setText("https://github.com/GTBrowser/Jndroid.js");
-        starLink.setTextSize(R.dimen.sub_text);
-        starLink.setTextColor(R.color.sub_text);
+
+        var starLink = Theme.createSubText("https://github.com/GTBrowser/Jndroid.js");
         starLayout.addView(starLink, urlLp);
 
         var forkLayout = new LinearLayout();
@@ -132,23 +107,15 @@ function IntroView() {
         forkImg.setImgSrc("https://img.shields.io/github/forks/GTBrowser/Jndroid.js.svg");
         forkImg.setImgHeight(24);
         forkLayout.addView(forkImg, imgLp);
-        var forkLink = new TextView();
-        forkLink.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-        forkLink.setText("https://github.com/GTBrowser/Jndroid.js/fork");
-        forkLink.setTextSize(R.dimen.sub_text);
-        forkLink.setTextColor(R.color.sub_text);
+
+        var forkLink = Theme.createSubText("https://github.com/GTBrowser/Jndroid.js/fork");
         forkLayout.addView(forkLink, urlLp);
 
     }
 
     function loadPlaygrounds() {
-        var getstart = new TextView();
-        getstart.setTextSize(R.dimen.title);
-        getstart.setTextColor(R.color.theme);
-        getstart.setText(R.string.getstart);
-        var getstartLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        getstartLp.setMargins(padding, paraPaddingTop, padding, padding);
-        cnt.addView(getstart, getstartLp);
+        var getstart = Theme.createThemeTitle(R.string.getstart);
+        cnt.addView(getstart);
 
         var playground = new Playground("Hello World", "", helloWorldCode, "", true);
         playground.setEditHeight(450);
@@ -156,25 +123,15 @@ function IntroView() {
         lp.setMargins(16);
         cnt.addView(playground, lp);
 
-        var androidL = new TextView();
-        androidL.setTextSize(R.dimen.title);
-        androidL.setTextColor(R.color.theme);
-        androidL.setText(R.string.material_design);
-        var androidLLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        androidLLp.setMargins(padding, paraPaddingTop, padding, padding);
-        cnt.addView(androidL, androidLLp);
+        var androidL = Theme.createThemeTitle(R.string.material_design);
+        cnt.addView(androidL);
 
         playground = new Playground("Widgets", materitalDesignPreCode, materialDesignCode, "");
         playground.setEditHeight(540);
         cnt.addView(playground, lp);
 
-        var apidemos = new TextView();
-        apidemos.setTextSize(R.dimen.title);
-        apidemos.setTextColor(R.color.theme);
-        apidemos.setText("API Demos");
-        var apidemosLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        apidemosLp.setMargins(padding, paraPaddingTop, padding, padding);
-        cnt.addView(apidemos, apidemosLp);
+        var apidemos = Theme.createThemeTitle("API Demos");
+        cnt.addView(apidemos);
 
         playground = new Playground("Widgets", widgetPreCode, widgetCode, "");
         playground.setEditHeight(400);
