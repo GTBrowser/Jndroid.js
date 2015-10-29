@@ -75,10 +75,10 @@ function _R() {
         this.theme = 0xFF673ab7;
         this.card_bg = 0xffeeeeee;
         this.bg = 0xfffafafa;
-        this.text = 0xff212121;
+        this.text = 0xff191919;
         this.secondary_text = 0xff454545;
         this.sub_text = 0xff757575;
-        this.dividers = 0x20000000;
+        this.dividers = 0x1a000000;
         this.shadow = 0x66000000;
     }
 

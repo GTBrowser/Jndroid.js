@@ -996,7 +996,7 @@ function TextView() {
             var measureH = measureDiv.clientHeight;
             var measureW = measureDiv.clientWidth;
             if (wMode == MS.UNSPECIFIED) {
-                w = measureW + this.getPL() + this.getPR();
+                w = measureW + this.getPL() + this.getPR() + 1;
                 cnt.style.width = w + "px";
             }
             if (hMode == MS.UNSPECIFIED) {

@@ -14,9 +14,12 @@ function AppView() {
     var cntLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     this.addView(cnt, cntLp);
 
-    addItem(R.string.lestore, "http://app.gtbrowser.cn", false);
-    addItem(R.string.excel_demo, "http://playground.jndroid.cn/excel", false);
-    addItem(R.string.calculator, "http://jsq.jndroid.com/", false);
+    setTimeout(function() {
+        addItem(R.string.lestore, "http://app.gtbrowser.cn", false);
+        addItem(R.string.excel_demo, "http://playground.jndroid.cn/excel", false);
+        addItem(R.string.calculator, "http://jsq.jndroid.com/", false);
+    }, 500);
+
 
     function addItem(title, url, isPc) {
         var appItemLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
