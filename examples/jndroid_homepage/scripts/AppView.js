@@ -6,128 +6,92 @@ function AppView() {
 
     this.setBackgroundColor(R.color.card_bg);
 
-    var mSelf = this;
-    var mPadding = R.dimen.padding;
+    var padding = R.dimen.padding;
 
-    var content = new LinearLayout();
-    content.setOrientation(LinearLayout.VERTICAL);
-    content.setPadding(0, 0, 0, R.dimen.content_padding_bottom);
-    var contentLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    this.addView(content, contentLp);
+    var cnt = new LinearLayout();
+    cnt.setOrientation(LinearLayout.VERTICAL);
+    cnt.setPadding(0, R.dimen.paragraph_padding_top, 0, R.dimen.content_padding_bottom);
+    var cntLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    this.addView(cnt, cntLp);
 
-    var intro = new TextView();
-    intro.setText("This page shows Web Apps which developing by Jndroid, including this website.");
-    intro.setTextColor(R.color.text);
-    intro.setTextSize(R.color.text);
-    var introlp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    introlp.setMargins(mPadding, R.dimen.paragraph_padding_top, mPadding, mPadding);
-    //content.addView(intro, introlp);
+    addItem(R.string.lestore, "http://app.gtbrowser.cn", false);
+    addItem(R.string.excel_demo, "http://playground.jndroid.cn/excel", false);
+    addItem(R.string.calculator, "http://jsq.jndroid.com/", false);
 
-    var appsList = [];
-    appsList.push(new AppData(R.string.jndroid_home, "http://jndroid.com", true));
-    appsList.push(new AppData(R.string.calculator, "http://lite.mb.lenovomm.com/rcalc/", false));
-    //appsList.push(new AppData("Delivery Search", "http://testbrowser.cn/kuaidi.html", false));
+    function addItem(title, url, isPc) {
+        var appItemLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        appItemLp.gravity = Gravity.CENTER;
+        appItemLp.setMargins(padding);
 
-    var appItemTopLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    appItemTopLp.gravity = Gravity.CENTER;
-    appItemTopLp.setMargins(R.dimen.half_padding);
-    appItemTopLp.topMargin = R.dimen.paragraph_padding_top;
-
-    var appItemLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    appItemLp.gravity = Gravity.CENTER;
-    appItemLp.setMargins(R.dimen.padding);
-
-    for (var i = 0; i< appsList.length; i++) {
-        var appItem = new AppItem(appsList[i]);
-        if (i == 0) {
-            content.addView(appItem, appItemTopLp);
-        } else {
-            content.addView(appItem, appItemLp);
-        }
+        var appItem = new AppItem(title, url, isPc);
+        cnt.addView(appItem, appItemLp);
     }
 
-    this.postDelayed(function() {
-        this.requestLayout();
-    }, 1000);
-
-    function AppData(title, url, isPC) {
-        this.mTitle = title;
-        this.mUrl = url;
-        this.mIsPC = isPC;
-    }
-
-    function AppItem(appData) {
-        LinearLayout.apply(this,[]);
+    function AppItem(title, url, isPc) {
+        ViewGroup.apply(this);
 
         this.setBackgroundColor(0xffffffff);
         this.setCornerSize(R.dimen.corner);
         this.setBoxShadow(0, 1, 2, 0, R.color.shadow);
         this.setPadding(16);
 
-        var MAX_WIDTH = 800;
+        var maxWidth = 800;
 
-        var mTitle = new TextView();
-        mTitle.setText(appData.mTitle);
-        mTitle.setTextSize(R.dimen.title);
-        mTitle.setTextColor(R.color.text);
-        mTitle.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-        this.addView(mTitle);
+        var titleView = new TextView();
+        titleView.setText(title);
+        titleView.setTextSize(R.dimen.title);
+        titleView.setTextColor(R.color.text);
+        titleView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        this.addView(titleView);
 
-        var mUrl = new TextView();
-        mUrl.setText(appData.mUrl);
-        mUrl.setTextSize(R.dimen.sub_text);
-        mUrl.setTextColor(R.color.sub_text);
-        mUrl.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-        mUrl.setTextIsSelectable(true);
-        this.addView(mUrl);
+        var urlView = new TextView();
+        urlView.setText(url);
+        urlView.setTextSize(R.dimen.sub_text);
+        urlView.setTextColor(R.color.sub_text);
+        urlView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        urlView.setTextIsSelectable(true);
+        this.addView(urlView);
 
-        var mWebView = new WebView();
-        mWebView.loadUrl(appData.mUrl);
-        mWebView.setBorder(1, 0x66000000);
-        this.addView(mWebView);
+        var webView = new WebView();
+        webView.loadUrl(url);
+        webView.setBorder(1, 0x66000000);
+        this.addView(webView);
 
-        this.onMeasure = function(widthMS, heightMS) {
-            var width = MeasureSpec.getSize(widthMS);
-            var height = MeasureSpec.getSize(heightMS);
-            if (width > MAX_WIDTH) {
-                width = MAX_WIDTH;
+        this.onMeasure = function(wMS) {
+            var w = MeasureSpec.getSize(wMS);
+            if (w > maxWidth) {
+                w = maxWidth;
             }
-            mTitle.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), 0);
-            mUrl.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), 0);
+            titleView.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), 0);
+            urlView.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), 0);
 
-            var contentWidth = 0;
-            var contentHeight = 0;
-            if (appData.mIsPC) {
-                contentWidth = width - mPadding * 2;
-                contentHeight = contentWidth / 16 * 9;
+            var cntW = 0;
+            var cntH = 0;
+            if (isPc) {
+                cntW = w - padding * 2;
+                cntH = cntW / 16 * 9;
             } else {
-                if (MeasureSpec.getSize(widthMS) > height) {
-                    contentHeight = height * 3 / 4;
-                    contentWidth = contentHeight * 5 / 8;
-                } else {
-                    contentWidth = (width - mPadding * 2) * 3 / 4;
-                    contentHeight = contentWidth * 8 / 5;
-                }
+                cntW = Math.min(360, w - padding * 2);
+                cntH = cntW / 360 * 640;
             }
 
-            mWebView.measure(MeasureSpec.makeMeasureSpec(contentWidth, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(contentHeight, MeasureSpec.EXACTLY));
-            height = R.dimen.title_padding_top + mTitle.getMeasuredHeight() + mPadding + mUrl.getMeasuredHeight() + mPadding + contentHeight + mPadding;
+            Utils.measureExactly(webView, cntW, cntH);
+            var h = R.dimen.title_padding_top + titleView.getMeasuredHeight() + padding + urlView.getMeasuredHeight() + padding + cntH + padding;
 
-            this.setMeasuredDimension(width, height);
+            this.setMeasuredDimension(w, h);
         };
 
-        this.onLayout = function(x, y) {
-            var offsetX = mPadding;
-            var offsetY = R.dimen.title_padding_top;
-            mTitle.layout(offsetX, offsetY);
+        this.onLayout = function() {
+            var x = padding;
+            var y = R.dimen.title_padding_top;
+            titleView.layout(x, y);
 
-            offsetY += mTitle.getMeasuredHeight() + mPadding;
-            mUrl.layout(offsetX, offsetY);
+            y += titleView.getMeasuredHeight() + padding;
+            urlView.layout(x, y);
 
-            offsetX = (this.getMeasuredWidth() - mWebView.getMeasuredWidth()) / 2;
-            offsetY += mPadding + mUrl.getMeasuredHeight();
-            mWebView.layout(offsetX, offsetY);
+            x = (this.getMeasuredWidth() - webView.getMeasuredWidth()) / 2;
+            y += padding + urlView.getMeasuredHeight();
+            webView.layout(x, y);
         }
     }
 }

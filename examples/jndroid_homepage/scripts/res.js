@@ -22,8 +22,10 @@ function _R() {
             this.to_android_develop = "致安卓开发者";
             this.more_tips = "更多建议";
 
+            this.lestore = "乐商店";
+            this.excel_demo = "Excel Demo(多点触控)";
             this.jndroid_home = "Jndroid官网";
-            this.calculator = "关系计算器";
+            this.calculator = "计算器";
 
             this.version = "版本号";
             this.show_more = "显示更多";
@@ -51,8 +53,10 @@ function _R() {
             this.to_android_develop = "To Android Developer";
             this.more_tips = "More Tips";
 
+            this.lestore = "LeStore";
+            this.excel_demo = "Excel Demo(multi-touch)";
             this.jndroid_home = "Jndroid Homepage";
-            this.calculator = "Relationship Calculator";
+            this.calculator = "Calculator";
 
             this.version = "Version";
             this.show_more = "show more";
