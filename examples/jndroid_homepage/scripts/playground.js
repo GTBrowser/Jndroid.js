@@ -1,70 +1,69 @@
 /**
  * Created by lency on 5/20/15.
  */
-function Playground(title, initCode, isHtml) {
-    ViewGroup.apply(this, []);
+function Playground(name, code, isHtml) {
+    ViewGroup.apply(this);
 
     this.uuid = Math.floor(Math.random() * 100000);
 
-    var BUTTON_WIDTH = 48;
-    var BUTTON_HEIGHT = 48;
+    var buttonW = 48;
+    var buttonH = 48;
+    var editH = 300;
 
-    var mPadding = R.dimen.padding;
-    var mSelf = this;
-    var mEditHeight = 300;
+    var self = this;
+    var padding = R.dimen.padding;
     var mAppendCode = "";
 
     this.setBackgroundColor(0xffffffff);
-    this.setCornerSize(2, 2, 2, 2);
+    this.setCornerSize(2);
     this.setBoxShadow(0, 1, 2, 0, 0x66000000);
     this.setPadding(16);
 
-    var mTitle = new TextView();
-    mTitle.setTextSize(R.dimen.title);
-    mTitle.setTextColor(R.color.text);
-    mTitle.setText(title);
-    this.addView(mTitle);
+    var title = new TextView();
+    title.setTextSize(R.dimen.title);
+    title.setTextColor(R.color.text);
+    title.setText(name);
+    this.addView(title);
 
-    var mEditArea = new FrameLayout();
-    mEditArea.setPadding(0);
-    this.addView(mEditArea);
-
-    var mEditView;
-
-        mEditView = new EditText();
-        mEditView.setSingleLine(false);
-    mEditView.setOnFocusChangeListener(function() {
+    var editView;
+    editView = new EditText();
+    editView.setPadding(8);
+    editView.setSingleLine(false);
+    editView.setText(code);
+    editView.setHoverEnterListener(function() {
+        this.setBorder(1, 0x661499f7);
+    });
+    editView.setHoverExitListener(function() {
+        this.setBorder(1, R.color.dividers);
+    });
+    editView.setOnFocusChangeListener(function() {
         resetBorder();
     });
-    this.postDelayed(function() {
-        mEditView.setText(initCode);
-        update();
-    }, 100);
-    var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-    mEditArea.addView(mEditView, lp);
+    this.addView(editView);
 
-    var mCodePreviewer;
+    var previewer;
     if (isHtml) {
-        mCodePreviewer = new HtmlPreviewer();
+        previewer = new HtmlPreviewer();
     } else {
-        mCodePreviewer = new CodePreviewer(this.uuid);
+        previewer = new CodePreviewer(this.uuid);
     }
-    this.addView(mCodePreviewer);
+    this.addView(previewer);
 
-    var mTryButton = new MImageButton();
-    mTryButton.setBackgroundColor(R.color.theme);
-    mTryButton.setCornerSize(24);
-    mTryButton.setImgSrc("images/play_icon.png");
-    mTryButton.setImgWidth(40);
-    mTryButton.setBoxShadow(0, 6, 6, 0, 0x66000000);
-    mTryButton.setStyle("z-index", 10);
-    mTryButton.setOnClickListener(function() {
+    update();
+
+    var tryBtn = new MImageButton();
+    tryBtn.setBackgroundColor(R.color.theme);
+    tryBtn.setCornerSize(24);
+    tryBtn.setImgSrc("images/play_icon.png");
+    tryBtn.setImgWidth(40);
+    tryBtn.setBoxShadow(0, 6, 6, 0, 0x66000000);
+    tryBtn.setOnClickListener(function() {
         update();
     });
-    this.addView(mTryButton);
+    this.addView(tryBtn);
 
     this.setEditHeight = function(h) {
-        mEditHeight = h;
+        editH = h;
         this.requestLayout();
     };
 
@@ -72,75 +71,75 @@ function Playground(title, initCode, isHtml) {
         mAppendCode = code;
     };
 
-    this.onMeasure = function(widthMS, heightMS){
-        var width = MeasureSpec.getSize(widthMS);
-        var height = mEditHeight;
+    this.onMeasure = function(wMS){
+        var w = MeasureSpec.getSize(wMS);
+        var h = editH;
 
-        mTitle.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), 0);
-        mTryButton.measure(MeasureSpec.makeMeasureSpec(BUTTON_WIDTH, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(BUTTON_HEIGHT, MeasureSpec.EXACTLY));
+        title.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), 0);
+        tryBtn.measure(MeasureSpec.makeMeasureSpec(buttonW, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(buttonH, MeasureSpec.EXACTLY));
 
-        var contentWidth = width - mPadding * 2;
-        if(width > 700) {
-            mEditArea.measure(contentWidth / 2, mEditHeight);
-            mCodePreviewer.measure(contentWidth / 2, mEditHeight);
-            height = mEditHeight + mPadding * 2;
+        var cntW = w - padding * 2;
+        if(w > 700) {
+            Utils.measureExactly(editView, cntW / 2, editH);
+            previewer.measure(cntW / 2, editH);
+            h = editH + padding * 2;
         } else{
-            mEditArea.measure(contentWidth, mEditHeight);
-            mCodePreviewer.measure(contentWidth, mEditHeight);
-            height = mEditHeight * 2 + mPadding * 2;
+            Utils.measureExactly(editView, cntW, editH);
+            previewer.measure(cntW, editH);
+            h = editH * 2 + padding * 2;
         }
-        height += R.dimen.title_padding_top + mTitle.getMeasuredHeight();
-        this.setMeasuredDimension(width, height);
+        h += R.dimen.title_padding_top + title.getMeasuredHeight();
+        this.setMeasuredDimension(w, h);
     };
 
-    this.onLayout = function(x, y){
+    this.onLayout = function(){
         var padding = R.dimen.padding;
-        var offsetX = padding;
-        var offsetY = R.dimen.title_padding_top;
-        mTitle.layout(offsetX, offsetY);
+        var x = padding;
+        var y = R.dimen.title_padding_top;
+        title.layout(x, y);
 
-        offsetY += mTitle.getMeasuredHeight() + padding;
-        mEditArea.layout(offsetX, offsetY);
+        y += title.getMeasuredHeight() + padding;
+        editView.layout(x, y);
 
-        var width = this.getMeasuredWidth();
-        var height = this.getMeasuredHeight();
+        var w = this.getMeasuredWidth();
+        var h = this.getMeasuredHeight();
 
-        if(width > 700) {
-            mCodePreviewer.layout(mCodePreviewer.getMeasuredWidth() + padding, offsetY);
+        if(w > 700) {
+            previewer.layout(previewer.getMeasuredWidth() + padding, y);
         } else {
-            mCodePreviewer.layout(mPadding, offsetY + mEditArea.getMeasuredHeight());
+            previewer.layout(padding, y + editArea.getMeasuredHeight());
         }
 
-        offsetX = (width - mTryButton.getMeasuredWidth()) / 2 - 2;
-        offsetY = (height - R.dimen.title_padding_top - mTitle.getMeasuredHeight() - mTryButton.getMeasuredHeight()) / 2;
-        offsetY += R.dimen.title_padding_top + mTitle.getMeasuredHeight();
-        mTryButton.layout(offsetX, offsetY);
+        x = (w - tryBtn.getMeasuredWidth()) / 2 - 2;
+        y = (h - R.dimen.title_padding_top - title.getMeasuredHeight() - tryBtn.getMeasuredHeight()) / 2;
+        y += R.dimen.title_padding_top + title.getMeasuredHeight();
+        tryBtn.layout(x, y);
 
         resetBorder();
     };
 
     function resetBorder() {
-        if (mEditView == undefined) {
+        if (editView == undefined) {
             return;
         }
-        if (mEditView.isFocused()) {
-            mEditArea.setBorder(1, 0xff1499f7);
+        if (editView.isFocused()) {
+            editView.setBorder(1, 0xff1499f7);
         } else {
-            mEditArea.setBorder(1, R.color.dividers);
+            editView.setBorder(1, R.color.dividers);
         }
-        mCodePreviewer.setBorderRight(1, R.color.dividers);
-        mCodePreviewer.setBorderBottom(1, R.color.dividers);
-        if (mSelf.getMeasuredWidth() > 700) {
-            mCodePreviewer.setBorderTop(1, R.color.dividers);
+        previewer.setBorderRight(1, R.color.dividers);
+        previewer.setBorderBottom(1, R.color.dividers);
+        if (self.getMeasuredWidth() > 700) {
+            previewer.setBorderTop(1, R.color.dividers);
         } else {
-            mCodePreviewer.setBorderLeft(1, R.color.dividers);
+            previewer.setBorderLeft(1, R.color.dividers);
         }
     }
 
     function update(){
-        var code = mEditView.getText() + " " + mAppendCode;
-        mCodePreviewer.applyCode(code);
+        var code = editView.getText() + " " + mAppendCode;
+        previewer.applyCode(code);
     }
 }
 

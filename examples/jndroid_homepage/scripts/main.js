@@ -21,8 +21,8 @@ function MainView() {
     tab.setBg(R.color.theme);
     tab.addTabItem(createTabItem(R.string.intro));
     tab.addTabItem(createTabItem(R.string.vs_android));
-    tab.addTabItem(createTabItem(R.string.documentation));
-    tab.addTabItem(createTabItem(R.string.application));
+    tab.addTabItem(createTabItem(R.string.doc));
+    tab.addTabItem(createTabItem(R.string.app));
     tab.addTabItem(createTabItem(R.string.about));
     tab.setIndicatorColor(0x99ffffff);
     tab.setOnSelectedListener(function(i) {
@@ -30,7 +30,7 @@ function MainView() {
         switch (i) {
             case 0:
                 if (mIntroView == null) {
-                    mIntroView = new IntroductionView();
+                    mIntroView = new IntroView();
                 }
                 cnt.addView(mIntroView);
                 break;

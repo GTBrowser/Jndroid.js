@@ -10,8 +10,8 @@ function _R() {
             this.intro = "简介";
             this.getstart = "开始";
             this.vs_android = "前言";
-            this.documentation = "文档";
-            this.application = "应用";
+            this.doc = "文档";
+            this.app = "应用";
             this.about = "关于";
             this.setting = "设置";
             this.language = "语言";
@@ -39,8 +39,8 @@ function _R() {
             this.intro = "Introduction";
             this.getstart = "Getting Started";
             this.vs_android = "vs Android";
-            this.documentation = "Documentation";
-            this.application = "Application";
+            this.doc = "Documentation";
+            this.app = "Application";
             this.about = "About";
             this.setting = "Setting";
             this.language = "Language";

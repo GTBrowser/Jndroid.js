@@ -60,13 +60,9 @@ function VSAndroidView() {
         ViewGroup.apply(this, []);
 
         var mCode;
-        if (mIsPhone) {
-            mCode = new EditText();
-            mCode.setTextSize(10);
-            mCode.setSingleLine(false);
-        } else {
-            mCode = new CodeMirrorView();
-        }
+        mCode = new EditText();
+        mCode.setTextSize(10);
+        mCode.setSingleLine(false);
         mCode.setText(code);
         if (title == "Jndroid") {
             mCode.setBorder(1, R.color.dividers);

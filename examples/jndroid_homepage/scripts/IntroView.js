@@ -1,17 +1,17 @@
 /**
  * Created by lency on 5/18/15.
  */
-function IntroductionView() {
-    ScrollView.apply(this, []);
+function IntroView() {
+    ScrollView.apply(this);
 
-    this.setBackgroundColor(R.color.card_bg);
+    this.setBg(R.color.card_bg);
 
-    var mPadding = R.dimen.padding;
-    var mParaPaddingTop = R.dimen.paragraph_padding_top;
+    var padding = R.dimen.padding;
+    var paraPaddingTop = R.dimen.paragraph_padding_top;
 
-    var mContentView = new LinearLayout();
-    mContentView.setPadding(0, 0, 0, R.dimen.title_padding_top);
-    this.addView(mContentView);
+    var cnt = new LinearLayout();
+    cnt.setPadding(0, 0, 0, R.dimen.title_padding_top);
+    this.addView(cnt);
 
     loadMasterpiece();
 
@@ -20,11 +20,8 @@ function IntroductionView() {
     mIntro.setTextColor(R.color.theme);
     mIntro.setText(R.string.intro);
     var introLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    introLp.setMargins(mPadding, mParaPaddingTop, mPadding, 0);
-    mContentView.addView(mIntro, introLp);
-
-    var sloganLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    sloganLp.setMargins(mPadding, mPadding, mPadding, 0);
+    introLp.setMargins(padding, paraPaddingTop, padding, 0);
+    cnt.addView(mIntro, introLp);
 
     loadSlogan(R.string.intro_content);
 
@@ -39,7 +36,11 @@ function IntroductionView() {
         slogan.setTextSize(R.dimen.text);
         slogan.setTextColor(R.color.text);
         slogan.setText(text);
-        mContentView.addView(slogan, sloganLp);
+
+        var sloganLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+        sloganLp.setMargins(padding, padding, padding, 0);
+
+        cnt.addView(slogan, sloganLp);
     }
 
     function loadMasterpiece() {
@@ -48,7 +49,7 @@ function IntroductionView() {
         imageView.setScaleType(ScaleType.CENTER_CROP);
         imageView.setBoxShadow(0, 3, 3, 0, R.color.shadow);
         var imgLp = new LayoutParams(LayoutParams.FILL_PARENT, 144);
-        mContentView.addView(imageView, imgLp);
+        cnt.addView(imageView, imgLp);
     }
 
     function loadGitCafeView() {
@@ -57,8 +58,8 @@ function IntroductionView() {
         gitcafe.setTextColor(R.color.theme);
         gitcafe.setText("GitCafé");
         var gitcafeLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        gitcafeLp.setMargins(mPadding, mParaPaddingTop, mPadding, mPadding);
-        mContentView.addView(gitcafe, gitcafeLp);
+        gitcafeLp.setMargins(padding, paraPaddingTop, padding, padding);
+        cnt.addView(gitcafe, gitcafeLp);
 
         var gitcafeLayoutlp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
         var cafeLayout = new LinearLayout();
@@ -66,14 +67,14 @@ function IntroductionView() {
             window.open("https://gitcafe.com/GTBrowser/Jndroid.js");
         });
         cafeLayout.setOrientation(LinearLayout.HORIZONTAL);
-        mContentView.addView(cafeLayout, gitcafeLayoutlp);
+        cnt.addView(cafeLayout, gitcafeLayoutlp);
 
         var imgLp = new LayoutParams(64, 24);
         imgLp.gravity = Gravity.CENTER;
-        imgLp.leftMargin = mPadding;
+        imgLp.leftMargin = padding;
         var urlLp = new LayoutParams(0, LayoutParams.FILL_PARENT);
         urlLp.weight = 1;
-        urlLp.leftMargin = mPadding;
+        urlLp.leftMargin = padding;
         var cafeImg = new ImageView();
         cafeImg.setImgSrc("images/gitcafe.png");
         cafeImg.setCornerSize(3);
@@ -95,8 +96,8 @@ function IntroductionView() {
         github.setTextColor(R.color.theme);
         github.setText("Github");
         var githubLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        githubLp.setMargins(mPadding, mParaPaddingTop, mPadding, mPadding);
-        mContentView.addView(github, githubLp);
+        githubLp.setMargins(padding, paraPaddingTop, padding, padding);
+        cnt.addView(github, githubLp);
 
         var githubLayoutlp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
         var starLayout = new LinearLayout();
@@ -104,7 +105,7 @@ function IntroductionView() {
             window.open("https://github.com/GTBrowser/Jndroid.js");
         });
         starLayout.setOrientation(LinearLayout.HORIZONTAL);
-        mContentView.addView(starLayout, githubLayoutlp);
+        cnt.addView(starLayout, githubLayoutlp);
 
         var imgLp = new LayoutParams(96, LayoutParams.FILL_PARENT);
         var urlLp = new LayoutParams(0, LayoutParams.FILL_PARENT);
@@ -120,13 +121,12 @@ function IntroductionView() {
         starLink.setTextColor(R.color.sub_text);
         starLayout.addView(starLink, urlLp);
 
-        var githubLayoutlp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
         var forkLayout = new LinearLayout();
         forkLayout.setOnClickListener(function() {
             window.open("https://github.com/GTBrowser/Jndroid.js/fork");
         });
         forkLayout.setOrientation(LinearLayout.HORIZONTAL);
-        mContentView.addView(forkLayout, githubLayoutlp);
+        cnt.addView(forkLayout, githubLayoutlp);
 
         var forkImg = new ImageView();
         forkImg.setImgSrc("https://img.shields.io/github/forks/GTBrowser/Jndroid.js.svg");
@@ -147,55 +147,55 @@ function IntroductionView() {
         getstart.setTextColor(R.color.theme);
         getstart.setText(R.string.getstart);
         var getstartLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        getstartLp.setMargins(mPadding, mParaPaddingTop, mPadding, mPadding);
-        mContentView.addView(getstart, getstartLp);
+        getstartLp.setMargins(padding, paraPaddingTop, padding, padding);
+        cnt.addView(getstart, getstartLp);
 
         var playground = new Playground("Hello World", mHelloWorldCode, true);
         playground.setEditHeight(400);
         var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         lp.setMargins(16);
-        mContentView.addView(playground, lp);
+        cnt.addView(playground, lp);
 
         var androidL = new TextView();
         androidL.setTextSize(R.dimen.title);
         androidL.setTextColor(R.color.theme);
         androidL.setText(R.string.material_design);
         var androidLLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        androidLLp.setMargins(mPadding, mParaPaddingTop, mPadding, mPadding);
-        mContentView.addView(androidL, androidLLp);
+        androidLLp.setMargins(padding, paraPaddingTop, padding, padding);
+        cnt.addView(androidL, androidLLp);
 
         playground = new Playground("Widgets", mMaterialDesignCode);
         playground.setEditHeight(480);
-        mContentView.addView(playground, lp);
+        cnt.addView(playground, lp);
 
         var apidemos = new TextView();
         apidemos.setTextSize(R.dimen.title);
         apidemos.setTextColor(R.color.theme);
         apidemos.setText("API Demos");
         var apidemosLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        apidemosLp.setMargins(mPadding, mParaPaddingTop, mPadding, mPadding);
-        mContentView.addView(apidemos, apidemosLp);
+        apidemosLp.setMargins(padding, paraPaddingTop, padding, padding);
+        cnt.addView(apidemos, apidemosLp);
 
         playground = new Playground("Widgets", mWidgetCode);
         playground.setEditHeight(450);
-        mContentView.addView(playground, lp);
+        cnt.addView(playground, lp);
 
         playground = new Playground("onMeasure & onLayout", mMeausreCode);
         playground.setEditHeight(400);
-        mContentView.addView(playground, lp);
+        cnt.addView(playground, lp);
 
         playground = new Playground("onDraw", mDrawCode);
         playground.setEditHeight(300);
-        mContentView.addView(playground, lp);
+        cnt.addView(playground, lp);
 
         playground = new Playground("onTouchEvent", mTouchCode);
         playground.setEditHeight(480);
-        mContentView.addView(playground, lp);
+        cnt.addView(playground, lp);
 
         playground = new Playground("Animation", mAnimationCode);
         playground.setAppendCode(mAnimatonAppendCode);
         playground.setEditHeight(500);
-        mContentView.addView(playground, lp);
+        cnt.addView(playground, lp);
     }
 }
 
