@@ -1,7 +1,7 @@
 function VSAndroidView() {
     ScrollView.apply(this);
 
-    var CODE_HEIGHT = 1100;
+    var CODE_HEIGHT = 1140;
     if (mIsPhone) {
         CODE_HEIGHT = 1900;
     }
@@ -145,7 +145,7 @@ var androidCode = "" +
     "/**\n" +
     " * Android\n" +
     " */\n\n" +
-    "public class MyView extends View {\n\n\n\n" +
+    "public class MyView extends View {\n\n\n" +
     "\t/* public variable | 公开变量 */\n" +
     "\tpublic static final int UI_WIDTH = 100;\n" +
     "\tpublic static final int UI_HEIGHT = 50;\n" +

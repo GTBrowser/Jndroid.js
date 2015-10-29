@@ -104,7 +104,7 @@ function Playground(name, preCode, code, appendCode, isHtml) {
         if(w > 700) {
             previewer.layout(previewer.getMeasuredWidth() + padding, y);
         } else {
-            previewer.layout(padding, y + editArea.getMeasuredHeight());
+            previewer.layout(padding, y + editView.getMeasuredHeight());
         }
 
         x = (w - tryBtn.getMeasuredWidth()) / 2 - 2;
@@ -142,13 +142,24 @@ function Playground(name, preCode, code, appendCode, isHtml) {
 function HtmlPreviewer() {
     FrameLayout.apply(this);
 
-    var display = new WebView();
+    var webView = new WebView();
+    webView.div.style.pointerEvents = "none";
+    webView.setAlpha(0);
+    this.addView(webView);
+
+    var display = new View();
     this.addView(display);
 
     this.setPadding(10);
 
     this.applyCode = function(code){
-        display.loadDataWithBaseURL(code);
+
+        webView.setOnPageFinishListener(function() {
+            var dom = webView.getDom();
+            display.div.innerHTML = "";
+            display.div.appendChild(dom.body.getElementsByTagName("div")[1]);
+        }, 2000);
+        webView.loadDataWithBaseURL(code);
     };
 }
 
