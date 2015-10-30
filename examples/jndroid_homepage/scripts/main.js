@@ -1,6 +1,3 @@
-/**
- * Created by lency on 4/28/15.
- */
 function MainView() {
     ViewGroup.apply(this);
 

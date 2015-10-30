@@ -43,10 +43,12 @@ function VSAndroidView() {
         ViewGroup.apply(this);
 
         var jndroid = createCodoView(jndroidCode);
+        jndroid.setBg(0xffffffff);
         jndroid.setBorder(1, R.color.dividers);
         this.addView(jndroid);
 
         var android = createCodoView(androidCode);
+        android.setBg(0xffffffff);
         android.setBorderRight(1, R.color.dividers);
         android.setBorderBottom(1, R.color.dividers);
         this.addView(android);

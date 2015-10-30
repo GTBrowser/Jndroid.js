@@ -1,34 +1,13 @@
 function Titlebar() {
     ViewGroup.apply(this);
 
+    var self = this;
+
     this.setBg(0xffffffff);
     this.setBorderBottom(1, R.color.dividers);
 
-    var logoArea = new ViewGroup();
-    logoArea.onMeasure = function(wMS, hMS) {
-        this.applyDimen(wMS, hMS);
-        logo.measure(48, 48);
-        name.measure(96, 24);
-    };
-    logoArea.onLayout = function() {
-        var x = (this.getMW() - name.getMW() - logo.getMW()) / 2;
-        var y = (this.getMH() - logo.getMH()) / 2;
-        logo.layout(x, y);
-
-        x += logo.getMW();
-        y = (this.getMH() - name.getMH()) / 2;
-        name.layout(x, y);
-    };
+    var logoArea = new LogoArea();
     this.addView(logoArea);
-
-    var logo = new LiteImageView();
-    logo.setImageUri("images/title_logo.png");
-    logoArea.addView(logo);
-
-    var name = new LiteImageView();
-    name.setAlpha(0.8);
-    name.setImageUri("images/logoname.png");
-    logoArea.addView(name);
 
     var tab = new Tab();
     tab.setIndicatorColor(R.color.theme);
@@ -48,7 +27,7 @@ function Titlebar() {
 
     var menu = Theme.createIconBtn("images/ic_menu.png", 16);
     menu.setOnClickListener(function() {
-        setTimeout(onSettingClick, 200);
+        setTimeout(onMenuClick, 200);
     });
     menu.setWaveColor(R.color.wave);
     this.addView(menu);
@@ -132,7 +111,7 @@ function Titlebar() {
     function createTabItem(text) {
         var btn = new MButton();
         btn.setHoverEnterListener(function() {
-            this.setAlpha(0.8);
+            this.setAlpha(0.6);
         });
         btn.setHoverExitListener(function() {
             this.setAlpha(1);
@@ -161,11 +140,10 @@ function Titlebar() {
             });
             settingView.startAnimation(translate);
         });
-        maskView.setBackgroundColor(0x33000000);
+        maskView.setBackgroundColor(0x66000000);
         getRootView().addView(maskView);
 
         var settingView = new SettingView();
-        settingView.setStyle("z-index", 10);
         var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
         lp.gravity = Gravity.RIGHT;
         getRootView().addView(settingView, lp);
@@ -178,4 +156,45 @@ function Titlebar() {
         alpha.setDuration(200);
         maskView.startAnimation(alpha);
     }
+
+    function onMenuClick() {
+        var menu = new Menu(self);
+        menu.show();
+    }
+}
+
+function LogoArea(alignLeft) {
+    ViewGroup.apply(this);
+
+    var logo = new LiteImageView();
+    logo.setImageUri("images/title_logo.png");
+    this.addView(logo);
+
+    var name = new LiteImageView();
+    name.setAlpha(0.8);
+    name.setImageUri("images/logoname.png");
+    this.addView(name);
+
+    this.onMeasure = function(wMS, hMS) {
+        this.applyDimen(wMS, hMS);
+        logo.measure(48, 48);
+        name.measure(96, 24);
+    };
+
+    this.onLayout = function() {
+        var x, y;
+        if (alignLeft) {
+            x = R.dimen.padding;
+            y = (this.getMH() - logo.getMH()) / 2;
+            logo.layout(x, y);
+        } else {
+            x = (this.getMW() - name.getMW() - logo.getMW()) / 2;
+            y = (this.getMH() - logo.getMH()) / 2;
+            logo.layout(x, y);
+        }
+
+        x += logo.getMW();
+        y = (this.getMH() - name.getMH()) / 2;
+        name.layout(x, y);
+    };
 }

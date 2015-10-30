@@ -1,14 +1,24 @@
-/**
- * Created by lency on 5/26/15.
- */
 function AboutView() {
     ScrollView.apply(this);
 
     this.setBackgroundColor(R.color.card_bg);
 
+    var scrollCnt = new ViewGroup();
+    scrollCnt.onMeasure = function(wMS) {
+        var w = MeasureSpec.getSize(wMS);
+        var cntW = Math.min(w, Manifest.maxWidth);
+        cnt.measure(cntW, 0);
+        this.setMeasuredDimension(w, cnt.getMH());
+    };
+    scrollCnt.onLayout = function() {
+        var x = (this.getMW() - cnt.getMW()) / 2;
+        cnt.layout(x, 0);
+    };
+    this.addView(scrollCnt);
+
     var cnt = new LinearLayout();
     cnt.setPadding(0, 0, 0, R.dimen.content_padding_bottom);
-    this.addView(cnt);
+    scrollCnt.addView(cnt);
 
     var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     lp.setMargins(R.dimen.padding);

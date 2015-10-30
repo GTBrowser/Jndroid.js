@@ -169,12 +169,11 @@ function IntroView() {
         jndroid.setTextSize(R.dimen.supTitle);
         jndroid.setTextColor(0xffffffff);
         jndroid.setText("Jndroid 1.0.0");
-        jndroid.setStyle("font-weight", "200");
+        jndroid.setStyle("font-weight", "100");
         this.addView(jndroid);
 
         var slogan = Theme.createText(R.string.intro_content);
         slogan.setLineHeight(28);
-        slogan.setStyle("font-weight", "bold");
         slogan.setTextColor(0xffffffff);
         this.addView(slogan);
 
