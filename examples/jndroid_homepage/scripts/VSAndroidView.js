@@ -5,31 +5,29 @@ function VSAndroidView() {
 
     var padding = R.dimen.padding;
 
+    var scrollCnt = new ViewGroup();
+    scrollCnt.onMeasure = function(wMS) {
+        var w = MeasureSpec.getSize(wMS);
+        var cntW = Math.min(w, Manifest.maxWidth);
+        cnt.measure(cntW, 0);
+        this.setMeasuredDimension(w, cnt.getMH());
+    };
+    scrollCnt.onLayout = function() {
+        var x = (this.getMW() - cnt.getMW()) / 2;
+        cnt.layout(x, 0);
+    };
+    this.addView(scrollCnt);
+
     var cnt = new LinearLayout();
     cnt.setPadding(0, 0, 0, R.dimen.paragraph_padding_top);
-    this.addView(cnt);
+    scrollCnt.addView(cnt);
 
     var codeTitle = Theme.createThemeTitle(R.string.to_android_develop);
     cnt.addView(codeTitle);
 
-    var codeArea = new FrameLayout();
-    var codeAreaLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-    cnt.addView(codeArea, codeAreaLp);
-
-    var linearLayout = new LinearLayout();
-    linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-    var linearLayoutLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-    linearLayoutLp.setMargins(padding, 0, padding, 0);
-    codeArea.addView(linearLayout, linearLayoutLp);
-
-    var codeViewLp = new LayoutParams(0, LayoutParams.FILL_PARENT);
-    codeViewLp.weight = 1;
-
-    var jndroidView = new CodeView("Jndroid", jndroidCode);
-    linearLayout.addView(jndroidView, codeViewLp);
-
-    var androidView = new CodeView("Android", androidCode);
-    linearLayout.addView(androidView, codeViewLp);
+    var compare = new CompareView();
+    var compareLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+    cnt.addView(compare, compareLp);
 
     var moreTip = Theme.createThemeTitle(R.string.more_tips);
     cnt.addView(moreTip);
@@ -41,40 +39,84 @@ function VSAndroidView() {
         cnt.addView(tip, tipLp);
     }
 
-    function CodeView(title, code) {
+    function CompareView() {
         ViewGroup.apply(this);
 
-        var codeView = new EditText();
-        codeView.setSingleLine(false);
-        codeView.setPadding(8);
-        codeView.setTextColor(0xff006600);
-        codeView.setTextSize(10);
-        codeView.setText(code);
-        if (title == "Jndroid") {
-            codeView.setBorder(1, R.color.dividers);
-        } else {
-            codeView.setBorderTop(1, R.color.dividers);
-            codeView.setBorderRight(1, R.color.dividers);
-            codeView.setBorderBottom(1, R.color.dividers);
-        }
-        this.addView(codeView);
+        var jndroid = createCodoView(jndroidCode);
+        jndroid.setBorder(1, R.color.dividers);
+        this.addView(jndroid);
+
+        var android = createCodoView(androidCode);
+        android.setBorderRight(1, R.color.dividers);
+        android.setBorderBottom(1, R.color.dividers);
+        this.addView(android);
+
+        var btn = new View();
+        btn.setText("VS");
+        btn.setTextSize(R.dimen.title);
+        btn.setTextColor(R.color.sub_text);
+        btn.setCornerSize(24);
+        btn.setBackgroundColor(0xfffffffff);
+        btn.setStyle("textAlign", "center");
+        btn.setStyle("lineHeight", "48px");
+        btn.setBorder(1, R.color.dividers);
+        btn.setBoxShadow(0, 6, 6, 0, 0x66000000);
+        this.addView(btn);
 
         this.onMeasure = function(wMS) {
             var w = MeasureSpec.getSize(wMS);
-            var codeHeight = 1140;
+            var h;
+            var cntW;
+            var cntH;
             if (Manifest.isPhone) {
-                codeHeight = 1900;
+                cntW = w - padding * 2;
+                cntH = 1140;
+                Utils.measureExactly(jndroid, cntW, cntH);
+                Utils.measureExactly(android, cntW, cntH);
+                h = jndroid.getMH() * 2;
+
+                android.setBorderLeft(1, R.color.dividers);
+                android.setBorderTop(0, 0);
+            } else {
+                cntW = w / 2 - padding;
+                cntH = 1080;
+                Utils.measureExactly(jndroid, cntW, cntH);
+                Utils.measureExactly(android, cntW, cntH);
+                h = jndroid.getMH();
+
+                android.setBorderLeft(0, 0);
+                android.setBorderTop(1, R.color.dividers);
             }
-            var h = codeHeight;
-
-            var cntH = h - padding * 2;
-            Utils.measureExactly(codeView, w, cntH);
-
+            btn.measure(48, 48);
             this.setMeasuredDimension(w, h);
         };
 
         this.onLayout = function() {
-            codeView.layout(0, R.dimen.padding);
+            var x = padding;
+            var y = 0;
+            jndroid.layout(x, y);
+
+            if (Manifest.isPhone) {
+                y += jndroid.getMH();
+                android.layout(x, y);
+            } else {
+                x += jndroid.getMW();
+                android.layout(x, y);
+            }
+
+            x = (this.getMW() - btn.getMW()) / 2;
+            y = (this.getMH() - btn.getMH()) / 2;
+            btn.layout(x, y);
+        };
+
+        function createCodoView(code) {
+            var v = new EditText();
+            v.setSingleLine(false);
+            v.setPadding(8);
+            v.setTextColor(0xff006600);
+            v.setTextSize(10);
+            v.setText(code);
+            return v;
         }
     }
 }
@@ -110,7 +152,7 @@ var jndroidCode = "" +
     "\tthis.getName = function() {\n" +
     "\t\treturn name;\n" +
     "\t}\n\n" +
-    "\tthis.onMeasure = function(widthMS, heightMS) {\n" +
+    "\tthis.onMeasure = function(wMS, hMS) {\n" +
     "\t\tthis.setMeasuredDimension(this.WIDTH, this.HEIGHT);\n" +
     "\t}\n\n\n\n\n" +
     "\tthis.onDraw = function(canvas) {\n" +

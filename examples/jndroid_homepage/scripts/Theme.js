@@ -27,6 +27,7 @@ function _Theme() {
     this.createText = function(t) {
         var v = new TextView();
         v.setText(t);
+        v.setStyle("fontWeight", "400");
         v.setTextColor(R.color.text);
         v.setTextSize(R.dimen.text);
         v.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);

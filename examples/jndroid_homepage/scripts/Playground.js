@@ -6,8 +6,7 @@ function Playground(name, preCode, code, appendCode, isHtml) {
 
     this.uuid = Math.floor(Math.random() * 100000);
 
-    var buttonW = 48;
-    var buttonH = 48;
+    var btnSize = 48;
     var editH = 300;
 
     var self = this;
@@ -69,18 +68,17 @@ function Playground(name, preCode, code, appendCode, isHtml) {
         var h = editH;
 
         title.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), 0);
-        tryBtn.measure(MeasureSpec.makeMeasureSpec(buttonW, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(buttonH, MeasureSpec.EXACTLY));
+        Utils.measureExactly(tryBtn, btnSize, btnSize);
 
         var cntW = w - padding * 2;
-        if(w > 700) {
-            Utils.measureExactly(editView, cntW / 2, editH);
-            previewer.measure(cntW / 2, editH);
-            h = editH + padding * 2;
-        } else{
+        if (Manifest.isPhone) {
             Utils.measureExactly(editView, cntW, editH);
             previewer.measure(cntW, editH);
             h = editH * 2 + padding * 2;
+        } else {
+            Utils.measureExactly(editView, cntW / 2, editH);
+            previewer.measure(cntW / 2, editH);
+            h = editH + padding * 2;
         }
         h += R.dimen.title_padding_top + title.getMeasuredHeight();
         this.setMeasuredDimension(w, h);
