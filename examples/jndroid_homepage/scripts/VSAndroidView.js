@@ -1,10 +1,7 @@
 function VSAndroidView() {
     ScrollView.apply(this);
 
-    var CODE_HEIGHT = 1140;
-    if (mIsPhone) {
-        CODE_HEIGHT = 1900;
-    }
+
     var padding = R.dimen.padding;
 
     var cnt = new LinearLayout();
@@ -15,7 +12,7 @@ function VSAndroidView() {
     cnt.addView(codeTitle);
 
     var codeArea = new FrameLayout();
-    var codeAreaLp = new LayoutParams(LayoutParams.FILL_PARENT, CODE_HEIGHT);
+    var codeAreaLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     cnt.addView(codeArea, codeAreaLp);
 
     var linearLayout = new LinearLayout();
@@ -63,7 +60,11 @@ function VSAndroidView() {
 
         this.onMeasure = function(wMS) {
             var w = MeasureSpec.getSize(wMS);
-            var h = CODE_HEIGHT;
+            var codeHeight = 1140;
+            if (Manifest.isPhone) {
+                codeHeight = 1900;
+            }
+            var h = codeHeight;
 
             var cntH = h - padding * 2;
             Utils.measureExactly(codeView, w, cntH);

@@ -40,5 +40,26 @@ function _Theme() {
         v.setTextSize(R.dimen.sub_text);
         v.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
         return v;
-    }
+    };
+
+    this.createIconBtn = function(src, iconSize) {
+        var btn = new MButton();
+        btn.setDimBg(false);
+        btn.setBorder(0, 0);
+        btn.setBoxShadow(0, 0, 0, 0, 0);
+        btn.onMeasure = function(wMS, hMS) {
+            this.applyDimen(wMS, hMS);
+            icon.measure(iconSize, iconSize);
+        };
+        btn.onLayout = function() {
+            var x = (this.getMW() - iconSize) / 2;
+            var y = (this.getMH() - iconSize) / 2;
+            icon.layout(x, y);
+        };
+
+        var icon = new LiteImageView();
+        icon.setImageUri(src);
+        btn.addView(icon);
+        return btn;
+    };
 }

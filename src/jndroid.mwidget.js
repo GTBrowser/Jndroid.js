@@ -920,7 +920,8 @@ function WaveDrawable() {
         c.beginPath();
         c.arc(offsetX, offsetY, radius, 0, Math.PI * 2, true);
         c.closePath();
-        var color = Color.argb((1 - p) * 50, Color.red(waveColor), Color.green(waveColor), Color.blue(waveColor));
+        var alpha = Color.alpha(waveColor);
+        var color = Color.argb((1 - p) * alpha, Color.red(waveColor), Color.green(waveColor), Color.blue(waveColor));
         c.fillStyle = Utils.toCssColor(color);
         c.fill();
     };

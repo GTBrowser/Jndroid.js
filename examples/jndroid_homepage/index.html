@@ -12,6 +12,7 @@
     <script src="../../src/jndroid.mwidget.js"></script>
     <!--<script src="http://file.gtbrowser.cn/jndroid/jndroid.min.js"></script>-->
 
+    <link rel="shortcut icon" href="images/title_logo.png" type="image/x-icon" />
 </head>
 <body>
 <script>
@@ -74,8 +75,6 @@
     includeJs("scripts/AppView.js");
     includeJs("scripts/SettingView.js");
 
-    var mISPhone = false;
-
     window.onJSProgressChanged = function(p) {
         requestAnimationFrame(function() {
             mSplash.setProgress(p);
@@ -85,15 +84,11 @@
     window.onCreate = function() {
         mSplash.setProgress(1);
         setTimeout(function() {
-            if (window.innerWidth <= 400) {
-                mIsPhone = true;
-            } else {
-                mIsPhone = false;
-            }
             var rootview = new FrameLayout();
             setContentView(rootview);
 
-            mMainView = new MainView();
+            var mainView = new MainView();
+            mainView.div.style.fontWeight = "300";
             try {
                 var lang = getLocale();
                 if (lang.indexOf("zh") >= 0) {
@@ -104,7 +99,7 @@
             } catch(e) {
                 console.log(e);
             }
-            rootview.addView(mMainView);
+            rootview.addView(mainView);
         }, 0);
 
     };

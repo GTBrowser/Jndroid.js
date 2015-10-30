@@ -80,6 +80,7 @@ function _R() {
         this.sub_text = 0xff757575;
         this.dividers = 0x1a000000;
         this.shadow = 0x66000000;
+        this.wave = 0x1a000000;
     }
 
     function _dimen() {
