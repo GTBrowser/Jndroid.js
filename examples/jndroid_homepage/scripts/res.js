@@ -92,6 +92,7 @@ function _R() {
 
         this.corner = 2;
 
+        this.supTitle = 44;
         this.title = 24;
         this.text = 14;
         this.sub_text = 12;

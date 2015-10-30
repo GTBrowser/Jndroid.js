@@ -1,6 +1,3 @@
-/**
- * Created by lency on 5/18/15.
- */
 function IntroView() {
     ScrollView.apply(this);
 
@@ -8,16 +5,31 @@ function IntroView() {
 
     var padding = R.dimen.padding;
 
-    var cnt = new LinearLayout();
-    cnt.setPadding(0, 0, 0, R.dimen.title_padding_top);
+    var cnt = new ViewGroup();
+    cnt.onMeasure = function(wMS) {
+        var w = MeasureSpec.getSize(wMS);
+        cntHeader.measure(w, 0);
+        cntBody.measure(Math.min(w, Manifest.maxWidth), 0);
+        var h = cntHeader.getMH() + cntBody.getMH();
+        this.setMeasuredDimension(w, h);
+    };
+    cnt.layout = function() {
+        var x = 0;
+        var y = 0;
+        cntHeader.layout(x, y);
+
+        x = (this.getMW() - cntBody.getMW()) / 2;
+        y += cntHeader.getMH();
+        cntBody.layout(x, y);
+    };
     this.addView(cnt);
 
-    loadMasterpiece();
+    var cntHeader = new IntroHeader();
+    cnt.addView(cntHeader);
 
-    var intro = Theme.createThemeTitle(R.string.intro);
-    cnt.addView(intro);
-
-    loadSlogan(R.string.intro_content);
+    var cntBody = new LinearLayout();
+    cntBody.setPadding(0, 0, 0, R.dimen.content_padding_bottom);
+    cnt.addView(cntBody);
 
     loadGithubView();
 
@@ -25,25 +37,11 @@ function IntroView() {
 
     loadPlaygrounds();
 
-    function loadSlogan(text) {
-        var slogan = Theme.createText(text);
-        var sloganLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        sloganLp.setMargins(padding, padding, padding, 0);
-        cnt.addView(slogan, sloganLp);
-    }
 
-    function loadMasterpiece() {
-        var imageView = new ImageView();
-        imageView.setImageUri("images/masterpiece.jpg");
-        imageView.setScaleType(ScaleType.CENTER_CROP);
-        imageView.setBoxShadow(0, 3, 3, 0, R.color.shadow);
-        var imgLp = new LayoutParams(LayoutParams.FILL_PARENT, 144);
-        cnt.addView(imageView, imgLp);
-    }
 
     function loadGitCafeView() {
         var gitcafe = Theme.createThemeTitle("GitCafé");
-        cnt.addView(gitcafe);
+        cntBody.addView(gitcafe);
 
         var gitcafeLayoutlp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
         var cafeLayout = new LinearLayout();
@@ -51,7 +49,7 @@ function IntroView() {
             window.open("https://gitcafe.com/GTBrowser/Jndroid.js");
         });
         cafeLayout.setOrientation(LinearLayout.HORIZONTAL);
-        cnt.addView(cafeLayout, gitcafeLayoutlp);
+        cntBody.addView(cafeLayout, gitcafeLayoutlp);
 
         var imgLp = new LayoutParams(64, 24);
         imgLp.gravity = Gravity.CENTER;
@@ -75,7 +73,7 @@ function IntroView() {
 
     function loadGithubView() {
         var github = Theme.createThemeTitle("Github");
-        cnt.addView(github);
+        cntBody.addView(github);
 
         var githubLayoutlp = new LayoutParams(LayoutParams.FILL_PARENT, 48);
         var starLayout = new LinearLayout();
@@ -83,7 +81,7 @@ function IntroView() {
             window.open("https://github.com/GTBrowser/Jndroid.js");
         });
         starLayout.setOrientation(LinearLayout.HORIZONTAL);
-        cnt.addView(starLayout, githubLayoutlp);
+        cntBody.addView(starLayout, githubLayoutlp);
 
         var imgLp = new LayoutParams(96, LayoutParams.FILL_PARENT);
         var urlLp = new LayoutParams(0, LayoutParams.FILL_PARENT);
@@ -101,7 +99,7 @@ function IntroView() {
             window.open("https://github.com/GTBrowser/Jndroid.js/fork");
         });
         forkLayout.setOrientation(LinearLayout.HORIZONTAL);
-        cnt.addView(forkLayout, githubLayoutlp);
+        cntBody.addView(forkLayout, githubLayoutlp);
 
         var forkImg = new ImageView();
         forkImg.setImgSrc("https://img.shields.io/github/forks/GTBrowser/Jndroid.js.svg");
@@ -115,43 +113,108 @@ function IntroView() {
 
     function loadPlaygrounds() {
         var getstart = Theme.createThemeTitle(R.string.getstart);
-        cnt.addView(getstart);
+        cntBody.addView(getstart);
 
         var playground = new Playground("Hello World", "", helloWorldCode, "", true);
         playground.setEditHeight(450);
         var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         lp.setMargins(16);
-        cnt.addView(playground, lp);
+        cntBody.addView(playground, lp);
 
         var androidL = Theme.createThemeTitle(R.string.material_design);
-        cnt.addView(androidL);
+        cntBody.addView(androidL);
 
         playground = new Playground("Widgets", materitalDesignPreCode, materialDesignCode, "");
         playground.setEditHeight(540);
-        cnt.addView(playground, lp);
+        cntBody.addView(playground, lp);
 
         var apidemos = Theme.createThemeTitle("API Demos");
-        cnt.addView(apidemos);
+        cntBody.addView(apidemos);
 
         playground = new Playground("Widgets", widgetPreCode, widgetCode, "");
         playground.setEditHeight(400);
-        cnt.addView(playground, lp);
+        cntBody.addView(playground, lp);
 
         playground = new Playground("onMeasure & onLayout", measurePreCode, meausreCode, "");
         playground.setEditHeight(360);
-        cnt.addView(playground, lp);
+        cntBody.addView(playground, lp);
 
         playground = new Playground("onDraw", drawPreCode, drawCode, "");
         playground.setEditHeight(320);
-        cnt.addView(playground, lp);
+        cntBody.addView(playground, lp);
 
         playground = new Playground("onTouchEvent", touchPreCode, touchCode, touchAppendCode);
         playground.setEditHeight(480);
-        cnt.addView(playground, lp);
+        cntBody.addView(playground, lp);
 
         playground = new Playground("Animation", animPreCode, animCode, animAppendCode);
         playground.setEditHeight(480);
-        cnt.addView(playground, lp);
+        cntBody.addView(playground, lp);
+    }
+
+    function IntroHeader() {
+        ViewGroup.apply(this);
+
+        var imageView = new ImageView();
+        imageView.setImageUri("images/masterpiece.jpg");
+        imageView.setScaleType(ScaleType.CENTER_CROP);
+        imageView.setBoxShadow(0, 3, 3, 0, R.color.shadow);
+        this.addView(imageView);
+
+        var mask = new View();
+        mask.setBg(0x45000000);
+        this.addView(mask);
+
+        var jndroid = new TextView();
+        jndroid.setTextSize(R.dimen.supTitle);
+        jndroid.setTextColor(0xffffffff);
+        jndroid.setText("Jndroid 1.0.0");
+        jndroid.setStyle("font-weight", "200");
+        this.addView(jndroid);
+
+        var slogan = Theme.createText(R.string.intro_content);
+        slogan.setLineHeight(28);
+        slogan.setStyle("font-weight", "bold");
+        slogan.setTextColor(0xffffffff);
+        this.addView(slogan);
+
+        this.onMeasure = function(wMS) {
+            var w = MeasureSpec.getSize(wMS);
+            var h = 320;
+            imageView.measure(w, h);
+
+            var cntW = w - padding * 2;
+            if (w > Manifest.maxWidth) {
+                cntW = Manifest.maxWidth - padding * 2;
+            }
+            jndroid.measure(cntW / 3, 0);
+            slogan.measure(MeasureSpec.makeMeasureSpec(cntW / 3, MeasureSpec.EXACTLY), 0);
+            mask.measure(Math.max(jndroid.getMW(), slogan.getMW()) + padding * 2, h);
+
+            this.setMeasuredDimension(w, h);
+        };
+
+        this.onLayout = function() {
+            var x = 0;
+            var y = 0;
+            imageView.layout(x, y);
+
+            var w = this.getMW();
+            var cntW = w - padding * 2;
+            if (w > Manifest.maxWidth) {
+                cntW = Manifest.maxWidth - padding * 2;
+            }
+            x = (w - cntW) / 2 - padding;
+            y = 0;
+            mask.layout(x, y);
+
+            x = (w - cntW) / 2;
+            y = 60;
+            jndroid.layout(x, y);
+
+            y += jndroid.getMH() + padding;
+            slogan.layout(x, y);
+        }
     }
 }
 

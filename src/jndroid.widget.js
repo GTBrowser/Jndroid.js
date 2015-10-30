@@ -472,7 +472,7 @@ function ScrollView() {
     function FlingProcessor() {
         Processor.apply(this);
 
-        var a = 0.002;
+        var a = 0.0015;
         var isFinished = true;
         var startTime = 0;
         var start;

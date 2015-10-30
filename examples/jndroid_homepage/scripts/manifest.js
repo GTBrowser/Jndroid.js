@@ -3,6 +3,8 @@ function _Manifest() {
     var self = this;
 
     this.isPhone = false;
+    this.maxWidth = 1080;
+
     this.versionCode = 000100000000;
     this.versionName = "0.9.0";
 

@@ -2,6 +2,7 @@ function Titlebar() {
     ViewGroup.apply(this);
 
     this.setBg(0xffffffff);
+    this.setBorderBottom(1, R.color.dividers);
 
     var logoArea = new ViewGroup();
     logoArea.onMeasure = function(wMS, hMS) {
