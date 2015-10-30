@@ -8,53 +8,62 @@ function MainView() {
     var vsView = null;
     var docView = null;
     var appView = null;
-    var qaView = null;
-
-    var cnt = new FrameLayout();
-    this.addView(cnt);
+    var aboutView = null;
 
     var title = new Titlebar();
     this.addView(title);
 
     var tab = title.getTab();
-    tab.setOnSelectedListener(function(i) {
+    tab.setOnItemClickListener(function(i) {
         setTimeout(function() {
-            cnt.removeAllViews();
             switch (i) {
                 case 0:
-                    if (introView == null) {
-                        introView = new IntroView();
-                    }
-                    cnt.addView(introView);
+                    cnt.addFragment(createIntroView(), "view=intro");
                     break;
                 case 1:
-                    if (vsView == null) {
-                        vsView = new VSAndroidView();
-                    }
-                    cnt.addView(vsView);
+                    cnt.addFragment(createVsView(), "view=vs");
                     break;
                 case 2:
-                    if (docView == null) {
-                        docView = new DocView();
-                    }
-                    cnt.addView(docView);
+                    cnt.addFragment(createDocView(), "view=doc");
                     break;
                 case 3:
-                    if (appView == null) {
-                        appView = new AppView();
-                    }
-                    cnt.addView(appView);
+                    cnt.addFragment(createAppView(), "view=app");
                     break;
                 case 4:
-                    if (qaView == null) {
-                        qaView = new AboutView();
-                    }
-                    cnt.addView(qaView);
+                    cnt.addFragment(createAboutView(), "view=about");
                     break;
             }
         }, 200);
     });
     tab.setSelectIndex(0);
+
+    var callback = function(request) {
+        var view = request["view"];
+        var v;
+        if (view == "about") {
+            v = createAboutView();
+            title.setSelectIndex(4)
+        } else if (view == "app") {
+            v = createAppView();
+            title.setSelectIndex(3);
+        } else if (view == "doc") {
+            v = createDocView();
+            title.setSelectIndex(2);
+        } else if (view == "vs") {
+            v = createVsView();
+            title.setSelectIndex(1);
+        } else if (view == "intro") {
+            v = createIntroView();
+            title.setSelectIndex(0);
+        } else {
+            v = createIntroView();
+            title.setSelectIndex(0);
+        }
+        return v;
+    };
+
+    var cnt = new StateFrameLayout(callback);
+    this.addView(cnt);
 
     this.postDelayed(function() {
         if (Manifest.isVersionUpgrade()) {
@@ -90,4 +99,39 @@ function MainView() {
         y += title.getMH();
         cnt.layout(x, y);
     };
+
+    function createIntroView() {
+        if (introView == null) {
+            introView = new IntroView();
+        }
+        return introView;
+    }
+
+    function createVsView() {
+        if (vsView == null) {
+            vsView = new VSAndroidView();
+        }
+        return vsView;
+    }
+
+    function createDocView() {
+        if (docView == null) {
+            docView = new DocView();
+        }
+        return docView;
+    }
+
+    function createAppView() {
+        if (appView == null) {
+            appView = new AppView();
+        }
+        return appView;
+    }
+
+    function createAboutView() {
+        if (aboutView == null) {
+            aboutView = new AboutView();
+        }
+        return aboutView;
+    }
 }

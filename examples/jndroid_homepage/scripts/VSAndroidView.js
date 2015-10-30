@@ -1,6 +1,7 @@
 function VSAndroidView() {
     ScrollView.apply(this);
 
+    this.setBackgroundColor(R.color.bg);
 
     var padding = R.dimen.padding;
 

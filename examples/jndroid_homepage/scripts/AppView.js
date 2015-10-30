@@ -18,13 +18,13 @@ function AppView() {
         addItem(R.string.lestore, "http://app.gtbrowser.cn", false);
         addItem(R.string.excel_demo, "http://playground.jndroid.cn/excel", false);
         addItem(R.string.calculator, "http://jsq.jndroid.com/", false);
-    }, 500);
+    }, 100);
 
 
     function addItem(title, url, isPc) {
         var appItemLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         appItemLp.gravity = Gravity.CENTER;
-        appItemLp.setMargins(padding)
+        appItemLp.setMargins(padding);
 
         var appItem = new AppItem(title, url, isPc);
         cnt.addView(appItem, appItemLp);

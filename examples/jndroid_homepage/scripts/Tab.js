@@ -69,7 +69,7 @@ function Tab() {
         for (var i = 0; i< items.length; i++) {
             Utils.measureExactly(items[i], itemW, h);
         }
-        Utils.measureExactly(indicator, itemW, 2);
+        Utils.measureExactly(indicator, itemW, 3);
     };
 
     this.onLayout = function() {

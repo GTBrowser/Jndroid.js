@@ -31,6 +31,7 @@ function Titlebar() {
     logoArea.addView(name);
 
     var tab = new Tab();
+    tab.setIndicatorColor(R.color.theme);
     tab.addTabItem(createTabItem(R.string.intro));
     tab.addTabItem(createTabItem(R.string.vs_android));
     tab.addTabItem(createTabItem(R.string.doc));
@@ -62,6 +63,12 @@ function Titlebar() {
 
     this.getTab = function() {
         return tab;
+    };
+
+    this.setSelectIndex = function(i) {
+        setTimeout(function() {
+            tab.setSelectIndex(i);
+        }, 100);
     };
 
     this.onMeasure = function(wMS) {
