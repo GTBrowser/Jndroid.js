@@ -28,11 +28,15 @@ function _Manifest() {
         if (isPhone) {
             R.dimen.padding = 8;
             R.dimen.half_padding = 4;
-            R.dimen.supTitle = 38;
+            R.dimen.supTitle = 35;
+            R.dimen.paragraph_padding_top = 24;
+            R.dimen.content_padding_bottom = 24;
         } else {
             R.dimen.padding = 16;
             R.dimen.half_padding = 8;
             R.dimen.supTitle = 44;
+            R.dimen.paragraph_padding_top = 72;
+            R.dimen.content_padding_bottom = 72;
         }
     };
 

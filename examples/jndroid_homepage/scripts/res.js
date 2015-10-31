@@ -72,7 +72,7 @@ function _R() {
     }
 
     function _color() {
-        this.theme = 0xFF673ab7;
+        this.theme = 0xff0091ea;
         this.card_bg = 0xffeeeeee;
         this.bg = 0xfffafafa;
         this.text = 0xff191919;

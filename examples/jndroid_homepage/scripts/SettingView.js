@@ -33,12 +33,14 @@ function SettingView() {
     languageGroup.addChild(zhRadioButton);
     languageGroup.addChild(enRadioButton);
     languageGroup.setOnCheckedChangeListener(function(id) {
-        if (id == 0) {
-            localStorage["language"] = "zh";
-        } else {
-            localStorage["language"] = "en";
-        }
-        location.reload();
+        setTimeout(function() {
+            if (id == 0) {
+                localStorage["language"] = "zh";
+            } else {
+                localStorage["language"] = "en";
+            }
+            location.reload();
+        }, 200);
     });
     var languageLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
     languageLp.leftMargin = R.dimen.padding;

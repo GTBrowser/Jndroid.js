@@ -189,7 +189,8 @@ function IntroView() {
                 cntW = Manifest.maxWidth - padding * 2;
             }
             jndroid.measure(cntW / 3, 0);
-            slogan.measure(MeasureSpec.makeMeasureSpec(cntW / 3, MeasureSpec.EXACTLY), 0);
+            var sloganW = Math.max(jndroid.getMW(), cntW / 3);
+            slogan.measure(MeasureSpec.makeMeasureSpec(sloganW, MeasureSpec.EXACTLY), 0);
             mask.measure(Math.max(jndroid.getMW(), slogan.getMW()) + padding * 2, h);
 
             this.setMeasuredDimension(w, h);
@@ -258,21 +259,21 @@ var materialDesignCode = "" +
     "for (var i = 0; i < 3; i++) {\n" +
     "    var item = new MRadioButton();\n" +
     "    item.setId(i);\n" +
-    "    item.setColor(0xff673ab7);\n" +
+    "    item.setColor(0xff0091ea);\n" +
     "    item.setText(\"RadioButton \" + i);\n" +
     "    group.addChild(item);\n" +
     "}\n" +
     "layout.addView(group);\n\n" +
     "var editText = new MEditText();\n" +
     "editText.setHint(\"input text here\");\n" +
-    "editText.setHighlightColor(0xff673ab7);\n" +
+    "editText.setHighlightColor(0xff0091ea);\n" +
     "layout.addView(editText, lp);\n\n" +
     "var progress = new MProgressBar();\n" +
-    "progress.setProgressColor(0xff673ab7);\n" +
+    "progress.setProgressColor(0xff0091ea);\n" +
     "progress.setStyle(MProgressBar.Small);\n" +
     "layout.addView(progress, lp);\n\n" +
     "var toggleButton = new MToggleButton();\n" +
-    "toggleButton.setColor(0xff673ab7);\n" +
+    "toggleButton.setColor(0xff0091ea);\n" +
     "layout.addView(toggleButton, lp);\n" +
     "";
 
@@ -336,7 +337,7 @@ var meausreCode = "" +
     "function MyView() {\n" +
     "    ViewGroup.apply(this);\n\n" +
     "    var child = new View();\n" +
-    "    child.setBackgroundColor(0xff673ab7);\n" +
+    "    child.setBackgroundColor(0xff0091ea);\n" +
     "    this.addView(child);\n\n" +
     "    this.onMeasure = function(wMS, hMS) {\n" +
     "        var w = MeasureSpec.getSize(wMS);\n" +
@@ -366,7 +367,7 @@ var drawCode = "" +
     "        canvas.beginPath();\n" +
     "        canvas.arc(x, y, r, 0, Math.PI * 2, true);\n" +
     "        canvas.closePath();\n" +
-    "        canvas.fillStyle = \"#673ab7\";\n" +
+    "        canvas.fillStyle = \"#0091ea\";\n" +
     "        canvas.fill();\n" +
     "    }\n" +
     "}";
@@ -381,7 +382,7 @@ var touchPreCode = "" +
     "    this.setText(\"Drag Me\");\n" +
     "    this.setTextColor(0xffffffff);\n" +
     "    this.setGravity(Gravity.CENTER);\n" +
-    "    this.setBackgroundColor(0xff673ab7);\n" +
+    "    this.setBackgroundColor(0xff0091ea);\n" +
     "    this.setClickable(true);\n\n";
 
 var touchCode = "" +
@@ -393,7 +394,7 @@ var touchCode = "" +
     "        this.getParent().requestDisallowInterceptTouchEvent(true);\n" +
     "        lastX = e.getRawX();\n" +
     "        lastY = e.getRawY();\n" +
-    "        this.setBackgroundColor(0xcc673ab7);\n" +
+    "        this.setBackgroundColor(0xcc0091ea);\n" +
     "    break;\n" +
     "    case MotionEvent.ACTION_MOVE:\n" +
     "        var dx = e.getRawX() - lastX;\n" +
@@ -404,7 +405,7 @@ var touchCode = "" +
     "    break;\n" +
     "    case MotionEvent.ACTION_UP:\n" +
     "    case MotionEvent.ACTION_CANCEL:\n" +
-    "        this.setBackgroundColor(0xff673ab7);\n" +
+    "        this.setBackgroundColor(0xff0091ea);\n" +
     "    break;\n" +
     "    }\n" +
     "}\n";
@@ -412,7 +413,7 @@ var touchAppendCode = "}";
 
 var animPreCode = "" +
     "var target = new View();\n" +
-    "target.setBackgroundColor(0xff673ab7);\n" +
+    "target.setBackgroundColor(0xff0091ea);\n" +
     "var targetlp = new LayoutParams(100, 50);\n" +
     "targetlp.gravity = Gravity.CENTER;\n" +
     "this.addView(target, targetlp);\n\n" +
