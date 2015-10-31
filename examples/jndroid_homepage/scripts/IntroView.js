@@ -5,7 +5,7 @@ function IntroView() {
 
     var padding = R.dimen.padding;
 
-    var cnt = new ViewGroup();
+    var cnt = new LinearLayout();
     cnt.onMeasure = function(wMS) {
         var w = MeasureSpec.getSize(wMS);
         cntHeader.measure(w, 0);
@@ -13,7 +13,7 @@ function IntroView() {
         var h = cntHeader.getMH() + cntBody.getMH();
         this.setMeasuredDimension(w, h);
     };
-    cnt.layout = function() {
+    cnt.onLayout = function() {
         var x = 0;
         var y = 0;
         cntHeader.layout(x, y);
@@ -36,8 +36,6 @@ function IntroView() {
     loadGitCafeView();
 
     loadPlaygrounds();
-
-
 
     function loadGitCafeView() {
         var gitcafe = Theme.createThemeTitle("GitCafé");
@@ -116,39 +114,43 @@ function IntroView() {
         cntBody.addView(getstart);
 
         var playground = new Playground("Hello World", "", helloWorldCode, "", true);
-        playground.setEditHeight(450);
+        playground.setEditHeight(410);
         var lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        lp.setMargins(16);
+        lp.setMargins(padding);
         cntBody.addView(playground, lp);
 
         var androidL = Theme.createThemeTitle(R.string.material_design);
         cntBody.addView(androidL);
 
         playground = new Playground("Widgets", materitalDesignPreCode, materialDesignCode, "");
-        playground.setEditHeight(540);
+        playground.setEditHeight(510);
         cntBody.addView(playground, lp);
 
         var apidemos = Theme.createThemeTitle("API Demos");
         cntBody.addView(apidemos);
 
+        playground = new Playground("ListView", "", listViewCode, "");
+        playground.setEditHeight(510);
+        cntBody.addView(playground, lp);
+
         playground = new Playground("Widgets", widgetPreCode, widgetCode, "");
-        playground.setEditHeight(400);
+        playground.setEditHeight(350);
         cntBody.addView(playground, lp);
 
         playground = new Playground("onMeasure & onLayout", measurePreCode, meausreCode, "");
-        playground.setEditHeight(360);
-        cntBody.addView(playground, lp);
-
-        playground = new Playground("onDraw", drawPreCode, drawCode, "");
         playground.setEditHeight(320);
         cntBody.addView(playground, lp);
 
+        playground = new Playground("onDraw", drawPreCode, drawCode, "");
+        playground.setEditHeight(280);
+        cntBody.addView(playground, lp);
+
         playground = new Playground("onTouchEvent", touchPreCode, touchCode, touchAppendCode);
-        playground.setEditHeight(480);
+        playground.setEditHeight(405);
         cntBody.addView(playground, lp);
 
         playground = new Playground("Animation", animPreCode, animCode, animAppendCode);
-        playground.setEditHeight(480);
+        playground.setEditHeight(420);
         cntBody.addView(playground, lp);
     }
 
@@ -220,21 +222,21 @@ function IntroView() {
 var helloWorldCode = "<!DOCTYPE html>\n" +
     "<html>\n" +
     "<head>\n" +
-    "\t<!-- you only need to import jndroid.js -->\n" +
-    "\t<!-- 你仅需引入jndroid.js便可进行开发了 -->\n" +
-    "\t<script src=\"http://file.gtbrowser.cn/jndroid/0.9.0/jndroid.js\"></script>\n" +
+    "    <!-- you only need to import jndroid.js -->\n" +
+    "    <!-- 你仅需引入jndroid.js便可进行开发了 -->\n" +
+    "    <script src=\"http://file.gtbrowser.cn/jndroid/0.9.0/jndroid.js\"></script>\n" +
     "</head>\n" +
     "<body>\n" +
     "<script>\n" +
-    "\t/* your code here */\n" +
-    "\t/* 在这里编写你的代码 */\n" +
-    "\tvar layout = new FrameLayout();\n\n" +
-    "\t/* no activity here, setContentView is enough */\n" +
-    "\t/* 没有Activity，直接setContentView就可以了 */\n" +
-    "\tsetContentView(layout);\n\n" +
-    "\tvar textView = new TextView();\n" +
-    "\ttextView.setText(\"helle world\");\n" +
-    "\tlayout.addView(textView);\n" +
+    "    /* your code here */\n" +
+    "    /* 在这里编写你的代码 */\n" +
+    "    var layout = new FrameLayout();\n\n" +
+    "    /* no activity here, setContentView is enough */\n" +
+    "    /* 没有Activity，直接setContentView就可以了 */\n" +
+    "    setContentView(layout);\n\n" +
+    "    var textView = new TextView();\n" +
+    "    textView.setText(\"hello world\");\n" +
+    "    layout.addView(textView);\n" +
     "</script>\n" +
     "</body>\n" +
     "</html>";
@@ -249,16 +251,16 @@ var materialDesignCode = "" +
     "var btn = new MButton();\n" +
     "btn.setText(\"button\");\n" +
     "btn.setOnClickListener(function() {\n" +
-    "\twindow.alert(\"Material Design\");\n" +
+    "    window.alert(\"Material Design\");\n" +
     "});\n" +
     "layout.addView(btn, lp);\n\n" +
     "var group = new MRadioGroup();\n" +
     "for (var i = 0; i < 3; i++) {\n" +
-    "\tvar item = new MRadioButton();\n" +
-    "\titem.setId(i);\n" +
-    "\titem.setColor(0xff673ab7);\n" +
-    "\titem.setText(\"RadioButton \" + i);\n" +
-    "\tgroup.addChild(item);\n" +
+    "    var item = new MRadioButton();\n" +
+    "    item.setId(i);\n" +
+    "    item.setColor(0xff673ab7);\n" +
+    "    item.setText(\"RadioButton \" + i);\n" +
+    "    group.addChild(item);\n" +
     "}\n" +
     "layout.addView(group);\n\n" +
     "var editText = new MEditText();\n" +
@@ -274,6 +276,33 @@ var materialDesignCode = "" +
     "layout.addView(toggleButton, lp);\n" +
     "";
 
+var listViewCode = "" +
+    "var listView = new ListView(ListItem);\n" +
+    "listView.setBorder(1, 0x33000000);\n" +
+    "this.addView(listView);\n\n" +
+    "/* 构造models */\n" +
+    "var models = [];\n" +
+    "for (var i = 0; i < 100000; i++) {\n" +
+    "    models.add(i);\n" +
+    "}\n\n" +
+    "/* 加载models */\n" +
+    "listView.add(models);\n\n" +
+    "/* 自定义ListView中item的实现 */\n" +
+    "function ListItem() {\n" +
+    "    Button.apply(this);\n\n" +
+    "    var model;\n" +
+    "    this.setOnClickListener(function() {\n" +
+    "        alert(model);\n" +
+    "    });\n" +
+    "    var lp = new LayoutParams(LayoutParams.FILL_PARENT, 48);\n" +
+    "    this.setLayoutParams(lp);\n\n" +
+    "    /* ListView的item通过实现setModel来更新自身数据 */\n" +
+    "    this.setModel = function(m) {\n" +
+    "        model = m;\n" +
+    "        this.setText(m);\n" +
+    "    }\n" +
+    "}";
+
 var widgetPreCode = "" +
     "var layout = new LinearLayout();\n" +
     "this.addView(layout);\n\n" +
@@ -284,7 +313,7 @@ var widgetCode = "" +
     "var btn = new Button();\n" +
     "btn.setText(\"button\");\n" +
     "btn.setOnClickListener(function() {\n" +
-    "\twindow.alert(\"button click\");\n" +
+    "    window.alert(\"button click\");\n" +
     "});\n" +
     "layout.addView(btn, lp);\n\n" +
     "var text = new TextView();\n" +
@@ -305,19 +334,19 @@ var measurePreCode = "" +
 
 var meausreCode = "" +
     "function MyView() {\n" +
-    "\tViewGroup.apply(this);\n\n" +
-    "\tvar child = new View();\n" +
-    "\tchild.setBackgroundColor(0xff673ab7);\n" +
-    "\tthis.addView(child);\n\n" +
-    "\tthis.onMeasure = function(wMS, hMS) {\n" +
-    "\t\tvar w = MeasureSpec.getSize(wMS);\n" +
-    "\t\tvar h = MeasureSpec.getSize(hMS);\n" +
-    "\t\tchild.measure(w / 4, h / 4);\n" +
-    "\t\tthis.setMeasuredDimension(w, h);\n" +
-    "\t}\n\n" +
-    "\tthis.onLayout = function() {\n" +
-    "\t\tchild.layout(50, 100);\n" +
-    "\t}\n" +
+    "    ViewGroup.apply(this);\n\n" +
+    "    var child = new View();\n" +
+    "    child.setBackgroundColor(0xff673ab7);\n" +
+    "    this.addView(child);\n\n" +
+    "    this.onMeasure = function(wMS, hMS) {\n" +
+    "        var w = MeasureSpec.getSize(wMS);\n" +
+    "        var h = MeasureSpec.getSize(hMS);\n" +
+    "        child.measure(w / 4, h / 4);\n" +
+    "        this.setMeasuredDimension(w, h);\n" +
+    "    }\n\n" +
+    "    this.onLayout = function() {\n" +
+    "        child.layout(50, 100);\n" +
+    "    }\n" +
     "}";
 
 var drawPreCode = "" +
@@ -327,56 +356,57 @@ var drawPreCode = "" +
 
 var drawCode = "" +
     "function MyView() {\n" +
-    "\tView.apply(this);\n" +
-    "\tthis.setWillNotDraw(false);\n\n" +
-    "\tthis.onDraw = function(canvas) {\n" +
-    "\t\tvar density = DisplayMetrics.density;\n" +
-    "\t\tvar x = 100 * density;\n" +
-    "\t\tvar y = 100 * density;\n" +
-    "\t\tvar r = 50 * density;\n" +
-    "\t\tcanvas.beginPath();\n" +
-    "\t\tcanvas.arc(x, y, r, 0, Math.PI * 2, true);\n" +
-    "\t\tcanvas.closePath();\n" +
-    "\t\tcanvas.fillStyle = \"#673ab7\";\n" +
-    "\t\tcanvas.fill();\n" +
-    "\t}\n" +
+    "    View.apply(this);\n" +
+    "    this.setWillNotDraw(false);\n\n" +
+    "    this.onDraw = function(canvas) {\n" +
+    "        var density = DisplayMetrics.density;\n" +
+    "        var x = 100 * density;\n" +
+    "        var y = 100 * density;\n" +
+    "        var r = 50 * density;\n" +
+    "        canvas.beginPath();\n" +
+    "        canvas.arc(x, y, r, 0, Math.PI * 2, true);\n" +
+    "        canvas.closePath();\n" +
+    "        canvas.fillStyle = \"#673ab7\";\n" +
+    "        canvas.fill();\n" +
+    "    }\n" +
     "}";
 
 var touchPreCode = "" +
     "var mView = new MyView();\n" +
     "var lp = new LayoutParams(200, 100);" +
+    "lp.gravity = Gravity.CENTER;" +
     "this.addView(mView, lp);\n\n" +
     "function MyView() {\n" +
-    "\tTextView.apply(this);\n\n" +
-    "\tthis.setText(\"Drag Me\");\n" +
-    "\tthis.setTextColor(0xffffffff);\n" +
-    "\tthis.setGravity(Gravity.CENTER);\n" +
-    "\tthis.setBackgroundColor(0xff673ab7);\n" +
-    "\tthis.setClickable(true);\n\n";
+    "    TextView.apply(this);\n\n" +
+    "    this.setText(\"Drag Me\");\n" +
+    "    this.setTextColor(0xffffffff);\n" +
+    "    this.setGravity(Gravity.CENTER);\n" +
+    "    this.setBackgroundColor(0xff673ab7);\n" +
+    "    this.setClickable(true);\n\n";
 
 var touchCode = "" +
     "var lastX = 0;\n" +
     "var lastY = 0;\n\n" +
     "this.onTouchEvent = function(e) {\n" +
-    "\tswitch (e.getAction()) {\n" +
-    "\tcase MotionEvent.ACTION_DOWN:\n" +
-    "\t\tthis.getParent().requestDisallowInterceptTouchEvent(true);\n" +
-    "\t\tlastX = e.getRawX();\n" +
-    "\t\tlastY = e.getRawY();\n" +
-    "\t\tthis.setBackgroundColor(0xcc673ab7);\n" +
-    "\tbreak;\n" +
-    "\tcase MotionEvent.ACTION_MOVE:\n" +
-    "\t\tvar dx = e.getRawX() - lastX;\n" +
-    "\t\tvar dy = e.getRawY() - lastY;\n" +
-    "\t\tthis.layout(this.getLeft() + dx, this.getTop() + dy);\n" +
-    "\t\tlastX = e.getRawX();\n" +
-    "\t\tlastY = e.getRawY();\n" +
-    "\tbreak;\n" +
-    "\tcase MotionEvent.ACTION_UP:\n" +
-    "\tcase MotionEvent.ACTION_CANCEL:\n" +
-    "\t\tthis.setBackgroundColor(0xff673ab7);\n" +
-    "\tbreak;\n" +
-    "\t}\n" +
+    "    switch (e.getAction()) {\n" +
+    "    case MotionEvent.ACTION_DOWN:\n" +
+    "        this.getParent().requestDisallowInterceptTouchEvent(true);\n" +
+    "        lastX = e.getRawX();\n" +
+    "        lastY = e.getRawY();\n" +
+    "        this.setBackgroundColor(0xcc673ab7);\n" +
+    "    break;\n" +
+    "    case MotionEvent.ACTION_MOVE:\n" +
+    "        var dx = e.getRawX() - lastX;\n" +
+    "        var dy = e.getRawY() - lastY;\n" +
+    "        this.layout(this.getLeft() + dx, this.getTop() + dy);\n" +
+    "        lastX = e.getRawX();\n" +
+    "        lastY = e.getRawY();\n" +
+    "    break;\n" +
+    "    case MotionEvent.ACTION_UP:\n" +
+    "    case MotionEvent.ACTION_CANCEL:\n" +
+    "        this.setBackgroundColor(0xff673ab7);\n" +
+    "    break;\n" +
+    "    }\n" +
     "}\n";
 var touchAppendCode = "}";
 
@@ -392,27 +422,27 @@ var animCode = "" +
     "var duration = 500;\n\n" +
     "" +
     "function translate() {\n" +
-    "\tvar anim = new TranslateAnimation(0, 100, 0, 50);\n" +
-    "\tanim.setDuration(duration);\n" +
-    "\ttarget.startAnimation(anim);\n" +
+    "    var anim = new TranslateAnimation(0, 100, 0, 50);\n" +
+    "    anim.setDuration(duration);\n" +
+    "    target.startAnimation(anim);\n" +
     "}\n\n" +
     "" +
     "function alpha() {\n" +
-    "\tvar anim = new AlphaAnimation(1, 0.5);\n" +
-    "\tanim.setDuration(duration);\n" +
-    "\ttarget.startAnimation(anim);\n" +
+    "    var anim = new AlphaAnimation(1, 0.5);\n" +
+    "    anim.setDuration(duration);\n" +
+    "    target.startAnimation(anim);\n" +
     "}\n\n" +
     "" +
     "function rotate() {\n" +
-    "\tvar anim = new RotateAnimation(0, 90);\n" +
-    "\tanim.setDuration(duration);\n" +
-    "\ttarget.startAnimation(anim);\n" +
+    "    var anim = new RotateAnimation(0, 90);\n" +
+    "    anim.setDuration(duration);\n" +
+    "    target.startAnimation(anim);\n" +
     "}\n\n" +
     "" +
     "function scale() {\n" +
-    "\tvar anim = new ScaleAnimation(1, 2);\n" +
-    "\tanim.setDuration(duration);\n" +
-    "\ttarget.startAnimation(anim);\n" +
+    "    var anim = new ScaleAnimation(1, 2);\n" +
+    "    anim.setDuration(duration);\n" +
+    "    target.startAnimation(anim);\n" +
     "}\n\n" +
     "";
 

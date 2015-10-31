@@ -90,9 +90,9 @@ function LogoView() {
         logoName.measure(logoSize, logoAreaW - logoSize);
 
         var cntW = w - padding * 3 - logoAreaW;
-        title.measure(cntW, 0);
-        version.measure(cntW, 0);
-        copyRight.measure(cntW, 0);
+        title.measure(MS.makeMS(cntW, MS.EXACTLY), 0);
+        version.measure(MS.makeMS(cntW, MS.EXACTLY), 0);
+        copyRight.measure(MS.makeMS(cntW, MS.EXACTLY), 0);
 
         if (mMileStoneView) {
             mMileStoneView.measure(w, 0);

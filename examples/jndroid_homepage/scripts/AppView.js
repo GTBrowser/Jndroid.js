@@ -24,7 +24,7 @@ function AppView() {
     function addItem(title, url, isPc) {
         var appItemLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         appItemLp.gravity = Gravity.CENTER;
-        appItemLp.setMargins(padding);
+        appItemLp.setMargins(0, padding, 0, padding);
 
         var appItem = new AppItem(title, url, isPc);
         cnt.addView(appItem, appItemLp);
@@ -57,7 +57,7 @@ function AppView() {
             if (w > maxWidth) {
                 w = maxWidth;
             }
-            w = w - 32;
+            w = w - padding * 2;
             titleView.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), 0);
             urlView.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), 0);
 

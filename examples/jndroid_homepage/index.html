@@ -10,6 +10,7 @@
     <script src="../../src/jndroid.widget.js"></script>
     <script src="../../src/jndroid.layout.js"></script>
     <script src="../../src/jndroid.mwidget.js"></script>
+    <script src="../../src/ListView.js"></script>
     <!--<script src="http://file.gtbrowser.cn/jndroid/jndroid.min.js"></script>-->
 
     <link rel="shortcut icon" href="images/title_logo.png" type="image/x-icon" />
@@ -85,6 +86,9 @@
 
     window.onCreate = function() {
         mSplash.setProgress(1);
+
+        Manifest.setIsPhone(window.innerWidth < 720);
+
         setTimeout(function() {
             var rootview = new FrameLayout();
             setContentView(rootview);

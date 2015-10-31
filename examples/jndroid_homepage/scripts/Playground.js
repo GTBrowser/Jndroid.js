@@ -10,7 +10,6 @@ function Playground(name, preCode, code, appendCode, isHtml) {
     var editH = 300;
 
     var self = this;
-    var padding = R.dimen.padding;
 
     this.setBackgroundColor(0xffffffff);
     this.setCornerSize(2);
@@ -20,10 +19,7 @@ function Playground(name, preCode, code, appendCode, isHtml) {
     var title = Theme.createTitle(name);
     this.addView(title);
 
-    var editView = new EditText();
-    editView.setSingleLine(false);
-    editView.setPadding(8);
-    editView.setTextColor(0xff006600);
+    var editView = new CodeEditor();
     editView.setText(code);
     editView.setHoverEnterListener(function() {
         this.setBorder(1, 0x661499f7);
@@ -64,6 +60,7 @@ function Playground(name, preCode, code, appendCode, isHtml) {
     };
 
     this.onMeasure = function(wMS){
+        var padding = R.dimen.padding;
         var w = MeasureSpec.getSize(wMS);
         var h = editH;
 
@@ -166,15 +163,48 @@ function CodePreviewer(uuid) {
     var display = new FrameLayout();
     this.addView(display);
 
-    this.setPadding(10);
+    this.setPadding(8);
 
     this.applyCode = function(code){
         var scriptElem = document.createElement("script");
-        scriptElem.innerHTML = "function DemoView" + uuid + "(){FrameLayout.apply(this);" + code + "}";
+        scriptElem.innerHTML = "function DemoView" + uuid + "(){FrameLayout.apply(this);this.setPadding(2); " + code + "}";
         document.head.appendChild(scriptElem);
 
         display.removeView(demoView);
         demoView = eval("new DemoView" + uuid + "()");
         display.addView(demoView);
     };
+}
+
+function CodeEditor() {
+    EditText.apply(this);
+
+    var self = this;
+
+    this.setSingleLine(false);
+    this.setPadding(8);
+    this.setTextColor(0xff000066);
+    this.setTextSize(12);
+
+    var input = this.getInput();
+    input.onkeydown = function(e) {
+        if (e.keyCode == 9) {
+            e.returnValue = false;
+
+            var start = self.getSelectionStart();
+            var end = self.getSelectionEnd();
+            var text = self.getText();
+            text = text.substring(0, start) + "    " + text.substr(end);
+            self.setText(text);
+            self.setSelection(start + 4);
+        }
+    };
+
+    this.onAfterMeasure = function() {
+        if (Manifest.isPhone) {
+            this.setPreventHtmlTouchEvent(true);
+        } else {
+            this.setPreventHtmlTouchEvent(false);
+        }
+    }
 }

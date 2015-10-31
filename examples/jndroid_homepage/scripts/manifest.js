@@ -23,6 +23,19 @@ function _Manifest() {
         return this.versionCode > this.lastVersionCode;
     };
 
+    this.setIsPhone = function(isPhone) {
+        this.isPhone = isPhone;
+        if (isPhone) {
+            R.dimen.padding = 8;
+            R.dimen.half_padding = 4;
+            R.dimen.supTitle = 38;
+        } else {
+            R.dimen.padding = 16;
+            R.dimen.half_padding = 8;
+            R.dimen.supTitle = 44;
+        }
+    };
+
     this.changeLogs = [];
 
     addChangeLog("1.0.0", "2015-10-29", ["优化Jndroid性能，实现产品化", "增加ListView控件", "增加对多点触控的支持", "更新Jndroid首页"]);

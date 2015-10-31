@@ -152,6 +152,8 @@ Object.defineProperty(MProgressBar,"Large",{value:2});
 function MButton() {
     TextView.apply(this);
     var id;
+    var downX;
+    var downY;
 
     var density = DisplayMetrics.density;
     var bg = new WaveDrawable();
@@ -183,19 +185,25 @@ function MButton() {
     this.onTouchEvent = function(e) {
         switch (e.getAction()) {
             case ME.ACTION_DOWN:
-                bg.setState(View.VIEW_STATE_PRESSED);
-                bg.setX(e.getX() * density);
-                bg.setY(e.getY() * density);
+                downX = e.getX();
+                downY = e.getY();
                 break;
             case ME.ACTION_CANCEL:
             case ME.ACTION_UP:
-                bg.setState(View.VIEW_STATE_ENABLED);
                 break;
         }
         return true;
     };
 
     this.onDraw = function(canvas) {
+        if (this.isPressed()) {
+            bg.setState(View.VIEW_STATE_PRESSED);
+            bg.setX(downX * density);
+            bg.setY(downY * density);
+        } else {
+            bg.setState(View.VIEW_STATE_ENABLED);
+        }
+
         bg.setBounds(0, 0, this.getMW() * density, this.getMH() * density);
         bg.draw(canvas);
     };

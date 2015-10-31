@@ -1588,6 +1588,8 @@ function View() {
                     this.onDraw(canvas);
                 }
             }
+        } else {
+            this.onDraw();
         }
     };
 
@@ -2449,6 +2451,11 @@ function touch(e) {
 
     switch (ev.getAction()) {
         case ME.ACTION_DOWN:
+            // solve input text keep focused issues
+            var ele = document.getElementsByTagName('input');
+            for(var i = 0, l = ele.length; i < l; ++i){
+                ele[i].blur();
+            }
             mInTouch = true;
             break;
         case ME.ACTION_UP:

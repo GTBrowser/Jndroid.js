@@ -70,6 +70,12 @@ function ListView(ItemFunc) {
     };
 
     this.add = function(data, index) {
+        if (this.getMH() == 0) {
+            this.postDelayed(function() {
+                this.add(data, index);
+            }, 100);
+            return;
+        }
         var datas = [];
         if (Utils.isArray(data)) {
             datas = data;
@@ -117,7 +123,7 @@ function ListView(ItemFunc) {
 
     this.refresh = function() {
         content.requestLayout();
-        this.scrollToWidthRange(this.getScrollY());
+        this.scrollToWidthRange(0, this.getScrollY());
         content.layoutAtPosition();
         this.scrollBy(1);
     };
@@ -172,18 +178,22 @@ function ListView(ItemFunc) {
         }
     };
 
-    this.addScrollChangedListener(function(t, oldt) {
-        if (t == oldt) {
+    this.addScrollChangedListener(function(x, oldx, y, oldy) {
+        if (y == oldy) {
             return;
         }
-        topOffset = t;
+        topOffset = y;
         topOffset -= headerHeight;
 
         topOffset = Math.min(topOffset, content.getMH() - this.getMH());
         topOffset = Math.max(topOffset, 0);
 
-        content.layoutInScroll(t > oldt);
+        content.layoutInScroll(y > oldy);
     });
+
+    this.onBeforeInterceptTouchEvent = function() {
+        this.getParent().requestDisallowInterceptTouchEvent(true);
+    };
 
     function onDataChanged() {
         for (var i = 0; i < content.getChildCount(); i++) {
@@ -206,7 +216,7 @@ function ListView(ItemFunc) {
 
     function getListItem(index, view) {
         if (view == null) {
-            view = eval("new " + ItemFunc.name + "()");
+            view = new ItemFunc();
             if (itemCreateListener != null) {
                 itemCreateListener.call(this, index, view);
             }
@@ -241,11 +251,16 @@ function ListView(ItemFunc) {
                 }
                 var itemH = 0;
                 var cLp = c.getLayoutParams();
-                if (cLp != null && cLp.height > 0) {
-                    itemH = cLp.height;
+                var cwMS = wMS;
+                if (cLp != null) {
+                    if (cLp.height > 0) {
+                        itemH = cLp.height;
+                    }
+                    if (cLp.width == LP.FP) {
+                        cwMS = MS.makeMS(w, MS.EXACTLY);
+                    }
                 }
-                c.measure(wMS,
-                    MS.makeMeasureSpec(itemH, MS.EXACTLY));
+                c.measure(cwMS, MS.makeMS(itemH, MS.EXACTLY));
             }
 
             if (this.getChildCount() > 0) {
@@ -254,7 +269,7 @@ function ListView(ItemFunc) {
             }
 
             h = Math.max(h, MS.getSize(hMS) - headerHeight - footerHeight);
-            this.setMeasuredDimension(w, h);
+            this.setMD(w, h);
         };
 
         this.layoutAtPosition = function() {

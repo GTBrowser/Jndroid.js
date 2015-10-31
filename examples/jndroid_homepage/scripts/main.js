@@ -71,11 +71,7 @@ function MainView() {
     }, 1000);
 
     this.onMeasure = function(wMS, hMS) {
-        if (window.innerWidth <= 720) {
-            Manifest.isPhone = true;
-        } else {
-            Manifest.isPhone = false;
-        }
+        Manifest.setIsPhone(window.innerWidth <= 720);
 
         var w = MS.getSize(wMS);
         var h = MS.getSize(hMS);

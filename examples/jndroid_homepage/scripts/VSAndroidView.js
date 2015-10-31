@@ -62,7 +62,7 @@ function VSAndroidView() {
         btn.setStyle("textAlign", "center");
         btn.setStyle("lineHeight", "48px");
         btn.setBorder(1, R.color.dividers);
-        btn.setBoxShadow(0, 6, 6, 0, 0x66000000);
+        btn.setBoxShadow(0, 1, 2, 0, 0x66000000);
         this.addView(btn);
 
         this.onMeasure = function(wMS) {
@@ -72,7 +72,7 @@ function VSAndroidView() {
             var cntH;
             if (Manifest.isPhone) {
                 cntW = w - padding * 2;
-                cntH = 1140;
+                cntH = 720;
                 Utils.measureExactly(jndroid, cntW, cntH);
                 Utils.measureExactly(android, cntW, cntH);
                 h = jndroid.getMH() * 2;
@@ -112,10 +112,7 @@ function VSAndroidView() {
         };
 
         function createCodoView(code) {
-            var v = new EditText();
-            v.setSingleLine(false);
-            v.setPadding(8);
-            v.setTextColor(0xff006600);
+            var v = new CodeEditor();
             v.setTextSize(10);
             v.setText(code);
             return v;
@@ -128,50 +125,50 @@ var jndroidCode = "" +
     " * Jndroid\n" +
     " */\n\n" +
     "function MyView() {\n" +
-    "\t/* use apply instead of extend | 使用apply实现继承 */\n" +
-    "\tView.apply(this);\n\n" +
-    "\t/* public variable | 公开变量 */\n" +
-    "\tthis.WIDTH = 100;\n" +
-    "\tthis.HEIGHT = 50;\n" +
-    "\tthis.TEXT_SIZE = 16;\n\n" +
-    "\t/* private variable | 私有变量 */\n" +
-    "\tvar name = \"Click Me\";\n" +
-    "\tvar self = this;\n\n" +
-    "\t/* no constructor, initiate your code here */\n" +
-    "\t/* Jndroid中没有构造函数，直接初始化 */\n" +
-    "\tthis.setBackgroundColor(0xff009688);\n" +
-    "\tthis.setWillNotDraw(false);\n\n" +
-    "\t/* set border, round corner and shadow is very difficult in Android */\n" +
-    "\t/* 想要在Android设置边框、圆角和阴影是非常麻烦的，但在Jndroid中却很简单 */\n" +
-    "\tthis.setBorder(1, 0x33000000);\n" +
-    "\tthis.setCornerSize(2);\n" +
-    "\tthis.setBoxShadow(0, 0, 6, 0, 0x33000000);\n\n" +
-    "\t/* listener is a function | listener是一个function */\n" +
-    "\tthis.setOnClickListener(function() {\n" +
-    "\t\tconsole.log(\"clicked\");\n" +
-    "\t});\n\n" +
-    "\t/* public method | 公开方法 */\n" +
-    "\tthis.getName = function() {\n" +
-    "\t\treturn name;\n" +
-    "\t}\n\n" +
-    "\tthis.onMeasure = function(wMS, hMS) {\n" +
-    "\t\tthis.setMeasuredDimension(this.WIDTH, this.HEIGHT);\n" +
-    "\t}\n\n\n\n\n" +
-    "\tthis.onDraw = function(canvas) {\n" +
-    "\t\t/* this canvas is the context of HTML canvas */\n" +
-    "\t\t/* 这里的canvas是HTML canvas的context */\n" +
-    "\t\tcanvas.fillStyle = \"#ffffff\";\n" +
-    "\t\tcanvas.font = this.TEXT_SIZE + \"px\";\n" +
-    "\t\tcanvas.textBaseline = \"middle\";\n" +
-    "\t\tvar offsetX = calcXAlignCenter(canvas, name);\n" +
-    "\t\tvar offsetY = this.getMeasuredHeight() / 2;\n" +
-    "\t\tcanvas.fillText(name, offsetX, offsetY);\n" +
-    "\t}\n\n" +
-    "\t/* private method | 私有方法 */\n" +
-    "\tfunction calcXAlignCenter(canvas, text) {\n" +
-    "\t\tvar txtMetrics = canvas.measureText(text);\n" +
-    "\t\treturn (self.getMeasuredWidth() - txtMetrics.width) / 2;\n" +
-    "\t}\n" +
+    "    /* use apply instead of extend | 使用apply实现继承 */\n" +
+    "    View.apply(this);\n\n" +
+    "    /* public variable | 公开变量 */\n" +
+    "    this.WIDTH = 100;\n" +
+    "    this.HEIGHT = 50;\n" +
+    "    this.TEXT_SIZE = 16;\n\n" +
+    "    /* private variable | 私有变量 */\n" +
+    "    var name = \"Click Me\";\n" +
+    "    var self = this;\n\n" +
+    "    /* no constructor, initiate your code here */\n" +
+    "    /* Jndroid中没有构造函数，直接初始化 */\n" +
+    "    this.setBackgroundColor(0xff009688);\n" +
+    "    this.setWillNotDraw(false);\n\n" +
+    "    /* set border, round corner and shadow is very difficult in Android */\n" +
+    "    /* 想要在Android设置边框、圆角和阴影是非常麻烦的，但在Jndroid中却很简单 */\n" +
+    "    this.setBorder(1, 0x33000000);\n" +
+    "    this.setCornerSize(2);\n" +
+    "    this.setBoxShadow(0, 0, 6, 0, 0x33000000);\n\n" +
+    "    /* listener is a function | listener是一个function */\n" +
+    "    this.setOnClickListener(function() {\n" +
+    "        console.log(\"clicked\");\n" +
+    "    });\n\n" +
+    "    /* public method | 公开方法 */\n" +
+    "    this.getName = function() {\n" +
+    "        return name;\n" +
+    "    }\n\n" +
+    "    this.onMeasure = function(wMS, hMS) {\n" +
+    "        this.setMeasuredDimension(this.WIDTH, this.HEIGHT);\n" +
+    "    }\n\n\n\n\n" +
+    "    this.onDraw = function(canvas) {\n" +
+    "        /* this canvas is the context of HTML canvas */\n" +
+    "        /* 这里的canvas是HTML canvas的context */\n" +
+    "        canvas.fillStyle = \"#ffffff\";\n" +
+    "        canvas.font = this.TEXT_SIZE + \"px\";\n" +
+    "        canvas.textBaseline = \"middle\";\n" +
+    "        var offsetX = calcXAlignCenter(canvas, name);\n" +
+    "        var offsetY = this.getMeasuredHeight() / 2;\n" +
+    "        canvas.fillText(name, offsetX, offsetY);\n" +
+    "    }\n\n" +
+    "    /* private method | 私有方法 */\n" +
+    "    function calcXAlignCenter(canvas, text) {\n" +
+    "        var txtMetrics = canvas.measureText(text);\n" +
+    "        return (self.getMeasuredWidth() - txtMetrics.width) / 2;\n" +
+    "    }\n" +
     "}";
 
 var androidCode = "" +
@@ -179,49 +176,49 @@ var androidCode = "" +
     " * Android\n" +
     " */\n\n" +
     "public class MyView extends View {\n\n\n" +
-    "\t/* public variable | 公开变量 */\n" +
-    "\tpublic static final int UI_WIDTH = 100;\n" +
-    "\tpublic static final int UI_HEIGHT = 50;\n" +
-    "\tpublic static final int UI_TEXT_SIZE = 16;\n\n" +
-    "\t/* private variable | 私有变量 */\n" +
-    "\tprivate String mName = \"Click Me\";\n\n" +
-    "\tpublic MyView(Context context){\n" +
-    "\t\tsuper(context);\n\n" +
-    "\t\tsetBackgroundColor(0xff009688);\n" +
-    "\t\tsetWillNotDraw(false);\n\n" +
-    "\t\tsetOnClickListener(new OnClickListener(){\n\n" +
-    "\t\t\t@Override\n" +
-    "\t\t\tpublic void onClick(View v){\n" +
-    "\t\t\t\tLog.v(\"tag\", \"clicked\");\n" +
-    "\t\t\t}\n" +
-    "\t\t});\n" +
-    "\t}\n\n\n\n" +
-    "\t/* public method | 公开方法 */\n" +
-    "\tpublic String getName() {\n" +
-    "\t\treturn mName;\n" +
-    "\t}\n\n" +
-    "\t@Override\n" +
-    "\tpublic void onMeasure(int widthMeasureSpec, int heightMeasureSpec){\n" +
-    "\t\tfloat density = getResources().getDisplayMetrics().density;\n" +
-    "\t\tint width = (int)(UI_WIDTH * density);\n" +
-    "\t\tint height = (int)(UI_HEIGHT * density);\n" +
-    "\t\tsetMeasuredDimension(width, height);\n" +
-    "\t}\n\n" +
-    "\t@Override\n" +
-    "\tpublic void onDraw(Canvas canvas){\n" +
-    "\t\tPaint paint = new Paint();\n" +
-    "\t\tpaint.setAntiAlias(true);\n" +
-    "\t\tpaint.setTextSize(UI_TEXT_SIZE * getResources().getDisplayMetrics().density);\n" +
-    "\t\tfloat offsetX = calcXAlignCenter(mPaint, mName);\n" +
-    "\t\tFontMetrics fm = paint.getFontMetrics();\n" +
-    "\t\tfloat offsetY = getMeasuredHeight() / 2 - fm.descent + (fm.bottom - fm.top) / 2;\n" +
-    "\t\tcanvas.drawText(mName, offsetX, offsetY, paint);\n" +
-    "\t}\n\n" +
-    "\t/* private method | 私有方法 */\n" +
-    "\tprivate float calcXAlignCenter(Paint paint, String text){\n" +
-    "\t\tfloat textWidth = paint.measureText(text);\n" +
-    "\t\treturn (float)(getMeasuredWidth() - textWidth) / 2;\n" +
-    "\t}\n" +
+    "    /* public variable | 公开变量 */\n" +
+    "    public static final int UI_WIDTH = 100;\n" +
+    "    public static final int UI_HEIGHT = 50;\n" +
+    "    public static final int UI_TEXT_SIZE = 16;\n\n" +
+    "    /* private variable | 私有变量 */\n" +
+    "    private String mName = \"Click Me\";\n\n" +
+    "    public MyView(Context context){\n" +
+    "        super(context);\n\n" +
+    "        setBackgroundColor(0xff009688);\n" +
+    "        setWillNotDraw(false);\n\n" +
+    "        setOnClickListener(new OnClickListener(){\n\n" +
+    "            @Override\n" +
+    "            public void onClick(View v){\n" +
+    "                Log.v(\"tag\", \"clicked\");\n" +
+    "            }\n" +
+    "        });\n" +
+    "    }\n\n\n\n" +
+    "    /* public method | 公开方法 */\n" +
+    "    public String getName() {\n" +
+    "        return mName;\n" +
+    "    }\n\n" +
+    "    @Override\n" +
+    "    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec){\n" +
+    "        float density = getResources().getDisplayMetrics().density;\n" +
+    "        int width = (int)(UI_WIDTH * density);\n" +
+    "        int height = (int)(UI_HEIGHT * density);\n" +
+    "        setMeasuredDimension(width, height);\n" +
+    "    }\n\n" +
+    "    @Override\n" +
+    "    public void onDraw(Canvas canvas){\n" +
+    "        Paint paint = new Paint();\n" +
+    "        paint.setAntiAlias(true);\n" +
+    "        paint.setTextSize(UI_TEXT_SIZE * getResources().getDisplayMetrics().density);\n" +
+    "        float offsetX = calcXAlignCenter(mPaint, mName);\n" +
+    "        FontMetrics fm = paint.getFontMetrics();\n" +
+    "        float offsetY = getMeasuredHeight() / 2 - fm.descent + (fm.bottom - fm.top) / 2;\n" +
+    "        canvas.drawText(mName, offsetX, offsetY, paint);\n" +
+    "    }\n\n" +
+    "    /* private method | 私有方法 */\n" +
+    "    private float calcXAlignCenter(Paint paint, String text){\n" +
+    "        float textWidth = paint.measureText(text);\n" +
+    "        return (float)(getMeasuredWidth() - textWidth) / 2;\n" +
+    "    }\n" +
     "}";
 
 var tips = ["▪ 在Jndroid中，this的概念与Android中的this类似但不完全相同",
