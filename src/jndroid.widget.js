@@ -48,7 +48,7 @@ function ScrollView() {
     img.style.height = "20px";
     img.style.verticalAlign = "text-bottom";
     jndroid.appendChild(img);
-    jndroid.appendChild(document.createTextNode(" 网页由Jndroid提供技术支持"));
+    jndroid.appendChild(document.createTextNode(" 由Jndroid提供技术支持"));
 
     this.div.appendChild(jndroid);
 
