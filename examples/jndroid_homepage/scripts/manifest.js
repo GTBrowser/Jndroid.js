@@ -6,7 +6,7 @@ function _Manifest() {
     this.maxWidth = 1080;
 
     this.versionCode = 000100000000;
-    this.versionName = "0.9.0";
+    this.versionName = "1.0.0";
 
     this.lastVersionCode = localStorage["versionCode"];
     localStorage["versionCode"] = this.versionCode;
