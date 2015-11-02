@@ -1,9 +1,8 @@
 function AboutView() {
     ScrollView.apply(this);
 
-    this.setBackgroundColor(R.color.card_bg);
-
     var scrollCnt = new ViewGroup();
+    scrollCnt.setBackgroundColor(R.color.card_bg);
     scrollCnt.onMeasure = function(wMS) {
         var w = MeasureSpec.getSize(wMS);
         var cntW = Math.min(w, Manifest.maxWidth);

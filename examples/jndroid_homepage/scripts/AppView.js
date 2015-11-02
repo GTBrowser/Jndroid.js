@@ -4,11 +4,10 @@
 function AppView() {
     ScrollView.apply(this);
 
-    this.setBackgroundColor(R.color.card_bg);
-
     var padding = R.dimen.padding;
 
     var cnt = new LinearLayout();
+    cnt.setBg(R.color.card_bg);
     cnt.setOrientation(LinearLayout.VERTICAL);
     cnt.setPadding(0, R.dimen.paragraph_padding_top, 0, R.dimen.content_padding_bottom);
     var cntLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);

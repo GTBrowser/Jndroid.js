@@ -1,11 +1,10 @@
 function IntroView() {
     ScrollView.apply(this);
 
-    this.setBg(R.color.card_bg);
-
     var padding = R.dimen.padding;
 
     var cnt = new LinearLayout();
+    cnt.setBg(R.color.card_bg);
     cnt.onMeasure = function(wMS) {
         var w = MeasureSpec.getSize(wMS);
         cntHeader.measure(w, 0);

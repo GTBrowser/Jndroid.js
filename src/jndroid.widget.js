@@ -22,7 +22,7 @@ function ScrollView() {
     var touchSlop = 5;
     var yProcessor = new FlingProcessor();
     var xProcessor = new FlingProcessor();
-    var maxV = 1000;
+    var maxV = 5000;
     var minV = 50;
     var listeners = [];
     var xScrollEnd = true;
@@ -31,6 +31,29 @@ function ScrollView() {
     var yScrollable = false;
     var xScrollable = false;
     var rollPadding = 0.6;
+
+    var logo = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAABiUlEQVR4Xu2TMUgCURjHDYIamoJoaGhIgnYHl8BNgkCkxSFsbBPBRcjRRQhcb3QRHG6Q45YHB6/BwcWtIdoccnSKCn3//+tl18OrQ7EpyO/Pwd3w+73ve+9e4t/WuianTP4S5b4+5A5Lent1dJdFNNGCCwdtdaU3V8J1Ch30EECyY0QCkrnVcGFgzyRggQ0ICDqRMfQmL5iNx7lHN8SlumEJ8vOdmTkBL9UA/Wk+ZvUNNEJE0OE1xAz39J0qzwvqCCDQetz6LlCVLxwtVTaoDy/soDYvqM2aFNHz1dushriPNuvsWtwIoh0UMYJAoFORrXMgQ8BFK1zdCqbnkVPGEGMMWWOSBzxhjg0EJhawsP3ifnSvq1p/KMJ5pYXj07MDWMGOGuBlNoi3NIId7v68ImmMjeIe7hLch5ykE3E1zePZKHqLFEt+4+kZnqDQh8tuLC7hM5tYVK9HcKEwQgA3ovEhTZpvx4to24cBRyYP6KMHOXs8NJhZ5QYessA6HTi8VRVmeZD4s7WudxQX9TCBmN2WAAAAAElFTkSuQmCC";
+
+    this.div.style.background = Utils.toCssColor(0xff808080);
+    var jndroid = document.createElement("div");
+    jndroid.style.width = "100%";
+    jndroid.style.height = "80px";
+    jndroid.style.fontSize = "14px";
+    jndroid.style.color = Utils.toCssColor(0x80ffffff);
+    jndroid.style.lineHeight = "80px";
+    jndroid.style.textAlign = "center";
+    var img = document.createElement("img");
+    img.src = logo;
+    img.style.width = "20px";
+    img.style.height = "20px";
+    img.style.verticalAlign = "text-bottom";
+    jndroid.appendChild(img);
+    jndroid.appendChild(document.createTextNode(" 网页由Jndroid提供技术支持"));
+
+    this.div.appendChild(jndroid);
+
+    this.setBg = function() {};
+    this.setBackgroundColor = function() {};
 
     this.checkScrollable = function() {
         if (this.getChildCount() == 0) {

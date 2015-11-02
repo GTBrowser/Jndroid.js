@@ -1,11 +1,10 @@
 function VSAndroidView() {
     ScrollView.apply(this);
 
-    this.setBackgroundColor(R.color.bg);
-
     var padding = R.dimen.padding;
 
     var scrollCnt = new ViewGroup();
+    scrollCnt.setBackgroundColor(R.color.bg);
     scrollCnt.onMeasure = function(wMS) {
         var w = MeasureSpec.getSize(wMS);
         var cntW = Math.min(w, Manifest.maxWidth);

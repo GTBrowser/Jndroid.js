@@ -41,6 +41,12 @@ function ListView(ItemFunc) {
         }
     }
 
+    this.setBg = function(c) {
+        container.setBg(c)
+    };
+    this.setBackgroundColro = this.setBg;
+    this.setBg(0xffffffff);
+
     this.setOnItemCreateListener = function(l) {
         itemCreateListener = l;
     };
