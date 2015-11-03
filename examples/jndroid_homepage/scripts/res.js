@@ -22,7 +22,7 @@ function _R() {
             this.to_android_develop = "致安卓开发者";
             this.more_tips = "更多建议";
 
-            this.lestore = "乐商店";
+            this.lestore = "应用商店";
             this.excel_demo = "Excel Demo(多点触控)";
             this.jndroid_home = "Jndroid官网";
             this.calculator = "计算器";
@@ -53,7 +53,7 @@ function _R() {
             this.to_android_develop = "To Android Developer";
             this.more_tips = "More Tips";
 
-            this.lestore = "LeStore";
+            this.lestore = "App Store";
             this.excel_demo = "Excel Demo(multi-touch)";
             this.jndroid_home = "Jndroid Homepage";
             this.calculator = "Calculator";
