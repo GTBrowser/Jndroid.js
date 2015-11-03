@@ -861,18 +861,33 @@ function WaveDrawable() {
     var dimBg = true;
     var maxRadius = 9999;
     var waveColor = 0x25191919;
+    var waving = false;
 
     this.onStateChange = function(s) {
         if (curState != View.VIEW_STATE_PRESSED && s == View.VIEW_STATE_PRESSED) {
+            waving = true;
             processor.startProcess(0, 1, waveDuration);
             processor.setEndListener(function() {
-                curState = View.VIEW_STATE_ENABLED;
-                self.invalidateSelf();
+                waving = false;
+                onEnd();
             });
         }
         if (s == View.VIEW_STATE_PRESSED) {
-            curState = s;
-            this.invalidateSelf();
+            if (curState != s) {
+                curState = s;
+                this.invalidateSelf();
+            }
+        }
+        if (s == View.VIEW_STATE_ENABLED) {
+            waved = false;
+            onEnd();
+        }
+
+        function onEnd() {
+            if (waving == false && s == View.VIEW_STATE_ENABLED) {
+                curState = View.VIEW_STATE_ENABLED;
+                self.invalidateSelf();
+            }
         }
     };
 
@@ -929,7 +944,7 @@ function WaveDrawable() {
         c.arc(offsetX, offsetY, radius, 0, Math.PI * 2, true);
         c.closePath();
         var alpha = Color.alpha(waveColor);
-        var color = Color.argb((1 - p) * alpha, Color.red(waveColor), Color.green(waveColor), Color.blue(waveColor));
+        var color = Color.argb((1 - p * 0.8) * alpha, Color.red(waveColor), Color.green(waveColor), Color.blue(waveColor));
         c.fillStyle = Utils.toCssColor(color);
         c.fill();
     };

@@ -32,14 +32,13 @@ function ScrollView() {
     var xScrollable = false;
     var rollPadding = 0.6;
 
-    var logo = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAABiUlEQVR4Xu2TMUgCURjHDYIamoJoaGhIgnYHl8BNgkCkxSFsbBPBRcjRRQhcb3QRHG6Q45YHB6/BwcWtIdoccnSKCn3//+tl18OrQ7EpyO/Pwd3w+73ve+9e4t/WuianTP4S5b4+5A5Lent1dJdFNNGCCwdtdaU3V8J1Ch30EECyY0QCkrnVcGFgzyRggQ0ICDqRMfQmL5iNx7lHN8SlumEJ8vOdmTkBL9UA/Wk+ZvUNNEJE0OE1xAz39J0qzwvqCCDQetz6LlCVLxwtVTaoDy/soDYvqM2aFNHz1dushriPNuvsWtwIoh0UMYJAoFORrXMgQ8BFK1zdCqbnkVPGEGMMWWOSBzxhjg0EJhawsP3ifnSvq1p/KMJ5pYXj07MDWMGOGuBlNoi3NIId7v68ImmMjeIe7hLch5ykE3E1zePZKHqLFEt+4+kZnqDQh8tuLC7hM5tYVK9HcKEwQgA3ovEhTZpvx4to24cBRyYP6KMHOXs8NJhZ5QYessA6HTi8VRVmeZD4s7WudxQX9TCBmN2WAAAAAElFTkSuQmCC";
+    var logo = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwwAADsMBx2+oZAAAAhtJREFUWEfF1jEoRVEcx/GnFINJyWAwkLIbLMompSSLQYw2KYsuo0Upq9GiDAbJohSDwWIzWA2MJpkUv+/tnNu55/2vd/HeMXx69/zvPed/7v+ce2hkWfavzGBKZjAlM5iSGUzJDKZkBlMygx0yJaNRrOMTGJRh6ZN16ZXSM6VGm/TLihzIkZzKoRzLqnRL8XzYsR0m5ERu5UquXZsJXbr2vBR9ws5/RXKSkPjc4XpJ9oR7oBrFUsSDUJ5FmQlidQwIpQ6T87bbwtpzHcanJe8bD7Qs93InCy7WSpfwhmES/6Zr7trHcSMbkvePB9sV3oJObKAeiZ+JbUqcnL4koX3hfj2e3ZG8fzwYN3wZGajpuw2wjlsSJicZu50XOXNtf8/j+coKsFtfhORMhI0VPwPilDhMDvYBb8+1lRz0mZN8rHhgvuEneXW/VIQqDMm48Amx3kwu3HChqsTw9zigzAmAsn6Kn4TvTFWYfVXiOjgfivIjTOxxbPIlvItfDmuwn2IcDiWqXOQLE4cmhQowiQdhba1B66L0VI9xS7lKjQjnwJswCUr320n4pSsdwV5TIDIrz/IhHE5Mgs/LSmQhMW9febKawciIkJhJsCfYhLSrJuPLDf4ijok1bs4MVqAaJGQSeBSqwvKQzP8yCT7V4rz/jhlsgX8w+AvHacdhhH3hSKbUnBlWP5MZTMkMpmQGUzKDKZnBlMxgOlnjC8iWeCBJqa/CAAAAAElFTkSuQmCC";
 
-    this.div.style.background = Utils.toCssColor(0xff808080);
     var jndroid = document.createElement("div");
     jndroid.style.width = "100%";
     jndroid.style.height = "80px";
     jndroid.style.fontSize = "14px";
-    jndroid.style.color = Utils.toCssColor(0x80ffffff);
+    jndroid.style.color = Utils.toCssColor(0x66000000);
     jndroid.style.lineHeight = "80px";
     jndroid.style.textAlign = "center";
     var img = document.createElement("img");
@@ -51,9 +50,6 @@ function ScrollView() {
     jndroid.appendChild(document.createTextNode(" 由Jndroid提供技术支持"));
 
     this.div.appendChild(jndroid);
-
-    this.setBg = function() {};
-    this.setBackgroundColor = function() {};
 
     this.checkScrollable = function() {
         if (this.getChildCount() == 0) {
