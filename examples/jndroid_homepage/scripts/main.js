@@ -62,14 +62,6 @@ function MainView() {
     var cnt = new StateFrameLayout(callback);
     this.addView(cnt);
 
-    this.postDelayed(function() {
-        if (Manifest.isVersionUpgrade()) {
-            if (LSnackBar) {
-                LSnackBar.show("版本已更新");
-            }
-        }
-    }, 1000);
-
     this.onMeasure = function(wMS, hMS) {
         Manifest.setIsPhone(window.innerWidth <= 720);
 

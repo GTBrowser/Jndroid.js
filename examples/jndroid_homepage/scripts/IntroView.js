@@ -157,6 +157,7 @@ function IntroView() {
         ViewGroup.apply(this);
 
         var imageView = new ImageView();
+        imageView.setBg(0x08000000);
         imageView.setImageUri("images/masterpiece.jpg");
         imageView.setScaleType(ScaleType.CENTER_CROP);
         imageView.setBoxShadow(0, 3, 3, 0, R.color.shadow);
