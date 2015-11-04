@@ -112,7 +112,6 @@ function VSAndroidView() {
 
         function createCodoView(code) {
             var v = new CodeEditor();
-            v.setTextSize(10);
             v.setText(code);
             return v;
         }
