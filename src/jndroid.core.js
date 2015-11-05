@@ -2475,13 +2475,9 @@ function touch(e) {
     }
 }
 //
-///* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
-//var c = document.createElement('script');
-//c.type = 'text/javascript';
-//c.async = true;
-//c.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'www.clicki.cn/boot/52027';
-//var h = document.getElementsByTagName('script')[0];
-//h.parentNode.insertBefore(c, h);
+/* statistics code start, you can replace to your own code. www.clicki.cn is good to use.*/
+var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cspan id='cnzz_stat_icon_1256652931'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s4.cnzz.com/z_stat.php%3Fid%3D1256652931' type='text/javascript'%3E%3C/script%3E"));
 ///* statistics code end */
 
 function getRootView() {
