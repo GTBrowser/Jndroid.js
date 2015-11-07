@@ -2,4 +2,3 @@
 tmp/
 .*
 !.gitignore
-output
