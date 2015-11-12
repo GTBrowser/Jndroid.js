@@ -949,8 +949,7 @@ function WaveDrawable() {
         c.fill();
     };
 
-    this.drawEnable = function(canvas) {
-        console.log("drawenable");
+    this.drawEnable = function() {
     };
 }
 
