@@ -886,7 +886,7 @@ function WaveDrawable() {
         function onEnd() {
             if (waving == false && s == View.VIEW_STATE_ENABLED) {
                 curState = View.VIEW_STATE_ENABLED;
-                self.invalidateSelf();
+                //self.invalidateSelf();
             }
         }
     };
@@ -950,7 +950,7 @@ function WaveDrawable() {
     };
 
     this.drawEnable = function(canvas) {
-
+        console.log("drawenable");
     };
 }
 
