@@ -1,7 +1,4 @@
 /node_modules
-output.tar.gz
-output/
-output.py
 tmp/
 .*
 !.gitignore
